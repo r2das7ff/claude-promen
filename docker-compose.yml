@@ -1,0 +1,61 @@
+services:
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wp
+      MARIADB_PASSWORD: wp
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - ./.docker/db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 10
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_MEMORY_LIMIT', '512M');
+        define('WP_ENVIRONMENT_TYPE', 'local');
+    volumes:
+      - ./.docker/wp:/var/www/html
+      - ./wp-content/themes/promen:/var/www/html/wp-content/themes/promen
+      - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins
+      # CSV и PDF пайплайна доступны изнутри контейнера для импорта:
+      - ../normatives:/data/normatives:ro
+      - ./products-csv:/data/products-csv:ro
+
+  wpcli:
+    image: wordpress:cli-php8.3
+    depends_on:
+      db:
+        condition: service_healthy
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp
+    volumes:
+      - ./.docker/wp:/var/www/html
+      - ./wp-content/themes/promen:/var/www/html/wp-content/themes/promen
+      - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./scripts:/scripts
+      - ../normatives:/data/normatives:ro
+      - ./products-csv:/data/products-csv:ro
+      - ./content:/data/content:ro
+    entrypoint: ["wp"]
+    command: ["--info"]

@@ -1,0 +1,10 @@
+.docker/
+.DS_Store
+.claude/
+vendor/
+composer.lock
+.env
+.env.*
+!.env.example
+node_modules/
+*.log

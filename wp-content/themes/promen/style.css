@@ -1,0 +1,12 @@
+/*
+Theme Name: PROM-EN
+Theme URI: https://prom-en.example
+Author: Промышленная Энергетика
+Description: B2B-каталог деталей трубопроводов. Тема перенесена 1:1 из HTML-верстки Open Design (см. design-reference/ в корне репозитория).
+Version: 0.4.0
+Requires PHP: 8.2
+Text Domain: promen
+*/
+
+/* Стили темы подключаются из assets/css/ через functions.php.
+   Дизайн-токены и общий CSS выносятся из design-reference/*.html. */

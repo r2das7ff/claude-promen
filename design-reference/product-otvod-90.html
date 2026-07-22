@@ -1,0 +1,1666 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Отвод крутоизогнутый 90° ГОСТ 17375-2001 — Промышленная Энергетика</title>
+<style>
+@font-face{font-family:'DINPro';src:url('mqkoo24v-DINPro.otf') format('opentype');font-weight:400;}
+@font-face{font-family:'DINPro';src:url('mqkooa66-DINPro-Light.otf') format('opentype');font-weight:300;}
+@font-face{font-family:'DINPro';src:url('mqkooagj-DINPro-Medium.otf') format('opentype');font-weight:500;}
+@font-face{font-family:'DINPro';src:url('mqkoo2rj-DINPro-Bold.otf') format('opentype');font-weight:700;}
+@font-face{font-family:'DINPro';src:url('mqkoo2fg-DINPro-Black.otf') format('opentype');font-weight:900;}
+@font-face{font-family:'DINProCond';src:url('mqkoo3w7-DINPro-CondBlack.otf') format('opentype');font-weight:900;}
+@font-face{font-family:'DINProCond';src:url('mqkoo4ml-DINPro-CondBold.otf') format('opentype');font-weight:700;}
+
+:root{
+  --bg:#E8ECF0;--bg2:#DDE3EA;--dark:#0F2A44;--blue:#1E3D5C;
+  --g1:#6D8CA6;--g2:#A9B7C6;--white:#FFFFFF;--ln:#C8D0D8;--ln2:#A0B0BC;
+  --g1a:rgba(109,140,166,.12);--g1b:rgba(109,140,166,.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DINPro','Arial Narrow',Arial,sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+button{background:none;border:none;cursor:pointer;font-family:inherit;}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px);
+  background-size:80px 80px;pointer-events:none;z-index:0;opacity:.55;
+}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;height:64px;z-index:200;display:flex;align-items:center;padding:0 28px 0 44px;border-bottom:1px solid var(--ln2);background:rgba(232,236,240,.97);backdrop-filter:blur(6px);}
+.nav-brand{display:flex;align-items:center;gap:14px;border-right:1px solid var(--ln2);padding-right:24px;margin-right:24px;}
+.nav-logo img{height:34px;width:auto;display:block;}
+.nav-links{display:flex;list-style:none;}
+.nav-links a{display:block;height:64px;line-height:64px;padding:0 20px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-left:1px solid var(--ln);position:relative;transition:color .15s,background .15s;}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--g1);transform:scaleX(0);transform-origin:left;transition:transform .2s;}
+.nav-links a:hover{color:var(--dark);background:var(--bg2);}
+.nav-links a:hover::after,.nav-links a.is-active::after{transform:scaleX(1);}
+.nav-links a.is-active{color:var(--dark);font-weight:700;}
+.nav-meta{display:flex;align-items:center;margin-left:auto;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.14em;color:var(--g1);opacity:.55;border-left:1px solid var(--ln2);padding-left:20px;}
+.nav-cta{margin-left:16px;display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:var(--blue);border:1px solid var(--g1);font-family:'DINPro',sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--white);cursor:pointer;transition:all .15s;}
+.nav-cta:hover{background:var(--g1);color:var(--bg);}
+
+/* STRIP */
+.strip{position:fixed;left:0;top:64px;bottom:0;width:44px;border-right:1px solid var(--ln2);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:20px 0 24px;background:var(--bg);}
+.strip-yr{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.2em;color:var(--g1);writing-mode:vertical-rl;text-transform:uppercase;user-select:none;}
+.strip-pulse{width:4px;height:4px;border-radius:50%;background:var(--g1);animation:blink 1.8s step-end infinite;}
+.strip-txt{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.2em;color:var(--g1);writing-mode:vertical-rl;transform:rotate(180deg);text-transform:uppercase;opacity:.4;user-select:none;}
+
+/* ── SIDE NAV ── */
+.sidenav{position:fixed;left:0;top:0;bottom:0;width:44px;z-index:200;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:20px;pointer-events:none;}
+.sidenav-item{position:relative;width:44px;display:flex;align-items:center;justify-content:center;pointer-events:all;cursor:pointer;text-decoration:none;}
+.sidenav-dot{width:7px;height:7px;border-radius:50%;background:var(--ln2);flex-shrink:0;transition:background .4s ease,transform .4s cubic-bezier(.34,1.56,.64,1),box-shadow .4s ease;}
+.sidenav-item:hover .sidenav-dot{background:var(--g1);}
+.sidenav-item.sn-active .sidenav-dot{background:var(--dark);transform:scale(1.6);box-shadow:0 0 0 3px rgba(15,42,68,.12);}
+.sidenav-label{position:absolute;left:52px;top:50%;transform:translateY(-50%) translateX(-10px);font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.2em;color:var(--dark);text-transform:uppercase;white-space:nowrap;background:var(--bg);border:1px solid var(--ln);padding:4px 10px;line-height:1.5;opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;}
+.sidenav-item:hover .sidenav-label{opacity:1;transform:translateY(-50%) translateX(0);}
+.sidenav-item.sn-active .sidenav-label{opacity:1;transform:translateY(-50%) translateX(0);}
+@media(max-width:1100px){.sidenav{display:none;}}
+
+/* PAGE SHELL */
+.pg{position:relative;z-index:1;padding-top:64px;padding-left:44px;min-height:100vh;}
+
+/* ── HERO ── */
+.sdt-hero{border-bottom:1px solid var(--ln2);display:grid;grid-template-columns:1fr 1fr;min-height:300px;position:relative;overflow:hidden;}
+.sdt-hero::after{content:'СДТ';position:absolute;right:-20px;bottom:-52px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(100px,13vw,220px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;}
+.hero-left{padding:44px 52px 48px 56px;border-right:1px solid var(--ln2);display:flex;flex-direction:column;}
+.hero-crumb{display:flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--g2);margin-bottom:24px;}
+.hero-crumb a{color:var(--g1);transition:color .12s;}
+.hero-crumb a:hover{color:var(--dark);}
+.hero-crumb-sep{color:var(--ln2);}
+.hero-eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:14px;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--g1);}
+.hero-eyebrow::before{content:'КТЛ / СДТ';border:1px solid var(--g1);padding:3px 8px;font-size:9px;letter-spacing:.16em;line-height:1;}
+.hero-h1{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(44px,5.2vw,84px);line-height:.88;letter-spacing:-.025em;text-transform:uppercase;color:var(--dark);margin-bottom:20px;}
+.hero-h1 em{color:var(--g1);font-style:normal;}
+.hero-desc{font-size:12.5px;font-weight:300;line-height:1.74;color:var(--blue);max-width:460px;flex:1;}
+.hero-params{display:flex;gap:0;margin-top:28px;border-top:1px solid var(--ln2);padding-top:22px;}
+.hp{flex:1;padding-right:20px;border-right:1px solid var(--ln);}
+.hp:last-child{border-right:none;padding-right:0;padding-left:20px;}
+.hp-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:22px;line-height:1;letter-spacing:-.02em;color:var(--dark);display:block;margin-bottom:4px;}
+.hp-k{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);}
+.hero-right{padding:44px 48px;display:flex;flex-direction:column;gap:20px;position:relative;z-index:1;}
+.hud-block{border:1px solid var(--ln2);padding:16px 20px;position:relative;}
+.hud-block::before{content:'';position:absolute;top:-1px;left:12px;width:20px;height:2px;background:var(--g1);}
+.hud-label{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;}
+.hud-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--ln);}
+.hud-row:last-child{border-bottom:none;}
+.hud-rk{font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.06em;color:var(--g2);}
+.hud-rv{font-family:'DINPro',monospace;font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--dark);}
+.hud-rv.live{color:var(--g1);}
+
+/* ── SECTION PATTERN ── */
+#hero,.s,#request{scroll-margin-top:64px;}
+.s{position:relative;overflow:hidden;}
+.s-hd{display:flex;align-items:center;justify-content:space-between;padding:24px 56px 20px;border-bottom:1px solid var(--ln2);}
+.s-dark .s-hd,.s-mid .s-hd{border-bottom-color:rgba(109,140,166,.15);}
+.s-badge{display:flex;align-items:center;gap:14px;font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);}
+.s-badge-num{border:1px solid var(--g1);padding:3px 8px;font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:11px;letter-spacing:.14em;line-height:1;}
+.s-dark .s-badge{color:rgba(109,140,166,.7);}
+.s-dark .s-badge-num{border-color:rgba(109,140,166,.3);color:var(--g1);}
+.s-meta{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--g2);opacity:.45;}
+.s-dark .s-meta{color:rgba(109,140,166,.35);}
+.s-body{padding:36px 56px 52px;}
+.s-dark{background:var(--dark);}
+.s-mid{background:var(--blue);}
+.s-alt{background:var(--bg2);}
+
+/* ── S01: ESSENCE ── */
+.essence-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--ln2);}
+.ec{padding:30px 36px;border-right:1px solid var(--ln2);border-bottom:1px solid var(--ln2);transition:background .2s;}
+.ec:nth-child(2n){border-right:none;}
+.ec:nth-child(n+3){border-bottom:none;}
+.ec:hover{background:var(--g1b);}
+.ec-code{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.ec-code::before{content:'';width:16px;height:1px;background:var(--g1);}
+.ec-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:21px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);margin-bottom:10px;line-height:1.1;}
+.ec-p{font-size:11.5px;font-weight:300;line-height:1.75;color:var(--blue);}
+.ec-p strong{font-weight:700;color:var(--dark);}
+.ec-tags{margin-top:12px;display:flex;gap:5px;flex-wrap:wrap;}
+.ec-tag{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border:1px solid var(--ln2);color:var(--g1);}
+
+/* ── S02: TYPE MAP ── */
+.map-outer{background:var(--dark);position:relative;overflow:hidden;}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(109,140,166,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(109,140,166,.05) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+.map-body{padding:36px 56px 52px;position:relative;z-index:1;}
+.map-root{text-align:center;margin-bottom:28px;position:relative;}
+.map-root::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:1px;height:28px;background:rgba(109,140,166,.3);}
+.map-root-label{display:inline-flex;align-items:center;gap:12px;border:1px solid rgba(109,140,166,.35);padding:8px 20px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:12px;letter-spacing:.2em;color:var(--g1);text-transform:uppercase;}
+.map-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px;position:relative;}
+.map-groups::before{content:'';position:absolute;top:-1px;left:16.67%;right:16.67%;height:1px;background:rgba(109,140,166,.25);}
+.mg{border:1px solid rgba(109,140,166,.18);position:relative;cursor:pointer;transition:border-color .2s,background .2s;}
+.mg::before{content:'';position:absolute;top:-28px;left:50%;width:1px;height:28px;background:rgba(109,140,166,.25);}
+.mg:hover,.mg.sel{border-color:var(--g1);background:rgba(109,140,166,.07);}
+.mg-hd{padding:14px 18px 12px;border-bottom:1px solid rgba(109,140,166,.13);display:flex;align-items:center;justify-content:space-between;}
+.mg-code{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:24px;letter-spacing:.02em;color:var(--g1);line-height:1;}
+.mg-cnt{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(109,140,166,.45);}
+.mg-name{font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--white);padding:10px 18px 2px;font-weight:700;}
+.mg-items{padding:8px 18px 16px;display:flex;flex-direction:column;gap:5px;}
+.mg-item{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border:1px solid rgba(109,140,166,.08);font-size:10.5px;color:rgba(169,183,198,.8);transition:all .15s;}
+.mg-item:hover,.mg.sel .mg-item{border-color:rgba(109,140,166,.3);color:var(--white);}
+.mg-norm{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.1em;color:rgba(109,140,166,.45);}
+.mg.sel .mg-norm{color:var(--g1);}
+.mg-footer{padding:8px 18px 14px;border-top:1px solid rgba(109,140,166,.1);display:flex;flex-wrap:wrap;gap:4px;}
+.mg-ftag{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid rgba(109,140,166,.18);color:rgba(109,140,166,.55);}
+.map-groups-2{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px;}
+.mg-2{border:1px solid rgba(109,140,166,.12);padding:20px 18px;cursor:pointer;transition:border-color .2s,background .2s;}
+.mg-2:hover,.mg-2.sel{border-color:var(--g1);background:rgba(109,140,166,.07);}
+.mg-2-code{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:18px;letter-spacing:.02em;color:rgba(109,140,166,.5);display:block;margin-bottom:4px;transition:color .2s;}
+.mg-2:hover .mg-2-code,.mg-2.sel .mg-2-code{color:var(--g1);}
+.mg-2-name{font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(169,183,198,.7);font-weight:700;display:block;margin-bottom:8px;}
+.mg-2-desc{font-size:10px;font-weight:300;color:rgba(109,140,166,.55);line-height:1.6;}
+.mg-2-norm{display:block;margin-top:8px;font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.1em;color:rgba(109,140,166,.4);}
+
+/* ── S03: PARAMS ── */
+.params-wrap{border:1px solid var(--ln2);display:grid;grid-template-columns:260px 1fr;}
+.par-left{border-right:1px solid var(--ln2);padding:24px 22px;}
+.par-lbl{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.par-lbl::before{content:'';width:14px;height:1px;background:var(--g1);}
+.par-grp{margin-bottom:16px;}
+.par-grp-name{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--g2);margin-bottom:7px;}
+.dn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;}
+.dn-b{padding:7px 4px;border:1px solid var(--ln2);font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:11px;letter-spacing:.02em;text-align:center;color:var(--g1);cursor:pointer;transition:all .12s;background:none;}
+.dn-b:hover{border-color:var(--g1);color:var(--dark);}
+.dn-b.on{background:var(--dark);color:var(--white);border-color:var(--dark);}
+.pn-flex{display:flex;flex-wrap:wrap;gap:4px;}
+.pn-b{padding:4px 8px;border:1px solid var(--ln2);font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.08em;color:var(--g1);cursor:pointer;transition:all .12s;background:none;}
+.pn-b:hover{border-color:var(--g1);color:var(--dark);}
+.pn-b.on{background:var(--dark);color:var(--white);border-color:var(--dark);}
+.par-sel{width:100%;padding:8px 10px;border:1px solid var(--ln2);background:var(--bg);font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.04em;color:var(--dark);cursor:pointer;appearance:none;margin-top:2px;}
+.par-right{overflow-x:auto;}
+.ptbl{width:100%;border-collapse:collapse;}
+.ptbl th{padding:9px 16px;font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1);border-bottom:2px solid var(--dark);border-left:1px solid var(--ln);text-align:left;white-space:nowrap;background:var(--bg);}
+.ptbl th:first-child{border-left:none;}
+.ptbl td{padding:9px 16px;font-family:'DINPro',monospace;font-size:10px;color:var(--dark);border-bottom:1px solid var(--ln);border-left:1px solid var(--ln);white-space:nowrap;vertical-align:middle;}
+.ptbl td:first-child{border-left:none;}
+.ptbl tr:hover td{background:var(--g1b);}
+.ptbl tr.hidden{display:none;}
+.pt-type{font-weight:700;color:var(--blue);}
+.pt-dn{font-family:'DINProCond',monospace;font-weight:900;font-size:13px;}
+.pt-pn{font-family:'DINProCond',monospace;font-weight:700;font-size:12px;}
+.pt-wall{color:var(--g1);}
+.pt-norm{color:var(--g1);font-size:8.5px;}
+
+/* ── S04: NORM BASE ── */
+.norm-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(109,140,166,.12);}
+.nc{background:rgba(30,61,92,.55);padding:26px 30px;border-left:2px solid transparent;transition:border-color .2s,background .2s;}
+.nc:hover{border-left-color:var(--g1);background:rgba(30,61,92,.8);}
+.nc-code{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(24px,2.8vw,40px);letter-spacing:-.01em;color:var(--g1);margin-bottom:6px;line-height:1;}
+.nc-title{font-size:11px;font-weight:500;color:var(--white);margin-bottom:7px;line-height:1.42;}
+.nc-desc{font-size:10px;font-weight:300;color:rgba(169,183,198,.65);line-height:1.65;}
+.nc-tags{margin-top:12px;display:flex;flex-wrap:wrap;gap:4px;}
+.nc-tag{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid rgba(109,140,166,.2);color:rgba(109,140,166,.6);}
+.nc-status{margin-top:8px;display:flex;align-items:center;gap:6px;font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(109,140,166,.4);}
+.nc-dot{width:4px;height:4px;border-radius:50%;background:#4caf50;flex-shrink:0;}
+
+/* ── S05: MATERIALS ── */
+.mat-tbl-wrap{border:1px solid var(--ln2);}
+.mat-tbl-hd{display:grid;grid-template-columns:160px 1fr 100px 120px 130px 170px;padding:9px 24px;border-bottom:2px solid var(--dark);font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1);gap:0 14px;background:var(--bg);}
+.mat-r{display:grid;grid-template-columns:160px 1fr 100px 120px 130px 170px;padding:0 24px;gap:0 14px;border-bottom:1px solid var(--ln);cursor:pointer;transition:background .1s;align-items:center;min-height:54px;}
+.mat-r:hover{background:var(--g1b);}
+.mat-r.exp{background:rgba(30,61,92,.03);}
+.mr-g{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:17px;letter-spacing:.02em;color:var(--dark);line-height:1;}
+.mr-std{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.06em;color:var(--g2);display:block;margin-top:2px;}
+.mr-desc{font-size:10.5px;color:var(--blue);line-height:1.4;}
+.mr-temp{font-family:'DINProCond',monospace;font-weight:700;font-size:14px;color:var(--dark);}
+.mr-pn{font-family:'DINPro',monospace;font-size:10px;color:var(--dark);}
+.mr-apps{display:flex;flex-wrap:wrap;gap:3px;}
+.mr-app-t{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;padding:2px 5px;border:1px solid var(--ln2);color:var(--g2);}
+.mr-app-t.hi{border-color:rgba(109,140,166,.5);color:var(--g1);}
+.mat-expand{padding:0 24px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .2s ease;}
+.mat-r.exp + .mat-expand{max-height:160px;padding:16px 24px 20px;}
+.me-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.me-item{padding:10px 14px;border:1px solid var(--ln2);background:var(--bg2);}
+.me-k{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.16em;text-transform:uppercase;color:var(--g2);margin-bottom:4px;}
+.me-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:14px;color:var(--dark);line-height:1;}
+
+/* ── S06: APPLICATION ── */
+.app-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--ln2);}
+.app-c{padding:28px 32px;border-right:1px solid var(--ln2);border-bottom:1px solid var(--ln2);position:relative;overflow:hidden;transition:background .2s;}
+.app-c:nth-child(3n){border-right:none;}
+.app-c:nth-child(n+4){border-bottom:none;}
+.app-c:hover{background:var(--g1b);}
+.app-bg{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(60px,7vw,100px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln2);position:absolute;right:-10px;bottom:-18px;line-height:1;pointer-events:none;user-select:none;transition:-webkit-text-stroke-color .2s;}
+.app-c:hover .app-bg{-webkit-text-stroke-color:rgba(109,140,166,.3);}
+.app-code{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;}
+.app-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:19px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);margin-bottom:8px;line-height:1.1;}
+.app-p{font-size:10.5px;font-weight:300;line-height:1.72;color:var(--blue);}
+.app-params{margin-top:12px;display:flex;flex-direction:column;gap:4px;}
+.app-pr{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--ln);}
+.app-pr:last-child{border-bottom:none;}
+.app-pk{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--g2);}
+.app-pv{font-family:'DINPro',monospace;font-size:8.5px;font-weight:700;color:var(--dark);}
+
+/* ── S07: QC ── */
+.qc-wrap{position:relative;}
+.qc-scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(109,140,166,.1),transparent);animation:scan 5s linear infinite;pointer-events:none;z-index:0;}
+@keyframes scan{from{top:-2px;}to{top:100%;}}
+.qc-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;padding:40px 56px 52px;position:relative;z-index:1;}
+.qc-stages{display:flex;flex-direction:column;gap:0;}
+.qc-s{display:grid;grid-template-columns:48px 1fr;padding:14px 0;border-bottom:1px solid rgba(109,140,166,.12);transition:background .15s;}
+.qc-s:last-child{border-bottom:none;}
+.qs-n{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:30px;letter-spacing:-.03em;color:rgba(109,140,166,.22);line-height:1;transition:color .2s;}
+.qc-s:hover .qs-n{color:var(--g1);}
+.qs-h{font-size:12px;font-weight:700;color:var(--white);margin-bottom:3px;}
+.qs-d{font-size:10px;font-weight:300;color:rgba(169,183,198,.6);line-height:1.6;}
+.qc-docs{display:flex;flex-direction:column;gap:10px;}
+.qc-dh{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.qc-dh::before{content:'';width:14px;height:1px;background:var(--g1);}
+.doc-c{border:1px solid rgba(109,140,166,.18);padding:16px 20px;transition:border-color .2s;}
+.doc-c:hover{border-color:var(--g1);}
+.dc-n{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:28px;color:rgba(109,140,166,.2);line-height:1;float:right;margin:-2px -2px 0 0;}
+.dc-t{font-size:11px;font-weight:700;color:var(--white);margin-bottom:4px;clear:both;}
+.dc-d{font-size:9.5px;font-weight:300;color:rgba(169,183,198,.6);line-height:1.55;}
+.dc-n+.dc-t{clear:none;}
+
+/* ── S08: PRODUCTION ── */
+.prod-layout{display:grid;grid-template-columns:1fr 360px;}
+.prod-main{padding:40px 48px 52px;border-right:1px solid var(--ln2);}
+.prod-side{padding:36px 32px;background:var(--bg2);}
+.prod-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(30px,3.2vw,48px);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:var(--dark);margin-bottom:18px;}
+.prod-h em{color:var(--g1);font-style:normal;}
+.prod-lead{font-size:12.5px;font-weight:300;line-height:1.74;color:var(--blue);max-width:520px;margin-bottom:28px;}
+.prod-caps{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.pc{padding:14px 18px;background:var(--bg);border:1px solid var(--ln2);position:relative;overflow:hidden;transition:border-color .2s;}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--g1);transform:scaleX(0);transform-origin:left;transition:transform .2s;}
+.pc:hover::before{transform:scaleX(1);}
+.pc:hover{border-color:var(--g1);}
+.pc-h{font-size:11.5px;font-weight:700;color:var(--dark);margin-bottom:5px;}
+.pc-p{font-size:10px;font-weight:300;line-height:1.62;color:var(--blue);}
+.prod-side-lbl{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.prod-side-lbl::before{content:'';width:14px;height:1px;background:var(--g1);}
+.pm-r{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--ln);}
+.pm-r:last-child{border-bottom:none;}
+.pm-k{font-size:11px;color:var(--blue);font-weight:300;}
+.pm-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:20px;letter-spacing:-.01em;color:var(--dark);}
+
+/* ── S09: REGISTRY ── */
+.reg-bar{padding:12px 40px;border-bottom:1px solid var(--ln2);background:var(--bg);display:flex;align-items:center;gap:5px;flex-wrap:wrap;position:sticky;top:64px;z-index:40;}
+.rb-lbl{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--g2);margin-right:4px;}
+.rb-sep{width:1px;height:20px;background:var(--ln2);margin:0 6px;flex-shrink:0;}
+.r-chip{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);padding:5px 10px;border:1px solid var(--ln2);cursor:pointer;transition:all .12s;background:none;}
+.r-chip:hover{border-color:var(--g1);color:var(--dark);}
+.r-chip.on{background:var(--dark);color:var(--white);border-color:var(--dark);}
+.rb-count{margin-left:auto;font-family:'DINPro',monospace;font-size:8px;letter-spacing:.16em;color:var(--g2);flex-shrink:0;}
+.reg-hd{display:grid;grid-template-columns:56px 1fr 78px 78px 160px 160px 100px 28px;padding:9px 40px;border-bottom:2px solid var(--dark);font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1);gap:0 14px;background:var(--bg);}
+.reg-r{display:grid;grid-template-columns:56px 1fr 78px 78px 160px 160px 100px 28px;padding:0 40px;gap:0 14px;border-bottom:1px solid var(--ln);cursor:pointer;align-items:center;min-height:50px;transition:background .1s;animation:rowIn .25s ease both;}
+.reg-r:hover{background:var(--g1b);}
+.rr-i{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.1em;color:var(--g2);}
+.rr-n{font-size:11.5px;font-weight:500;color:var(--dark);}
+.rr-n small{display:block;font-size:8px;font-weight:400;color:var(--g2);letter-spacing:.06em;margin-top:1px;}
+.rr-dn,.rr-pn{font-family:'DINProCond',monospace;font-weight:700;font-size:13px;color:var(--dark);}
+.rr-m{font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.03em;color:var(--blue);line-height:1.5;}
+.rr-g{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.03em;color:var(--g1);line-height:1.6;}
+.rr-t{display:flex;gap:3px;flex-wrap:wrap;}
+.rr-tag{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.08em;text-transform:uppercase;padding:2px 5px;border:1px solid var(--ln2);color:var(--g2);}
+.rr-tag.hi{border-color:rgba(109,140,166,.5);color:var(--g1);}
+.rr-arr{display:flex;align-items:center;justify-content:center;color:var(--ln2);font-size:14px;transition:color .12s,transform .12s;}
+.reg-r:hover .rr-arr{color:var(--g1);transform:translateX(3px);}
+.reg-empty{padding:56px 40px;text-align:center;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--g2);}
+
+/* ── S10: ORDER FLOW ── */
+.flow-grid{display:grid;grid-template-columns:repeat(4,1fr);}
+.fl-s{padding:16px 22px 24px;border:1px solid var(--ln2);margin:-1px 0 0 -1px;position:relative;transition:background .2s,border-color .2s;}
+.fl-s:hover{background:var(--g1b);border-color:var(--g1);z-index:1;}
+.fl-n{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(48px,4.5vw,72px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln2);line-height:1;margin-bottom:6px;transition:-webkit-text-stroke-color .2s;}
+.fl-s:hover .fl-n{-webkit-text-stroke-color:var(--g1);}
+.fl-h{font-size:11.5px;font-weight:700;color:var(--dark);margin-bottom:6px;line-height:1.3;}
+.fl-p{font-size:10px;font-weight:300;line-height:1.65;color:var(--blue);}
+.fl-tag{display:inline-block;margin-top:10px;font-family:'DINPro',monospace;font-size:7px;letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border:1px solid var(--ln2);color:var(--g2);}
+.flow-grid-wrap{padding:0 56px 52px;}
+
+/* ── S11: FAQ ── */
+.faq-wrap{border:1px solid var(--ln2);}
+.fq{border-bottom:1px solid var(--ln2);}
+.fq:last-child{border-bottom:none;}
+.fq-q{display:flex;align-items:center;justify-content:space-between;padding:20px 30px;cursor:pointer;transition:background .15s;gap:20px;}
+.fq-q:hover{background:var(--g1b);}
+.fq-num{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:18px;letter-spacing:-.01em;color:var(--g2);flex-shrink:0;width:36px;}
+.fq-t{font-size:12.5px;font-weight:500;color:var(--dark);line-height:1.4;flex:1;}
+.fq-arr{width:26px;height:26px;border:1px solid var(--ln2);display:flex;align-items:center;justify-content:center;color:var(--g1);font-size:11px;flex-shrink:0;transition:transform .2s,background .15s;}
+.fq.open .fq-arr{transform:rotate(180deg);background:var(--dark);color:var(--white);border-color:var(--dark);}
+.fq-a{max-height:0;overflow:hidden;transition:max-height .32s ease;}
+.fq.open .fq-a{max-height:400px;}
+.fq-a-in{padding:0 30px 20px 66px;font-size:11.5px;font-weight:300;line-height:1.78;color:var(--blue);border-top:1px solid var(--ln);}
+.fq-a-in strong{font-weight:700;color:var(--dark);}
+.fq-a-in ul{padding-left:0;margin-top:8px;display:flex;flex-direction:column;gap:3px;list-style:none;}
+.fq-a-in li{padding-left:16px;position:relative;}
+.fq-a-in li::before{content:'—';position:absolute;left:0;color:var(--g1);}
+
+/* ── FOOTER ZONE — sticky context для S10 ── */
+.footer-zone { position: relative; }
+.footer-zone .s10 { position: sticky; top: 0; z-index: 5; background: var(--bg); }
+
+/* ── S10: ФОРМА ЗАПРОСА ── */
+.s10 { position: relative; z-index: 1; padding-left: 44px; border-top: 1px solid var(--ln2); background: var(--bg); }
+.s10-inner { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; background: var(--bg); }
+.s10-left { padding: 80px 56px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--ln2); }
+.s10-eyebrow { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; }
+.s10-eye-num { font-family: 'DINPro', monospace; font-size: 10px; letter-spacing: .2em; color: var(--g1); border: 1px solid var(--g1); padding: 3px 8px; line-height: 1; }
+.s10-eye-label { font-family: 'DINPro', monospace; font-size: 9px; letter-spacing: .25em; text-transform: uppercase; color: var(--g1); opacity: .6; display: flex; align-items: center; gap: 10px; }
+.s10-eye-label::before { content: ''; width: 28px; height: 1px; background: var(--g1); flex-shrink: 0; }
+.s10-h2 { font-family: 'DINProCond', 'DINPro', sans-serif; font-weight: 900; font-size: clamp(38px, 4.5vw, 72px); line-height: .9; letter-spacing: -.015em; text-transform: uppercase; color: var(--dark); margin-bottom: 28px; }
+.s10-sub { font-size: 13px; font-weight: 300; line-height: 1.72; color: var(--blue); max-width: 380px; margin-bottom: 44px; }
+.s10-contacts { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--ln2); padding-top: 32px; }
+.s10-contact-row { display: flex; gap: 20px; padding: 12px 0; border-bottom: 1px solid var(--ln); align-items: baseline; }
+.s10-contact-k { font-family: 'DINPro', monospace; font-size: 8.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--g1); min-width: 100px; }
+.s10-contact-v { font-family: 'DINPro', sans-serif; font-size: 13px; font-weight: 500; color: var(--dark); }
+.s10-right { padding: 80px 56px; display: flex; flex-direction: column; justify-content: center; }
+.s10-form-label { font-family: 'DINPro', monospace; font-size: 8px; letter-spacing: .25em; text-transform: uppercase; color: var(--g1); margin-bottom: 24px; opacity: .6; }
+.s10-form { display: flex; flex-direction: column; gap: 0; }
+.s10-field { display: grid; grid-template-columns: 180px 1fr; gap: 0 16px; border-top: 1px solid var(--ln2); align-items: center; transition: background .12s; }
+.s10-field:last-of-type { border-bottom: 1px solid var(--ln2); }
+.s10-field:focus-within { background: rgba(109,140,166,.04); }
+.s10-field-label { font-family: 'DINPro', monospace; font-size: 8.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--g1); padding: 14px 0; user-select: none; cursor: text; }
+.s10-field input { border: none; background: transparent; font-family: 'DINPro', sans-serif; font-size: 13px; font-weight: 500; color: var(--dark); padding: 14px 0; outline: none; width: 100%; }
+.s10-field input::placeholder { color: var(--g2); font-weight: 300; }
+.s10-file-row { display: grid; grid-template-columns: 180px 1fr; gap: 0 16px; border-top: 1px solid var(--ln2); align-items: center; padding: 14px 0; }
+.s10-file-label-txt { font-family: 'DINPro', monospace; font-size: 8.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--g1); }
+.s10-file-btn { display: inline-flex; align-items: center; gap: 8px; font-family: 'DINPro', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--g1); border: 1px solid var(--ln2); padding: 8px 14px; cursor: pointer; transition: all .15s; background: transparent; }
+.s10-file-btn:hover { background: var(--bg2); color: var(--dark); border-color: var(--g1); }
+.s10-file-name { font-family: 'DINPro', monospace; font-size: 10px; color: var(--g1); margin-left: 10px; opacity: .7; }
+.s10-actions { display: flex; align-items: center; gap: 16px; margin-top: 32px; flex-wrap: wrap; }
+.s10-submit { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: var(--dark); color: var(--white); font-family: 'DINPro', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; border: 1px solid var(--dark); cursor: pointer; transition: all .15s; }
+.s10-submit:hover { background: var(--blue); border-color: var(--blue); }
+.s10-ghost-link { font-family: 'DINPro', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--g1); text-decoration: none; border-bottom: 1px solid var(--ln2); padding-bottom: 2px; transition: color .15s, border-color .15s; cursor: pointer; }
+.s10-ghost-link:hover { color: var(--dark); border-color: var(--g1); }
+.s10-success { display: none; padding: 20px 24px; background: rgba(109,140,166,.08); border: 1px solid var(--g1); font-family: 'DINPro', monospace; font-size: 11px; letter-spacing: .08em; color: var(--dark); margin-top: 24px; }
+.s10-note { font-family: 'DINPro', monospace; font-size: 8px; letter-spacing: .16em; color: var(--g1); text-transform: uppercase; margin-top: 10px; text-align: center; }
+
+/* ── FOOTER ── */
+.site-footer { position: relative; z-index: 10; background: var(--dark); padding-left: 44px; min-height: 100vh; display: flex; flex-direction: column; box-shadow: 0 -60px 140px rgba(15,42,68,.55); }
+.site-footer::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(200,208,216,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(200,208,216,.035) 1px, transparent 1px); background-size: 80px 80px; pointer-events: none; z-index: 0; }
+.ft-statement, .ft-grid, .ft-bar { position: relative; z-index: 1; }
+.ft-statement { flex: 1; padding: 88px 56px 72px; display: flex; flex-direction: column; justify-content: flex-end; border-bottom: 1px solid rgba(200,208,216,.1); }
+.ft-kicker { font-family: 'DINPro', monospace; font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--g1); opacity: .7; margin-bottom: 40px; display: flex; align-items: center; gap: 16px; }
+.ft-kicker::before { content: ''; width: 36px; height: 1px; background: var(--g1); opacity: .5; flex-shrink: 0; }
+.ft-headline { font-family: 'DINProCond', 'DINPro', sans-serif; font-weight: 900; font-size: clamp(72px, 10vw, 180px); line-height: .83; letter-spacing: -.02em; text-transform: uppercase; color: var(--white); margin-bottom: 40px; }
+.ft-tagline { font-size: 13px; font-weight: 300; line-height: 1.75; color: var(--g2); max-width: 460px; margin-bottom: 48px; }
+.ft-cta { display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; border: 1px solid rgba(200,208,216,.22); color: var(--white); font-family: 'DINPro', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; cursor: pointer; background: transparent; transition: background .18s, border-color .18s; align-self: flex-start; }
+.ft-cta:hover { background: rgba(200,208,216,.07); border-color: rgba(200,208,216,.45); }
+.ft-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid rgba(200,208,216,.1); }
+.ft-cell { padding: 44px 56px; border-right: 1px solid rgba(200,208,216,.08); }
+.ft-cell:last-child { border-right: none; }
+.ft-cell-label { font-family: 'DINPro', monospace; font-size: 7.5px; letter-spacing: .28em; text-transform: uppercase; color: var(--g1); opacity: .55; margin-bottom: 18px; }
+.ft-cell-val { font-family: 'DINProCond', 'DINPro', sans-serif; font-weight: 700; font-size: clamp(20px, 2vw, 30px); color: var(--white); line-height: 1.15; letter-spacing: -.01em; }
+.ft-cell-val.mono { font-family: 'DINPro', monospace; font-size: 12px; font-weight: 400; line-height: 1.85; color: var(--g2); letter-spacing: .02em; }
+.ft-cell-val a { color: var(--g2); text-decoration: none; transition: color .15s; }
+.ft-cell-val a:hover { color: var(--white); }
+.ft-nav-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 11px; }
+.ft-nav-list a { font-family: 'DINPro', monospace; font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--g1); text-decoration: none; transition: color .15s; }
+.ft-nav-list a:hover { color: var(--white); }
+.ft-bar { display: flex; align-items: center; justify-content: space-between; padding: 22px 56px; flex-wrap: wrap; gap: 12px; }
+.ft-copy { font-family: 'DINPro', monospace; font-size: 9px; letter-spacing: .15em; color: var(--g1); opacity: .5; }
+.ft-idx { font-family: 'DINPro', monospace; font-size: 9px; letter-spacing: .15em; color: var(--g1); opacity: .22; }
+
+@media(max-width:1024px){
+  .s10-inner{grid-template-columns:1fr;min-height:auto;}
+  .s10-left{border-right:none;border-bottom:1px solid var(--ln2);padding:60px 32px;}
+  .s10-right{padding:60px 32px;}
+  .s10-field,.s10-file-row{grid-template-columns:140px 1fr;}
+  .ft-grid{grid-template-columns:1fr 1fr;}
+  .ft-cell:nth-child(2){border-right:none;}
+  .ft-cell:nth-child(3){border-top:1px solid rgba(200,208,216,.08);}
+  .ft-cell{padding:36px 40px;}
+  .ft-statement{padding:72px 40px 56px;}
+  .ft-bar{padding:20px 40px;}
+}
+@media(max-width:640px){
+  .s10-left{padding:48px 20px;}
+  .s10-right{padding:40px 20px;}
+  .s10-field,.s10-file-row{grid-template-columns:1fr;}
+  .s10-field-label{padding-bottom:0;}
+  .s10-file-row{gap:8px;}
+  .s10-actions{flex-direction:column;align-items:flex-start;}
+  .ft-grid{grid-template-columns:1fr;}
+  .ft-cell{border-right:none;border-top:1px solid rgba(200,208,216,.08);padding:28px 24px;}
+  .ft-cell:first-child{border-top:none;}
+  .ft-statement{padding:56px 24px 44px;}
+  .ft-bar{padding:18px 24px;flex-direction:column;align-items:flex-start;}
+}
+
+/* ANIMATIONS */
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+@keyframes rowIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+@keyframes revealUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.in{opacity:1;transform:translateY(0);}
+
+@media(prefers-reduced-motion:reduce){
+  .strip-pulse,.qc-scanline{animation:none !important;}
+  .reg-r{animation:none !important;}
+  .reveal,.fq-a,.mat-expand,.pdp{transition:none !important;}
+  *{transition-duration:.001ms !important;}
+}
+
+/* RESPONSIVE */
+@media(max-width:1280px){
+  .reg-hd,.reg-r{grid-template-columns:50px 1fr 70px 70px 140px 140px 90px 24px;}
+  .mat-tbl-hd,.mat-r{grid-template-columns:150px 1fr 90px 110px 120px 1fr;}
+}
+@media(max-width:1100px){
+  .map-groups,.map-groups-2{grid-template-columns:repeat(2,1fr);}
+  .mg::before{display:none;}
+  .map-groups::before{display:none;}
+  .params-wrap{grid-template-columns:220px 1fr;}
+  .qc-grid{grid-template-columns:1fr;}
+  .prod-layout{grid-template-columns:1fr;}
+  .prod-side{border-top:1px solid var(--ln2);}
+  .norm-grid{grid-template-columns:1fr;}
+  .me-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:900px){
+  .strip{display:none;}
+  .pg{padding-left:0;}
+  .sticky-pass{left:0;padding:10px 24px;}
+  .s10{padding-left:0;}
+  .site-footer{padding-left:0;}
+  .sidenav{display:none;}
+  .sdt-hero{grid-template-columns:1fr;}
+  .hero-right{border-top:1px solid var(--ln2);}
+  .sdt-hero::after{display:none;}
+  .essence-grid{grid-template-columns:1fr;}
+  .ec{border-right:none;}
+  .app-grid{grid-template-columns:1fr 1fr;}
+  .app-c:nth-child(3n){border-right:1px solid var(--ln2);}
+  .app-c:nth-child(2n){border-right:none;}
+  .app-c:nth-child(n+5){border-bottom:none;}
+  .app-c:nth-child(n+4){border-bottom:1px solid var(--ln2);}
+  .app-c:nth-child(n+5){border-bottom:none;}
+  .s-hd{padding:18px 24px;}
+  .s-body{padding:24px 24px 40px;}
+  .reg-bar{padding:10px 24px;}
+  .reg-hd{display:none;}
+  .reg-r{grid-template-columns:auto 1fr auto;padding:11px 24px;gap:0 12px;}
+  .rr-i,.rr-dn,.rr-pn,.rr-m,.rr-g,.rr-t{display:none;}
+  .mat-tbl-hd{display:none;}
+  .mat-r{grid-template-columns:auto 1fr auto;padding:12px 24px;gap:0 12px;}
+  .mr-std,.mr-temp,.mr-pn,.mr-apps{display:none;}
+  .flow-grid{grid-template-columns:repeat(2,1fr);}
+  .flow-grid-wrap{padding:0 24px 40px;}
+  .map-body{padding:24px 24px 40px;}
+  .qc-grid{padding:28px 24px 40px;}
+  .prod-main{padding:28px 24px 40px;}
+  .prod-side{padding:28px 24px;}
+  .hero-left{padding:36px 28px;}
+  .hero-right{padding:28px 28px;}
+  .params-wrap{grid-template-columns:1fr;}
+  .par-left{border-right:none;border-bottom:1px solid var(--ln2);}
+}
+@media(max-width:640px){
+  .nav-links,.nav-meta{display:none;}
+  .nav-cta{padding:9px 14px;font-size:10px;}
+  .app-grid{grid-template-columns:1fr;}
+  .app-c:nth-child(n){border-right:none;border-bottom:1px solid var(--ln2);}
+  .app-c:last-child{border-bottom:none;}
+  .flow-grid{grid-template-columns:1fr;}
+  .fq-q{padding:16px 18px;}
+  .fq-a-in{padding:0 18px 16px 18px;}
+  .me-grid{grid-template-columns:repeat(2,1fr);}
+  .prod-caps{grid-template-columns:1fr;}
+}
+
+/* ── PRODUCT PAGE ── */
+.prod-hero{border-bottom:1px solid var(--ln2);display:grid;grid-template-columns:1.1fr .9fr;min-height:340px;position:relative;overflow:hidden;}
+.prod-hero::after{content:'90°';position:absolute;right:-10px;bottom:-48px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(100px,12vw,200px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;}
+.pass-card{border:1px solid var(--ln2);background:var(--bg2);position:relative;overflow:hidden;}
+.pass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--g1);}
+.pass-hd{padding:14px 20px;border-bottom:1px solid var(--ln2);display:flex;justify-content:space-between;align-items:center;}
+.pass-sys{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);opacity:.6;}
+.pass-id{font-family:'DINProCond',monospace;font-weight:700;font-size:11px;letter-spacing:.08em;color:var(--dark);}
+.pass-body{padding:0;}
+.pp-row{display:grid;grid-template-columns:110px 1fr 24px;padding:11px 20px;border-bottom:1px solid var(--ln);align-items:center;transition:background .15s;}
+.pp-row:last-child{border-bottom:none;}
+.pp-row.hl{background:rgba(109,140,166,.12);}
+.pp-k{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);}
+.pp-v{font-family:'DINPro',monospace;font-size:10.5px;font-weight:600;color:var(--dark);letter-spacing:.02em;}
+.pp-chk{font-family:'DINPro',monospace;font-size:9px;color:var(--g1);text-align:right;opacity:.5;}
+.pass-ft{padding:12px 20px;border-top:1px solid var(--ln2);display:flex;justify-content:space-between;align-items:center;background:var(--bg);}
+.pass-status{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:8px;}
+.pass-status::before{content:'';width:6px;height:6px;border-radius:50%;background:#4caf50;animation:blink 1.8s step-end infinite;}
+.pass-meta{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.1em;color:var(--g2);}
+.bp-panel{background:var(--dark);position:relative;overflow:hidden;border:1px solid var(--ln2);}
+.bp-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(109,140,166,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(109,140,166,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+.bp-inner{padding:32px 40px 40px;position:relative;z-index:1;display:grid;grid-template-columns:1fr 280px;gap:32px;align-items:center;}
+.bp-svg-wrap{border:1px solid rgba(109,140,166,.25);background:rgba(15,42,68,.6);padding:24px;position:relative;}
+.bp-svg-wrap::before,.bp-svg-wrap::after{content:'';position:absolute;width:12px;height:12px;border-color:var(--g1);border-style:solid;pointer-events:none;}
+.bp-svg-wrap::before{top:8px;left:8px;border-width:1px 0 0 1px;}
+.bp-svg-wrap::after{bottom:8px;right:8px;border-width:0 1px 1px 0;}
+.bp-meta{display:flex;flex-direction:column;gap:12px;}
+.bp-tag{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(109,140,166,.55);padding:8px 12px;border:1px solid rgba(109,140,166,.15);}
+.bp-tag strong{display:block;font-family:'DINProCond',monospace;font-weight:900;font-size:16px;color:var(--g1);margin-top:4px;letter-spacing:.02em;}
+.cfg-summary{margin-top:16px;padding:14px 16px;border:1px solid var(--ln2);background:var(--bg);}
+.cfg-sum-lbl{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.24em;text-transform:uppercase;color:var(--g1);margin-bottom:8px;}
+.cfg-sum-val{font-family:'DINProCond',monospace;font-weight:900;font-size:18px;color:var(--dark);letter-spacing:-.01em;line-height:1.2;}
+.cfg-sum-sub{font-size:10px;font-weight:300;color:var(--blue);margin-top:6px;line-height:1.55;}
+.qc-pass-grid{display:grid;grid-template-columns:1fr min(380px,38vw);gap:40px;padding:36px 56px 52px;position:relative;z-index:1;}
+.qc-s{cursor:pointer;}
+.qc-s.active{background:rgba(109,140,166,.08);}
+.rel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--ln2);border:1px solid var(--ln2);}
+.rel-c{background:var(--bg);padding:22px 24px;transition:background .15s,border-color .15s;cursor:pointer;text-decoration:none;color:inherit;display:block;}
+.rel-c:hover{background:var(--g1b);}
+.rel-code{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1);margin-bottom:8px;}
+.rel-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:17px;text-transform:uppercase;color:var(--dark);margin-bottom:6px;line-height:1.05;}
+.rel-norm{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.08em;color:var(--g2);}
+@media(max-width:1100px){.prod-hero{grid-template-columns:1fr;}.bp-inner{grid-template-columns:1fr;}.qc-pass-grid{grid-template-columns:1fr;}.rel-grid{grid-template-columns:1fr 1fr;}.prod-qc-grid{grid-template-columns:1fr;}.prod-qc-right{padding:36px 32px 48px;}}
+@media(max-width:900px){.prod-hero::after{display:none;}.rel-grid{grid-template-columns:1fr;}.bp-dual{grid-template-columns:1fr;}.sticky-pass{padding:10px 20px;}.sticky-pass-k{display:none;}.docs-grid{grid-template-columns:1fr;}}
+
+/* essence strip */
+.prod-essence{border-bottom:1px solid var(--ln2);}
+
+/* blueprint dual */
+.bp-dual{display:grid;grid-template-columns:1.15fr .85fr;gap:0;min-height:480px;}
+.bp-photo-wrap{position:relative;border-right:1px solid rgba(109,140,166,.2);padding:28px 32px;display:flex;flex-direction:column;justify-content:center;align-items:stretch;min-height:480px;}
+.bp-photo{border:1px solid rgba(109,140,166,.28);background:rgba(15,42,68,.45);padding:12px;position:relative;}
+.bp-photo img{width:100%;height:auto;display:block;filter:contrast(1.05) saturate(.85);}
+.bp-photo-cap{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(109,140,166,.55);display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
+.bp-schematic{border:1px solid rgba(109,140,166,.2);background:rgba(30,61,92,.35);padding:16px;display:flex;flex-direction:column;justify-content:center;flex:1;}
+.bp-schematic-lbl{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.24em;text-transform:uppercase;color:rgba(109,140,166,.45);margin-bottom:10px;flex-shrink:0;}
+.bp-schematic svg{display:block;width:100%;max-width:520px;margin:0 auto;flex:1;min-height:0;}
+.bp-side{padding:32px 36px 40px;display:flex;flex-direction:column;justify-content:center;gap:14px;}
+
+/* registry highlight */
+.reg-hl-row td{background:rgba(109,140,166,.14)!important;font-weight:600;}
+.reg-note{margin-top:14px;font-family:'DINPro',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--g2);opacity:.65;}
+
+/* premium QC (hero s8 pattern) */
+.prod-qc-grid{display:grid;grid-template-columns:1fr min(420px,42vw);gap:0;min-height:520px;}
+.prod-qc-left{padding:48px 56px 56px;border-right:1px solid rgba(109,140,166,.12);display:flex;flex-direction:column;gap:36px;}
+.prod-qc-lead{font-size:12px;font-weight:300;line-height:1.75;color:rgba(169,183,198,.75);max-width:420px;border-left:2px solid rgba(109,140,166,.22);padding-left:16px;}
+.prod-qc-route-hd{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);opacity:.45;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.prod-qc-route-hd::before{content:'';width:20px;height:1px;background:var(--g1);opacity:.4;}
+.pq-item{display:grid;grid-template-columns:16px 38px 1fr auto;align-items:center;gap:0 10px;padding:12px 4px 12px 0;border-top:1px solid rgba(200,208,216,.07);cursor:default;transition:background .2s;}
+.pq-item:last-child{border-bottom:1px solid rgba(200,208,216,.07);}
+.pq-item:hover,.pq-item.active{background:rgba(109,140,166,.07);}
+.pq-dot{width:6px;height:6px;border-radius:50%;border:1px solid rgba(109,140,166,.3);justify-self:center;transition:all .2s;}
+.pq-item.active .pq-dot{border-color:var(--g1);background:rgba(109,140,166,.2);box-shadow:0 0 6px rgba(109,140,166,.45);}
+.pq-num{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.2em;color:rgba(109,140,166,.38);}
+.pq-item.active .pq-num{color:var(--g1);}
+.pq-name{font-family:'DINPro',monospace;font-size:11.5px;font-weight:500;color:rgba(109,140,166,.6);letter-spacing:.015em;transition:color .2s;}
+.pq-item:hover .pq-name,.pq-item.active .pq-name{color:var(--g2);}
+.pq-ok{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.15em;color:rgba(109,140,166,.28);}
+.pq-item.active .pq-ok{color:var(--g1);}
+.prod-qc-right{padding:48px 48px 56px;display:flex;flex-direction:column;justify-content:center;}
+.pq-pass-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.pq-pass-lbl{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);opacity:.45;}
+.pq-pass-sys{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.18em;color:var(--g1);opacity:.3;}
+.pq-pass{position:relative;border:1px solid rgba(109,140,166,.28);background:rgba(30,61,92,.35);overflow:hidden;}
+.pq-bracket{position:absolute;width:16px;height:16px;border-color:rgba(109,140,166,.55);border-style:solid;z-index:2;pointer-events:none;}
+.pq-bracket.tl{top:-1px;left:-1px;border-width:2px 0 0 2px;}
+.pq-bracket.tr{top:-1px;right:-1px;border-width:2px 2px 0 0;}
+.pq-bracket.bl{bottom:-1px;left:-1px;border-width:0 0 2px 2px;}
+.pq-bracket.br{bottom:-1px;right:-1px;border-width:0 2px 2px 0;}
+.pq-scan{position:absolute;left:0;right:0;height:56px;background:linear-gradient(to bottom,transparent,rgba(109,140,166,.05),transparent);top:-56px;animation:pqscan 6s ease-in-out infinite;z-index:1;pointer-events:none;}
+@keyframes pqscan{0%{top:-56px}100%{top:calc(100% + 56px)}}
+.pq-head{position:relative;z-index:2;padding:18px 24px;background:rgba(30,61,92,.8);border-bottom:1px solid rgba(109,140,166,.18);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.pq-prod{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--bg);}
+.pq-id{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.2em;color:var(--g1);opacity:.65;border:1px solid rgba(109,140,166,.25);padding:4px 10px;}
+.pq-body{position:relative;z-index:2;}
+.pq-row{display:grid;grid-template-columns:120px 1fr 24px;align-items:center;padding:12px 24px;border-bottom:1px solid rgba(200,208,216,.055);border-left:2px solid transparent;transition:background .22s,border-left-color .22s;}
+.pq-row:last-child{border-bottom:none;}
+.pq-row.hl{background:rgba(109,140,166,.09);border-left-color:var(--g1);}
+.pq-row.hl .pq-k{color:var(--g2);opacity:1;}
+.pq-row.hl .pq-v{color:var(--bg);}
+.pq-k{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(109,140,166,.5);}
+.pq-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:14px;color:var(--g2);letter-spacing:.03em;}
+.pq-chk{font-family:'DINPro',monospace;font-size:10px;color:rgba(109,140,166,.3);text-align:right;}
+.pq-row.hl .pq-chk{color:var(--g1);opacity:1;}
+.pq-ft{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:rgba(30,61,92,.7);border-top:1px solid rgba(109,140,166,.18);gap:12px;flex-wrap:wrap;}
+.pq-status{display:flex;align-items:center;gap:10px;}
+.pq-pulse{width:7px;height:7px;border-radius:50%;background:var(--g1);animation:blink 1.8s step-end infinite;}
+.pq-accepted{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--bg);}
+.pq-meta{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.14em;color:rgba(109,140,166,.45);text-align:right;line-height:1.6;}
+.pq-ann{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;}
+.pq-ann-i{padding:10px 12px;border:1px solid rgba(109,140,166,.15);background:rgba(30,61,92,.25);}
+.pq-ann-k{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:rgba(109,140,166,.45);display:block;margin-bottom:4px;}
+.pq-ann-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:13px;color:var(--g2);}
+
+/* documents */
+.docs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.doc-dl{border:1px solid var(--ln2);padding:18px 22px;display:flex;gap:16px;align-items:flex-start;transition:border-color .2s,background .2s;cursor:pointer;text-decoration:none;color:inherit;}
+.doc-dl:hover{border-color:var(--g1);background:var(--g1b);}
+.doc-dl-n{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:26px;color:var(--g2);line-height:1;flex-shrink:0;width:36px;}
+.doc-dl-t{font-size:11.5px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+.doc-dl-d{font-size:10px;font-weight:300;line-height:1.62;color:var(--blue);}
+.doc-dl-fmt{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1);margin-top:8px;display:inline-block;border:1px solid var(--ln2);padding:2px 6px;}
+
+/* sticky config bar */
+.sticky-pass{position:fixed;top:64px;left:44px;right:0;z-index:90;background:rgba(232,236,240,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--ln2);padding:10px 56px;display:flex;align-items:center;gap:24px;transform:translateY(-100%);opacity:0;pointer-events:none;transition:transform .25s ease,opacity .25s ease;}
+.sticky-pass.vis{transform:translateY(0);opacity:1;pointer-events:auto;}
+.sticky-pass-k{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);}
+.sticky-pass-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:15px;color:var(--dark);letter-spacing:-.01em;}
+.sticky-pass-sep{width:1px;height:24px;background:var(--ln2);}
+.sticky-pass-cta{margin-left:auto;padding:8px 16px;background:var(--blue);color:var(--white);font-family:'DINPro',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--g1);transition:background .15s;}
+.sticky-pass-cta:hover{background:var(--g1);color:var(--bg);}
+
+/* ── БАЗА ЗНАНИЙ (отводы 90°) ── */
+.kb-wrap{background:var(--bg);}
+.kb-tabrow{display:flex;overflow-x:auto;background:var(--dark);scrollbar-width:none;}
+.kb-tabrow::-webkit-scrollbar{display:none;}
+.kb-tab{padding:14px 22px;font-family:'DINPro',monospace;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:rgba(200,208,216,.72);border:none;border-right:1px solid rgba(109,140,166,.1);border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;position:relative;transition:color .15s,background .15s;cursor:pointer;background:none;}
+.kb-tab:hover{color:var(--g1);background:rgba(109,140,166,.08);}
+.kb-tab.active{color:var(--white);border-bottom-color:var(--g1);background:rgba(109,140,166,.1);}
+.kb-tab-n{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:13px;margin-right:6px;color:rgba(109,140,166,.4);vertical-align:baseline;transition:color .15s;}
+.kb-tab.active .kb-tab-n{color:rgba(109,140,166,.75);}
+.kb-panels{padding:44px 56px 56px;}
+.kb-panel{display:none;}
+.kb-panel.kp-active{display:block;}
+.kb-lead{max-width:720px;margin-bottom:32px;}
+.kb-lead-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:21px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);margin-bottom:9px;line-height:1.05;}
+.kb-lead-p,.kb-intro-p{font-size:12px;font-weight:300;line-height:1.8;color:var(--blue);}
+.kb-intro-p{max-width:760px;margin-bottom:28px;}
+.kb-intro-p strong,.kb-lead-p strong{font-weight:700;color:var(--dark);}
+.kb-type-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--ln2);margin-bottom:36px;}
+.kb-type{background:var(--bg2);padding:24px 22px;transition:background .15s;}
+.kb-type:hover{background:var(--bg);}
+.kb-type-badge{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:13px;color:var(--g1);border:1px solid var(--g1);display:inline-block;padding:2px 8px;margin-bottom:10px;line-height:1.4;letter-spacing:.06em;}
+.kb-type-title{font-family:'DINPro',monospace;font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dark);margin-bottom:9px;}
+.kb-type-body{font-size:10.5px;font-weight:300;line-height:1.72;color:var(--blue);}
+.kb-type-body strong{font-weight:700;color:var(--dark);}
+.kb-type-tags{margin-top:12px;display:flex;flex-wrap:wrap;gap:3px;}
+.kb-tag{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--ln2);color:var(--g1);}
+.kb-compare{border:1px solid var(--ln2);display:flex;flex-direction:column;margin-top:0;}
+.kb-compare-hd{display:grid;grid-template-columns:140px repeat(4,1fr);border-bottom:2px solid var(--dark);background:var(--bg);}
+.kb-cmp-h{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);padding:9px 14px;border-right:1px solid var(--ln);}
+.kb-cmp-h:last-child{border-right:none;}
+.kb-compare-row{display:grid;grid-template-columns:140px repeat(4,1fr);border-bottom:1px solid var(--ln);transition:background .12s;}
+.kb-compare-row:last-child{border-bottom:none;}
+.kb-compare-row:hover{background:var(--bg2);}
+.kb-cmp-k{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1);padding:10px 14px;border-right:1px solid var(--ln2);background:var(--bg2);font-weight:700;}
+.kb-cmp-v{font-size:10px;font-weight:300;color:var(--dark);padding:10px 14px;border-right:1px solid var(--ln);}
+.kb-cmp-v:last-child{border-right:none;}
+.kb-cmp-v strong{font-weight:700;}
+.kb-2col{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+.kb-3col{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.kb-col-title{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--dark);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--dark);}
+.kb-col-sub{font-size:11px;font-weight:300;line-height:1.75;color:var(--blue);margin-bottom:14px;}
+.kb-col-sub strong{font-weight:700;color:var(--dark);}
+.kb-params{border:1px solid var(--ln2);display:flex;flex-direction:column;}
+.kb-param{display:grid;grid-template-columns:185px 1fr;border-bottom:1px solid var(--ln);align-items:start;}
+.kb-param:last-child{border-bottom:none;}
+.kb-param-key{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dark);padding:11px 16px;font-weight:700;border-right:1px solid var(--ln2);background:var(--bg2);line-height:1.5;}
+.kb-param-val{font-size:10.5px;font-weight:300;color:var(--blue);padding:11px 16px;line-height:1.65;}
+.kb-param-val strong{font-weight:700;color:var(--dark);}
+.kb-norm-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.kb-norm-group{border:1px solid var(--ln2);}
+.kb-norm-group-hd{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);padding:11px 18px;border-bottom:1px solid var(--ln2);background:var(--bg2);}
+.kb-norm-items{display:flex;flex-direction:column;}
+.kb-norm-item{display:grid;grid-template-columns:172px 1fr;border-bottom:1px solid var(--ln);transition:background .12s;}
+.kb-norm-item:last-child{border-bottom:none;}
+.kb-norm-item:hover{background:var(--bg2);}
+.kb-norm-code{font-family:'DINPro',monospace;font-size:8.5px;font-weight:700;letter-spacing:.03em;color:var(--dark);padding:9px 14px;border-right:1px solid var(--ln);}
+.kb-norm-desc{font-size:10px;font-weight:300;color:var(--blue);padding:9px 14px;line-height:1.55;}
+.kb-mat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--ln2);}
+.kb-mat{background:var(--bg2);padding:18px 16px;transition:background .15s;}
+.kb-mat:hover{background:var(--bg);}
+.kb-mat-grade{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:22px;letter-spacing:-.01em;color:var(--dark);line-height:1;margin-bottom:3px;}
+.kb-mat-std{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.1em;color:var(--g1);margin-bottom:8px;}
+.kb-mat-range{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.04em;color:var(--dark);font-weight:700;padding:5px 0;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);margin-bottom:8px;}
+.kb-mat-apps{font-size:10px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-doclist{border:1px solid var(--ln2);display:flex;flex-direction:column;}
+.kb-doc-item{padding:12px 18px;border-bottom:1px solid var(--ln);transition:background .12s;}
+.kb-doc-item:last-child{border-bottom:none;}
+.kb-doc-item:hover{background:var(--bg2);}
+.kb-doc-item.kb-aes{border-left:2px solid var(--g1);padding-left:16px;}
+.kb-doc-name{font-family:'DINPro',monospace;font-size:8.5px;font-weight:700;letter-spacing:.07em;color:var(--dark);margin-bottom:3px;}
+.kb-doc-desc{font-size:10.5px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-doc-badge{font-family:'DINPro',monospace;font-size:6.5px;letter-spacing:.12em;text-transform:uppercase;padding:1px 5px;border:1px solid var(--g1);color:var(--g1);margin-left:8px;vertical-align:middle;}
+.kb-checklist{border:1px solid var(--ln2);display:flex;flex-direction:column;}
+.kb-check{display:flex;gap:14px;padding:13px 16px;border-bottom:1px solid var(--ln);align-items:flex-start;transition:background .12s;}
+.kb-check:last-child{border-bottom:none;}
+.kb-check:hover{background:var(--bg2);}
+.kb-check-n{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:18px;color:var(--g2);flex-shrink:0;line-height:1;margin-top:2px;}
+.kb-check-title{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);font-weight:700;margin-bottom:4px;}
+.kb-check-body{font-size:10px;font-weight:300;color:var(--blue);line-height:1.62;}
+.kb-check-body strong{font-weight:700;color:var(--dark);}
+.kb-factors{border:1px solid var(--ln2);display:flex;flex-direction:column;}
+.kb-factor{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ln);align-items:flex-start;transition:background .12s;}
+.kb-factor:last-child{border-bottom:none;}
+.kb-factor:hover{background:var(--bg2);}
+.kb-factor-ic{font-family:'DINProCond',sans-serif;font-weight:900;font-size:15px;color:var(--g1);flex-shrink:0;width:18px;text-align:center;line-height:1;margin-top:3px;}
+.kb-factor-name{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);font-weight:700;margin-bottom:3px;}
+.kb-factor-note{font-size:10px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-errors{border:1px solid var(--ln2);display:flex;flex-direction:column;}
+.kb-err{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ln);align-items:flex-start;transition:background .12s;}
+.kb-err:last-child{border-bottom:none;}
+.kb-err:hover{background:rgba(109,140,166,.04);}
+.kb-err-ic{font-family:'DINPro',monospace;font-size:9px;font-weight:700;color:var(--g1);flex-shrink:0;width:14px;text-align:center;line-height:1;margin-top:3px;opacity:.7;}
+.kb-err-title{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);font-weight:700;margin-bottom:3px;}
+.kb-err-note{font-size:10px;font-weight:300;color:var(--blue);line-height:1.6;}
+@media(max-width:1100px){
+  .kb-type-grid,.kb-mat-grid{grid-template-columns:repeat(2,1fr);}
+  .kb-3col{grid-template-columns:1fr 1fr;}
+  .kb-norm-grid{grid-template-columns:1fr;}
+  .kb-compare-hd,.kb-compare-row{grid-template-columns:120px repeat(4,1fr);}
+}
+@media(max-width:900px){
+  .kb-panels{padding:32px 28px 44px;}
+  .kb-2col,.kb-3col{grid-template-columns:1fr;}
+  .kb-compare-hd,.kb-compare-row{grid-template-columns:1fr;display:flex;flex-wrap:wrap;}
+  .kb-cmp-k{width:100%;border-right:none;border-bottom:1px solid var(--ln2);}
+  .kb-cmp-h:not(:first-child){display:none;}
+}
+@media(max-width:640px){
+  .kb-panels{padding:24px 18px 36px;}
+  .kb-tab{padding:11px 14px;font-size:7.5px;}
+  .kb-type-grid,.kb-mat-grid{grid-template-columns:1fr;}
+  .kb-param{grid-template-columns:1fr;}
+  .kb-param-key{border-right:none;border-bottom:1px solid var(--ln2);}
+  .kb-norm-item{grid-template-columns:1fr;}
+  .kb-norm-code{border-right:none;border-bottom:1px solid var(--ln);}
+}
+</style>
+
+
+</head><body>
+<!-- SIDE NAV -->
+<nav class="sidenav" aria-label="Навигация по разделам">
+  <a class="sidenav-item" href="#hero"><span class="sidenav-dot"></span><span class="sidenav-label">ПАСПОРТ</span></a>
+  <a class="sidenav-item" href="#s00"><span class="sidenav-dot"></span><span class="sidenav-label">СУТЬ</span></a>
+  <a class="sidenav-item" href="#s01"><span class="sidenav-dot"></span><span class="sidenav-label">ЧЕРТЁЖ</span></a>
+  <a class="sidenav-item" href="#s02"><span class="sidenav-dot"></span><span class="sidenav-label">КОНФИГ</span></a>
+  <a class="sidenav-item" href="#s03"><span class="sidenav-dot"></span><span class="sidenav-label">РЕЕСТР</span></a>
+  <a class="sidenav-item" href="#s04"><span class="sidenav-dot"></span><span class="sidenav-label">НОРМЫ</span></a>
+  <a class="sidenav-item" href="#s05"><span class="sidenav-dot"></span><span class="sidenav-label">МАТЕРИАЛ</span></a>
+  <a class="sidenav-item" href="#s06"><span class="sidenav-dot"></span><span class="sidenav-label">ПРИМЕНЕНИЕ</span></a>
+  <a class="sidenav-item" href="#s07"><span class="sidenav-dot"></span><span class="sidenav-label">КОНТРОЛЬ</span></a>
+  <a class="sidenav-item" href="#s08"><span class="sidenav-dot"></span><span class="sidenav-label">ДОКУМЕНТЫ</span></a>
+  <a class="sidenav-item" href="#s09"><span class="sidenav-dot"></span><span class="sidenav-label">СВЯЗАННЫЕ</span></a>
+  <a class="sidenav-item" href="#s10"><span class="sidenav-dot"></span><span class="sidenav-label">ЗНАНИЯ</span></a>
+  <a class="sidenav-item" href="#request"><span class="sidenav-dot"></span><span class="sidenav-label">ЗАПРОС</span></a>
+</nav>
+
+<div class="sticky-pass" id="stickyPass" aria-hidden="true">
+  <span class="sticky-pass-k">Конфигурация</span>
+  <span class="sticky-pass-v" id="stickyLine">Отвод 90° · DN 100 · PN 160 · 09Г2С</span>
+  <span class="sticky-pass-sep"></span>
+  <span class="sticky-pass-k">Масса</span>
+  <span class="sticky-pass-v" id="stickyMass">4,85 кг</span>
+  <a class="sticky-pass-cta" href="#request">Запросить расчёт →</a>
+</div>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <a href="hero-variant-d(roma-glavnaya).html" class="nav-logo"><img src="mqknpb19-PE_logo_black.png" alt="Промышленная Энергетика"></a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="hero-variant-d(roma-glavnaya).html">Главная</a></li>
+    <li><a href="katalog.html" class="is-active">Каталог</a></li>
+    <li><a href="#">Производство</a></li>
+    <li><a href="#">Контроль качества</a></li>
+    <li><a href="#">О заводе</a></li>
+    <li><a href="#">Контакты</a></li>
+  </ul>
+  <div class="nav-meta" id="navClock"></div>
+  <a class="nav-cta" href="#request">Отправить ТЗ →</a>
+</nav>
+
+<div class="strip">
+  <span class="strip-yr">2026</span>
+  <div class="strip-pulse"></div>
+  <span class="strip-txt">СДТ-001</span>
+</div>
+
+<div class="pg">
+
+  <div class="prod-hero" id="hero">
+    <div class="hero-left">
+      <nav class="hero-crumb">
+        <a href="hero-variant-d(roma-glavnaya).html">Главная</a><span class="hero-crumb-sep">/</span>
+        <a href="katalog.html">Каталог</a><span class="hero-crumb-sep">/</span>
+        <a href="sdt.html">СДТ</a><span class="hero-crumb-sep">/</span>
+        <span>Отвод 90°</span>
+      </nav>
+      <div class="hero-eyebrow">СДТ-001 / ГОСТ 17375-2001</div>
+      <h1 class="hero-h1">Отвод<br><em>крутоизогнутый</em><br>90°</h1>
+      <p class="hero-desc">Штампованный отвод для изменения направления трубопровода на 90° с радиусом гиба R = 1,5DN. Исполнение по ГОСТ 17375-2001 для систем ТЭС, АЭС, нефтегаза и химпрома. Полный комплект документации и прослеживаемость плавки.</p>
+      <div class="hero-params">
+        <div class="hp"><span class="hp-v" id="heroDn">DN 100</span><span class="hp-k">Типоразмер</span></div>
+        <div class="hp"><span class="hp-v" id="heroPn">PN 160</span><span class="hp-k">Давление</span></div>
+        <div class="hp"><span class="hp-v" id="heroMat">09Г2С</span><span class="hp-k">Марка стали</span></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="pass-card" id="passCard">
+        <div class="pass-hd">
+          <span class="pass-sys">SYS://PRODUCT.PASSPORT.v1</span>
+          <span class="pass-id" id="passId">ПЭ-СДТ-001-100</span>
+        </div>
+        <div class="pass-body">
+          <div class="pp-row" data-field="standard"><span class="pp-k">Стандарт</span><span class="pp-v">ГОСТ 17375-2001</span><span class="pp-chk">✓</span></div>
+          <div class="pp-row" data-field="type"><span class="pp-k">Тип</span><span class="pp-v">Крутоизогнутый 90° · R=1,5DN</span><span class="pp-chk">✓</span></div>
+          <div class="pp-row" data-field="dn"><span class="pp-k">DN / PN</span><span class="pp-v" id="ppDnPn">DN 100 / PN 160</span><span class="pp-chk">✓</span></div>
+          <div class="pp-row" data-field="material"><span class="pp-k">Материал</span><span class="pp-v" id="ppMat">09Г2С · серт. 3.1</span><span class="pp-chk">✓</span></div>
+          <div class="pp-row" data-field="wall"><span class="pp-k">Стенка</span><span class="pp-v" id="ppWall">8,0 мм · по ГОСТ 8732</span><span class="pp-chk">✓</span></div>
+          <div class="pp-row" data-field="mass"><span class="pp-k">Масса, кг</span><span class="pp-v" id="ppMass">4,85</span><span class="pp-chk">≈</span></div>
+        </div>
+        <div class="pass-ft">
+          <span class="pass-status">Конфигурация активна</span>
+          <span class="pass-meta">Обновляется конфигуратором</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="s prod-essence" id="s00">
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">00</span>Суть изделия</div>
+      <div class="s-meta">PRODUCT ESSENCE / TYPE 3</div>
+    </div>
+    <div class="s-body">
+      <div class="essence-grid reveal">
+        <div class="ec">
+          <div class="ec-code">01 / Геометрия</div>
+          <div class="ec-h">Крутоизогнутый 90°</div>
+          <p class="ec-p">Штампованный отвод типа 3 по <strong>ГОСТ 17375-2001</strong>. Радиус гиба центральной оси <strong>R = 1,5DN</strong>. Угол поворота потока — ровно 90°.</p>
+          <div class="ec-tags"><span class="ec-tag">R=1,5DN</span><span class="ec-tag">Штамповка</span></div>
+        </div>
+        <div class="ec">
+          <div class="ec-code">02 / Соединение</div>
+          <div class="ec-h">Под приварку</div>
+          <p class="ec-p">Концы под сварку встык. Подготовка кромок по ГОСТ 16037. Допуски на наружный диаметр и овальность — по таблице стандарта.</p>
+          <div class="ec-tags"><span class="ec-tag">Встык</span><span class="ec-tag">ГОСТ 16037</span></div>
+        </div>
+        <div class="ec">
+          <div class="ec-code">03 / Диапазон</div>
+          <div class="ec-h">DN 15–500</div>
+          <p class="ec-p">Типоразмерный ряд от DN 15 до DN 500. PN до 100 МПа в зависимости от DN и марки стали. Исполнения для паропроводов, теплосетей, нефтегаза.</p>
+          <div class="ec-tags"><span class="ec-tag">DN 15–500</span><span class="ec-tag">PN 160</span></div>
+        </div>
+        <div class="ec">
+          <div class="ec-code">04 / Прослеживаемость</div>
+          <div class="ec-h">Цифровой паспорт</div>
+          <p class="ec-p">Сертификат металла 3.1, номер плавки, протоколы НК и паспорт изделия. Полный маршрут ОТК с регистрацией каждого этапа контроля.</p>
+          <div class="ec-tags"><span class="ec-tag">Серт. 3.1</span><span class="ec-tag">ОТК</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s s-dark" id="s01">
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">01</span>Инженерный чертёж</div>
+      <div class="s-meta">BLUEPRINT / GOST 17375</div>
+    </div>
+    <div class="bp-panel">
+      <div class="bp-grid-bg"></div>
+      <div class="bp-dual reveal">
+        <div class="bp-photo-wrap">
+          
+          <div class="bp-schematic">
+            <div class="bp-schematic-lbl">Схема геометрии · вид в плоскости изгиба</div>
+            <svg viewBox="40 225 400 230" preserveAspectRatio="xMidYMid meet" width="100%" aria-hidden="true">
+              <defs>
+                <pattern id="bpFine" width="16" height="16" patternUnits="userSpaceOnUse">
+                  <path d="M 16 0 L 0 0 0 16" fill="none" stroke="rgba(109,140,166,.1)" stroke-width=".5"></path>
+                </pattern>
+              </defs>
+              <rect x="40" y="225" width="400" height="230" fill="url(#bpFine)"></rect>
+              <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M 232 370 L 232 416 A 148 148 0 0 0 132 270 L 72 270 L 72 242 L 148 242 A 92 92 0 0 1 260 358 L 288 358 L 288 390 L 260 390 A 120 120 0 0 0 380 270 L 430 270 L 430 298 L 380 298 A 148 148 0 0 1 288 416 Z" fill="rgba(109,140,166,.1)" stroke="rgba(169,183,198,.75)" stroke-width="2.5"></path>
+                <path d="M 260 390 A 120 120 0 0 0 380 270" stroke="rgba(255,255,255,.35)" stroke-width="1" stroke-dasharray="5 4"></path>
+                <line x1="260" y1="390" x2="260" y2="430" stroke="rgba(109,140,166,.5)" stroke-width="1"></line>
+                <line x1="380" y1="270" x2="430" y2="270" stroke="rgba(109,140,166,.5)" stroke-width="1"></line>
+                <line x1="72" y1="242" x2="72" y2="298" stroke="var(--g1)" stroke-width=".75"></line>
+                <line x1="68" y1="242" x2="76" y2="242"></line><line x1="68" y1="298" x2="76" y2="298"></line>
+                <text x="52" y="274" fill="rgba(109,140,166,.65)" font-family="monospace" font-size="9" transform="rotate(-90 52 274)">D</text>
+                <line x1="260" y1="430" x2="380" y2="430" stroke="var(--g1)" stroke-width=".75"></line>
+                <line x1="260" y1="426" x2="260" y2="434"></line><line x1="380" y1="426" x2="380" y2="434"></line>
+                <text x="312" y="448" fill="rgba(109,140,166,.65)" font-family="monospace" font-size="9">R</text>
+                <path d="M 260 318 L 288 318 L 288 342 L 260 342 Z" fill="none" stroke="rgba(109,140,166,.55)" stroke-width=".75"></path>
+                <text x="296" y="336" fill="rgba(109,140,166,.7)" font-family="monospace" font-size="10">90°</text>
+                <polygon points="248,408 260,420 272,408" fill="rgba(109,140,166,.45)"></polygon>
+                <polygon points="418,258 430,270 418,282" fill="rgba(109,140,166,.45)"></polygon>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="bp-side">
+          <div class="bp-tag">Позиция<strong>СДТ-001</strong></div>
+          <div class="bp-tag">Угол изгиба<strong>90°</strong></div>
+          <div class="bp-tag">Радиус гиба<strong id="bpR">R = 150 мм</strong></div>
+          <div class="bp-tag">Наружный диаметр<strong id="bpD">D = 114 мм</strong></div>
+          <div class="bp-tag">Толщина стенки<strong id="bpS">s = 8,0 мм</strong></div>
+          <div class="bp-tag">Длина плеча<strong id="bpL">L = 150 мм</strong></div>
+          <div class="bp-tag">Масса изделия<strong id="bpM">4,85 кг</strong></div>
+          <div class="bp-tag">Стандарт<strong>ГОСТ 17375-2001</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="s02">
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">02</span>Конфигуратор</div>
+      <div class="s-meta">DN · PN · MATERIAL</div>
+    </div>
+    <div class="s-body">
+      <div class="params-wrap reveal">
+        <div class="par-left">
+          <div class="par-lbl">Параметры исполнения</div>
+          <div class="par-grp">
+            <div class="par-grp-name">DN, мм</div>
+            <div class="dn-grid" id="dnGrid">
+              <button class="dn-b" data-dn="15">15</button>
+              <button class="dn-b" data-dn="25">25</button>
+              <button class="dn-b" data-dn="32">32</button>
+              <button class="dn-b" data-dn="50">50</button>
+              <button class="dn-b" data-dn="80">80</button>
+              <button class="dn-b on" data-dn="100">100</button>
+              <button class="dn-b" data-dn="125">125</button>
+              <button class="dn-b" data-dn="150">150</button>
+              <button class="dn-b" data-dn="200">200</button>
+              <button class="dn-b" data-dn="250">250</button>
+              <button class="dn-b" data-dn="300">300</button>
+              <button class="dn-b" data-dn="350">350</button>
+              <button class="dn-b" data-dn="400">400</button>
+              <button class="dn-b" data-dn="500">500</button>
+            </div>
+          </div>
+          <div class="par-grp">
+            <div class="par-grp-name">PN, МПа</div>
+            <div class="pn-flex" id="pnGrid">
+              <button class="pn-b" data-pn="16">16</button>
+              <button class="pn-b" data-pn="25">25</button>
+              <button class="pn-b" data-pn="40">40</button>
+              <button class="pn-b" data-pn="63">63</button>
+              <button class="pn-b" data-pn="100">100</button>
+              <button class="pn-b on" data-pn="160">160</button>
+            </div>
+          </div>
+          <div class="par-grp">
+            <div class="par-grp-name">Марка стали</div>
+            <select class="par-sel" id="matSel">
+              <option value="st20">Ст20</option>
+              <option value="09g2s" selected="">09Г2С</option>
+              <option value="15gs">15ГС</option>
+              <option value="12x1mf">12Х1МФ</option>
+              <option value="12x18n10t">12Х18Н10Т</option>
+            </select>
+          </div>
+          <div class="cfg-summary">
+            <div class="cfg-sum-lbl">Выбранная конфигурация</div>
+            <div class="cfg-sum-val" id="cfgLine">Отвод 90° · DN 100 · PN 160 · 09Г2С</div>
+            <div class="cfg-sum-sub" id="cfgSub">D 114 мм · s 8,0 мм · R 150 мм · масса 4,85 кг</div>
+          </div>
+        </div>
+        <div class="par-right">
+          <table class="ptbl" id="specTable">
+            <thead>
+              <tr><th>DN</th><th>D, мм</th><th>s, мм</th><th>R, мм</th><th>Масса, кг</th><th>PN max</th></tr>
+            </thead>
+            <tbody id="specBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s s-alt" id="s03">
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">03</span>Реестр размеров</div>
+      <div class="s-meta">GOST 17375-2001 / TYPE 3</div>
+    </div>
+    <div class="s-body">
+      <div class="mat-tbl-wrap reveal" style="overflow-x:auto;">
+        <table class="ptbl" id="regTable" style="width:100%;">
+          <thead>
+            <tr><th>DN</th><th>D нар., мм</th><th>s, мм</th><th>R, мм</th><th>L, мм</th><th>Масса, кг</th><th>PN max</th></tr>
+          </thead>
+          <tbody id="regBody"></tbody>
+        </table>
+      </div>
+      <p class="reg-note">Значения массы — ориентировочные для штампованного исполнения типа 3. Точная масса уточняется по КД и фактической толщине стенки.</p>
+    </div>
+  </section>
+
+  <section class="s s-dark" id="s04">
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">04</span>Нормативная база</div>
+      <div class="s-meta">STANDARDS REGISTRY</div>
+    </div>
+    <div class="s-body">
+      <div class="norm-grid reveal">
+        <div class="nc"><div class="nc-code">ГОСТ 17375-2001</div><div class="nc-title">Отводы крутоизогнутые типа 3</div><div class="nc-desc">Основной стандарт на штампованные отводы 45°, 90° и 180°. R = 1,5DN. DN 15–500, PN до 100 МПа.</div><div class="nc-tags"><span class="nc-tag">Базовый</span><span class="nc-tag">Штамповка</span></div><div class="nc-status"><span class="nc-dot"></span>Действует</div></div>
+        <div class="nc"><div class="nc-code">ОСТ 34-42-621-83</div><div class="nc-title">Сварные отводы для энергетики</div><div class="nc-desc">Секторные и крупногабаритные исполнения для DN &gt; 500. Дополнительные требования для объектов ТЭС и АЭС.</div><div class="nc-tags"><span class="nc-tag">АЭС</span><span class="nc-tag">Сварка</span></div><div class="nc-status"><span class="nc-dot"></span>Действует</div></div>
+        <div class="nc"><div class="nc-code">ГОСТ 8732-78</div><div class="nc-title">Трубы бесшовные горячедеформированные</div><div class="nc-desc">Исходная заготовка для штамповки. Определяет толщину стенки и допуски по диаметру.</div><div class="nc-tags"><span class="nc-tag">Заготовка</span></div><div class="nc-status"><span class="nc-dot"></span>Действует</div></div>
+        <div class="nc"><div class="nc-code">ТР ТС 032/2013</div><div class="nc-title">О безопасности оборудования под давлением</div><div class="nc-desc">Требования к сосудам и трубопроводам. Декларация RU С-RU.АБ53.В.08323/23 для изделий завода.</div><div class="nc-tags"><span class="nc-tag">Сертификация</span></div><div class="nc-status"><span class="nc-dot"></span>Действует</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s s-alt" id="s05">
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">05</span>Материалы исполнения</div>
+      <div class="s-meta">MATERIAL GRADES</div>
+    </div>
+    <div class="s-body">
+      <div class="mat-tbl-wrap reveal">
+        <div class="mat-tbl-hd"><span>Марка</span><span>Назначение</span><span>t max, °C</span><span>PN</span><span>Отрасль</span><span>Стандарт</span></div>
+        <div class="mat-r"><span class="mr-g">Ст20</span><span>Углеродистая для t до 450°C</span><span class="mr-temp">450</span><span class="mr-pn">до 16</span><span class="mr-apps"><span class="mr-app-t">ТЭС</span><span class="mr-app-t">ЖКХ</span></span><span class="mr-std">ГОСТ 1050</span></div>
+        <div class="mat-r"><span class="mr-g">09Г2С</span><span>Низколегированная, свариваемая</span><span class="mr-temp">475</span><span class="mr-pn">до 160</span><span class="mr-apps"><span class="mr-app-t">АЭС</span><span class="mr-app-t">ТЭС</span><span class="mr-app-t">Нефтехим</span></span><span class="mr-std">ГОСТ 19281</span></div>
+        <div class="mat-r"><span class="mr-g">15ГС</span><span>Для трубопроводов повышенного давления</span><span class="mr-temp">500</span><span class="mr-pn">до 100</span><span class="mr-apps"><span class="mr-app-t">ТЭС</span><span class="mr-app-t">ГРЭС</span></span><span class="mr-std">ГОСТ 19282</span></div>
+        <div class="mat-r"><span class="mr-g">12Х1МФ</span><span>Теплоустойчивая для паропроводов</span><span class="mr-temp">585</span><span class="mr-pn">до 100</span><span class="mr-apps"><span class="mr-app-t">ТЭС</span><span class="mr-app-t">Котлы</span></span><span class="mr-std">ГОСТ 20072</span></div>
+        <div class="mat-r"><span class="mr-g">12Х18Н10Т</span><span>Коррозионностойкая austenitic</span><span class="mr-temp">600</span><span class="mr-pn">до 63</span><span class="mr-apps"><span class="mr-app-t">АЭС</span><span class="mr-app-t">Хим</span></span><span class="mr-std">ГОСТ 5632</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="s06">
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">06</span>Области применения</div>
+      <div class="s-meta">APPLICATION SECTORS</div>
+    </div>
+    <div class="s-body">
+      <div class="app-grid reveal">
+        <div class="app-c"><span class="app-code">01 / АЭС</span><span class="app-h">Атомная энергетика</span><p class="app-p">Технологические трубопроводы 1–3 классов безопасности. Контроль по ПНАЭ, объём НК по требованиям заказчика.</p></div>
+        <div class="app-c"><span class="app-code">02 / ТЭС</span><span class="app-h">Тепловая энергетика</span><p class="app-p">Паропроводы, питательная вода, теплосети. Рабочие среды до 545°C при PN до 160.</p></div>
+        <div class="app-c"><span class="app-code">03 / НЕФТЕГАЗ</span><span class="app-h">Нефтегазовый комплекс</span><p class="app-p">Трубопроводы транспортировки, переработки, установки подготовки. Марки 09Г2С, 12Х18Н10Т.</p></div>
+        <div class="app-c"><span class="app-code">04 / ХИМ</span><span class="app-h">Химическая промышленность</span><p class="app-p">Агрессивные среды, технологические линии. Нержавеющие исполнения по согласованию.</p></div>
+        <div class="app-c"><span class="app-code">05 / ГРЭС</span><span class="app-h">Газотурбинные станции</span><p class="app-p">Газопроводы, системы охлаждения, вспомогательные контуры высокого давления.</p></div>
+        <div class="app-c"><span class="app-code">06 / МЕТАЛ</span><span class="app-h">Металлургия</span><p class="app-p">Технологические трубопроводы доменных и прокатных цехов. Температурные режимы до 500°C.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s s-dark qc-wrap" id="s07">
+    <div class="qc-scanline"></div>
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">07</span>Маршрут контроля качества</div>
+      <div class="s-meta">QC ROUTE / TRACEABILITY</div>
+    </div>
+    <div class="prod-qc-grid">
+      <div class="prod-qc-left reveal">
+        <div>
+          <p class="prod-qc-lead">От сертификата металла и номера плавки до ОТК, неразрушающего контроля и комплекта сопроводительной документации. Наведите на этап — подсветится строка цифрового паспорта.</p>
+        </div>
+        <div>
+          <div class="prod-qc-route-hd">Маршрут контроля качества</div>
+          <div id="pqRoute">
+            <div class="pq-item" data-stage="material"><span class="pq-dot"></span><span class="pq-num">01</span><span class="pq-name">Входной контроль металла</span><span class="pq-ok">ОК</span></div>
+            <div class="pq-item" data-stage="standard"><span class="pq-dot"></span><span class="pq-num">02</span><span class="pq-name">Проверка нормативной базы</span><span class="pq-ok">ОК</span></div>
+            <div class="pq-item" data-stage="heat"><span class="pq-dot"></span><span class="pq-num">03</span><span class="pq-name">Идентификация плавки</span><span class="pq-ok">ОК</span></div>
+            <div class="pq-item" data-stage="dn"><span class="pq-dot"></span><span class="pq-num">04</span><span class="pq-name">Операционный контроль</span><span class="pq-ok">ОК</span></div>
+            <div class="pq-item" data-stage="nk"><span class="pq-dot"></span><span class="pq-num">05</span><span class="pq-name">Неразрушающий контроль</span><span class="pq-ok">ОК</span></div>
+            <div class="pq-item" data-stage="geo"><span class="pq-dot"></span><span class="pq-num">06</span><span class="pq-name">Проверка геометрии</span><span class="pq-ok">ОК</span></div>
+            <div class="pq-item" data-stage="mark"><span class="pq-dot"></span><span class="pq-num">07</span><span class="pq-name">Маркировка изделия</span><span class="pq-ok">ОК</span></div>
+            <div class="pq-item" data-stage="docs"><span class="pq-dot"></span><span class="pq-num">08</span><span class="pq-name">Паспорт и отгрузочные документы</span><span class="pq-ok">ОК</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="prod-qc-right reveal">
+        <div class="pq-pass-hd">
+          <span class="pq-pass-lbl">Цифровой паспорт изделия</span>
+          <span class="pq-pass-sys">SYS://QC.PASSPORT.v2.4</span>
+        </div>
+        <div class="pq-pass" id="qcPassport">
+          <div class="pq-bracket tl"></div><div class="pq-bracket tr"></div><div class="pq-bracket bl"></div><div class="pq-bracket br"></div>
+          <div class="pq-scan"></div>
+          <div class="pq-head">
+            <span class="pq-prod" id="qcProdTitle">Отвод 90° DN 100</span>
+            <span class="pq-id" id="qcPassId">ПЭ-2026-0471</span>
+          </div>
+          <div class="pq-body">
+            <div class="pq-row" data-field="material"><span class="pq-k">Материал</span><span class="pq-v" id="qcMat">09Г2С · серт. 3.1</span><span class="pq-chk">✓</span></div>
+            <div class="pq-row" data-field="standard"><span class="pq-k">Стандарт</span><span class="pq-v">ГОСТ 17375-2001</span><span class="pq-chk">✓</span></div>
+            <div class="pq-row" data-field="heat"><span class="pq-k">Плавка</span><span class="pq-v">К-2026-117</span><span class="pq-chk">✓</span></div>
+            <div class="pq-row" data-field="dn"><span class="pq-k">DN / PN</span><span class="pq-v" id="qcDnPn">DN 100 / PN 160</span><span class="pq-chk">✓</span></div>
+            <div class="pq-row" data-field="nk"><span class="pq-k">Контроль НК</span><span class="pq-v">ВИК / УЗК / ОТК</span><span class="pq-chk">✓</span></div>
+            <div class="pq-row" data-field="geo"><span class="pq-k">Геометрия</span><span class="pq-v">±0,5 мм · ПРИНЯТО</span><span class="pq-chk">✓</span></div>
+            <div class="pq-row" data-field="mark"><span class="pq-k">Маркировка</span><span class="pq-v" id="qcMark">ПЭ · 09Г2С · К-2026-117</span><span class="pq-chk">✓</span></div>
+            <div class="pq-row" data-field="docs"><span class="pq-k">Документы</span><span class="pq-v">Серт. 3.1 / Паспорт / НК</span><span class="pq-chk">✓</span></div>
+          </div>
+          <div class="pq-ft">
+            <div class="pq-status"><div class="pq-pulse"></div><span class="pq-accepted">Принято ОТК · 14.08.2026</span></div>
+            <div class="pq-meta">Партия: 24 шт. · Объект: ТЭС-2<br>Рег.: ПЭ/ОТК/26-471</div>
+          </div>
+        </div>
+        <div class="pq-ann">
+          <div class="pq-ann-i"><span class="pq-ann-k">Партия</span><span class="pq-ann-v">24 шт.</span></div>
+          <div class="pq-ann-i"><span class="pq-ann-k">Объект приёмки</span><span class="pq-ann-v">ТЭС-2</span></div>
+          <div class="pq-ann-i"><span class="pq-ann-k">Регистрация ОТК</span><span class="pq-ann-v">ПЭ/ОТК/26-471</span></div>
+          <div class="pq-ann-i"><span class="pq-ann-k">Срок архива</span><span class="pq-ann-v">20 лет</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="s08">
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">08</span>Комплект документов</div>
+      <div class="s-meta">DOCUMENT PACKAGE</div>
+    </div>
+    <div class="s-body">
+      <div class="docs-grid reveal">
+        <a class="doc-dl" href="mqkopqrx-passport_A4_peview.pdf" target="_blank" rel="noopener">
+          <span class="doc-dl-n">01</span>
+          <div><div class="doc-dl-t">Паспорт изделия</div><div class="doc-dl-d">Технические характеристики, маркировка, результаты контроля, подпись ОТК. Обязателен для всех позиций СДТ.</div><span class="doc-dl-fmt">PDF · A4</span></div>
+        </a>
+        <a class="doc-dl" href="mqkoq4yl-Blanc_A4_pewview.pdf" target="_blank" rel="noopener">
+          <span class="doc-dl-n">02</span>
+          <div><div class="doc-dl-t">Бланк паспорта (шаблон)</div><div class="doc-dl-d">Форма для заполнения при отгрузке. Структура полей соответствует внутреннему регламенту завода.</div><span class="doc-dl-fmt">PDF · A4</span></div>
+        </a>
+        <div class="doc-dl">
+          <span class="doc-dl-n">03</span>
+          <div><div class="doc-dl-t">Сертификат на металл 3.1</div><div class="doc-dl-d">Химический состав, механические свойства, номер плавки. Прослеживаемость от металлургического завода.</div><span class="doc-dl-fmt">По запросу</span></div>
+        </div>
+        <div class="doc-dl">
+          <span class="doc-dl-n">04</span>
+          <div><div class="doc-dl-t">Протоколы неразрушающего контроля</div><div class="doc-dl-d">УЗК, ВИК, РК — по объёму, установленному нормативной базой и требованиями заказчика.</div><span class="doc-dl-fmt">По объёму НК</span></div>
+        </div>
+        <div class="doc-dl">
+          <span class="doc-dl-n">05</span>
+          <div><div class="doc-dl-t">Акт гидравлических испытаний</div><div class="doc-dl-d">Испытание давлением 1,5×PN. Протокол для критических участков паропроводов и сосудов давления.</div><span class="doc-dl-fmt">По согласованию</span></div>
+        </div>
+        <div class="doc-dl">
+          <span class="doc-dl-n">06</span>
+          <div><div class="doc-dl-t">Чертёж КД / DXF</div><div class="doc-dl-d">Конструкторская документация для согласования на объекте. Выдаётся по запросу с указанием DN и PN.</div><span class="doc-dl-fmt">DWG / DXF</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s s-alt" id="s09">
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">09</span>Связанные позиции</div>
+      <div class="s-meta">RELATED PRODUCTS</div>
+    </div>
+    <div class="s-body">
+      <div class="rel-grid reveal">
+        <a class="rel-c" href="sdt.html#s03"><span class="rel-code">СДТ-001b</span><span class="rel-h">Отвод крутоизогнутый 45°</span><span class="rel-norm">ГОСТ 17375-2001 · R=1,5DN</span></a>
+        <a class="rel-c" href="sdt.html#s03"><span class="rel-code">СДТ-001c</span><span class="rel-h">Отвод крутоизогнутый 180°</span><span class="rel-norm">ГОСТ 17375-2001 · R=1,5DN</span></a>
+        <a class="rel-c" href="sdt.html#s03"><span class="rel-code">СДТ-002</span><span class="rel-h">Отвод штампованный R=1,5DN</span><span class="rel-norm">ГОСТ 17375-2001</span></a>
+        <a class="rel-c" href="sdt.html#s03"><span class="rel-code">СДТ-003</span><span class="rel-h">Тройник равнопроходной</span><span class="rel-norm">ГОСТ 17376-2001</span></a>
+        <a class="rel-c" href="sdt.html#s03"><span class="rel-code">СДТ-004</span><span class="rel-h">Переход концентрический</span><span class="rel-norm">ГОСТ 17378-2001</span></a>
+        <a class="rel-c" href="sdt.html"><span class="rel-code">СДТ</span><span class="rel-h">Вся категория СДТ</span><span class="rel-norm">Реестр 47 позиций</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- S10: БАЗА ЗНАНИЙ — ОТВОДЫ 90° -->
+  <section class="s kb-wrap" id="s10">
+    <div class="s-hd">
+      <div class="s-badge"><span class="s-badge-num">10</span>База знаний</div>
+      <div class="s-meta">KNOWLEDGE BASE / ОТВОДЫ 90°</div>
+    </div>
+
+    <div class="kb-tabrow" role="tablist">
+      <button class="kb-tab active" data-panel="types" role="tab"><span class="kb-tab-n">01</span>Виды отводов 90°</button>
+      <button class="kb-tab" data-panel="params" role="tab"><span class="kb-tab-n">02</span>Параметры подбора</button>
+      <button class="kb-tab" data-panel="norms" role="tab"><span class="kb-tab-n">03</span>Нормативная база</button>
+      <button class="kb-tab" data-panel="materials" role="tab"><span class="kb-tab-n">04</span>Материалы</button>
+      <button class="kb-tab" data-panel="docs" role="tab"><span class="kb-tab-n">05</span>Документация</button>
+      <button class="kb-tab" data-panel="order" role="tab"><span class="kb-tab-n">06</span>Как заказать</button>
+    </div>
+
+    <div class="kb-panels">
+
+      <!-- TAB 1: ВИДЫ ОТВОДОВ 90° -->
+      <div class="kb-panel kp-active" id="kp-types">
+        <div class="kb-lead">
+          <div class="kb-lead-h">Классификация отводов 90°</div>
+          <p class="kb-lead-p">Отводы 90° — наиболее распространённый тип соединительных деталей трубопровода. Выбор конструктивного исполнения определяется диаметром трубопровода, рабочим давлением, применяемым нормативным документом и доступной технологией изготовления. Завод «Промышленная Энергетика» поставляет <strong>все четыре основных типа</strong>.</p>
+        </div>
+
+        <div class="kb-type-grid">
+          <div class="kb-type">
+            <div class="kb-type-badge">ГОСТ 17375</div>
+            <div class="kb-type-title">Крутоизогнутые штампованные · R = 1.5DN</div>
+            <p class="kb-type-body">Изготавливаются штамповкой из трубной заготовки. <strong>DN 15–500</strong>, радиус изгиба R = 1.5DN. Основной тип для общепромышленных трубопроводов, НГК и трубопроводов ТЭС до DN 500. Минимальные потери давления в системе. Допускают сварку непосредственно к трубе без переходных патрубков.</p>
+            <div class="kb-type-tags"><span class="kb-tag">ГОСТ 17375-2001</span><span class="kb-tag">DN 15–500</span><span class="kb-tag">R = 1.5DN</span><span class="kb-tag">Штамповка</span></div>
+          </div>
+          <div class="kb-type">
+            <div class="kb-type-badge">ОСТ 36-21-77</div>
+            <div class="kb-type-title">Секторные сварные · DN 100–1400</div>
+            <p class="kb-type-body">Сварные отводы из сегментов (секторов). <strong>DN 100–1400</strong>, R = 1.5DN. Применяются при больших диаметрах, когда штамповка нецелесообразна. Широко используются в паровых трактах ТЭС и ГРЭС. Изготавливаются по ОСТ 36-21-77 и ОСТ 34.10.752-97 для энергетики.</p>
+            <div class="kb-type-tags"><span class="kb-tag">ОСТ 36-21-77</span><span class="kb-tag">DN 100–1400</span><span class="kb-tag">Сварные секторные</span><span class="kb-tag">ТЭС / ГРЭС</span></div>
+          </div>
+          <div class="kb-type">
+            <div class="kb-type-badge">СТО ЦКТИ 321</div>
+            <div class="kb-type-title">Гнутые трубные · R = 3.5–5DN</div>
+            <p class="kb-type-body">Гнутые из трубной заготовки на специальном оборудовании. <strong>R = 3.5–5DN</strong> — большой радиус изгиба снижает гидравлическое сопротивление и напряжения. Применяются в главных паропроводах ТЭС, где важно снизить эрозионный износ. Нормируются серией СТО ЦКТИ 321.01–321.06 (2009 г.).</p>
+            <div class="kb-type-tags"><span class="kb-tag">СТО ЦКТИ 321.01–.06</span><span class="kb-tag">R = 3.5–5DN</span><span class="kb-tag">Гнутые</span><span class="kb-tag">Главные паропроводы</span></div>
+          </div>
+          <div class="kb-type">
+            <div class="kb-type-badge">ОСТ 36-20-77</div>
+            <div class="kb-type-title">Штампосварные · DN 25–400</div>
+            <p class="kb-type-body">Изготавливаются методом горячей штамповки с последующей сваркой для закрытия шва. <strong>DN 25–400</strong>, R = 1.5DN. Используются в трубопроводах ТЭС и нефтехима, когда размер превышает возможности цельноштампованного производства, но меньше экономичного диапазона секторной сварки.</p>
+            <div class="kb-type-tags"><span class="kb-tag">ОСТ 36-20-77</span><span class="kb-tag">DN 25–400</span><span class="kb-tag">Штампосварные</span></div>
+          </div>
+        </div>
+
+        <div style="font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;display:flex;align-items:center;gap:16px;"><span style="flex:1;height:1px;background:var(--ln);display:block;"></span>Сравнение типов<span style="flex:1;height:1px;background:var(--ln);display:block;"></span></div>
+        <div class="kb-compare">
+          <div class="kb-compare-hd">
+            <span class="kb-cmp-h">Параметр</span>
+            <span class="kb-cmp-h">Крутоизогн. (ГОСТ 17375)</span>
+            <span class="kb-cmp-h">Секторные (ОСТ 36-21)</span>
+            <span class="kb-cmp-h">Гнутые (СТО ЦКТИ 321)</span>
+            <span class="kb-cmp-h">Штампосварные (ОСТ 36-20)</span>
+          </div>
+          <div class="kb-compare-row"><span class="kb-cmp-k">DN</span><span class="kb-cmp-v">15–500</span><span class="kb-cmp-v">100–1400</span><span class="kb-cmp-v">Согласно ТУ</span><span class="kb-cmp-v">25–400</span></div>
+          <div class="kb-compare-row"><span class="kb-cmp-k">Радиус R</span><span class="kb-cmp-v"><strong>1.5DN</strong></span><span class="kb-cmp-v"><strong>1.5DN</strong></span><span class="kb-cmp-v"><strong>3.5–5DN</strong></span><span class="kb-cmp-v"><strong>1.5DN</strong></span></div>
+          <div class="kb-compare-row"><span class="kb-cmp-k">Метод</span><span class="kb-cmp-v">Штамповка</span><span class="kb-cmp-v">Сварка секторов</span><span class="kb-cmp-v">Гибка трубы</span><span class="kb-cmp-v">Штамп + сварка</span></div>
+          <div class="kb-compare-row"><span class="kb-cmp-k">Применение</span><span class="kb-cmp-v">НГК, ТЭС, общепром.</span><span class="kb-cmp-v">ТЭС/ГРЭС, крупный диаметр</span><span class="kb-cmp-v">Главные паропроводы ТЭС</span><span class="kb-cmp-v">ТЭС, нефтехим.</span></div>
+          <div class="kb-compare-row"><span class="kb-cmp-k">Потери давления</span><span class="kb-cmp-v">Умеренные</span><span class="kb-cmp-v">Повышенные (сварные швы)</span><span class="kb-cmp-v"><strong>Минимальные</strong></span><span class="kb-cmp-v">Умеренные</span></div>
+        </div>
+      </div>
+
+      <!-- TAB 2: ПАРАМЕТРЫ ПОДБОРА -->
+      <div class="kb-panel" id="kp-params">
+        <div class="kb-2col">
+          <div>
+            <div class="kb-col-title">Ключевые параметры отвода 90°</div>
+            <div class="kb-params">
+              <div class="kb-param"><div class="kb-param-key">DN · Диаметр условный</div><div class="kb-param-val">От <strong>DN 15 до DN 1400</strong>. Соответствует условному проходу трубы. <strong>DN ≠ Dнар</strong>: DN 50 = 57 мм по ГОСТ 8732. Крутоизогнутые (ГОСТ 17375) — до DN 500. Секторные (ОСТ 36-21) — от DN 100 до DN 1400.</div></div>
+              <div class="kb-param"><div class="kb-param-key">PN · Давление условное</div><div class="kb-param-val">От <strong>PN 0.6 до PN 20 МПа</strong>. Толщина стенки определяется из расчёта прочности по нормативному документу. При температурах выше 100°С допустимое давление снижается — уточняйте по таблицам норматива.</div></div>
+              <div class="kb-param"><div class="kb-param-key">Радиус изгиба R</div><div class="kb-param-val"><strong>R = 1.5DN</strong> — крутоизогнутые (ГОСТ 17375, ОСТ 36-20, ОСТ 36-21). <strong>R = 3.5–5DN</strong> — гнутые (СТО ЦКТИ 321). Больший R снижает гидравлическое сопротивление и эрозию потоком.</div></div>
+              <div class="kb-param"><div class="kb-param-key">Толщина стенки S</div><div class="kb-param-val">Определяется по нормативному документу из условия прочности при заданных DN, PN и t°С. Для ответственных объектов — дополнительный запас по прибавке на коррозию.</div></div>
+              <div class="kb-param"><div class="kb-param-key">Нормативный документ</div><div class="kb-param-val"><strong>ГОСТ 17375</strong> — DN 15–500, общепром. <strong>ОСТ 36-21-77</strong> — DN 100–1400, ТЭС. <strong>СТО ЦКТИ 321</strong> — гнутые для ТЭС. <strong>НП-045-18</strong> — для АЭС (расширенный НК). Норматив определяет допуски, объём контроля и документацию.</div></div>
+              <div class="kb-param"><div class="kb-param-key">Марка стали</div><div class="kb-param-val"><strong>Ст20</strong> — общепром., до +425°С. <strong>09Г2С</strong> — низкие температуры, НГК. <strong>12Х1МФ</strong> — паропроводы ТЭС до +570°С. <strong>15Х1М1Ф</strong> — сверхкритика +580°С. <strong>12Х18Н10Т</strong> — АЭС, агрессивные среды.</div></div>
+              <div class="kb-param"><div class="kb-param-key">Объём НК</div><div class="kb-param-val">Базово: <strong>100% ВИК</strong>. По требованию заказчика: +<strong>УЗК</strong> (ГОСТ Р 55724-2013) / +<strong>РК</strong> / +<strong>МПД</strong> / +<strong>ПВК</strong>. Полный объём для АЭС — согласно НП-045-18 и программе контроля объекта.</div></div>
+            </div>
+          </div>
+          <div>
+            <div class="kb-col-title">Как выбрать тип отвода</div>
+            <div class="kb-steps">
+              <div class="kb-step"><span class="kb-step-n">01</span><div><div class="kb-step-title">Определите DN трубопровода</div><div class="kb-step-body">DN до 500 — выбор между ГОСТ 17375 (крутоизогнутые) и СТО ЦКТИ 321 (гнутые). DN 100–1400 и ТЭС — рассмотрите секторные по ОСТ 36-21-77.</div></div></div>
+              <div class="kb-step"><span class="kb-step-n">02</span><div><div class="kb-step-title">Проверьте требования объекта</div><div class="kb-step-body">АЭС — обязательно НП-089-15 и НП-045-18. Главные паропроводы ТЭС — предпочтительны гнутые СТО ЦКТИ 321 с R = 3.5–5DN. Общепромышленные — ГОСТ 17375.</div></div></div>
+              <div class="kb-step"><span class="kb-step-n">03</span><div><div class="kb-step-title">Учтите гидравлику</div><div class="kb-step-body">На высокоскоростных паропроводах (v &gt; 40 м/с) рекомендуются <strong>гнутые отводы с R = 3.5–5DN</strong> — снижают эрозионный износ и турбулентность потока.</div></div></div>
+              <div class="kb-step"><span class="kb-step-n">04</span><div><div class="kb-step-title">Согласуйте материал и НК</div><div class="kb-step-body">Для ответственных объектов — до начала производства согласуйте марку стали с нашим инженером и объём НК с заказчиком / представителем органа надзора.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: НОРМАТИВНАЯ БАЗА -->
+      <div class="kb-panel" id="kp-norms">
+        <p class="kb-intro-p">Выбор нормативного документа для отвода 90° определяет конструктивное исполнение, допуски на геометрию, требования к металлу и полный объём контроля. Большинство позиций каталога охвачено одновременно базовым ГОСТ и дополнительным отраслевым стандартом для конкретного типа объектов.</p>
+        <div class="kb-norm-grid">
+          <div class="kb-norm-group">
+            <div class="kb-norm-group-hd">ГОСТ — базовый стандарт</div>
+            <div class="kb-norm-items">
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17375-2001</span><span class="kb-norm-desc">Отводы крутоизогнутые бесшовные приварные. DN 15–500, R = 1.5DN, углы 45°/90°/180°. Основной стандарт</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30753-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные из угл. стали. Общие технические условия</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ ISO 10474-2016</span><span class="kb-norm-desc">Документы о контроле металлопродукции. Паспорт качества 3.1 с плавочными данными</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ Р 55724-2013</span><span class="kb-norm-desc">НК. Ультразвуковой контроль сварных соединений. Методы и оценка результатов</span></div>
+            </div>
+          </div>
+          <div class="kb-norm-group">
+            <div class="kb-norm-group-hd">ОСТ — для тепловой энергетики и нефтехима</div>
+            <div class="kb-norm-items">
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-20-77</span><span class="kb-norm-desc">Отводы штампосварные. DN 25–400, R = 1.5DN для ТЭС и нефтехима</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-21-77</span><span class="kb-norm-desc">Отводы секторные/сварные. DN 100–1400, паровые и водяные тракты ТЭС/ГРЭС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34.10.752-97</span><span class="kb-norm-desc">Отводы для трубопроводов тепловых электростанций. Специфические требования ТЭС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-41-81</span><span class="kb-norm-desc">Детали трубопроводов сварные. Технические условия на изготовление</span></div>
+            </div>
+          </div>
+          <div class="kb-norm-group">
+            <div class="kb-norm-group-hd">СТО ЦКТИ — гнутые отводы для ТЭС</div>
+            <div class="kb-norm-items">
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.01-2009</span><span class="kb-norm-desc">Отводы гнутые тип 01. R = 3.5DN для главных паропроводов ТЭС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.02-2009</span><span class="kb-norm-desc">Отводы гнутые тип 02. Специсполнение для ТЭС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.03–.06</span><span class="kb-norm-desc">Типы 03–06 серии гнутых отводов для различных паровых трактов ТЭС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО 79814898-111-2009</span><span class="kb-norm-desc">Стандарт организации для энергетических систем</span></div>
+            </div>
+          </div>
+          <div class="kb-norm-group">
+            <div class="kb-norm-group-hd">НП и ТР ТС — АЭС и обязательные нормы</div>
+            <div class="kb-norm-items">
+              <div class="kb-norm-item"><span class="kb-norm-code">НП-045-18</span><span class="kb-norm-desc">Правила контроля сварных соединений оборудования и трубопроводов АЭУ. Расширенный НК</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">НП-089-15</span><span class="kb-norm-desc">Общие требования к оборудованию и трубопроводам АЭУ. Категории I–IV</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">О безопасности оборудования под давлением. Обязателен при PN &gt; 0.05 МПа. Декл. RU С-RU.АБ53.В.08323/23</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ТУ 24.20.40-001-2023</span><span class="kb-norm-desc">ТУ предприятия на детали трубопроводов. Применяется при изготовлении по КД заказчика</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: МАТЕРИАЛЫ -->
+      <div class="kb-panel" id="kp-materials">
+        <p class="kb-intro-p">Марка стали для отвода 90° выбирается исходя из рабочей температуры, давления и характера транспортируемой среды. <strong>Сертификат качества 3.1 по ГОСТ ISO 10474-2016</strong> с плавочными данными включён в стандартный комплект поставки для каждой позиции.</p>
+        <div class="kb-mat-grid">
+          <div class="kb-mat"><div class="kb-mat-grade">Ст20</div><div class="kb-mat-std">ГОСТ 1050-2013 · ГОСТ 8731-87</div><div class="kb-mat-range">до +425°С · PN до 20 МПа</div><div class="kb-mat-apps">Водяные тракты ТЭС · Общепромышленные трубопроводы · Паропроводы низкого давления</div></div>
+          <div class="kb-mat"><div class="kb-mat-grade">09Г2С</div><div class="kb-mat-std">ГОСТ 19281-2014</div><div class="kb-mat-range">−70…+350°С · Хладостойкая</div><div class="kb-mat-apps">НГК в районах с низкими температурами · Северное исполнение · Криогенные системы</div></div>
+          <div class="kb-mat"><div class="kb-mat-grade">15ГС</div><div class="kb-mat-std">ОСТ 108.030.118-78</div><div class="kb-mat-range">до +450°С</div><div class="kb-mat-apps">Трубопроводы ТЭС среднего давления · Питательные трубопроводы</div></div>
+          <div class="kb-mat"><div class="kb-mat-grade">12Х1МФ</div><div class="kb-mat-std">ОСТ 108.030.118-78</div><div class="kb-mat-range">до +570°С · Главные паропроводы</div><div class="kb-mat-apps">Паропроводы высокого давления ТЭС и ГРЭС · Свежий пар 25 МПа / 545°С · Линии промперегрева</div></div>
+          <div class="kb-mat"><div class="kb-mat-grade">15Х1М1Ф</div><div class="kb-mat-std">ТУ 14-3-460</div><div class="kb-mat-range">до +580°С · Сверхкритика</div><div class="kb-mat-apps">Энергоблоки СКД 300–800 МВт · Повышенные требования к длительной прочности</div></div>
+          <div class="kb-mat"><div class="kb-mat-grade">12Х18Н10Т</div><div class="kb-mat-std">ГОСТ 5632-2014</div><div class="kb-mat-range">−196…+600°С · Нержавеющая</div><div class="kb-mat-apps">АЭС — все контуры, все категории · Химически агрессивные среды · Пищевая/фарм. промышленность</div></div>
+          <div class="kb-mat"><div class="kb-mat-grade">10Х17Н13М2Т</div><div class="kb-mat-std">ГОСТ 5632-2014</div><div class="kb-mat-range">до +700°С · Кислотостойкая</div><div class="kb-mat-apps">Кислоты · Хлориды · Агрессивные химические среды высоких температур</div></div>
+          <div class="kb-mat"><div class="kb-mat-grade">13Х11Н2В2МФ</div><div class="kb-mat-std">ТУ · Спецназначение</div><div class="kb-mat-range">Мартенситная · Высокопрочная</div><div class="kb-mat-apps">Энергетические установки со специальными прочностными требованиями</div></div>
+        </div>
+      </div>
+
+      <!-- TAB 5: ДОКУМЕНТАЦИЯ -->
+      <div class="kb-panel" id="kp-docs">
+        <div class="kb-2col">
+          <div>
+            <div class="kb-col-title">Стандартный комплект поставки</div>
+            <div class="kb-doclist">
+              <div class="kb-doc-item"><div class="kb-doc-name">Паспорт изделия — сертификат 3.1</div><div class="kb-doc-desc">По ГОСТ ISO 10474-2016. Химсостав плавки, механические свойства, результаты приёмочного контроля, маркировка, ссылка на норматив.</div></div>
+              <div class="kb-doc-item"><div class="kb-doc-name">Сертификат на металл с плавочными данными</div><div class="kb-doc-desc">Прослеживаемость от плавки завода-изготовителя металла. Номер плавки, химсостав, механические характеристики.</div></div>
+              <div class="kb-doc-item"><div class="kb-doc-name">Протокол ВИК — 100% объём</div><div class="kb-doc-desc">Визуально-измерительный контроль по всем позициям. Геометрическое соответствие и качество поверхности.</div></div>
+              <div class="kb-doc-item"><div class="kb-doc-name">Протоколы УЗК / РК / МПД / ПВК</div><div class="kb-doc-desc">По требованию заказчика или нормативного документа. УЗК по ГОСТ Р 55724-2013.</div></div>
+              <div class="kb-doc-item"><div class="kb-doc-name">Декларация ТР ТС 032/2013 <span class="kb-doc-badge">Обязательно</span></div><div class="kb-doc-desc">RU С-RU.АБ53.В.08323/23. Обязательна при PN &gt; 0.05 МПа.</div></div>
+            </div>
+          </div>
+          <div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:7px;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-doclist">
+              <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Программа контроля качества</div><div class="kb-doc-desc">Индивидуальная программа НК для категории трубопровода. Согласовывается до запуска в производство.</div></div>
+              <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Карты идентификации и прослеживаемости</div><div class="kb-doc-desc">От заготовки до готовой детали. Номер плавки, детали, ссылки на все протоколы контроля.</div></div>
+              <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Технологические карты сварки и PWHT</div><div class="kb-doc-desc">По согласованным WPS и PQR. Параметры режимов сварки и послесварочной термообработки.</div></div>
+            </div>
+            <div class="kb-col-title" style="margin-top:24px;">Маркировка изделий</div>
+            <p class="kb-col-sub">По требованию заказчика возможна <strong>индивидуальная маркировка</strong>: код объекта, номер спецификации, позиция трубопровода. Маркировка выполняется по ГОСТ 4666-2015 и внутреннему регламенту завода.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: КАК ЗАКАЗАТЬ -->
+      <div class="kb-panel" id="kp-order">
+        <div class="kb-3col">
+          <div>
+            <div class="kb-col-title">Чеклист заявки на отвод 90°</div>
+            <div class="kb-checklist">
+              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Тип и нормативный документ</div><div class="kb-check-body">Крутоизогнутый <strong>ГОСТ 17375</strong>; секторный <strong>ОСТ 36-21</strong>; гнутый <strong>СТО ЦКТИ 321.0X</strong>; штампосварной <strong>ОСТ 36-20</strong>. Если тип неизвестен — укажите DN, объект, рабочие параметры.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">DN и толщина стенки</div><div class="kb-check-body">DN в мм и толщину стенки (если нестандартная). При отсутствии — указать PN и t°С для подбора нашим инженером.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Марка стали</div><div class="kb-check-body">Точная марка или условия: t°С, среда, требования объекта. Для АЭС — согласно программе контроля и категории трубопровода.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Количество и срок</div><div class="kb-check-body">Количество в штуках. Желаемая дата поставки или срок с момента подтверждения. Для крупных комплектаций — поэтапный график.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">05</span><div><div class="kb-check-title">Объём НК и документация</div><div class="kb-check-body">Методы НК (ВИК + УЗК / РК / МПД / ПВК). Состав документационного пакета. Для АЭС — категория трубопровода по <strong>НП-045-18</strong>.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">06</span><div><div class="kb-check-title">Маркировка и спецтребования</div><div class="kb-check-body">Маркировка объекта, позиция трубопровода по проекту, цвет, индивидуальная упаковка. Нестандартные требования — укажите при запросе.</div></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="kb-col-title">Что влияет на стоимость</div>
+            <div class="kb-factors">
+              <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Тип отвода</div><div class="kb-factor-note">Гнутые (СТО ЦКТИ) и секторные (ОСТ 36-21) DN 800–1400 дороже крутоизогнутых ГОСТ 17375 при тех же DN за счёт трудоёмкости изготовления.</div></div></div>
+              <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Марка стали</div><div class="kb-factor-note">Жаропрочные (12Х1МФ) в 2–3 раза, нержавеющие (12Х18Н10Т) в 5–6 раз дороже углеродистой Ст20.</div></div></div>
+              <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Объём НК</div><div class="kb-factor-note">Полный объём НК для АЭС (УЗК+РК+МПД+ПВК) может в 2–4 раза увеличить стоимость по сравнению с базовым ВИК.</div></div></div>
+              <div class="kb-factor"><span class="kb-factor-ic">↓</span><div><div class="kb-factor-name">Тираж заказа</div><div class="kb-factor-note">Серийный заказ (от 10–20 шт.) снижает себестоимость за счёт амортизации затрат на подготовку производства.</div></div></div>
+              <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">DN и толщина стенки</div><div class="kb-factor-note">DN 500+ требует специализированной оснастки. Крупногабаритные детали DN 800–1400 — индивидуальное производство.</div></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="kb-col-title">Частые ошибки при заказе</div>
+            <div class="kb-errors">
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Указать Dнар вместо DN</div><div class="kb-err-note">DN 50 ≠ 50 мм. Наружный диаметр трубы по ГОСТ 8732 для DN 50 = 57 мм. Всегда уточняйте стандарт трубы.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Не указать R/DN для гнутых</div><div class="kb-err-note">Для СТО ЦКТИ 321 существует 6 типов с разными R. Если R не указан — уточняется по номеру типа или рабочим условиям.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Заказ ГОСТ 17375 для DN 600+</div><div class="kb-err-note">ГОСТ 17375 распространяется до DN 500. Для DN 600+ необходим ОСТ 36-21-77 (секторные) или специсполнение по ТУ.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Не учесть категорию (АЭС)</div><div class="kb-err-note">Категория I–IV по НП-089-15 определяет весь объём НК и документации. Ошибка в категории = несоответствие программе контроля.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путаница PN и рабочего давления</div><div class="kb-err-note">При t &gt; 100°С допустимое давление снижается. PN подбирается с учётом рабочей температуры по таблицам норматива.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /kb-panels -->
+  </section>
+
+</div>
+
+<div class="footer-zone">
+<section class="s10" id="request">
+  <div class="s10-inner">
+    <div class="s10-left">
+      <div class="s10-eyebrow"><span class="s10-eye-num">11</span><span class="s10-eye-label">Запрос на изделие</span></div>
+      <h2 class="s10-h2">Запросить<br>расчёт</h2>
+      <p class="s10-sub">Укажите параметры отвода 90° — DN, PN, марку стали, количество. Прикрепите КД или спецификацию.</p>
+      <div class="s10-contacts">
+        <div class="s10-contact-row"><span class="s10-contact-k">Телефон</span><span class="s10-contact-v">+7 (351) 217-00-99</span></div>
+        <div class="s10-contact-row"><span class="s10-contact-k">E-mail</span><span class="s10-contact-v">zakaz@prom-en.com</span></div>
+        <div class="s10-contact-row"><span class="s10-contact-k">Адрес</span><span class="s10-contact-v">454091, г. Челябинск, ул. Орджоникидзе, 37</span></div>
+      </div>
+    </div>
+    <div class="s10-right">
+      <div class="s10-form-label">Форма запроса</div>
+      <form class="s10-form" id="s10-form">
+        <div class="s10-field"><label class="s10-field-label" for="f-name">Контакт</label><input id="f-name" name="name" placeholder="ФИО, должность" required=""></div>
+        <div class="s10-field"><label class="s10-field-label" for="f-co">Компания</label><input id="f-co" name="company" placeholder="Организация"></div>
+        <div class="s10-field"><label class="s10-field-label" for="f-spec">Спецификация</label><input id="f-spec" name="spec" placeholder="DN 100 · PN 160 · 09Г2С · 24 шт."></div>
+        <div class="s10-field"><label class="s10-field-label" for="f-email">E-mail</label><input id="f-email" name="email" type="email" placeholder="email@company.ru" required=""></div>
+        <div class="s10-file-row"><span class="s10-file-label-txt">Вложение</span><div><label class="s10-file-btn"><input type="file" id="f-file" hidden="" accept=".pdf,.dwg,.dxf">Прикрепить файл</label><span class="s10-file-name" id="f-file-name">PDF, DWG, DXF</span></div></div>
+        <div class="s10-actions"><button type="submit" class="s10-submit">Отправить запрос →</button><a class="s10-ghost-link" href="sdt.html">← К категории СДТ</a></div>
+      </form>
+      <div class="s10-success" id="s10-success">Запрос принят. Менеджер свяжется с вами в течение рабочего дня.</div>
+      <p class="s10-note">Нажимая «Отправить», вы соглашаетесь на обработку данных</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer" id="footer">
+  <div class="ft-statement">
+    <div class="ft-kicker">ПРОМЫШЛЕННАЯ ЭНЕРГЕТИКА / prom-en.com</div>
+    <h2 class="ft-headline">Отвод<br>90°</h2>
+    <p class="ft-tagline">Штампованные соединительные детали по ГОСТ 17375-2001. DN 15–500. Сертификат металла 3.1.</p>
+    <a class="ft-cta" href="mailto:zakaz@prom-en.com">Отправить запрос →</a>
+  </div>
+  <div class="ft-grid">
+    <div class="ft-cell"><div class="ft-cell-label">КОНТАКТЫ</div><div class="ft-cell-val mono"><a href="mailto:zakaz@prom-en.com">zakaz@prom-en.com</a><br><a href="tel:+73512170099">+7 (351) 217-00-99</a></div></div>
+    <div class="ft-cell"><div class="ft-cell-label">ИЗДЕЛИЕ</div><div class="ft-cell-val mono">СДТ-001<br>ГОСТ 17375-2001<br>R = 1,5DN</div></div>
+    <div class="ft-cell"><div class="ft-cell-label">ПАРАМЕТРЫ</div><div class="ft-cell-val">DN 15–500<br>PN до 160</div></div>
+    <div class="ft-cell"><div class="ft-cell-label">НАВИГАЦИЯ</div><ul class="ft-nav-list"><li><a href="sdt.html">Категория СДТ</a></li><li><a href="katalog.html">Каталог</a></li><li><a href="#s02">Конфигуратор</a></li><li><a href="#request">Запрос</a></li></ul></div>
+  </div>
+  <div class="ft-bar"><span class="ft-copy">© 2017–2026 Промышленная Энергетика</span><span class="ft-idx">ПЭ-СДТ-001 / REV.1</span></div>
+</footer>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var items = document.querySelectorAll('.sidenav-item');
+  var targets = ['hero','s00','s01','s02','s03','s04','s05','s06','s07','s08','s09','s10','request'];
+  var idxMap = {}; targets.forEach(function(id,i){ idxMap[id]=i; });
+  var visibleSet = {}, clickLock = null, clickLockTimer = null;
+  function updateActive(){
+    if(clickLock){ items.forEach(function(it,i){ it.classList.toggle('sn-active', idxMap[clickLock]===i); }); return; }
+    var active = null; for(var i=0;i<targets.length;i++){ if(visibleSet[targets[i]]){ active=targets[i]; break; } }
+    items.forEach(function(it,i){ it.classList.toggle('sn-active', active!==null && idxMap[active]===i); });
+  }
+  items.forEach(function(it){
+    it.addEventListener('click', function(){
+      var id = (it.getAttribute('href')||'').slice(1); if(!id||!(id in idxMap)) return;
+      clickLock = id; clearTimeout(clickLockTimer); updateActive();
+      clickLockTimer = setTimeout(function(){ clickLock=null; updateActive(); }, 600);
+    });
+  });
+  if('IntersectionObserver' in window){
+    function navMarker(id){
+      if(id==='hero') return document.getElementById('hero');
+      if(id==='request') return document.querySelector('#request .s10-eyebrow')||document.getElementById('request');
+      var sec = document.getElementById(id); return sec ? (sec.querySelector('.s-hd')||sec) : null;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ var id=e.target.getAttribute('data-nav-id'); if(!id) return; if(e.isIntersecting) visibleSet[id]=true; else delete visibleSet[id]; });
+      updateActive();
+    }, { rootMargin:'-20% 0px -20% 0px', threshold:0 });
+    targets.forEach(function(id){ var el=navMarker(id); if(!el) return; el.setAttribute('data-nav-id',id); io.observe(el); });
+  }
+});
+</script>
+<script>
+(function(){
+  var SPECS = [
+    {dn:15,d:21.3,s:2.8,r:22.5,l:22.5,m:0.08,pn:160},
+    {dn:25,d:33.7,s:3.2,r:37.5,l:37.5,m:0.18,pn:160},
+    {dn:32,d:42.4,s:3.6,r:48,m:0.28,pn:160},
+    {dn:50,d:60.3,s:3.6,r:75,l:75,m:0.62,pn:160},
+    {dn:80,d:88.9,s:5.0,r:120,l:120,m:1.85,pn:160},
+    {dn:100,d:114,s:8.0,r:150,l:150,m:4.85,pn:160},
+    {dn:125,d:139.7,s:8.0,r:187.5,l:187.5,m:6.4,pn:160},
+    {dn:150,d:168.3,s:8.0,r:225,l:225,m:8.2,pn:160},
+    {dn:200,d:219,s:10.0,r:300,l:300,m:15.4,pn:100},
+    {dn:250,d:273,s:10.0,r:375,l:375,m:22.1,pn:100},
+    {dn:300,d:325,s:12.0,r:450,l:450,m:34.5,pn:63},
+    {dn:350,d:377,s:12.0,r:525,l:525,m:42.0,pn:40},
+    {dn:400,d:426,s:12.0,r:600,l:600,m:52.0,pn:40},
+    {dn:500,d:530,s:14.0,r:750,l:750,m:78.5,pn:25}
+  ];
+  var MATS = {st20:'Ст20', '09g2s':'09Г2С', '15gs':'15ГС', '12x1mf':'12Х1МФ', '12x18n10t':'12Х18Н10Т'};
+  var state = {dn:100, pn:160, mat:'09g2s'};
+
+  function spec(){ return SPECS.find(function(s){ return s.dn===state.dn; }) || SPECS.find(function(s){ return s.dn===100; }); }
+
+  function rowHtml(s, hi){
+    var cls = hi ? ' class="reg-hl-row"' : '';
+    return '<tr'+cls+'><td><span class="pt-dn">'+s.dn+'</span></td><td>'+s.d+'</td><td><span class="pt-wall">'+s.s+'</span></td><td>'+s.r+'</td><td>'+s.l+'</td><td>'+s.m.toFixed(2)+'</td><td><span class="pt-pn">'+s.pn+'</span></td></tr>';
+  }
+
+  function renderTable(){
+    var tbody = document.getElementById('specBody');
+    if(tbody){
+      tbody.innerHTML = SPECS.map(function(s){
+        var hi = s.dn===state.dn ? ' class="reg-hl-row"' : '';
+        return rowHtml(s, s.dn===state.dn);
+      }).join('');
+    }
+    var regBody = document.getElementById('regBody');
+    if(regBody){
+      regBody.innerHTML = SPECS.map(function(s){ return rowHtml(s, s.dn===state.dn); }).join('');
+    }
+  }
+
+  function updateUI(){
+    var s = spec();
+    var matLabel = MATS[state.mat] || state.mat;
+    var cfgLine = 'Отвод 90° · DN '+state.dn+' · PN '+state.pn+' · '+matLabel;
+    var cfgSub = 'D '+s.d+' мм · s '+s.s+' мм · R '+s.r+' мм · масса '+s.m.toFixed(2)+' кг';
+
+    document.getElementById('heroDn').textContent = 'DN '+state.dn;
+    document.getElementById('heroPn').textContent = 'PN '+state.pn;
+    document.getElementById('heroMat').textContent = matLabel;
+    document.getElementById('passId').textContent = 'ПЭ-СДТ-001-'+state.dn;
+    document.getElementById('ppDnPn').textContent = 'DN '+state.dn+' / PN '+state.pn;
+    document.getElementById('ppMat').textContent = matLabel+' · серт. 3.1';
+    document.getElementById('ppWall').textContent = s.s+' мм · по ГОСТ 8732';
+    document.getElementById('ppMass').textContent = s.m.toFixed(2);
+    document.getElementById('bpR').textContent = 'R = '+s.r+' мм';
+    document.getElementById('bpD').textContent = 'D = '+s.d+' мм';
+    document.getElementById('bpS').textContent = 's = '+s.s+' мм';
+    var bpL = document.getElementById('bpL');
+    if(bpL) bpL.textContent = 'L = '+s.l+' мм';
+    document.getElementById('bpM').textContent = s.m.toFixed(2)+' кг';
+    document.getElementById('cfgLine').textContent = cfgLine;
+    document.getElementById('cfgSub').textContent = cfgSub;
+
+    var stickyLine = document.getElementById('stickyLine');
+    var stickyMass = document.getElementById('stickyMass');
+    if(stickyLine) stickyLine.textContent = cfgLine;
+    if(stickyMass) stickyMass.textContent = s.m.toFixed(2)+' кг';
+
+    var qcProd = document.getElementById('qcProdTitle');
+    var qcPassId = document.getElementById('qcPassId');
+    var qcMat = document.getElementById('qcMat');
+    var qcDnPn = document.getElementById('qcDnPn');
+    var qcMark = document.getElementById('qcMark');
+    if(qcProd) qcProd.textContent = 'Отвод 90° DN '+state.dn;
+    if(qcPassId) qcPassId.textContent = 'ПЭ-2026-'+String(state.dn).padStart(3,'0');
+    if(qcMat) qcMat.textContent = matLabel+' · серт. 3.1';
+    if(qcDnPn) qcDnPn.textContent = 'DN '+state.dn+' / PN '+state.pn;
+    if(qcMark) qcMark.textContent = 'ПЭ · '+matLabel+' · К-2026-117';
+
+    var fSpec = document.getElementById('f-spec');
+    if(fSpec && document.activeElement !== fSpec) fSpec.placeholder = 'DN '+state.dn+' · PN '+state.pn+' · '+matLabel+' · кол-во, шт.';
+
+    renderTable();
+  }
+
+  document.querySelectorAll('#dnGrid .dn-b').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('#dnGrid .dn-b').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on'); state.dn = +b.dataset.dn; updateUI();
+    });
+  });
+  document.querySelectorAll('#pnGrid .pn-b').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('#pnGrid .pn-b').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on'); state.pn = +b.dataset.pn; updateUI();
+    });
+  });
+  document.getElementById('matSel').addEventListener('change', function(){ state.mat = this.value; updateUI(); });
+  updateUI();
+
+  function bindRegRows(){
+    document.querySelectorAll('#regBody tr, #specBody tr').forEach(function(row){
+      row.style.cursor = 'pointer';
+      row.addEventListener('click', function(){
+        var cell = row.querySelector('.pt-dn');
+        if(!cell) return;
+        var dn = +cell.textContent;
+        state.dn = dn;
+        document.querySelectorAll('#dnGrid .dn-b').forEach(function(b){ b.classList.toggle('on', +b.dataset.dn === dn); });
+        updateUI();
+      });
+    });
+  }
+  bindRegRows();
+
+  var pqItems = document.querySelectorAll('#pqRoute .pq-item');
+  var pqRows = document.querySelectorAll('#qcPassport .pq-row');
+  pqItems.forEach(function(item){
+    item.addEventListener('mouseenter', function(){
+      var stage = item.getAttribute('data-stage');
+      pqRows.forEach(function(row){ row.classList.toggle('hl', row.getAttribute('data-field')===stage); });
+      item.classList.add('active');
+    });
+    item.addEventListener('mouseleave', function(){
+      pqRows.forEach(function(row){ row.classList.remove('hl'); });
+      item.classList.remove('active');
+    });
+  });
+
+  var sticky = document.getElementById('stickyPass');
+  var hero = document.getElementById('hero');
+  if(sticky && hero && 'IntersectionObserver' in window){
+    var stickyIo = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        sticky.classList.toggle('vis', !e.isIntersecting);
+        sticky.setAttribute('aria-hidden', e.isIntersecting ? 'true' : 'false');
+      });
+    }, {rootMargin:'-64px 0px 0px 0px', threshold:0});
+    stickyIo.observe(hero);
+  }
+
+  /* KB tabs — s10 */
+  (function(){
+    var tabs = document.querySelectorAll('#s10 .kb-tab');
+    var panels = document.querySelectorAll('#s10 .kb-panel');
+    tabs.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        tabs.forEach(function(t){ t.classList.remove('active'); });
+        panels.forEach(function(p){ p.classList.remove('kp-active'); });
+        btn.classList.add('active');
+        var target = document.getElementById('kp-' + btn.dataset.panel);
+        if(target) target.classList.add('kp-active');
+      });
+    });
+  })();
+
+  document.querySelectorAll('.fq-q').forEach(function(q){
+    q.addEventListener('click', function(){ q.parentElement.classList.toggle('open'); });
+  });
+
+  var clock = document.getElementById('navClock');
+  function tick(){ var d=new Date(); clock.textContent=d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'})+' · '+d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}); }
+  tick(); setInterval(tick, 30000);
+
+  if('IntersectionObserver' in window){
+    var rev = new IntersectionObserver(function(entries){ entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); rev.unobserve(e.target); } }); }, {threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(function(el){ rev.observe(el); });
+  } else { document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); }); }
+
+  var form = document.getElementById('s10-form'), success = document.getElementById('s10-success');
+  if(form && success){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      form.style.display='none';
+      success.style.display='block';
+    });
+  }
+  var fi = document.getElementById('f-file'), fn = document.getElementById('f-file-name');
+  if(fi && fn){ fi.addEventListener('change', function(){ fn.textContent = fi.files.length ? fi.files[0].name : 'PDF, DWG, DXF'; }); }
+})();
+</script>
+
+
+</body></html>

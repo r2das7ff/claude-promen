@@ -1,0 +1,39 @@
+﻿field,description
+sku,Уникальный артикул/SKU товара
+title,Название товара для каталога
+normative_key,Нормализованный ключ норматива
+full_designation,Полное обозначение норматива
+category,Категория каталога
+product_family,Семейство изделия
+product_type,Тип/маркировка исполнения
+dn,"Номинальный диаметр DN/Dу, мм"
+dn_branch,"Диаметр ответвления, мм"
+outer_diameter,"Наружный диаметр, мм"
+wall_thickness,"Толщина стенки, мм"
+pn,"Номинальное давление PN, МПа"
+angle,"Угол, градусы"
+radius,Радиус изгиба
+mass_kg,"Масса, кг"
+material,Материал
+thread_size,"Номинальный диаметр резьбы, мм"
+length_mm,"Длина крепежа, мм"
+thread_pitch,"Шаг резьбы, мм"
+strength_class,Класс прочности
+accuracy_class,Класс точности
+execution,Исполнение
+coating,Покрытие
+material_grade,Марка стали
+washer_type,Тип шайбы (Л/Н/Т/ОТ)
+nominal_d_mm,"Номинальный диаметр, мм"
+gost_designation,Условное обозначение по ГОСТ
+standard_page,Страница PDF-источника
+pdf_path,Относительный путь к PDF
+description,Краткое описание для карточки
+attributes,Сводные характеристики (JSON-совместимая строка)
+dim_length,"Длина перехода L, мм"
+dim_pn,"Рабочее/номинальное давление, МПа"
+dim_temperature,"Рабочая температура, °C"
+dim_dy,"Условный проход Dy, мм"
+dim_dy1,"Условный проход Dy1, мм"
+dim_outer_d_branch,"Наружный диаметр ответвления, мм"
+dim_wall_branch,"Толщина стенки ответвления, мм"

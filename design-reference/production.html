@@ -1,0 +1,2955 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Производство — ООО Завод «Промышленная Энергетика»</title>
+<style>
+@font-face{font-family:'DINPro';src:url('mqkoo24v-DINPro.otf') format('opentype');font-weight:400;}
+@font-face{font-family:'DINPro';src:url('mqkooa66-DINPro-Light.otf') format('opentype');font-weight:300;}
+@font-face{font-family:'DINPro';src:url('mqkooagj-DINPro-Medium.otf') format('opentype');font-weight:500;}
+@font-face{font-family:'DINPro';src:url('mqkoo2rj-DINPro-Bold.otf') format('opentype');font-weight:700;}
+@font-face{font-family:'DINPro';src:url('mqkoo2fg-DINPro-Black.otf') format('opentype');font-weight:900;}
+@font-face{font-family:'DINProCond';src:url('mqkoo3w7-DINPro-CondBlack.otf') format('opentype');font-weight:900;}
+@font-face{font-family:'DINProCond';src:url('mqkoo4ml-DINPro-CondBold.otf') format('opentype');font-weight:700;}
+
+:root{
+  --bg:#E8ECF0;--bg2:#DDE3EA;--dark:#0F2A44;--blue:#1E3D5C;
+  --g1:#6D8CA6;--g2:#A9B7C6;--white:#FFFFFF;--ln:#C8D0D8;--ln2:#A0B0BC;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:auto;}
+html{height:100%;}
+body{height:100%;font-family:'DINPro','Arial Narrow',Arial,sans-serif;background:#fff;color:var(--dark);overflow-x:hidden;}
+img{display:block;max-width:100%;}
+a{text-decoration:none;color:inherit;}
+button{background:none;border:none;cursor:pointer;font-family:inherit;}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;left:0;right:0;height:64px;z-index:200;display:flex;align-items:center;padding:0 28px 0 44px;background:rgba(232,236,240,.97);border-bottom:1px solid var(--ln2);backdrop-filter:blur(6px);}
+.nav-brand{display:flex;align-items:center;border-right:1px solid var(--ln2);padding-right:24px;margin-right:24px;}
+.nav-logo{display:flex;align-items:center;}
+.nav-logo img{height:36px;width:auto;display:block;}
+.nav-links{display:flex;list-style:none;}
+.nav-links a{display:block;height:64px;line-height:64px;padding:0 18px;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:rgba(30,61,92,.42);border-left:1px solid var(--ln);position:relative;transition:color .15s;}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--g1);transform:scaleX(0);transform-origin:left;transition:transform .2s;}
+.nav-links a:hover{color:var(--blue);}
+.nav-links a:hover::after,.nav-links a.is-active::after{transform:scaleX(1);}
+.nav-links a.is-active{color:var(--dark);font-weight:700;}
+.nav-meta{display:flex;align-items:center;margin-left:auto;font-size:9.5px;letter-spacing:.16em;color:rgba(109,140,166,.55);border-left:1px solid var(--ln);padding-left:20px;white-space:nowrap;}
+.nav-cta{margin-left:16px;display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--dark);border:1px solid var(--dark);font-weight:700;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#fff;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.nav-cta:hover{background:var(--blue);border-color:var(--blue);}
+
+/* ── STRIP ── */
+.strip{position:fixed;left:0;top:64px;bottom:0;width:44px;border-right:1px solid rgba(109,140,166,.1);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:20px 0 24px;background:rgba(232,236,240,.92);}
+.strip-yr{font-size:9.5px;letter-spacing:.2em;color:rgba(109,140,166,.45);writing-mode:vertical-rl;text-transform:uppercase;user-select:none;}
+.strip-pulse{width:4px;height:4px;border-radius:50%;background:var(--g1);animation:blink 1.8s step-end infinite;}
+.strip-txt{font-size:8.5px;letter-spacing:.2em;color:rgba(109,140,166,.32);writing-mode:vertical-rl;transform:rotate(180deg);text-transform:uppercase;user-select:none;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* ── SIDENAV ── */
+.sidenav{position:fixed;left:0;top:0;bottom:0;width:44px;z-index:200;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:18px;pointer-events:none;}
+.sidenav-item{position:relative;width:44px;display:flex;align-items:center;justify-content:center;pointer-events:all;cursor:pointer;text-decoration:none;}
+.sidenav-dot{width:6px;height:6px;border-radius:50%;background:rgba(109,140,166,.28);flex-shrink:0;transition:background .4s,transform .4s cubic-bezier(.34,1.56,.64,1);}
+.sidenav-item:hover .sidenav-dot{background:var(--g1);}
+.sidenav-item.sn-active .sidenav-dot{background:var(--dark);transform:scale(1.7);box-shadow:0 0 0 3px rgba(15,42,68,.08);}
+.sidenav-label{position:absolute;left:52px;top:50%;transform:translateY(-50%) translateX(-8px);font-size:9px;letter-spacing:.2em;color:var(--dark);text-transform:uppercase;white-space:nowrap;background:rgba(232,236,240,.96);border:1px solid var(--ln2);padding:4px 10px;line-height:1.5;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;}
+.sidenav-item:hover .sidenav-label,.sidenav-item.sn-active .sidenav-label{opacity:1;transform:translateY(-50%) translateX(0);}
+@media(max-width:1100px){.sidenav{display:none;}}
+
+.pg{position:relative;padding-top:64px;padding-left:44px;}
+
+/* ══════════════════════════════════════════════
+   СЦЕНА 1 — ТОЧНОСТЬ
+══════════════════════════════════════════════ */
+#s1{
+  position:relative;
+  min-height:100vh;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+/* Blueprint micro-grid */
+#s1::before{
+  content:'';
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(109,140,166,.038) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(109,140,166,.038) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+  animation:s1GridIn .9s ease both, s1GridDrift 28s ease-in-out 1.2s infinite;
+}
+@keyframes s1GridIn{from{opacity:0;}to{opacity:1;}}
+@keyframes s1GridDrift{
+  0%,100%{background-position:0 0;}
+  50%    {background-position:.8px .4px;}
+}
+
+/* Corner registration marks */
+.s1-reg{
+  position:absolute;
+  width:18px;height:18px;
+  border-color:rgba(109,140,166,.25);
+  border-style:solid;
+  z-index:2;
+  animation:s1RegIn .4s cubic-bezier(.16,1,.3,1) .2s both, s1RegPulse 5.5s ease-in-out 1.4s infinite;
+}
+@keyframes s1RegIn{from{opacity:0;transform:scale(0);}to{opacity:1;transform:scale(1);}}
+@keyframes s1RegPulse{
+  0%,100%{border-color:rgba(109,140,166,.25);}
+  50%    {border-color:rgba(109,140,166,.54);}
+}
+.s1-reg.tl{top:72px;left:56px;border-width:1px 0 0 1px;}
+.s1-reg.tr{top:72px;right:16px;border-width:1px 1px 0 0;animation-delay:.2s,4.15s;}
+.s1-reg.bl{bottom:8px;left:56px;border-width:0 0 1px 1px;animation-delay:.2s,4.15s;}
+.s1-reg.br{bottom:8px;right:16px;border-width:0 1px 1px 0;}
+
+/* Top bar */
+.s1-top{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px 0 56px;height:34px;
+  border-bottom:1px solid rgba(109,140,166,.1);
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:rgba(109,140,166,.45);
+  animation:s1FadeUp .5s ease .15s both;
+}
+@keyframes s1FadeUp{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+
+/* Body — two columns */
+.s1-body{
+  position:relative;z-index:1;
+  flex:1;
+  display:grid;
+  grid-template-columns:56fr 44fr;
+}
+
+/* LEFT — number */
+.s1-left{
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  padding:40px 56px 48px 56px;
+  border-right:1px solid rgba(109,140,166,.1);
+}
+.s1-eyebrow{
+  font-family:'DINPro',sans-serif;font-size:15px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(30,61,92,.6);
+  display:flex;align-items:center;gap:14px;
+  animation:s1FadeIn .5s ease .35s both;
+}
+.s1-eyebrow::before{content:'';width:28px;height:1.5px;background:rgba(109,140,166,.45);flex-shrink:0;}
+
+.s1-num-group{
+  display:flex;align-items:baseline;gap:18px;
+  position:relative;
+  animation:s1NumRise 2.4s cubic-bezier(.08,.82,.17,1) .38s both;
+}
+@keyframes s1NumRise{
+  0%  {opacity:0;transform:translateY(40px) scale(1.026);filter:blur(18px);}
+  22% {opacity:.9;}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0px);}
+}
+.s1-num{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(96px,21vw,340px);
+  letter-spacing:-.045em;color:var(--dark);line-height:.82;
+  animation:s1NumAlive 9s ease-in-out 3.2s infinite;
+}
+@keyframes s1NumAlive{
+  0%,100%{opacity:1;}
+  50%    {opacity:.93;}
+}
+.s1-unit{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:700;
+  font-size:clamp(26px,5vw,82px);
+  letter-spacing:-.02em;color:var(--g1);line-height:1;
+  animation:s1FadeIn .9s ease 1.6s both;
+}
+.s1-caption{animation:s1FadeIn .6s ease 2.1s both;}
+.s1-label{
+  font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--g1);margin-bottom:9px;
+}
+.s1-sub{
+  font-size:15px;font-weight:400;line-height:1.65;
+  color:rgba(30,61,92,.75);max-width:360px;
+}
+
+/* RIGHT — annotations */
+.s1-right{
+  display:flex;align-items:center;
+  padding:40px 52px;
+}
+.s1-anns{width:100%;}
+.s1-ann{
+  display:flex;align-items:center;gap:18px;
+  padding:18px 0;
+  border-bottom:1px solid rgba(109,140,166,.09);
+}
+.s1-ann:first-child{border-top:1px solid rgba(109,140,166,.09);}
+/* Leader line */
+.s1-ann::before{
+  content:'';width:26px;height:1px;
+  background:rgba(109,140,166,.32);flex-shrink:0;
+}
+.ann-val{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:700;
+  font-size:clamp(20px,2.6vw,36px);letter-spacing:-.02em;
+  color:var(--dark);white-space:nowrap;line-height:1;min-width:90px;
+}
+.ann-key{
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(109,140,166,.58);line-height:1.45;
+}
+.s1-ann:nth-child(1){animation:s1AnnIn .6s ease 2.0s both;}
+.s1-ann:nth-child(2){animation:s1AnnIn .6s ease 2.28s both;}
+.s1-ann:nth-child(3){animation:s1AnnIn .6s ease 2.56s both;}
+.s1-ann:nth-child(4){animation:s1AnnIn .6s ease 2.84s both;}
+@keyframes s1AnnIn{from{opacity:0;transform:translateX(22px);}to{opacity:1;transform:translateX(0);}}
+@keyframes s1FadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* Perpetual metrology scan beam */
+.s1-beam{
+  position:absolute;left:0;right:44%;
+  top:34px;bottom:38px;
+  pointer-events:none;z-index:0;overflow:hidden;
+}
+.s1-beam-line{
+  position:absolute;left:0;right:0;
+  height:1px;top:-1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(109,140,166,.09) 18%,rgba(109,140,166,.14) 46%,rgba(109,140,166,.14) 54%,rgba(109,140,166,.09) 82%,transparent 100%);
+  animation:s1BeamSweep 19s linear infinite;
+}
+@keyframes s1BeamSweep{
+  0%,6%   {transform:translateY(-1px);opacity:0;}
+  10%     {opacity:1;}
+  70%     {opacity:.8;}
+  76%     {opacity:0;transform:translateY(calc(100vh - 72px));}
+  77%,100%{transform:translateY(-1px);opacity:0;}
+}
+
+/* Bottom bar */
+.s1-foot{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px 0 56px;height:38px;
+  border-top:1px solid rgba(109,140,166,.1);
+  animation:s1FadeIn .5s ease 3.1s both;
+}
+.s1-foot-l{
+  display:flex;align-items:center;gap:10px;
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(109,140,166,.38);
+}
+.s1-scroll{
+  font-family:'DINPro',monospace;font-size:11px;
+  color:rgba(109,140,166,.3);
+  animation:s1Bounce 2.2s ease-in-out 3.8s infinite;
+}
+@keyframes s1Bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}
+
+/* ══════════════════════════════════════════════
+   §PROOF — ВИДЕОДОКАЗАТЕЛЬСТВО ТОЧНОСТИ
+══════════════════════════════════════════════ */
+#proof{
+  position:relative;min-height:220vh;
+  background:#fff; /* white shows around clip window — seamless continuation from #s1 */
+}
+.prf-sticky{
+  position:sticky;top:64px;
+  height:calc(100vh - 64px);
+  overflow:hidden;
+}
+.prf-clip{
+  position:absolute;inset:0;
+  background:#000;
+  clip-path:inset(28% 20% round 2px);
+  will-change:clip-path;
+  z-index:2;
+}
+/* ── Proof intro: cinematic pre-reveal composition ── */
+.prf-intro{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:#07111C;
+}
+.prf-intro::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(109,140,166,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(109,140,166,.02) 1px,transparent 1px);
+  background-size:54px 54px;
+  pointer-events:none;
+}
+/* Horizontal rules marking clip window top/bottom edge */
+.prf-ib-rule{
+  position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(109,140,166,.2) 10%,rgba(109,140,166,.2) 90%,transparent 100%);
+}
+.prf-ib-rule.top{top:28%;}
+.prf-ib-rule.bottom{bottom:28%;}
+/* Top letterbox bar */
+.prf-ib-top{
+  position:absolute;top:0;left:0;right:0;height:28%;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px 0 56px;
+}
+.prf-ib-label-l,.prf-ib-label-r{
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.22em;
+  text-transform:uppercase;color:rgba(109,140,166,.4);
+}
+/* Side columns flanking the video window */
+.prf-ib-left{
+  position:absolute;top:28%;bottom:28%;left:0;width:20%;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 0 0 56px;gap:22px;
+}
+.prf-ib-right{
+  position:absolute;top:28%;bottom:28%;right:0;width:20%;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-end;
+  padding:0 28px 0 0;gap:22px;
+}
+.prf-ib-spec{display:flex;flex-direction:column;gap:5px;}
+.prf-ib-sk{
+  font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:rgba(109,140,166,.35);
+}
+.prf-ib-sv{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:700;
+  font-size:clamp(18px,2vw,24px);letter-spacing:-.02em;
+  color:rgba(169,183,198,.55);line-height:1;
+}
+/* Bottom letterbox bar with scroll cue */
+.prf-ib-bottom{
+  position:absolute;bottom:0;left:0;right:0;height:28%;
+  display:flex;align-items:center;justify-content:center;
+}
+.prf-ib-cue{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(109,140,166,.38);
+  animation:prfIbCue 2.4s ease-in-out infinite;
+}
+.prf-ib-tick{width:1px;height:20px;background:linear-gradient(to bottom,rgba(109,140,166,.4),transparent);}
+@keyframes prfIbCue{
+  0%,100%{opacity:.38;transform:translateY(0);}
+  50%{opacity:.7;transform:translateY(5px);}
+}
+/* Corner brackets exactly at clip window corners */
+.prf-ib-corner{
+  position:absolute;width:16px;height:16px;pointer-events:none;
+}
+.prf-ib-corner.itl{top:28%;left:20%;transform:translate(-50%,-50%);border-top:1px solid rgba(109,140,166,.35);border-left:1px solid rgba(109,140,166,.35);}
+.prf-ib-corner.itr{top:28%;right:20%;transform:translate(50%,-50%);border-top:1px solid rgba(109,140,166,.35);border-right:1px solid rgba(109,140,166,.35);}
+.prf-ib-corner.ibl{bottom:28%;left:20%;transform:translate(-50%,50%);border-bottom:1px solid rgba(109,140,166,.35);border-left:1px solid rgba(109,140,166,.35);}
+.prf-ib-corner.ibr{bottom:28%;right:20%;transform:translate(50%,50%);border-bottom:1px solid rgba(109,140,166,.35);border-right:1px solid rgba(109,140,166,.35);}
+.prf-video-wrap{position:absolute;inset:0;overflow:hidden;}
+.prf-video{
+  width:100%;height:100%;object-fit:cover;
+  opacity:.86;display:block;
+}
+.prf-overlay{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(to bottom,rgba(4,10,20,.92) 0%,rgba(4,10,20,.4) 16%,transparent 36%),
+    linear-gradient(to top,rgba(4,10,20,.95) 0%,rgba(4,10,20,.45) 18%,transparent 38%),
+    linear-gradient(to right,rgba(4,10,20,.65) 0%,rgba(4,10,20,.15) 28%,transparent 44%);
+}
+/* Scan line */
+.prf-scan{
+  position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(109,140,166,.32) 22%,rgba(169,183,198,.52) 50%,rgba(109,140,166,.32) 78%,transparent 100%);
+  z-index:3;pointer-events:none;
+  animation:prfScan 9s linear infinite;
+}
+@keyframes prfScan{
+  0%{top:0%;opacity:0;}
+  4%{opacity:1;}
+  94%{opacity:.75;}
+  100%{top:100%;opacity:0;}
+}
+/* Corner brackets */
+.prf-brk{position:absolute;z-index:3;width:20px;height:20px;pointer-events:none;}
+.prf-brk.tl{top:14px;left:14px;border-top:1.5px solid rgba(109,140,166,.55);border-left:1.5px solid rgba(109,140,166,.55);}
+.prf-brk.tr{top:14px;right:14px;border-top:1.5px solid rgba(109,140,166,.55);border-right:1.5px solid rgba(109,140,166,.55);}
+.prf-brk.bl{bottom:14px;left:14px;border-bottom:1.5px solid rgba(109,140,166,.55);border-left:1.5px solid rgba(109,140,166,.55);}
+.prf-brk.br{bottom:14px;right:14px;border-bottom:1.5px solid rgba(109,140,166,.55);border-right:1.5px solid rgba(109,140,166,.55);}
+/* Status bar top */
+.prf-status{
+  position:absolute;top:0;left:0;right:0;z-index:4;
+  height:44px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px 0 20px;
+  border-bottom:1px solid rgba(109,140,166,.1);
+  opacity:0;
+}
+.prf-rec{
+  display:flex;align-items:center;gap:8px;
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(109,140,166,.68);
+}
+.prf-rec-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#e04040;
+  animation:blink 1.4s step-end infinite;
+  flex-shrink:0;
+}
+.prf-status-r{
+  display:flex;align-items:center;gap:16px;
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(109,140,166,.6);
+}
+.prf-status-sep{color:rgba(109,140,166,.2);}
+/* Main content */
+.prf-main{
+  position:absolute;z-index:4;
+  left:56px;bottom:72px;max-width:540px;
+  opacity:0;transform:translateY(22px);
+}
+.prf-kicker{
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(109,140,166,.65);margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+.prf-kicker::before{content:'';width:18px;height:1px;background:rgba(109,140,166,.45);flex-shrink:0;}
+.prf-num-group{display:flex;align-items:baseline;gap:8px;line-height:1;margin-bottom:12px;}
+.prf-num{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(88px,13vw,172px);letter-spacing:-.04em;
+  color:#fff;line-height:.82;
+}
+.prf-unit{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:700;
+  font-size:clamp(28px,4vw,54px);letter-spacing:-.02em;
+  color:rgba(169,183,198,.6);line-height:1;
+  align-self:flex-end;margin-bottom:.08em;
+}
+.prf-label{
+  font-family:'DINPro',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(109,140,166,.65);margin-bottom:18px;
+}
+.prf-text{
+  font-size:13px;font-weight:300;line-height:1.72;
+  color:rgba(169,183,198,.52);max-width:400px;
+}
+/* Measurement target (right) */
+.prf-target{
+  position:absolute;z-index:3;
+  right:17%;top:50%;transform:translateY(-50%);
+  width:84px;height:84px;
+  opacity:0;
+}
+.prf-target::before{
+  content:'';position:absolute;
+  top:50%;left:-36px;right:-36px;height:1px;
+  background:rgba(109,140,166,.3);
+}
+.prf-target::after{
+  content:'';position:absolute;
+  left:50%;top:-36px;bottom:-36px;width:1px;
+  background:rgba(109,140,166,.3);
+}
+.prf-target-ring{
+  position:absolute;inset:0;border-radius:50%;
+  border:1px solid rgba(109,140,166,.5);
+  animation:prfPulse 2.8s ease-in-out infinite;
+}
+.prf-target-dot{
+  position:absolute;inset:40%;border-radius:50%;
+  background:rgba(169,183,198,.75);
+}
+.prf-target-lbl{
+  position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+  font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(109,140,166,.62);white-space:nowrap;
+}
+@keyframes prfPulse{
+  0%,100%{transform:scale(1);opacity:.5;}
+  50%{transform:scale(1.2);opacity:.8;}
+}
+/* Measurement annotation (linked to target) */
+.prf-ann{
+  position:absolute;z-index:4;
+  right:calc(17% + 80px);top:50%;transform:translateY(calc(-50% - 20px));
+  display:flex;flex-direction:column;align-items:flex-end;gap:4px;
+  opacity:0;
+}
+.prf-ann-line{
+  width:52px;height:1px;
+  background:linear-gradient(to right,transparent,rgba(109,140,166,.45));
+}
+.prf-ann-val{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:700;
+  font-size:22px;letter-spacing:-.02em;
+  color:rgba(169,183,198,.85);
+}
+.prf-ann-k{
+  font-family:'DINPro',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(109,140,166,.55);
+}
+/* Parameters strip */
+.prf-params{
+  position:absolute;bottom:0;left:0;right:0;z-index:4;
+  height:44px;display:flex;align-items:center;
+  padding:0 24px 0 20px;
+  border-top:1px solid rgba(109,140,166,.1);
+  opacity:0;
+}
+.prf-param{
+  display:flex;align-items:center;gap:7px;
+  padding:0 16px;border-right:1px solid rgba(109,140,166,.1);
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  white-space:nowrap;
+}
+.prf-param:first-child{padding-left:0;}
+.prf-param:last-child{border-right:none;}
+.prf-pk{color:rgba(109,140,166,.48);}
+.prf-pv{color:rgba(169,183,198,.88);font-weight:700;}
+
+/* ══════════════════════════════════════════════
+   СЦЕНА 2 — НОРМИРОВАНИЕ
+══════════════════════════════════════════════ */
+#s2{
+  position:relative;
+  background:var(--bg);
+  min-height:100vh;
+  display:flex;flex-direction:column;
+}
+#s2::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--ln) 1px,transparent 1px),
+    linear-gradient(90deg,var(--ln) 1px,transparent 1px);
+  background-size:80px 80px;pointer-events:none;opacity:.28;
+}
+.s2-top{
+  position:relative;z-index:1;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:38px 32px 34px 56px;
+  border-bottom:1px solid var(--ln2);flex-shrink:0;
+}
+.s2-claim{
+  font-family:'DINPro',sans-serif;font-weight:300;
+  font-size:15px;line-height:1.6;
+  color:var(--blue);max-width:540px;
+}
+.s2-top-r{
+  display:flex;align-items:center;gap:10px;
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(109,140,166,.4);
+}
+
+/* Three columns */
+.s2-cols{
+  position:relative;z-index:1;
+  flex:1;display:flex;
+}
+.s2-col{
+  flex:1;display:flex;flex-direction:column;
+  border-right:1px solid var(--ln2);
+  opacity:0;transform:translateY(28px);
+  transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1);
+}
+.s2-col:last-child{border-right:none;}
+.s2-col.s2-vis{opacity:1;transform:translateY(0);}
+
+/* Column header */
+.s2-col-hd{
+  padding:24px 30px 20px;
+  border-bottom:2px solid var(--dark);
+  flex-shrink:0;
+}
+.s2-industry{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(52px,8vw,118px);letter-spacing:-.04em;
+  color:var(--dark);line-height:.86;margin-bottom:6px;
+}
+.s2-industry-full{
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(109,140,166,.58);
+}
+/* АЭС gets dark treatment — highest regulatory stakes */
+.s2-col[data-ind="aes"] .s2-col-hd{
+  background:var(--dark);
+  border-bottom-color:rgba(109,140,166,.2);
+}
+.s2-col[data-ind="aes"] .s2-industry{color:#fff;}
+.s2-col[data-ind="aes"] .s2-industry-full{color:rgba(169,183,198,.5);}
+
+/* Standard cells */
+.s2-cell{
+  flex:1;padding:20px 30px;
+  border-bottom:1px solid var(--ln2);
+  display:flex;flex-direction:column;justify-content:space-between;
+  cursor:default;transition:background .2s;
+}
+.s2-cell:last-child{border-bottom:none;}
+.s2-cell:hover{background:rgba(255,255,255,.5);}
+.s2-col[data-ind="aes"] .s2-cell:hover{background:rgba(15,42,68,.04);}
+.s2-std{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(22px,2.8vw,40px);letter-spacing:-.025em;
+  color:var(--dark);line-height:1;margin-bottom:9px;
+}
+.s2-what{
+  font-family:'DINPro',sans-serif;font-weight:400;font-size:13px;line-height:1.6;
+  color:rgba(30,61,92,.70);
+}
+
+/* Footer declaration */
+.s2-foot{
+  position:relative;z-index:1;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 30px 13px 56px;
+  border-top:1px solid var(--ln2);flex-shrink:0;
+}
+.s2-decl{
+  font-family:'DINPro',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(30,61,92,.68);
+  border:1px solid rgba(30,61,92,.22);
+  padding:6px 14px 6px 12px;
+  display:inline-flex;align-items:center;gap:9px;
+}
+.s2-decl::before{
+  content:'✓';font-size:12px;font-family:'DINPro',sans-serif;
+  color:rgba(30,61,92,.55);flex-shrink:0;
+}
+.s2-continue{
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(109,140,166,.35);display:flex;align-items:center;gap:8px;
+}
+
+/* ══════════════════════════════════════════════
+   §03 ИСТОРИЯ ИЗДЕЛИЯ
+══════════════════════════════════════════════ */
+#map{
+  position:relative;background:#060E18;
+  min-height:100vh;display:flex;flex-direction:column;overflow:hidden;
+}
+#map::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(109,140,166,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(109,140,166,.04) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;
+}
+#map::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:140px;
+  background:linear-gradient(to bottom, transparent, rgba(2,8,15,.65));
+  pointer-events:none;z-index:1;
+}
+.map-hd{
+  position:relative;z-index:1;
+  padding:26px 32px 22px 56px;
+  border-bottom:1px solid rgba(109,140,166,.1);flex-shrink:0;
+}
+.map-hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.map-subtitle{
+  font-size:15px;font-weight:300;color:rgba(169,183,198,.78);
+  line-height:1.6;max-width:620px;
+}
+.map-tag{
+  font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;
+  color:rgba(109,140,166,.65);display:flex;align-items:center;gap:10px;
+}
+.map-tag::before{content:'';width:12px;height:1px;background:rgba(109,140,166,.50);}
+.map-spec{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:16px;letter-spacing:.06em;text-transform:uppercase;
+  color:rgba(169,183,198,.82);
+}
+/* Stages */
+.map-stages{
+  position:relative;z-index:1;
+  flex:1;display:flex;min-height:0;
+}
+.ms{
+  flex:1;border-right:1px solid rgba(109,140,166,.08);
+  display:flex;flex-direction:column;
+  cursor:default;position:relative;overflow:hidden;
+  transition:background .22s;
+  opacity:0;transform:translateY(18px);
+}
+.ms:last-child{border-right:none;}
+.ms.ms-vis{
+  opacity:1;transform:translateY(0);
+  transition:opacity .72s ease,transform .72s cubic-bezier(.16,1,.3,1),background .22s;
+}
+.ms:hover{background:rgba(109,140,166,.07);}
+.ms:nth-child(3){flex:1.65;}
+.ms:nth-child(6){flex:1.45;}
+/* Stage step pill */
+.ms-step{
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(109,140,166,.40);padding:12px 14px 0;flex-shrink:0;
+}
+/* Ghost number */
+.ms-num{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(46px,7vw,96px);letter-spacing:-.04em;line-height:1;
+  color:rgba(255,255,255,.055);
+  position:absolute;bottom:-2px;right:4px;
+  pointer-events:none;user-select:none;transition:color .3s;
+}
+.ms:hover .ms-num{color:rgba(255,255,255,.10);}
+/* SVG drawing area */
+.ms-svg-wrap{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:16px 14px 4px;
+}
+.ms-svg-wrap svg{display:block;width:100%;max-width:120px;}
+/* Stage label */
+.ms-label{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(13px,1.4vw,18px);letter-spacing:.04em;text-transform:uppercase;
+  color:rgba(169,183,198,.80);line-height:1.2;
+  padding:0 14px 8px;flex-shrink:0;transition:color .3s;
+}
+.ms:hover .ms-label{color:#fff;}
+/* Connector arrow */
+.ms-arrow{
+  position:absolute;top:50%;right:-8px;transform:translateY(-50%);
+  font-size:11px;color:rgba(109,140,166,.30);z-index:3;pointer-events:none;
+}
+.ms:last-child .ms-arrow{display:none;}
+/* Technical annotations */
+.ms-anns{padding:0 14px 16px;display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+.ms-ann{
+  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.03em;line-height:1.5;
+  color:rgba(109,140,166,.75);display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;
+}
+.ms-ann span{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:700;
+  font-size:14px;letter-spacing:-.01em;
+  color:rgba(169,183,198,.92);white-space:nowrap;
+}
+/* Progress track — CSS step bar */
+.map-progress{
+  position:relative;z-index:1;
+  padding:14px 56px 16px;
+  border-top:1px solid rgba(109,140,166,.1);
+  flex-shrink:0;
+}
+.mp-steps{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  position:relative;
+}
+.mp-steps::before{
+  content:'';position:absolute;top:5px;left:5%;right:5%;height:1px;
+  background:rgba(109,140,166,.18);z-index:0;
+}
+.mp-step{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;
+  position:relative;z-index:1;
+}
+.mp-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#060E18;border:1.5px solid rgba(109,140,166,.35);
+  transition:background .35s,border-color .35s,box-shadow .35s;
+}
+.mp-step.lit .mp-dot{
+  background:rgba(109,140,166,.75);border-color:rgba(169,183,198,.85);
+  box-shadow:0 0 0 3px rgba(109,140,166,.12);
+}
+.mp-lbl{
+  font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(109,140,166,.55);text-align:center;
+  transition:color .35s;
+}
+.mp-step.lit .mp-lbl{color:rgba(169,183,198,.82);}
+/* Footer */
+.map-foot{
+  position:relative;z-index:1;
+  display:flex;align-items:center;flex-wrap:wrap;
+  min-height:48px;padding:8px 32px 8px 56px;
+  border-top:1px solid rgba(109,140,166,.1);flex-shrink:0;
+}
+.map-foot-kv{
+  display:flex;align-items:center;gap:6px;
+  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.10em;text-transform:uppercase;
+  color:rgba(109,140,166,.45);
+  padding:4px 18px;border-right:1px solid rgba(109,140,166,.09);
+}
+.map-foot-kv:first-child{padding-left:0;}
+.map-foot-kv:last-child{border-right:none;}
+.map-foot-kv strong{color:rgba(169,183,198,.72);font-weight:700;}
+
+/* ══════════════════════════════════════════════
+   §03 THERMAL
+══════════════════════════════════════════════ */
+#thermal{
+  position:relative;background:#060E18;
+  min-height:100vh;display:flex;flex-direction:column;overflow:hidden;
+}
+#thermal::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(109,140,166,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(109,140,166,.04) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;
+}
+#thermal::after{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(180deg, rgba(2,8,15,.55) 0%, transparent 160px),
+    radial-gradient(ellipse 75% 40% at 50% 0%, rgba(196,74,14,.06) 0%, transparent 70%),
+    linear-gradient(180deg, transparent 55%, rgba(2,8,15,.28) 100%);
+}
+.therm-hd{
+  position:relative;z-index:1;
+  padding:32px 56px 28px;
+  border-bottom:1px solid rgba(109,140,166,.08);
+  display:grid;grid-template-columns:1fr 300px;
+  gap:48px;align-items:start;flex-shrink:0;
+}
+.therm-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:rgba(109,140,166,.52);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.therm-tag::before{content:'';width:14px;height:1px;background:rgba(109,140,166,.38);}
+.therm-headline{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(28px,3.8vw,54px);letter-spacing:-.02em;text-transform:uppercase;
+  color:#fff;line-height:.92;margin-bottom:16px;
+}
+.therm-statement{
+  font-family:'DINPro',sans-serif;font-weight:400;
+  font-size:clamp(13px,1.3vw,15px);line-height:1.75;
+  color:rgba(169,183,198,.75);max-width:460px;
+}
+.therm-hd-right{border-left:1px solid rgba(109,140,166,.1);padding-left:28px;padding-top:6px;}
+.therm-stats{display:flex;flex-direction:column;}
+.therm-stat{padding:12px 0;border-bottom:1px solid rgba(109,140,166,.10);display:flex;flex-direction:column;gap:4px;}
+.therm-stat:last-child{border-bottom:none;}
+.therm-stat-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:28px;letter-spacing:-.02em;color:rgba(169,183,198,.92);line-height:1;}
+.therm-stat-l{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(109,140,166,.65);}
+.therm-body{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center;padding:28px 56px 40px;}
+.therm-bar-wrap{position:relative;margin-bottom:16px;}
+.therm-bar{height:96px;background:linear-gradient(90deg,#0a1826 0%,#0f2a44 10%,#1a3550 22%,#2e5570 34%,#8c3518 48%,#c44a0e 60%,#df7025 73%,#eda030 86%,#f8ca52 100%);position:relative;}
+.therm-bar::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent calc(100%/7 - 1px),rgba(255,255,255,.08) calc(100%/7 - 1px),rgba(255,255,255,.08) calc(100%/7));pointer-events:none;}
+.therm-cursor{
+  position:absolute;top:0;bottom:0;width:2px;left:0;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 0 8px rgba(255,255,255,.6),0 0 22px rgba(248,202,82,.55),0 0 44px rgba(248,202,82,.2);
+  animation:thermCursor 9s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes thermCursor{
+  0%,100%{left:0%;}
+  50%{left:calc(100% - 2px);}
+}
+.therm-ticks{display:flex;justify-content:space-between;padding:10px 0 26px;}
+.therm-tick{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.therm-tk-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:15px;letter-spacing:-.01em;line-height:1;}
+.therm-tk-u{font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.1em;color:rgba(109,140,166,.38);}
+.therm-phases{display:grid;grid-template-columns:7fr 17fr 29fr 7fr 14fr 8fr 20fr;gap:1px;background:rgba(109,140,166,.07);}
+.therm-ph{padding:15px 12px;background:rgba(6,14,24,.55);cursor:default;transition:background .2s;}
+.therm-ph:hover{background:rgba(30,61,92,.45);}
+.therm-ph-r{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.03em;color:rgba(109,140,166,.60);margin-bottom:7px;}
+.therm-ph-n{font-family:'DINPro',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(169,183,198,.72);line-height:1.35;}
+/* Map scan perpetual animation */
+.map-scan{
+  position:absolute;top:0;bottom:0;width:1px;left:0;
+  background:linear-gradient(to bottom,transparent 0%,rgba(109,140,166,.0) 10%,rgba(109,140,166,.22) 40%,rgba(109,140,166,.35) 50%,rgba(109,140,166,.22) 60%,rgba(109,140,166,.0) 90%,transparent 100%);
+  animation:mapScanMove 28s linear infinite;
+  pointer-events:none;z-index:2;
+}
+@keyframes mapScanMove{
+  0%{left:-1px;opacity:0;}
+  3%{opacity:1;}
+  97%{opacity:1;}
+  100%{left:100%;opacity:0;}
+}
+
+/* ══════════════════════════════════════════════
+   §04 GRADES
+══════════════════════════════════════════════ */
+#grades{position:relative;background:var(--bg2);overflow:hidden;}
+#grades::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;opacity:.34;}
+.grades-hd{position:relative;z-index:1;padding:22px 56px;border-bottom:1px solid var(--ln2);display:flex;align-items:center;justify-content:space-between;}
+.grades-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:10px;}
+.grades-tag::before{content:'';width:14px;height:1px;background:var(--g1);}
+/* Grades intro */
+.grades-intro{
+  position:relative;z-index:1;
+  padding:28px 56px 26px;border-bottom:1px solid var(--ln2);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:48px;
+}
+.gi-statement{
+  font-family:'DINPro',sans-serif;font-weight:300;
+  font-size:15px;line-height:1.6;
+  color:var(--blue);max-width:560px;
+}
+.gi-statement strong{font-weight:700;color:var(--dark);}
+.gi-stats{display:flex;gap:0;flex-shrink:0;align-items:flex-start;}
+.gi-stat{
+  display:flex;flex-direction:column;gap:3px;
+  padding:0 24px;border-right:1px solid var(--ln2);
+}
+.gi-stat:first-child{padding-left:0;}
+.gi-stat:last-child{border-right:none;padding-right:0;}
+.gi-stat-v{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:30px;letter-spacing:-.02em;color:var(--dark);line-height:1;
+}
+.gi-stat-l{
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(109,140,166,.72);
+}
+/* Grades grid */
+.grades-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid var(--ln2);}
+.ge{padding:26px 20px 26px;border-right:1px solid var(--ln2);border-bottom:1px solid var(--ln2);position:relative;overflow:hidden;cursor:default;transition:background .2s;}
+.ge:hover{background:rgba(30,61,92,.06);}
+.ge::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--g1);transform:scaleX(0);transform-origin:left;transition:transform .25s;}
+.ge:hover::after{transform:scaleX(1);}
+.ge-idx{position:absolute;top:10px;right:14px;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.08em;color:var(--ln2);}
+.ge-name{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:26px;letter-spacing:-.01em;color:var(--dark);margin-bottom:4px;line-height:1;}
+.ge-std{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:var(--g1);margin-bottom:12px;}
+.ge-props{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;}
+.ge-pv{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.01em;color:var(--blue);line-height:1;}
+.ge-pk{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--g2);margin-top:1px;}
+.ge-app{margin-top:12px;font-size:13px;font-weight:400;line-height:1.55;color:rgba(30,61,92,.78);border-top:1px solid var(--ln);padding-top:10px;}
+
+/* ══════════════════════════════════════════════
+   §05 JOURNAL
+══════════════════════════════════════════════ */
+#journal{position:relative;background:var(--bg);overflow:hidden;}
+#journal::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;opacity:.28;}
+.jrn-hd{position:relative;z-index:1;padding:22px 56px;border-bottom:1px solid var(--ln2);display:flex;align-items:center;justify-content:space-between;}
+.jrn-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:10px;}
+.jrn-tag::before{content:'';width:14px;height:1px;background:var(--g1);}
+.jrn-hd-en{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(109,140,166,.45);}
+.sec-hd-en{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(109,140,166,.45);}
+/* Journal context intro */
+.jrn-context{
+  position:relative;z-index:1;
+  padding:28px 56px 24px;
+  border-bottom:1px solid var(--ln2);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:48px;
+}
+.jc-statement{
+  font-family:'DINPro',sans-serif;font-weight:300;
+  font-size:15px;line-height:1.6;
+  color:var(--blue);max-width:520px;
+}
+.jc-statement strong{color:var(--dark);font-weight:700;}
+.jc-steps{display:flex;gap:0;flex-shrink:0;padding-top:2px;}
+.jc-step{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:0 16px;border-right:1px solid var(--ln2);
+}
+.jc-step:first-child{padding-left:0;}
+.jc-step:last-child{border-right:none;padding-right:0;}
+.jc-step-n{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:32px;letter-spacing:-.02em;color:var(--dark);line-height:1;
+}
+.jc-step-l{
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(109,140,166,.72);text-align:center;line-height:1.5;
+}
+/* Journal layout */
+.jrn-layout{position:relative;z-index:1;display:grid;grid-template-columns:1fr 300px;align-items:start;}
+/* — jrn-layout: compact doc grid — */
+.jrn-layout .jrn-doc{padding:18px 36px 22px 48px;}
+.jrn-layout .jd-hd{font-size:10px;letter-spacing:.1em;margin-bottom:2px;}
+.jrn-layout .jd-title{font-size:12px;letter-spacing:.04em;margin-bottom:10px;line-height:1.35;}
+.jrn-layout .jd-div{margin:8px 0;}
+.jrn-layout .jd-meta{
+  display:grid;
+  grid-template-columns:88px 1fr 72px 1fr 56px 0.85fr;
+  gap:4px 12px;align-items:baseline;
+  font-family:'DINPro',monospace;font-size:12px;letter-spacing:.02em;
+  color:rgba(30,61,92,.78);
+}
+.jrn-layout .jd-rk{color:var(--g1);white-space:nowrap;}
+.jrn-layout .jd-rv{color:var(--dark);font-weight:700;}
+.jrn-layout .jd-span{grid-column:2 / -1;}
+.jrn-layout .jd-checks{margin-top:4px;}
+.jrn-layout .jd-ck{
+  display:grid;grid-template-columns:22px 1fr auto;gap:0 6px;align-items:center;
+  padding:5px 0;border-bottom:1px solid var(--ln);
+  font-size:12px;
+}
+.jrn-layout .jd-ci{width:auto;font-size:11px;}
+.jrn-layout .jd-cn{padding:0;}
+.jrn-layout .jd-dots{display:none;}
+.jrn-layout .jd-cs{font-size:10px;letter-spacing:.04em;white-space:nowrap;}
+.jrn-layout .jd-verdict{margin-top:12px;padding:12px 16px;}
+.jrn-layout .jd-vl{font-size:10px;letter-spacing:.1em;}
+.jrn-layout .jd-vv-wrap{gap:16px;}
+.jrn-layout .jd-vv{font-size:22px;letter-spacing:.18em;padding:5px 16px;}
+.jrn-layout .jd-stamp{width:88px;height:88px;font-size:9px;line-height:1.7;}
+.jrn-layout .jrn-side{padding:18px 18px 20px;}
+.jrn-layout .jrn-slbl{font-size:8.5px;letter-spacing:.22em;margin-bottom:8px;}
+.jrn-layout .ji{padding:8px 10px;margin-bottom:3px;}
+.jrn-layout .ji-code{font-size:9px;margin-bottom:2px;}
+.jrn-layout .ji-name{font-size:12px;line-height:1.32;margin-bottom:3px;}
+.jrn-layout .ji-tag{font-size:8.5px;}
+.jrn-doc{padding:30px 44px 44px 56px;border-right:1px solid var(--ln2);background:rgba(255,255,255,.55);}
+.jd-hd{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);margin-bottom:4px;}
+.jd-title{font-family:'DINPro',monospace;font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--dark);margin-bottom:22px;}
+.jd-div{border:none;border-top:1px solid var(--ln2);margin:14px 0;}
+.jd-row{display:flex;flex-wrap:wrap;gap:4px 24px;font-family:'DINPro',monospace;font-size:13px;letter-spacing:.02em;padding:5px 0;color:rgba(30,61,92,.78);}
+.jd-rk{color:var(--g1);}
+.jd-rv{color:var(--dark);font-weight:700;}
+.jd-checks{margin-top:10px;}
+.jd-ck{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--ln);font-family:'DINPro',monospace;font-size:13px;letter-spacing:.02em;color:rgba(30,61,92,.85);}
+.jd-ck:last-child{border-bottom:none;}
+.jd-ci{color:var(--g1);width:28px;flex-shrink:0;font-size:12px;font-weight:700;}
+.jd-cn{flex:1;padding:0 8px;}
+.jd-dots{flex:1;border-bottom:1px dotted var(--ln2);height:1px;margin:0 8px;align-self:flex-end;margin-bottom:4px;}
+.jd-cs{font-size:12px;font-weight:700;letter-spacing:.05em;flex-shrink:0;opacity:0;transition:opacity .5s;}
+.jd-cs.ok{color:#2E7D32;}
+.jd-cs.revealed{opacity:1;}
+/* Verdict */
+.jd-verdict{margin-top:22px;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(46,125,50,.28);padding:22px 24px;background:rgba(46,125,50,.04);}
+.jd-vl{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(30,61,92,.72);}
+.jd-vv-wrap{display:flex;align-items:center;gap:24px;}
+.jd-vv{font-family:'DINPro',monospace;font-weight:900;font-size:30px;letter-spacing:.22em;text-transform:uppercase;color:#2E7D32;border:2px solid rgba(46,125,50,.45);padding:10px 28px;}
+.jd-stamp{
+  width:130px;height:130px;
+  border:2px solid rgba(46,125,50,.55);
+  border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:rgba(46,125,50,.78);
+  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  text-align:center;line-height:1.9;font-weight:700;
+  flex-shrink:0;
+  opacity:0;transform:rotate(-13deg) scale(.7);
+  transition:opacity .55s ease, transform .65s cubic-bezier(.16,1,.3,1);
+}
+.jd-stamp.revealed{opacity:1;transform:rotate(-13deg) scale(1);animation:stampGlow 2.5s ease-in-out .8s infinite;}
+@keyframes stampGlow{0%,100%{box-shadow:0 0 0 rgba(46,125,50,0);}50%{box-shadow:0 0 18px rgba(46,125,50,.18);}}
+/* Side list */
+.jrn-side{padding:30px 24px;}
+.jrn-slbl{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:rgba(109,140,166,.62);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.jrn-slbl::before{content:'';width:10px;height:1px;background:var(--g1);}
+.ji{border:1px solid var(--ln2);padding:12px 14px;margin-bottom:5px;cursor:default;background:rgba(255,255,255,.65);transition:background .15s,border-color .15s;}
+.ji:hover,.ji.act{background:#fff;border-color:var(--g1);}
+.ji-code{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.12em;color:var(--g1);margin-bottom:4px;}
+.ji-name{font-size:13px;color:rgba(30,61,92,.82);line-height:1.38;margin-bottom:5px;}
+.ji-tag{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;}
+.ji-tag.ok{color:#2E7D32;}
+.ji-tag.pend{color:#B8860B;}
+
+/* ══════════════════════════════════════════════
+   §06 CAPACITY
+══════════════════════════════════════════════ */
+#capacity{position:relative;background:#fff;overflow:hidden;min-height:100vh;display:flex;flex-direction:column;}
+#capacity::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;opacity:.22;}
+.cap-hd{position:relative;z-index:1;padding:22px 56px;border-bottom:1px solid var(--ln2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.cap-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:10px;}
+.cap-tag::before{content:'';width:14px;height:1px;background:var(--g1);}
+.cap-body{position:relative;z-index:1;flex:1;display:grid;grid-template-columns:1fr 1fr;}
+.cap-anchor{padding:72px 56px;border-right:1px solid var(--ln2);display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;background:rgba(232,236,240,.45);}
+.cap-anchor::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(ellipse,rgba(109,140,166,.06) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.cap-anchor-kicker{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);margin-bottom:24px;display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
+.cap-anchor-kicker::before{content:'';width:14px;height:1px;background:var(--g1);}
+.cap-anchor-num{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(88px,12vw,190px);letter-spacing:-.04em;color:var(--dark);line-height:.85;position:relative;z-index:1;}
+.cap-anchor-unit{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:clamp(28px,3.5vw,56px);letter-spacing:-.02em;color:var(--blue);line-height:1;margin-top:12px;margin-bottom:28px;position:relative;z-index:1;}
+.cap-anchor-note{font-size:13px;font-weight:300;line-height:1.65;color:rgba(30,61,92,.68);max-width:280px;position:relative;z-index:1;}
+.cap-anchor-badge{margin-top:28px;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1);border:1px solid var(--ln2);padding:7px 16px;display:inline-block;position:relative;z-index:1;}
+.cap-list{position:relative;z-index:1;display:flex;flex-direction:column;}
+.cap-row{flex:1;padding:0 48px;border-bottom:1px solid var(--ln2);display:flex;align-items:center;gap:32px;cursor:default;opacity:0;transform:translateX(20px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1),background .2s;}
+.cap-row.cap-vis{opacity:1;transform:translateX(0);}
+.cap-row:hover{background:rgba(30,61,92,.04);}
+.cap-row:last-child{border-bottom:none;}
+.cap-row-num{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(26px,2.6vw,42px);letter-spacing:-.03em;color:var(--blue);line-height:1;flex-shrink:0;min-width:140px;transition:color .3s;}
+.cap-row:hover .cap-row-num{color:var(--dark);}
+.cap-row-info{flex:1;}
+.cap-row-label{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1);margin-bottom:5px;}
+.cap-row-note{font-size:13px;font-weight:300;line-height:1.5;color:rgba(30,61,92,.68);}
+
+/* ══════════════════════════════════════════════
+   §07 PORTAL — ДОКУМЕНТАЦИЯ
+══════════════════════════════════════════════ */
+#portal{position:relative;background:var(--bg2);overflow:hidden;}
+#portal::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;opacity:.30;}
+.portal-left{position:relative;z-index:1;display:flex;flex-direction:column;}
+.portal-hd{padding:22px 56px;border-bottom:1px solid var(--ln2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.portal-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:10px;}
+.portal-tag::before{content:'';width:14px;height:1px;background:var(--g1);}
+.portal-docs{flex:1;display:flex;flex-direction:column;gap:0;}
+.pdoc{display:grid;grid-template-columns:80px 1fr 140px;align-items:center;gap:24px;border-bottom:1px solid var(--ln2);padding:28px 56px;cursor:default;transition:background .2s;}
+.pdoc:first-child{border-top:1px solid var(--ln2);}
+.pdoc:hover{background:rgba(255,255,255,.55);}
+.pdoc-code{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:28px;letter-spacing:-.02em;color:var(--g1);text-align:center;}
+.pdoc-name{font-size:16px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.pdoc-desc{font-size:13px;font-weight:400;color:rgba(30,61,92,.72);line-height:1.6;}
+.pdoc-badge{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border:1px solid var(--ln2);color:var(--blue);white-space:nowrap;align-self:flex-start;text-align:center;background:rgba(255,255,255,.6);}
+
+/* ══════════════════════════════════════════════
+   CTA — РАЗМЕСТИТЬ ЗАКАЗ
+══════════════════════════════════════════════ */
+#order-cta{background:#fff;}
+#order-cta::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--ln) 1px,transparent 1px),linear-gradient(90deg,var(--ln) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;opacity:.20;}
+.oc-inner{position:relative;z-index:1;padding:72px 56px;width:100%;display:grid;grid-template-columns:1fr 400px;gap:80px;align-items:center;min-height:100vh;}
+.oc-tag{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.oc-tag::before{content:'';width:28px;height:1px;background:var(--g1);}
+.oc-headline{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(44px,6vw,88px);letter-spacing:-.025em;text-transform:uppercase;color:var(--dark);line-height:.88;margin-bottom:22px;}
+.oc-sub{font-size:15px;font-weight:300;line-height:1.72;color:rgba(30,61,92,.72);}
+.oc-right{display:flex;flex-direction:column;gap:10px;}
+.oc-btn-main{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;background:var(--dark);font-family:'DINPro',sans-serif;font-weight:700;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#fff;cursor:pointer;border:none;width:100%;transition:background .18s;}
+.oc-btn-main:hover{background:var(--blue);}
+.oc-btn-sec{display:flex;align-items:center;justify-content:center;padding:16px;border:1px solid var(--ln2);background:transparent;font-family:'DINPro',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);cursor:pointer;width:100%;transition:all .18s;}
+.oc-btn-sec:hover{border-color:var(--g1);color:var(--dark);background:var(--bg);}
+.oc-contacts{margin-top:6px;display:flex;flex-direction:column;gap:0;}
+.oc-contact{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--ln);font-family:'DINPro',monospace;font-size:11px;}
+.oc-contact:last-child{border-bottom:none;}
+.oc-ck{color:var(--g1);}
+.oc-cv{color:var(--dark);font-weight:700;}
+
+/* ══════════════════════════════════════════════
+   §SHOPMAP — КАРТА ЦЕХА
+══════════════════════════════════════════════ */
+#shopmap{position:relative;background:#060E18;overflow:hidden;display:flex;flex-direction:column;}
+#shopmap::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(109,140,166,.038) 1px,transparent 1px),linear-gradient(90deg,rgba(109,140,166,.038) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+.shm-hd{position:relative;z-index:1;padding:22px 56px;border-bottom:1px solid rgba(109,140,166,.1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.shm-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:rgba(109,140,166,.65);display:flex;align-items:center;gap:10px;}
+.shm-tag::before{content:'';width:14px;height:1px;background:rgba(109,140,166,.45);}
+.shm-body{position:relative;z-index:1;padding:28px 56px 36px;}
+.shm-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:48px;margin-bottom:24px;}
+.shm-statement{font-size:13px;font-weight:300;line-height:1.75;color:rgba(109,140,166,.68);max-width:460px;}
+.shm-nums{display:flex;gap:0;flex-shrink:0;align-items:flex-start;}
+.shm-num{display:flex;flex-direction:column;gap:4px;padding:0 28px;border-right:1px solid rgba(109,140,166,.1);}
+.shm-num:first-child{padding-left:0;}
+.shm-num:last-child{border-right:none;padding-right:0;}
+.shm-num-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:26px;letter-spacing:-.02em;color:rgba(169,183,198,.9);line-height:1;}
+.shm-num-k{font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(109,140,166,.5);}
+.shm-plan{
+  position:relative;
+  border:1px solid rgba(109,140,166,.12);
+  overflow:hidden;
+  min-height:min(46vh, 420px);
+  padding:12px 0;
+  display:flex;
+  align-items:center;
+}
+.shm-plan-svg{display:block;width:100%;height:100%;min-height:360px;}
+.shm-legend{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:16px;}
+.shm-leg{display:flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(109,140,166,.5);}
+.shm-leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+@keyframes shmCar{from{stroke-dashoffset:0;}to{stroke-dashoffset:-1702;}}
+
+/* ══════════════════════════════════════════════
+   §FLEET — МАШИННЫЙ ПАРК
+══════════════════════════════════════════════ */
+#fleet{position:relative;background:var(--dark);overflow:hidden;}
+#fleet::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(109,140,166,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(109,140,166,.04) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;}
+.fl-hd{position:relative;z-index:1;padding:22px 56px;border-bottom:1px solid rgba(109,140,166,.1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.fl-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:rgba(109,140,166,.65);display:flex;align-items:center;gap:10px;}
+.fl-tag::before{content:'';width:14px;height:1px;background:rgba(109,140,166,.45);}
+.fl-body{position:relative;z-index:1;display:grid;grid-template-columns:260px 1fr;}
+.fl-anchor{padding:56px 40px 56px 56px;border-right:1px solid rgba(109,140,166,.08);display:flex;flex-direction:column;justify-content:center;}
+.fl-anchor-kicker{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:rgba(109,140,166,.5);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.fl-anchor-kicker::before{content:'';width:12px;height:1px;background:rgba(109,140,166,.35);}
+.fl-anchor-num{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(72px,8vw,120px);letter-spacing:-.04em;color:#fff;line-height:.85;margin-bottom:6px;}
+.fl-anchor-unit{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(109,140,166,.5);margin-bottom:36px;}
+.fl-anchor-stats{display:flex;flex-direction:column;border-top:1px solid rgba(109,140,166,.1);padding-top:20px;}
+.fl-astat{display:flex;justify-content:flex-start;align-items:baseline;gap:16px;padding:8px 0;border-bottom:1px solid rgba(109,140,166,.06);}
+.fl-astat:last-child{border-bottom:none;}
+.fl-astat-v{min-width:72px;font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.01em;color:rgba(169,183,198,.85);}
+.fl-astat-k{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(109,140,166,.48);}
+.fl-matrix{display:grid;grid-template-columns:1fr 1fr 1fr;}
+.fl-group{border-left:1px solid rgba(109,140,166,.08);border-bottom:1px solid rgba(109,140,166,.08);padding:28px 28px 24px 32px;opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s cubic-bezier(.16,1,.3,1);}
+.fl-group.fl-vis{opacity:1;transform:translateY(0);}
+.fl-group:nth-child(3n+1){border-left:none;}
+.fl-group:nth-child(n+4){border-bottom:none;}
+.fl-group-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(109,140,166,.07);}
+.fl-group-cat{font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(109,140,166,.55);}
+.fl-group-cnt{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.04em;color:rgba(109,140,166,.5);border:1px solid rgba(109,140,166,.18);padding:1px 7px;}
+.fl-item{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(109,140,166,.05);}
+.fl-item:last-child{border-bottom:none;padding-bottom:0;}
+.fl-item-bar{width:2px;flex-shrink:0;align-self:stretch;background:rgba(109,140,166,.2);margin-top:2px;}
+.fl-item-body{flex:1;}
+.fl-item-name{font-size:12.5px;font-weight:400;color:rgba(169,183,198,.82);line-height:1.35;margin-bottom:3px;}
+.fl-item-spec{font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.06em;color:rgba(109,140,166,.52);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.fl-item-qty{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:11px;color:rgba(169,183,198,.65);border:1px solid rgba(109,140,166,.18);padding:0 5px;letter-spacing:.04em;flex-shrink:0;}
+
+/* ══════════════════════════════════════════════
+   §GALLERY — ЦЕХ В ОБЪЕКТИВЕ
+══════════════════════════════════════════════ */
+#gallery{position:relative;background:var(--dark);overflow:hidden;min-height:100vh;}
+#gallery::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(109,140,166,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(109,140,166,.04) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;z-index:0;}
+.gal-hd{position:relative;z-index:1;padding:22px 56px;border-bottom:1px solid rgba(109,140,166,.1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.gal-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:rgba(109,140,166,.65);display:flex;align-items:center;gap:10px;}
+.gal-tag::before{content:'';width:14px;height:1px;background:rgba(109,140,166,.45);}
+.gal-intro{position:relative;z-index:1;padding:22px 56px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:60px;}
+.gal-headline{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(28px,3.8vw,50px);letter-spacing:-.02em;line-height:.95;text-transform:uppercase;color:#fff;}
+.gal-desc{font-size:13px;font-weight:300;line-height:1.55;color:rgba(169,183,198,.52);flex-shrink:0;max-width:340px;}
+.gal-stage{position:relative;z-index:1;overflow:hidden;cursor:grab;padding:0 56px;}
+.gal-stage.is-dragging{cursor:grabbing;}
+.gal-track{display:flex;gap:16px;will-change:transform;align-items:flex-start;user-select:none;-webkit-user-select:none;}
+/* Portrait cards: explicit height via calc so aspect-ratio can derive width */
+.gal-item{flex-shrink:0;height:calc(100vh - 232px);min-height:320px;width:auto;aspect-ratio:2/3;position:relative;transform-origin:center center;}
+.gal-img-wrap{position:relative;overflow:hidden;width:100%;height:100%;}
+.gal-img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
+.gal-ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,42,68,.65) 0%,transparent 22%,transparent 55%,rgba(7,17,28,.88) 100%);pointer-events:none;z-index:1;}
+.gal-crn{position:absolute;width:16px;height:16px;z-index:2;}
+.gal-crn.tl{top:16px;left:16px;border-top:1px solid rgba(169,183,198,.45);border-left:1px solid rgba(169,183,198,.45);}
+.gal-crn.tr{top:16px;right:16px;border-top:1px solid rgba(169,183,198,.45);border-right:1px solid rgba(169,183,198,.45);}
+.gal-crn.bl{bottom:16px;left:16px;border-bottom:1px solid rgba(169,183,198,.45);border-left:1px solid rgba(169,183,198,.45);}
+.gal-crn.br{bottom:16px;right:16px;border-bottom:1px solid rgba(169,183,198,.45);border-right:1px solid rgba(169,183,198,.45);}
+.gal-meta-top{position:absolute;top:20px;left:0;right:0;padding:0 22px;display:flex;align-items:center;justify-content:space-between;z-index:2;}
+.gal-num{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:rgba(169,183,198,.65);}
+.gal-zone{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:rgba(109,140,166,.6);}
+.gal-info{position:absolute;bottom:0;left:0;right:0;padding:16px 22px 24px;z-index:2;}
+.gal-info-name{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:clamp(17px,2.2vw,24px);letter-spacing:.01em;color:rgba(255,255,255,.9);line-height:1.1;margin-bottom:6px;}
+.gal-info-detail{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(109,140,166,.62);}
+.gal-caption{display:none;}
+.gal-footer{position:relative;z-index:1;padding:12px 56px 20px;display:flex;align-items:center;gap:20px;flex-shrink:0;}
+.gal-dots{display:flex;align-items:center;gap:10px;}
+.gal-dot{width:5px;height:5px;border-radius:50%;background:rgba(109,140,166,.3);cursor:pointer;transition:background .3s,transform .3s;flex-shrink:0;}
+.gal-dot.gal-act{background:rgba(169,183,198,.85);transform:scale(1.5);}
+.gal-hint{margin-left:auto;font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(109,140,166,.35);display:flex;align-items:center;gap:10px;}
+
+/* ══════════════════════════════════════════════
+   FOOTER ZONE — sticky CTA + footer slides over
+══════════════════════════════════════════════ */
+.s10{position:relative;z-index:1;padding-left:44px;border-top:1px solid var(--ln2);background:#fff;}
+.s10-inner{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+.s10-left{padding:80px 56px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--ln2);background:var(--bg2);}
+.s10-eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:36px;}
+.s10-eye-num{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.2em;color:var(--g1);border:1px solid var(--g1);padding:3px 8px;line-height:1;}
+.s10-eye-label{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--g1);opacity:.6;display:flex;align-items:center;gap:10px;}
+.s10-eye-label::before{content:'';width:28px;height:1px;background:var(--g1);flex-shrink:0;}
+.s10-h2{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(42px,5vw,82px);line-height:.88;letter-spacing:-.015em;text-transform:uppercase;color:var(--dark);margin-bottom:28px;}
+.s10-sub{font-family:'DINPro',sans-serif;font-size:13px;font-weight:300;line-height:1.72;color:var(--blue);max-width:380px;margin-bottom:40px;}
+.s10-contacts{display:flex;flex-direction:column;gap:0;border:1px solid var(--ln2);background:var(--bg);margin-top:0;}
+.s10-contact-row{display:grid;grid-template-columns:110px 1fr;gap:0;padding:14px 20px;border-bottom:1px solid var(--ln);align-items:center;transition:background .12s;}
+.s10-contact-row:last-child{border-bottom:none;}
+.s10-contact-row:hover{background:var(--bg2);}
+.s10-contact-k{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);}
+.s10-contact-v{font-family:'DINPro',sans-serif;font-size:13px;font-weight:500;color:var(--dark);text-decoration:none;transition:color .15s;}
+a.s10-contact-v:hover{color:var(--blue);}
+.s10-right{padding:64px 56px;display:flex;flex-direction:column;justify-content:center;background:var(--bg);}
+.s10-form-label{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(--g1);margin-bottom:20px;opacity:.6;}
+.s10-form{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--ln2);border:1px solid var(--ln2);margin-bottom:0;}
+.s10-field{display:flex;flex-direction:column;background:var(--bg);padding:18px 20px 16px;position:relative;transition:background .12s;}
+.s10-field:focus-within{background:#fff;z-index:1;}
+.s10-field-label{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);margin-bottom:9px;user-select:none;cursor:text;}
+.s10-field input,.s10-field select{border:none;background:transparent;font-family:'DINPro',sans-serif;font-size:13px;font-weight:500;color:var(--dark);padding:0;outline:none;width:100%;min-width:0;}
+.s10-field input::placeholder{color:var(--g2);font-weight:300;font-size:12px;}
+.s10-field--wide{grid-column:span 2;}
+.s10-file-row{grid-column:span 2;display:flex;align-items:center;gap:16px;background:var(--bg);padding:16px 20px;flex-wrap:wrap;}
+.s10-file-label-txt{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);min-width:80px;}
+.s10-file-btn{display:inline-flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);border:1px solid var(--ln2);padding:7px 14px;cursor:pointer;transition:all .15s;background:transparent;}
+.s10-file-btn:hover{background:var(--bg2);color:var(--dark);border-color:var(--g1);}
+.s10-file-name{font-family:'DINPro',monospace;font-size:10px;color:var(--g1);opacity:.7;}
+.s10-actions{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap;}
+.s10-submit{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--dark);color:var(--white);font-family:'DINPro',sans-serif;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--dark);cursor:pointer;transition:all .15s;}
+.s10-submit:hover{background:var(--blue);border-color:var(--blue);}
+.s10-ghost-link{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1);text-decoration:none;border-bottom:1px solid var(--ln2);padding-bottom:2px;transition:color .15s,border-color .15s;cursor:pointer;}
+.s10-ghost-link:hover{color:var(--dark);border-color:var(--g1);}
+.s10-note{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.1em;color:var(--g1);opacity:.6;margin-top:12px;}
+.s10-success{display:none;padding:20px 24px;background:rgba(109,140,166,.08);border:1px solid var(--g1);font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--dark);margin-top:24px;}
+@media(max-width:1024px){.s10-inner{grid-template-columns:1fr;min-height:auto;}.s10-left{border-right:none;border-bottom:1px solid var(--ln2);padding:60px 32px;}.s10-right{padding:60px 32px;}}
+@media(max-width:640px){.s10-left{padding:48px 20px;}.s10-right{padding:40px 20px;}.s10-form{grid-template-columns:1fr;}.s10-field--wide{grid-column:span 1;}.s10-file-row{grid-column:span 1;}.s10-actions{flex-direction:column;align-items:flex-start;}.s10-contact-row{grid-template-columns:90px 1fr;padding:12px 16px;}}
+.footer-zone{position:relative;}
+.footer-zone .s10,
+.footer-zone #order-cta{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:#fff;
+}
+.site-footer{
+  position:relative;
+  z-index:10;
+  background:var(--dark);
+  padding-left:44px;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 -60px 140px rgba(15,42,68,.55);
+}
+.site-footer::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(200,208,216,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(200,208,216,.035) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;z-index:0;}
+.ft-statement,.ft-grid,.ft-bar{position:relative;z-index:1;}
+.ft-statement{flex:1;padding:88px 56px 72px;display:flex;flex-direction:column;justify-content:flex-end;border-bottom:1px solid rgba(200,208,216,.1);}
+.ft-kicker{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);opacity:.7;margin-bottom:40px;display:flex;align-items:center;gap:16px;}
+.ft-kicker::before{content:'';width:36px;height:1px;background:var(--g1);opacity:.5;flex-shrink:0;}
+.ft-headline{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(72px,10vw,180px);line-height:.83;letter-spacing:-.02em;text-transform:uppercase;color:#fff;margin-bottom:40px;}
+.ft-tagline{font-size:13px;font-weight:300;line-height:1.75;color:var(--g2);max-width:460px;margin-bottom:48px;}
+.ft-cta{display:inline-flex;align-items:center;gap:10px;padding:15px 30px;border:1px solid rgba(200,208,216,.22);color:#fff;font-family:'DINPro',sans-serif;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;background:transparent;transition:background .18s,border-color .18s;align-self:flex-start;}
+.ft-cta:hover{background:rgba(200,208,216,.07);border-color:rgba(200,208,216,.45);}
+.ft-grid{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(200,208,216,.1);}
+.ft-cell{padding:44px 56px;border-right:1px solid rgba(200,208,216,.08);}
+.ft-cell:last-child{border-right:none;}
+.ft-cell-label{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);opacity:.55;margin-bottom:18px;}
+.ft-cell-val{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:clamp(20px,2vw,30px);color:#fff;line-height:1.15;letter-spacing:-.01em;}
+.ft-cell-val.mono{font-family:'DINPro',monospace;font-size:12px;font-weight:400;line-height:1.85;color:var(--g2);letter-spacing:.02em;}
+.ft-cell-val a{color:var(--g2);text-decoration:none;transition:color .15s;}
+.ft-cell-val a:hover{color:#fff;}
+.ft-nav-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:11px;}
+.ft-nav-list a{font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);text-decoration:none;transition:color .15s;}
+.ft-nav-list a:hover{color:#fff;}
+.ft-bar{display:flex;align-items:center;justify-content:space-between;padding:22px 56px;flex-wrap:wrap;gap:12px;}
+.ft-copy{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.15em;color:var(--g1);opacity:.5;}
+.ft-idx{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.15em;color:var(--g1);opacity:.22;}
+
+/* ── S2 stake line ── */
+.s2-col-stake{
+  font-family:'DINPro',sans-serif;font-size:12px;font-weight:500;
+  line-height:1.5;letter-spacing:.01em;
+  color:rgba(30,61,92,.72);
+  border-left:3px solid rgba(30,61,92,.28);
+  padding:11px 30px 11px 27px;
+  background:rgba(30,61,92,.035);
+  flex-shrink:0;
+}
+
+/* RESPONSIVE */
+@media(max-width:1200px){
+  .map-stages{flex-wrap:wrap;}
+  .ms,.ms:nth-child(3),.ms:nth-child(6){flex:0 0 33.33% !important;min-height:280px;}
+  .map-progress{padding:12px 24px 14px;}
+  .mp-lbl{font-size:7px;letter-spacing:.08em;}
+  .jrn-layout{grid-template-columns:1fr;}.jrn-side{display:none;}
+  .therm-phases{grid-template-columns:repeat(4,1fr);}
+  .grades-grid{grid-template-columns:repeat(3,1fr);}
+  .grades-intro{flex-direction:column;gap:24px;}
+  .jrn-context{flex-direction:column;gap:20px;}
+  .therm-hd{grid-template-columns:1fr;}
+  .therm-hd-right{border-left:none;padding-left:0;border-top:1px solid rgba(109,140,166,.1);padding-top:20px;}
+  .therm-stats{flex-direction:row;flex-wrap:wrap;gap:0 32px;}
+  .therm-stat{padding-right:24px;}
+  .jc-steps{flex-wrap:wrap;gap:12px;}
+  .cap-body{grid-template-columns:1fr;}
+  .cap-anchor{border-right:none;border-bottom:1px solid var(--ln2);padding:48px 56px;}
+  .fl-body{grid-template-columns:1fr;}
+  .fl-anchor{border-right:none;border-bottom:1px solid rgba(109,140,166,.08);padding:40px 40px 32px 56px;}
+  .shm-body{padding:28px 32px 40px;}
+  .shm-intro{flex-direction:column;gap:20px;}
+  .s10-inner{min-height:auto;}
+  .oc-inner{grid-template-columns:1fr;gap:40px;min-height:auto;}
+  .ft-grid{grid-template-columns:1fr 1fr;}
+  .ft-cell:nth-child(2){border-right:none;}
+  .ft-cell:nth-child(3){border-top:1px solid rgba(200,208,216,.08);}
+  .ft-cell{padding:36px 40px;}
+  .ft-statement{padding:72px 40px 56px;}
+}
+@media(max-width:900px){
+  .nav-links{display:none;}
+  .s1-body{grid-template-columns:1fr;}
+  .s1-right{display:none;}
+  .prf-main{left:24px;bottom:60px;max-width:75%;}
+  .prf-target,.prf-ann{display:none;}
+  .prf-params{padding:0 12px;overflow:hidden;}
+  .prf-param{padding:0 10px;}
+  .prf-param:nth-child(n+5){display:none;}
+  .s2-cols{flex-direction:column;}
+  .s2-col{border-right:none;border-bottom:1px solid var(--ln2);}
+  .grades-grid{grid-template-columns:repeat(2,1fr);}
+  .therm-phases{grid-template-columns:repeat(2,1fr);}
+  #thermal .therm-body,.therm-hd,
+  .grades-hd,.grades-intro,.jrn-hd,.jrn-context,.jrn-doc,
+  .portal-hd,.portal-docs,
+  .cap-hd,.cap-anchor,
+  .s1-left,.s2-top,.s2-foot{padding-left:24px;padding-right:24px;}
+  .cap-row{padding-left:24px;padding-right:24px;}
+  .pdoc{padding-left:24px;padding-right:24px;}
+  .fl-matrix{grid-template-columns:1fr 1fr;}
+  .fl-group:nth-child(2n){border-left:1px solid rgba(109,140,166,.08);}
+  .fl-group:nth-child(3){border-bottom:1px solid rgba(109,140,166,.08);}
+  .fl-group:nth-child(5){border-bottom:none;}
+  .fl-anchor{padding-left:24px;padding-right:24px;}
+  .fl-hd,.shm-hd{padding-left:24px;padding-right:24px;}
+  .shm-body{padding:20px 24px 36px;}
+  .oc-inner{padding:56px 24px;}
+  .map-progress{padding:0 24px;}
+  .map-foot{padding:8px 24px;}
+  .map-hd{padding:22px 24px 18px;}
+  .gi-stats{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <a class="nav-logo" href="hero-variant-d.html"><img src="mqknpb19-PE_logo_black.png" alt="Промышленная Энергетика"></a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="hero-variant-d.html">Главная</a></li>
+    <li><a href="katalog.html">Каталог</a></li>
+    <li><a href="sdt.html">Соединительные детали</a></li>
+    <li><a href="#" class="is-active">Производство</a></li>
+    <li><a href="#">Качество</a></li>
+    <li><a href="#">О заводе</a></li>
+  </ul>
+  <div class="nav-meta" id="navClock">—</div>
+  <a class="nav-cta" href="#">Разместить заказ ↗</a>
+</nav>
+
+<aside class="strip">
+  <span class="strip-yr">2026</span>
+  <span class="strip-pulse"></span>
+  <span class="strip-txt">ПЭ · ЗАВОД</span>
+</aside>
+
+<nav class="sidenav" id="sidenav">
+  <a class="sidenav-item sn-active" href="#s1"><span class="sidenav-dot"></span><span class="sidenav-label">ТОЧНОСТЬ</span></a>
+  <a class="sidenav-item" href="#proof"><span class="sidenav-dot"></span><span class="sidenav-label">В ЦЕХЕ</span></a>
+  <a class="sidenav-item" href="#s2"><span class="sidenav-dot"></span><span class="sidenav-label">НОРМИРОВАНИЕ</span></a>
+  <a class="sidenav-item" href="#grades"><span class="sidenav-dot"></span><span class="sidenav-label">МАТЕРИАЛЫ</span></a>
+  <a class="sidenav-item" href="#map"><span class="sidenav-dot"></span><span class="sidenav-label">ИСТОРИЯ ИЗДЕЛИЯ</span></a>
+  <a class="sidenav-item" href="#shopmap"><span class="sidenav-dot"></span><span class="sidenav-label">КАРТА ЦЕХА</span></a>
+  <a class="sidenav-item" href="#thermal"><span class="sidenav-dot"></span><span class="sidenav-label">ТЕРМООБРАБОТКА</span></a>
+  <a class="sidenav-item" href="#journal"><span class="sidenav-dot"></span><span class="sidenav-label">ЖУРНАЛ ОТК</span></a>
+  <a class="sidenav-item" href="#capacity"><span class="sidenav-dot"></span><span class="sidenav-label">ВОЗМОЖНОСТИ</span></a>
+  <a class="sidenav-item" href="#fleet"><span class="sidenav-dot"></span><span class="sidenav-label">МАШИННЫЙ ПАРК</span></a>
+  <a class="sidenav-item" href="#gallery"><span class="sidenav-dot"></span><span class="sidenav-label">ЦЕХ В ОБЪЕКТИВЕ</span></a>
+  <a class="sidenav-item" href="#portal"><span class="sidenav-dot"></span><span class="sidenav-label">ДОКУМЕНТЫ</span></a>
+</nav>
+
+<main class="pg">
+
+<!-- ══════════════════════════════════════
+     СЦЕНА 1 — ТОЧНОСТЬ
+     Первое, что видит пользователь: единственный факт,
+     который говорит об инженерной культуре больше, чем
+     любой список преимуществ.
+══════════════════════════════════════ -->
+<section id="s1">
+  <div class="s1-beam" aria-hidden="true"><div class="s1-beam-line"></div></div>
+  <div class="s1-reg tl"></div>
+  <div class="s1-reg tr"></div>
+  <div class="s1-reg bl"></div>
+  <div class="s1-reg br"></div>
+
+  <div class="s1-top">
+    <span>ПРОИЗВОДСТВО · ООО ЗАВОД «ПРОМЫШЛЕННАЯ ЭНЕРГЕТИКА» · ЧЕЛЯБИНСК</span>
+    <span>N55°10′18″ E61°24′07″</span>
+  </div>
+
+  <div class="s1-body">
+    <!-- LEFT: the number -->
+    <div class="s1-left">
+      <div class="s1-eyebrow">ПРОИЗВОДИМ СДТ С ТОЧНОСТЬЮ ДО</div>
+
+      <div class="s1-num-group">
+        <span class="s1-num">0.01</span>
+        <span class="s1-unit">мм</span>
+      </div>
+
+      <div class="s1-caption">
+        <div class="s1-label">ДОПУСК НА УПЛОТНИТЕЛЬНЫХ ПОВЕРХНОСТЯХ</div>
+        <div class="s1-sub">Трубопроводная арматура АЭС и ТЭС.<br>ГОСТ 24643 · Квалитет IT7 · НАКС II уровень.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: engineering annotation callouts -->
+    <div class="s1-right">
+      <div class="s1-anns">
+        <div class="s1-ann">
+          <div class="ann-val">Ra 0.4</div>
+          <div class="ann-key">Шероховатость<br>поверхности</div>
+        </div>
+        <div class="s1-ann">
+          <div class="ann-val">IT7</div>
+          <div class="ann-key">Квалитет<br>точности ISO</div>
+        </div>
+        <div class="s1-ann">
+          <div class="ann-val">±0.01</div>
+          <div class="ann-key">Допуск<br>на диаметр, мм</div>
+        </div>
+        <div class="s1-ann">
+          <div class="ann-val">НК II</div>
+          <div class="ann-key">Уровень<br>неразруш. контроля</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s1-foot">
+    <div class="s1-foot-l">
+      <span style="color:rgba(109,140,166,.2)">01</span>
+      <span>ТОЧНОСТЬ</span>
+    </div>
+    <span class="s1-scroll">↓</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     §PROOF — ВИДЕОДОКАЗАТЕЛЬСТВО
+     Живое подтверждение точности из первого экрана.
+     Кадр из цеха, не реклама.
+══════════════════════════════════════ -->
+<section id="proof">
+  <div class="prf-sticky">
+
+    <!-- Intro: cinematic frame visible before scroll reveal -->
+    <div class="prf-intro" id="prfIntro" aria-hidden="true">
+      <div class="prf-ib-rule top"></div>
+      <div class="prf-ib-rule bottom"></div>
+      <div class="prf-ib-top">
+        <span class="prf-ib-label-l">ВИДЕОДОКАЗАТЕЛЬСТВО &middot; ТОЧНОСТЬ В ДЕЙСТВИИ</span>
+        <span class="prf-ib-label-r">ЦЕХ № 3 &middot; КАРУСЕЛЬНЫЙ СТАНОК</span>
+      </div>
+      <div class="prf-ib-left">
+        <div class="prf-ib-spec">
+          <span class="prf-ib-sk">Допуск</span>
+          <span class="prf-ib-sv">± 0.01 мм</span>
+        </div>
+        <div class="prf-ib-spec">
+          <span class="prf-ib-sk">Квалитет</span>
+          <span class="prf-ib-sv">IT 7</span>
+        </div>
+      </div>
+      <div class="prf-ib-right">
+        <div class="prf-ib-spec" style="align-items:flex-end">
+          <span class="prf-ib-sk">Шероховатость</span>
+          <span class="prf-ib-sv">Ra 0.4</span>
+        </div>
+        <div class="prf-ib-spec" style="align-items:flex-end">
+          <span class="prf-ib-sk">Операция</span>
+          <span class="prf-ib-sv">Расточка</span>
+        </div>
+      </div>
+      <div class="prf-ib-corner itl"></div>
+      <div class="prf-ib-corner itr"></div>
+      <div class="prf-ib-corner ibl"></div>
+      <div class="prf-ib-corner ibr"></div>
+      <div class="prf-ib-bottom">
+        <div class="prf-ib-cue">
+          <div class="prf-ib-tick"></div>
+          <span>ПРОКРУТИТЕ &middot; ВОЙДИТЕ В ЦЕХ</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prf-clip" id="prfClip">
+
+      <!-- Video background -->
+      <div class="prf-video-wrap">
+        <video class="prf-video" autoplay muted loop playsinline preload="auto">
+          <source src="mrm1msa0-tochnost_do_1mm-2.webm" type="video/webm">
+        </video>
+      </div>
+
+      <!-- Gradient overlay -->
+      <div class="prf-overlay" aria-hidden="true"></div>
+
+      <!-- Scan line -->
+      <div class="prf-scan" aria-hidden="true"></div>
+
+      <!-- Corner brackets -->
+      <div class="prf-brk tl" aria-hidden="true"></div>
+      <div class="prf-brk tr" aria-hidden="true"></div>
+      <div class="prf-brk bl" aria-hidden="true"></div>
+      <div class="prf-brk br" aria-hidden="true"></div>
+
+      <!-- Status bar -->
+      <div class="prf-status" id="prfStatus">
+        <div class="prf-rec">
+          <span class="prf-rec-dot"></span>
+          ЧИСТОВОЕ РАСТОЧЕНИЕ &middot; ЦЕХ № 3
+        </div>
+        <div class="prf-status-r">
+          <span>ЧПУ КАРУСЕЛЬНЫЙ</span>
+          <span class="prf-status-sep">&middot;</span>
+          <span>850 ОБ/МИН</span>
+          <span class="prf-status-sep">&middot;</span>
+          <span id="prfClock">08:47:00</span>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="prf-main" id="prfMain">
+        <div class="prf-kicker">ТОЧНОСТЬ В ДЕЙСТВИИ &middot; СЪЁМКА В ЦЕХЕ</div>
+        <div class="prf-num-group">
+          <span class="prf-num">0.01</span>
+          <span class="prf-unit">мм</span>
+        </div>
+        <div class="prf-label">ДОПУСК НА УПЛОТНИТЕЛЬНЫХ ПОВЕРХНОСТЯХ</div>
+        <p class="prf-text">Этот кадр снят в цехе в рабочую смену — не постановка, не реклама. Чистовое расточение на карусельном станке. Именно эта операция даёт допуск ±&nbsp;0.01&nbsp;мм и шероховатость Ra&nbsp;0.4, о которых говорит первый экран.</p>
+      </div>
+
+      <!-- Measurement target (right zone) -->
+      <div class="prf-target" id="prfTarget">
+        <div class="prf-target-ring"></div>
+        <div class="prf-target-dot"></div>
+        <div class="prf-target-lbl">ЗАМЕР &middot; IT7</div>
+      </div>
+
+      <!-- Annotation callout linked to target -->
+      <div class="prf-ann" id="prfAnn">
+        <div class="prf-ann-val">Ra 0.4</div>
+        <div class="prf-ann-k">Шероховатость</div>
+        <div class="prf-ann-line"></div>
+      </div>
+
+      <!-- Parameters strip -->
+      <div class="prf-params" id="prfParams">
+        <div class="prf-param"><span class="prf-pk">МАТЕР.</span>&ensp;<span class="prf-pv">Сталь 20</span></div>
+        <div class="prf-param"><span class="prf-pk">ОПЕРАЦИЯ</span>&ensp;<span class="prf-pv">Расточка</span></div>
+        <div class="prf-param"><span class="prf-pk">ПОДАЧА</span>&ensp;<span class="prf-pv">0.08 мм/об</span></div>
+        <div class="prf-param"><span class="prf-pk">ШЕРОХ.</span>&ensp;<span class="prf-pv">Ra 0.4</span></div>
+        <div class="prf-param"><span class="prf-pk">КВАЛИТЕТ</span>&ensp;<span class="prf-pv">IT7</span></div>
+        <div class="prf-param"><span class="prf-pk">ДОПУСК</span>&ensp;<span class="prf-pv">±0.01 мм</span></div>
+      </div>
+
+    </div><!-- /.prf-clip -->
+  </div><!-- /.prf-sticky -->
+</section>
+
+<!-- ══════════════════════════════════════
+     СЦЕНА 2 — НОРМИРОВАНИЕ
+     Три отрасли. Реальные стандарты. Без слов об опыте.
+     Инженер видит НП-045-18 — и всё понятно.
+══════════════════════════════════════ -->
+<section id="s2">
+  <div class="s2-top">
+    <div class="s2-claim">
+      Каждое изделие изготавливается в соответствии<br>
+      с нормативными требованиями отрасли, которой служит
+    </div>
+    <div class="s2-top-r">
+      <span style="color:rgba(109,140,166,.2)">02</span>
+      <span>НОРМИРОВАНИЕ</span>
+    </div>
+  </div>
+
+  <div class="s2-cols">
+    <!-- ТЭС -->
+    <div class="s2-col" data-ind="tes">
+      <div class="s2-col-hd">
+        <div class="s2-industry">ТЭС</div>
+        <div class="s2-industry-full">Тепловая энергетика</div>
+      </div>
+      <div class="s2-col-stake">Отказ паропровода — остановка блока мощностью 800 МВт</div>
+      <div class="s2-cell">
+        <div class="s2-std">ГОСТ 17375</div>
+        <div class="s2-what">Крутоизогнутые отводы паропроводов тепловых электростанций</div>
+      </div>
+      <div class="s2-cell">
+        <div class="s2-std">ОСТ 108-07</div>
+        <div class="s2-what">Детали трубопроводов высокого давления паровых котлов</div>
+      </div>
+      <div class="s2-cell">
+        <div class="s2-std">ГОСТ 17380</div>
+        <div class="s2-what">Тройники, переходы, заглушки — детали трубопроводов</div>
+      </div>
+    </div>
+
+    <!-- АЭС — тёмная колонка, высший регуляторный уровень -->
+    <div class="s2-col" data-ind="aes">
+      <div class="s2-col-hd">
+        <div class="s2-industry">АЭС</div>
+        <div class="s2-industry-full">Атомная энергетика</div>
+      </div>
+      <div class="s2-col-stake">Один дефект — плановый останов реактора и расследование</div>
+      <div class="s2-cell">
+        <div class="s2-std">НП-045-18</div>
+        <div class="s2-what">Правила устройства и безопасной эксплуатации оборудования АС</div>
+      </div>
+      <div class="s2-cell">
+        <div class="s2-std">ТР ТС 032</div>
+        <div class="s2-what">Технический регламент — оборудование под давлением</div>
+      </div>
+      <div class="s2-cell">
+        <div class="s2-std">НП-086-11</div>
+        <div class="s2-what">Правила ядерной безопасности реакторных установок</div>
+      </div>
+    </div>
+
+    <!-- НГО -->
+    <div class="s2-col" data-ind="ngo">
+      <div class="s2-col-hd">
+        <div class="s2-industry">НГО</div>
+        <div class="s2-industry-full">Нефтегаз и химия</div>
+      </div>
+      <div class="s2-col-stake">Утечка на скважине — экологическая катастрофа и штраф</div>
+      <div class="s2-cell">
+        <div class="s2-std">ОСТ 26-07</div>
+        <div class="s2-what">Детали трубопроводов нефтяной и газовой промышленности</div>
+      </div>
+      <div class="s2-cell">
+        <div class="s2-std">ГОСТ 9941</div>
+        <div class="s2-what">Трубы нержавеющие холоднодеформированные для хим. отрасли</div>
+      </div>
+      <div class="s2-cell">
+        <div class="s2-std">ОСТ 26-18.6</div>
+        <div class="s2-what">Сосуды и аппараты нефтехимической и нефтеперерабатывающей промышленности</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s2-foot">
+    <span class="s2-decl">ТР ТС 032/2013 · ДЕКЛАРАЦИЯ RU С-RU.АБ53.В.08323/23 · ДЕЙСТВИТЕЛЬНА</span>
+    <span class="s2-continue">↓ БИБЛИОТЕКА МАТЕРИАЛОВ</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════ §02б БИБЛИОТЕКА МАТЕРИАЛОВ ═══════════════════════ -->
+<section id="grades">
+  <div class="grades-hd">
+    <div class="grades-tag">БИБЛИОТЕКА МАТЕРИАЛОВ</div>
+    <span style="font-family:'DINPro',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--g2);opacity:.5;">STEEL GRADE REFERENCE</span>
+  </div>
+  <div class="grades-intro">
+    <div class="gi-statement">
+      Завод работает с <strong>8 марками стали</strong> — от углеродистых Сталь 20 для стандартных паропроводов до высокохромистых сплавов для высокоэффективных ТЭС и аустенитных нержавеющих для объектов АЭС. Выбор марки определяется рабочей температурой, давлением и отраслевым регламентом — мы помогаем с подбором на этапе ТЗ.
+    </div>
+    <div class="gi-stats">
+      <div class="gi-stat">
+        <div class="gi-stat-v">8</div>
+        <div class="gi-stat-l">Марок стали</div>
+      </div>
+      <div class="gi-stat">
+        <div class="gi-stat-v">+650°</div>
+        <div class="gi-stat-l">Макс. рабочая<br>температура</div>
+      </div>
+      <div class="gi-stat">
+        <div class="gi-stat-v">3</div>
+        <div class="gi-stat-l">Отрасли<br>ТЭС · АЭС · НГО</div>
+      </div>
+    </div>
+  </div>
+  <div class="grades-grid">
+    <div class="ge"><span class="ge-idx">01</span><div class="ge-name">ст20</div><div class="ge-std">ГОСТ 1050 · Углеродистая</div><div class="ge-props"><div><div class="ge-pv">412</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+350°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">ТЭС · Паропроводы · Трубопроводы</div></div>
+    <div class="ge"><span class="ge-idx">02</span><div class="ge-name">09Г2С</div><div class="ge-std">ГОСТ 19281 · Низколегированная</div><div class="ge-props"><div><div class="ge-pv">490</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">−70°</div><div class="ge-pk">Мин.темп.</div></div></div><div class="ge-app">НГО · Северное исполнение</div></div>
+    <div class="ge"><span class="ge-idx">03</span><div class="ge-name" style="font-size:21px;letter-spacing:-.005em;">12Х18Н10Т</div><div class="ge-std">ГОСТ 5632 · Аустенитная</div><div class="ge-props"><div><div class="ge-pv">540</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+600°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">АЭС · Химическая промышленность</div></div>
+    <div class="ge"><span class="ge-idx">04</span><div class="ge-name">15ГС</div><div class="ge-std">ОСТ 108 · Теплоустойчивая</div><div class="ge-props"><div><div class="ge-pv">412</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+475°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">ТЭС · Паровые системы</div></div>
+    <div class="ge"><span class="ge-idx">05</span><div class="ge-name">15Х5М</div><div class="ge-std">ГОСТ 20072 · Хромомолибд.</div><div class="ge-props"><div><div class="ge-pv">412</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+550°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">НГО · Нефтехимия</div></div>
+    <div class="ge"><span class="ge-idx">06</span><div class="ge-name" style="font-size:22px;">10Х9МФБ</div><div class="ge-std">ТУ 14 · Высокохромистая</div><div class="ge-props"><div><div class="ge-pv">620</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+650°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">Высокоэффективные ТЭС · ПГУ</div></div>
+    <div class="ge"><span class="ge-idx">07</span><div class="ge-name" style="font-size:21px;letter-spacing:-.005em;">08Х18Н10Т</div><div class="ge-std">ГОСТ 5632 · Нержавеющая</div><div class="ge-props"><div><div class="ge-pv">520</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+600°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">АЭС · Криогенные системы</div></div>
+    <div class="ge"><span class="ge-idx">08</span><div class="ge-name">15Х5МУ</div><div class="ge-std">ГОСТ 20072 · Жаропрочная</div><div class="ge-props"><div><div class="ge-pv">540</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+600°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">ТЭС · Реакторные системы</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ §03 ИСТОРИЯ ИЗДЕЛИЯ ═══════════════════════ -->
+<section id="map">
+  <div class="map-scan" aria-hidden="true"></div>
+  <div class="map-hd">
+    <div class="map-hd-row">
+      <div class="map-tag">ИСТОРИЯ ИЗДЕЛИЯ</div>
+      <div class="map-spec">ТР. 219×12 · СТАЛЬ 20 · ГОСТ 8732 · ТЭС / АЭС</div>
+    </div>
+    <div class="map-subtitle">Полный производственный маршрут конкретной трубы — от приёмки проката до передачи изделия с паспортом. Каждый из 6 этапов документируется и не может быть пропущен вне зависимости от объёма партии.</div>
+  </div>
+  <div class="map-stages">
+
+    <!-- 01 ПРОКАТ -->
+    <div class="ms">
+      <div class="ms-step">ШАГ 01</div>
+      <div class="ms-num">01</div>
+      <div class="ms-svg-wrap">
+        <svg viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="24" width="74" height="10" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="8" y="76" width="74" height="10" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="8" y="24" width="10" height="62" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="72" y="24" width="10" height="62" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <line x1="4" y1="55" x2="86" y2="55" stroke="rgba(109,140,166,.25)" stroke-width=".4" stroke-dasharray="6 2 2 2"/>
+          <line x1="8" y1="17" x2="82" y2="17" stroke="rgba(109,140,166,.35)" stroke-width=".6"/>
+          <line x1="8" y1="14" x2="8" y2="20" stroke="rgba(109,140,166,.35)" stroke-width=".6"/>
+          <line x1="82" y1="14" x2="82" y2="20" stroke="rgba(109,140,166,.35)" stroke-width=".6"/>
+          <text x="45" y="12" text-anchor="middle" font-family="'DINPro',monospace" font-size="6" fill="rgba(109,140,166,.48)">Ø 219 мм</text>
+          <path d="M60,87 l2,-5 l2,8 l2,-6 l2,4 l2,-3" fill="none" stroke="rgba(109,140,166,.3)" stroke-width=".8"/>
+          <text x="70" y="101" text-anchor="middle" font-family="'DINPro',monospace" font-size="5.5" fill="rgba(109,140,166,.35)">Ra 12.5</text>
+        </svg>
+      </div>
+      <div class="ms-label">ПРОКАТ</div>
+      <div class="ms-anns">
+        <div class="ms-ann"><span>Ø 219×12</span> ГОСТ 8732-78</div>
+        <div class="ms-ann"><span>Сталь 20</span> углеродистая</div>
+        <div class="ms-ann"><span>ВК + МК</span> входной контроль</div>
+      </div>
+      <div class="ms-arrow">→</div>
+    </div>
+
+    <!-- 02 РАЗРЕЗКА -->
+    <div class="ms">
+      <div class="ms-step">ШАГ 02</div>
+      <div class="ms-num">02</div>
+      <div class="ms-svg-wrap">
+        <svg viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="24" width="62" height="10" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="14" y="76" width="62" height="10" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="14" y="24" width="9" height="62" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.5)" stroke-width="1.5"/>
+          <rect x="67" y="24" width="9" height="62" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.5)" stroke-width="1.5"/>
+          <line x1="4" y1="55" x2="86" y2="55" stroke="rgba(109,140,166,.25)" stroke-width=".4" stroke-dasharray="6 2 2 2"/>
+          <line x1="14" y1="100" x2="76" y2="100" stroke="rgba(109,140,166,.35)" stroke-width=".6"/>
+          <line x1="14" y1="97" x2="14" y2="103" stroke="rgba(109,140,166,.35)" stroke-width=".6"/>
+          <line x1="76" y1="97" x2="76" y2="103" stroke="rgba(109,140,166,.35)" stroke-width=".6"/>
+          <text x="45" y="108" text-anchor="middle" font-family="'DINPro',monospace" font-size="5.5" fill="rgba(109,140,166,.45)">L = 450 мм</text>
+          <text x="23" y="14" text-anchor="middle" font-family="'DINPro',monospace" font-size="7" fill="rgba(109,140,166,.42)">⊥</text>
+          <text x="67" y="14" text-anchor="middle" font-family="'DINPro',monospace" font-size="7" fill="rgba(109,140,166,.42)">⊥</text>
+        </svg>
+      </div>
+      <div class="ms-label">РАЗРЕЗКА</div>
+      <div class="ms-anns">
+        <div class="ms-ann"><span>L = 450</span> мм ± 2</div>
+        <div class="ms-ann"><span>Пила / плазма</span> резка</div>
+        <div class="ms-ann"><span>⊥ торец</span> перпендикулярность</div>
+      </div>
+      <div class="ms-arrow">→</div>
+    </div>
+
+    <!-- 03 МЕХОБРАБОТКА (wide) -->
+    <div class="ms">
+      <div class="ms-step">ШАГ 03</div>
+      <div class="ms-num">03</div>
+      <div class="ms-svg-wrap">
+        <svg viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="24" width="74" height="10" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="8" y="76" width="74" height="10" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="5" y="20" width="13" height="70" fill="rgba(109,140,166,.22)" stroke="rgba(169,183,198,.68)" stroke-width="1.7"/>
+          <rect x="72" y="24" width="10" height="62" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <line x1="4" y1="55" x2="86" y2="55" stroke="rgba(109,140,166,.25)" stroke-width=".4" stroke-dasharray="6 2 2 2"/>
+          <line x1="5" y1="42" x2="0" y2="35" stroke="rgba(169,183,198,.38)" stroke-width=".7"/>
+          <text x="-1" y="33" font-family="'DINPro',monospace" font-size="5.5" fill="rgba(169,183,198,.58)">Ra 0.4</text>
+          <line x1="11" y1="20" x2="20" y2="11" stroke="rgba(109,140,166,.3)" stroke-width=".6"/>
+          <text x="22" y="9" font-family="'DINPro',monospace" font-size="6" fill="rgba(109,140,166,.48)">IT7</text>
+          <line x1="18" y1="55" x2="29" y2="43" stroke="rgba(109,140,166,.22)" stroke-width=".5"/>
+          <text x="31" y="41" font-family="'DINPro',monospace" font-size="5" fill="rgba(109,140,166,.36)">±0.05</text>
+          <path d="M72,88 l2,-4 l2,7 l2,-5 l2,4 l2,-2" fill="none" stroke="rgba(109,140,166,.22)" stroke-width=".7"/>
+        </svg>
+      </div>
+      <div class="ms-label">МЕХОБРАБОТКА</div>
+      <div class="ms-anns">
+        <div class="ms-ann"><span>Ra 0.4</span> уплотнит. поверхность</div>
+        <div class="ms-ann"><span>IT7</span> квалитет точности</div>
+        <div class="ms-ann"><span>Ø 2500 мм</span> макс. диаметр</div>
+        <div class="ms-ann"><span>40+ станков</span> ЧПУ парк</div>
+      </div>
+      <div class="ms-arrow">→</div>
+    </div>
+
+    <!-- 04 СВАРКА -->
+    <div class="ms">
+      <div class="ms-step">ШАГ 04</div>
+      <div class="ms-num">04</div>
+      <div class="ms-svg-wrap">
+        <svg viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="24" width="32" height="10" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="50" y="24" width="32" height="10" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="8" y="76" width="32" height="10" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="50" y="76" width="32" height="10" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="8" y="24" width="9" height="62" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="73" y="24" width="9" height="62" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <path d="M40,24 L43,18 L47,18 L50,24" fill="rgba(169,183,198,.18)" stroke="rgba(169,183,198,.52)" stroke-width="1.1"/>
+          <path d="M40,86 L43,92 L47,92 L50,86" fill="rgba(169,183,198,.18)" stroke="rgba(169,183,198,.52)" stroke-width="1.1"/>
+          <line x1="45" y1="18" x2="45" y2="92" stroke="rgba(109,140,166,.25)" stroke-width=".5" stroke-dasharray="3 2"/>
+          <line x1="4" y1="55" x2="86" y2="55" stroke="rgba(109,140,166,.25)" stroke-width=".4" stroke-dasharray="6 2 2 2"/>
+          <line x1="45" y1="38" x2="60" y2="26" stroke="rgba(109,140,166,.3)" stroke-width=".6"/>
+          <line x1="60" y1="26" x2="78" y2="26" stroke="rgba(109,140,166,.3)" stroke-width=".6"/>
+          <path d="M67,22 l3,8 l3,-8" fill="none" stroke="rgba(109,140,166,.42)" stroke-width=".8"/>
+          <line x1="64" y1="22" x2="76" y2="22" stroke="rgba(109,140,166,.42)" stroke-width=".8"/>
+          <text x="45" y="105" text-anchor="middle" font-family="'DINPro',monospace" font-size="5.5" fill="rgba(109,140,166,.36)">НАКС · ГОСТ 55143</text>
+        </svg>
+      </div>
+      <div class="ms-label">СВАРКА</div>
+      <div class="ms-anns">
+        <div class="ms-ann"><span>30°</span> угол разделки кромки</div>
+        <div class="ms-ann"><span>НАКС</span> аттест. сварщиков</div>
+        <div class="ms-ann"><span>РДС / РАД / АФ</span></div>
+      </div>
+      <div class="ms-arrow">→</div>
+    </div>
+
+    <!-- 05 НК · КОНТРОЛЬ -->
+    <div class="ms">
+      <div class="ms-step">ШАГ 05</div>
+      <div class="ms-num">05</div>
+      <div class="ms-svg-wrap">
+        <svg viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="30" width="74" height="9" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="8" y="72" width="74" height="9" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="8" y="30" width="9" height="51" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <rect x="73" y="30" width="9" height="51" fill="rgba(109,140,166,.17)" stroke="rgba(169,183,198,.42)" stroke-width="1.2"/>
+          <line x1="4" y1="56" x2="86" y2="56" stroke="rgba(109,140,166,.25)" stroke-width=".4" stroke-dasharray="6 2 2 2"/>
+          <rect x="34" y="16" width="22" height="14" rx="2" fill="rgba(109,140,166,.12)" stroke="rgba(109,140,166,.48)" stroke-width=".9"/>
+          <text x="45" y="25" text-anchor="middle" font-family="'DINPro',monospace" font-size="5.5" fill="rgba(109,140,166,.55)">УЗК</text>
+          <line x1="42" y1="30" x2="39" y2="40" stroke="rgba(109,140,166,.22)" stroke-width=".5" stroke-dasharray="2 1"/>
+          <line x1="45" y1="30" x2="45" y2="42" stroke="rgba(109,140,166,.22)" stroke-width=".5" stroke-dasharray="2 1"/>
+          <line x1="48" y1="30" x2="51" y2="40" stroke="rgba(109,140,166,.22)" stroke-width=".5" stroke-dasharray="2 1"/>
+          <text x="84" y="37" text-anchor="end" font-family="'DINPro',monospace" font-size="4.5" fill="rgba(109,140,166,.32)">ВК</text>
+          <text x="84" y="44" text-anchor="end" font-family="'DINPro',monospace" font-size="4.5" fill="rgba(109,140,166,.32)">МК</text>
+          <text x="84" y="51" text-anchor="end" font-family="'DINPro',monospace" font-size="4.5" fill="rgba(109,140,166,.32)">УЗК</text>
+          <text x="84" y="58" text-anchor="end" font-family="'DINPro',monospace" font-size="4.5" fill="rgba(109,140,166,.32)">РК</text>
+          <text x="84" y="65" text-anchor="end" font-family="'DINPro',monospace" font-size="4.5" fill="rgba(109,140,166,.32)">ПВК</text>
+          <text x="84" y="72" text-anchor="end" font-family="'DINPro',monospace" font-size="4.5" fill="rgba(109,140,166,.32)">ГИ</text>
+        </svg>
+      </div>
+      <div class="ms-label">НК · КОНТРОЛЬ</div>
+      <div class="ms-anns">
+        <div class="ms-ann"><span>6 методов</span> ВК МК УЗК РК ПВК ГИ</div>
+        <div class="ms-ann"><span>1.5 × PN</span> гидроиспытание</div>
+        <div class="ms-ann"><span>НП-045-18</span> норматив АЭС</div>
+      </div>
+      <div class="ms-arrow">→</div>
+    </div>
+
+    <!-- 06 ГОТОВОЕ ИЗДЕЛИЕ (wide) -->
+    <div class="ms">
+      <div class="ms-step">ШАГ 06</div>
+      <div class="ms-num">06</div>
+      <div class="ms-svg-wrap">
+        <svg viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="22" width="80" height="10" fill="rgba(109,140,166,.2)" stroke="rgba(169,183,198,.62)" stroke-width="1.4"/>
+          <rect x="5" y="78" width="80" height="10" fill="rgba(109,140,166,.2)" stroke="rgba(169,183,198,.62)" stroke-width="1.4"/>
+          <rect x="5" y="22" width="12" height="66" fill="rgba(109,140,166,.2)" stroke="rgba(169,183,198,.62)" stroke-width="1.4"/>
+          <rect x="73" y="22" width="12" height="66" fill="rgba(109,140,166,.2)" stroke="rgba(169,183,198,.62)" stroke-width="1.4"/>
+          <line x1="2" y1="55" x2="88" y2="55" stroke="rgba(109,140,166,.25)" stroke-width=".4" stroke-dasharray="6 2 2 2"/>
+          <circle cx="45" cy="55" r="15" fill="none" stroke="rgba(76,175,80,.25)" stroke-width=".9" stroke-dasharray="3 1.5"/>
+          <text x="45" y="52" text-anchor="middle" font-family="'DINPro',monospace" font-size="5.5" fill="rgba(76,175,80,.52)">ОТК</text>
+          <text x="45" y="61" text-anchor="middle" font-family="'DINPro',monospace" font-size="5" fill="rgba(76,175,80,.42)">ПРИНЯТО</text>
+          <text x="28" y="20" font-family="'DINPro',monospace" font-size="4.5" fill="rgba(169,183,198,.38)">219×12 Ст.20</text>
+          <line x1="5" y1="44" x2="0" y2="36" stroke="rgba(109,140,166,.28)" stroke-width=".6"/>
+          <text x="-1" y="33" font-family="'DINPro',monospace" font-size="5" fill="rgba(109,140,166,.4)">Ra0.4</text>
+          <text x="45" y="104" text-anchor="middle" font-family="'DINPro',monospace" font-size="5" fill="rgba(109,140,166,.3)">ПАСПОРТ · СЕРТ. 3.1</text>
+        </svg>
+      </div>
+      <div class="ms-label">ГОТОВОЕ ИЗДЕЛИЕ</div>
+      <div class="ms-anns">
+        <div class="ms-ann"><span>Паспорт</span> ГОСТ 2.601</div>
+        <div class="ms-ann"><span>Сертификат 3.1</span> на партию</div>
+        <div class="ms-ann"><span>ОТК ПРИНЯТО</span> к отгрузке</div>
+        <div class="ms-ann"><span>Вся Россия</span> Ж/д и авто</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="map-progress" aria-hidden="true">
+    <div class="mp-steps" id="mpSteps">
+      <div class="mp-step"><span class="mp-dot"></span><span class="mp-lbl">ПРОКАТ</span></div>
+      <div class="mp-step"><span class="mp-dot"></span><span class="mp-lbl">РАЗРЕЗКА</span></div>
+      <div class="mp-step"><span class="mp-dot"></span><span class="mp-lbl">МО</span></div>
+      <div class="mp-step"><span class="mp-dot"></span><span class="mp-lbl">СВАРКА</span></div>
+      <div class="mp-step"><span class="mp-dot"></span><span class="mp-lbl">НК</span></div>
+      <div class="mp-step"><span class="mp-dot"></span><span class="mp-lbl">ОТГРУЗКА</span></div>
+    </div>
+  </div>
+  <div class="map-foot">
+    <div class="map-foot-kv">МАТЕРИАЛ&nbsp;<strong>Сталь 20 · ГОСТ 1050</strong></div>
+    <div class="map-foot-kv">ИЗДЕЛИЕ&nbsp;<strong>Труба 219×12 · L=450 мм</strong></div>
+    <div class="map-foot-kv">ЦИКЛ&nbsp;<strong>~7 дней</strong></div>
+    <div class="map-foot-kv">ДОКУМЕНТАЦИЯ&nbsp;<strong>Паспорт + Серт. + 6 НК</strong></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ §SHOPMAP — КАРТА ЦЕХА ═══════════════════════ -->
+<section id="shopmap">
+  <div class="shm-hd">
+    <div class="shm-tag">КАРТА ЦЕХА</div>
+    <span class="sec-hd-en">SHOP FLOOR PLAN</span>
+  </div>
+  <div class="shm-body">
+    <div class="shm-intro">
+      <p class="shm-statement">Производственные участки организованы по принципу единого потока — заготовка проходит через все зоны без возврата. Маршрут изготовления определяет планировку цеха площадью 4 200 м².</p>
+      <div class="shm-nums">
+        <div class="shm-num"><div class="shm-num-v">8</div><div class="shm-num-k">Участков</div></div>
+        <div class="shm-num"><div class="shm-num-v">4 200 м²</div><div class="shm-num-k">Площадь</div></div>
+        <div class="shm-num"><div class="shm-num-v">43</div><div class="shm-num-k">Ед. оборудования</div></div>
+      </div>
+    </div>
+    <div class="shm-plan">
+      <svg class="shm-plan-svg" viewBox="0 0 860 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <marker id="shm-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(169,183,198,.65)"/>
+          </marker>
+        </defs>
+
+        <!-- Building outline -->
+        <rect x="1" y="1" width="858" height="458" fill="none" stroke="rgba(109,140,166,.22)" stroke-width="1.5"/>
+
+        <!-- Zone fills -->
+        <rect x="1" y="1" width="171" height="229" fill="rgba(109,140,166,.045)"/>
+        <rect x="172" y="1" width="166" height="229" fill="rgba(109,140,166,.03)"/>
+        <rect x="338" y="1" width="205" height="229" fill="rgba(109,140,166,.06)"/>
+        <rect x="543" y="1" width="185" height="229" fill="rgba(109,140,166,.03)"/>
+        <rect x="728" y="1" width="131" height="458" fill="rgba(160,70,15,.07)"/>
+        <rect x="543" y="230" width="185" height="229" fill="rgba(46,125,50,.05)"/>
+        <rect x="338" y="230" width="205" height="229" fill="rgba(46,125,50,.035)"/>
+        <rect x="1" y="230" width="337" height="229" fill="rgba(109,140,166,.035)"/>
+
+        <!-- Zone dividers -->
+        <line x1="172" y1="1" x2="172" y2="230" stroke="rgba(109,140,166,.12)" stroke-width="1"/>
+        <line x1="338" y1="1" x2="338" y2="459" stroke="rgba(109,140,166,.12)" stroke-width="1"/>
+        <line x1="543" y1="1" x2="543" y2="459" stroke="rgba(109,140,166,.12)" stroke-width="1"/>
+        <line x1="728" y1="1" x2="728" y2="459" stroke="rgba(109,140,166,.18)" stroke-width="1"/>
+        <line x1="1" y1="230" x2="727" y2="230" stroke="rgba(109,140,166,.14)" stroke-width="1"/>
+
+        <!-- Zone A: СКЛАД МЕТАЛЛА -->
+        <text x="87" y="48" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(109,140,166,.09)" letter-spacing="-1">01</text>
+        <text x="87" y="152" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.75)">СКЛАД</text>
+        <text x="87" y="166" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.75)">МЕТАЛЛА</text>
+        <text x="87" y="184" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.4)">ПРИЁМКА ПРОКАТА</text>
+        <text x="87" y="200" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.3)">680 М²</text>
+
+        <!-- Zone B: УЧАСТОК РЕЗКИ -->
+        <text x="255" y="48" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(109,140,166,.07)" letter-spacing="-1">02</text>
+        <text x="255" y="152" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.72)">УЧАСТОК</text>
+        <text x="255" y="166" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.72)">РЕЗКИ</text>
+        <text x="255" y="184" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.4)">ГАЗ · ПЛАЗМА · ПИЛА</text>
+        <text x="255" y="200" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.3)">8 МАШИН · 520 М²</text>
+
+        <!-- Zone C: МЕХАНООБРАБОТКА -->
+        <text x="440" y="48" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(109,140,166,.1)" letter-spacing="-1">03</text>
+        <text x="440" y="152" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(169,183,198,.72)">МЕХАНО-</text>
+        <text x="440" y="166" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(169,183,198,.72)">ОБРАБОТКА</text>
+        <text x="440" y="184" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.4)">ТОКАРНЫЙ · ФРЕЗЕРНЫЙ</text>
+        <text x="440" y="200" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.3)">18 СТ. ЧПУ · 840 М²</text>
+
+        <!-- Zone D: СВАРОЧНЫЙ ЦЕХ -->
+        <text x="635" y="48" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(109,140,166,.07)" letter-spacing="-1">04</text>
+        <text x="635" y="152" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(109,140,166,.72)">СВАРОЧНЫЙ</text>
+        <text x="635" y="166" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(109,140,166,.72)">ЦЕХ</text>
+        <text x="635" y="184" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.4)">АВТОМАТ · ОРБИТ. · РУЧНАЯ</text>
+        <text x="635" y="200" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.3)">12 ПОСТОВ · 680 М²</text>
+
+        <!-- Zone E: ТЕРМООБРАБОТКА -->
+        <line x1="728" y1="230" x2="859" y2="230" stroke="rgba(109,140,166,.07)" stroke-width=".6" stroke-dasharray="4 3"/>
+        <text x="793" y="40" text-anchor="middle" font-family="'DINPro',monospace" font-size="22" font-weight="900" fill="rgba(160,70,15,.15)" letter-spacing="-1">05</text>
+        <text x="793" y="58" text-anchor="middle" font-family="'DINPro',monospace" font-size="7.5" letter-spacing="2" fill="rgba(180,100,50,.78)">ТЕРМО-</text>
+        <text x="793" y="72" text-anchor="middle" font-family="'DINPro',monospace" font-size="7.5" letter-spacing="2" fill="rgba(180,100,50,.78)">ОБРАБОТКА</text>
+        <text x="793" y="86" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(160,80,30,.55)">4 ПЕЧИ · ДО 900°C</text>
+        <text x="793" y="100" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(160,80,30,.38)">480 М²</text>
+        <rect x="754" y="268" width="22" height="26" rx="2" fill="none" stroke="rgba(160,70,15,.2)" stroke-width=".8"/>
+        <rect x="782" y="268" width="22" height="26" rx="2" fill="none" stroke="rgba(160,70,15,.2)" stroke-width=".8"/>
+        <rect x="754" y="302" width="22" height="26" rx="2" fill="none" stroke="rgba(160,70,15,.2)" stroke-width=".8"/>
+        <rect x="782" y="302" width="22" height="26" rx="2" fill="none" stroke="rgba(160,70,15,.2)" stroke-width=".8"/>
+        <text x="793" y="368" text-anchor="middle" font-family="'DINPro',monospace" font-size="6" letter-spacing="1" fill="rgba(160,80,30,.3)">КАМЕРНЫЕ ПЕЧИ</text>
+
+        <!-- Zone F: КОНТРОЛЬ НК -->
+        <text x="635" y="278" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(46,125,50,.1)" letter-spacing="-1">06</text>
+        <text x="635" y="382" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(46,125,50,.72)">КОНТРОЛЬ НК</text>
+        <text x="635" y="398" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(46,125,50,.5)">УЗК · РК · МК · ПВК</text>
+        <text x="635" y="414" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(46,125,50,.35)">6 МЕТОДОВ · 540 М²</text>
+
+        <!-- Zone G: ОТК -->
+        <text x="440" y="278" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(46,125,50,.08)" letter-spacing="-1">07</text>
+        <text x="440" y="382" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(46,125,50,.68)">ОТДЕЛ</text>
+        <text x="440" y="396" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(46,125,50,.68)">КОНТРОЛЯ</text>
+        <text x="440" y="412" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(46,125,50,.45)">ОТК · ПАСПОРТИЗАЦИЯ</text>
+        <text x="440" y="428" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(46,125,50,.3)">520 М²</text>
+
+        <!-- Zone H: СКЛАД ГП / ОТГРУЗКА -->
+        <text x="169" y="278" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(109,140,166,.08)" letter-spacing="-1">08</text>
+        <text x="169" y="382" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.68)">СКЛАД ГП</text>
+        <text x="169" y="396" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.68)">ОТГРУЗКА</text>
+        <text x="169" y="412" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.4)">ПАСПОРТ · СЕРТИФИКАТ</text>
+        <text x="169" y="428" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.3)">960 М²</text>
+
+        <!-- Entry arrow -->
+        <line x1="1" y1="118" x2="38" y2="118" stroke="rgba(169,183,198,.55)" stroke-width="1.2" marker-end="url(#shm-arr)"/>
+        <text x="3" y="108" font-family="'DINPro',monospace" font-size="6" letter-spacing="1.5" fill="rgba(109,140,166,.5)">ВХОД</text>
+        <!-- Exit arrow -->
+        <line x1="38" y1="348" x2="1" y2="348" stroke="rgba(169,183,198,.55)" stroke-width="1.2" marker-end="url(#shm-arr)"/>
+        <text x="3" y="338" font-family="'DINPro',monospace" font-size="6" letter-spacing="1.5" fill="rgba(109,140,166,.5)">ВЫХОД</text>
+
+        <!-- Route: static dashed track -->
+        <path d="M 1,118 L 87,118 L 255,118 L 440,118 L 635,118 L 793,118 L 793,348 L 635,348 L 440,348 L 169,348 L 1,348" fill="none" stroke="rgba(109,140,166,.2)" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+        <!-- Route: animated moving segment -->
+        <path d="M 1,118 L 87,118 L 255,118 L 440,118 L 635,118 L 793,118 L 793,348 L 635,348 L 440,348 L 169,348 L 1,348" fill="none" stroke="rgba(169,183,198,.85)" stroke-width="2" stroke-dasharray="22 1680" style="animation:shmCar 9s linear infinite;"/>
+
+        <!-- Waypoint nodes -->
+        <circle cx="87" cy="118" r="3.5" fill="#060E18" stroke="rgba(109,140,166,.5)" stroke-width="1.2"/>
+        <circle cx="255" cy="118" r="3.5" fill="#060E18" stroke="rgba(109,140,166,.5)" stroke-width="1.2"/>
+        <circle cx="440" cy="118" r="3.5" fill="#060E18" stroke="rgba(169,183,198,.55)" stroke-width="1.2"/>
+        <circle cx="635" cy="118" r="3.5" fill="#060E18" stroke="rgba(109,140,166,.5)" stroke-width="1.2"/>
+        <circle cx="793" cy="118" r="3.5" fill="#060E18" stroke="rgba(160,70,15,.55)" stroke-width="1.2"/>
+        <circle cx="793" cy="348" r="3.5" fill="#060E18" stroke="rgba(160,70,15,.55)" stroke-width="1.2"/>
+        <circle cx="635" cy="348" r="3.5" fill="#060E18" stroke="rgba(46,125,50,.55)" stroke-width="1.2"/>
+        <circle cx="440" cy="348" r="3.5" fill="#060E18" stroke="rgba(46,125,50,.55)" stroke-width="1.2"/>
+        <circle cx="169" cy="348" r="3.5" fill="#060E18" stroke="rgba(109,140,166,.5)" stroke-width="1.2"/>
+      </svg>
+    </div>
+    <div class="shm-legend">
+      <div class="shm-leg"><span class="shm-leg-dot" style="background:rgba(109,140,166,.5)"></span>Заготовка и обработка</div>
+      <div class="shm-leg"><span class="shm-leg-dot" style="background:rgba(160,80,30,.65)"></span>Термический участок</div>
+      <div class="shm-leg"><span class="shm-leg-dot" style="background:rgba(46,125,50,.6)"></span>Контроль качества</div>
+      <div class="shm-leg"><span class="shm-leg-dot" style="background:rgba(169,183,198,.75)"></span>Маршрут изготовления</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ §03 THERMAL ═══════════════════════ -->
+<section id="thermal">
+  <div class="therm-hd">
+    <div class="therm-hd-left">
+      <div class="therm-tag">ТЕРМООБРАБОТКА</div>
+      <div class="therm-headline">Мы меняем<br>структуру<br>металла</div>
+      <div class="therm-statement">Термообработка — не финальная операция, а часть технологии. Каждый режим рассчитан под марку стали, геометрию изделия и требования НД. 42 программы в управляющей системе, точность выдержки ±5°C.</div>
+    </div>
+    <div class="therm-hd-right">
+      <div class="therm-stats">
+        <div class="therm-stat"><div class="therm-stat-v">+700°C</div><div class="therm-stat-l">Максимальная температура</div></div>
+        <div class="therm-stat"><div class="therm-stat-v">42</div><div class="therm-stat-l">Программы термообработки</div></div>
+        <div class="therm-stat"><div class="therm-stat-v">±5°C</div><div class="therm-stat-l">Точность выдержки</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="therm-body">
+    <div class="therm-bar-wrap">
+      <div class="therm-bar"></div>
+      <div class="therm-cursor" aria-hidden="true"></div>
+    </div>
+    <div class="therm-ticks">
+      <div class="therm-tick"><span class="therm-tk-v" style="color:rgba(109,140,166,.55)">20°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:rgba(109,140,166,.65)">150°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:rgba(120,155,175,.75)">300°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:rgba(140,165,180,.85)">500°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:#a06030">720°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:#c04818">900°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:#d87020">1050°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:#f0aa38">1200°</span><span class="therm-tk-u">°C</span></div>
+    </div>
+    <div class="therm-phases">
+      <div class="therm-ph"><div class="therm-ph-r">20 — 100°C</div><div class="therm-ph-n">Исходное состояние</div></div>
+      <div class="therm-ph"><div class="therm-ph-r">100 — 300°C</div><div class="therm-ph-n">Отпуск низкий</div></div>
+      <div class="therm-ph"><div class="therm-ph-r">300 — 650°C</div><div class="therm-ph-n">Отжиг / Высокий отпуск</div></div>
+      <div class="therm-ph"><div class="therm-ph-r">650 — 730°C</div><div class="therm-ph-n">Рекристаллизация</div></div>
+      <div class="therm-ph"><div class="therm-ph-r">730 — 900°C</div><div class="therm-ph-n">Нормализация / Аустенитизация</div></div>
+      <div class="therm-ph"><div class="therm-ph-r">860 — 950°C</div><div class="therm-ph-n">Закалка</div></div>
+      <div class="therm-ph"><div class="therm-ph-r">950 — 1200°C</div><div class="therm-ph-n">Горячая деформация</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ §05 JOURNAL ═══════════════════════ -->
+<section id="journal">
+  <div class="jrn-hd">
+    <div class="jrn-tag">ЖУРНАЛ ВХОДНОГО КОНТРОЛЯ · ФОРМА ВК-001</div>
+    <span class="jrn-hd-en">INCOMING MATERIAL INSPECTION LOG</span>
+  </div>
+  <div class="jrn-context">
+    <div class="jc-statement">
+      Ни одна труба или заготовка не попадает в производство без прохождения <strong>входного контроля по 6 параметрам</strong>. Сертификат поставщика проверяется, химсостав и механические свойства подтверждаются стилоскопированием, геометрия замеряется. Только после заключения ОТК материал допускается к работе.
+    </div>
+    <div class="jc-steps">
+      <div class="jc-step">
+        <div class="jc-step-n">6</div>
+        <div class="jc-step-l">параметров<br>контроля</div>
+      </div>
+      <div class="jc-step">
+        <div class="jc-step-n">100%</div>
+        <div class="jc-step-l">партий<br>проверяются</div>
+      </div>
+      <div class="jc-step">
+        <div class="jc-step-n">ОТК</div>
+        <div class="jc-step-l">подписывает<br>каждую запись</div>
+      </div>
+    </div>
+  </div>
+  <div class="jrn-layout" data-od-id="path-3-5-2">
+    <div class="jrn-doc">
+      <div class="jd-hd">ООО «Завод Промышленная Энергетика» · Форма ВК-001 · Ред.3 от 01.09.2024</div>
+      <div class="jd-title">ЖУРНАЛ ВХОДНОГО КОНТРОЛЯ МЕТАЛЛОПРОКАТА И ЗАГОТОВОК</div>
+      <hr class="jd-div">
+      <div class="jd-meta">
+        <span class="jd-rk">Запись №</span><span class="jd-rv">2025/0847</span>
+        <span class="jd-rk">Дата</span><span class="jd-rv">14.03.2025</span>
+        <span class="jd-rk">Смена</span><span class="jd-rv">2-я</span>
+        <span class="jd-rk">Поставщик</span><span class="jd-rv">ПАО «Северсталь»</span>
+        <span class="jd-rk">Накладная</span><span class="jd-rv">25С-08472</span>
+        <span class="jd-rk">Материал</span><span class="jd-rv jd-span">Труба 219.1×12.0 ГОСТ 8732-78 · Сталь 20</span>
+        <span class="jd-rk">№ плавки</span><span class="jd-rv">253847Ж</span>
+        <span class="jd-rk">Кол-во</span><span class="jd-rv">12 труб / 14.76 т</span>
+      </div>
+      <hr class="jd-div">
+      <div class="jd-checks">
+        <div class="jd-ck"><span class="jd-ci">01</span><span class="jd-cn">Сертификат качества</span><span class="jd-dots"></span><span class="jd-cs ok">✓ ПОЛУЧЕН</span></div>
+        <div class="jd-ck"><span class="jd-ci">02</span><span class="jd-cn">Химический состав</span><span class="jd-dots"></span><span class="jd-cs ok">✓ СООТВЕТСТВУЕТ</span></div>
+        <div class="jd-ck"><span class="jd-ci">03</span><span class="jd-cn">Механические свойства σв / σт / δ / ψ</span><span class="jd-dots"></span><span class="jd-cs ok">✓ СООТВЕТСТВУЕТ</span></div>
+        <div class="jd-ck"><span class="jd-ci">04</span><span class="jd-cn">Геометрические размеры ÷ ±0.3 мм</span><span class="jd-dots"></span><span class="jd-cs ok">✓ В ДОПУСКЕ</span></div>
+        <div class="jd-ck"><span class="jd-ci">05</span><span class="jd-cn">Качество поверхности</span><span class="jd-dots"></span><span class="jd-cs ok">✓ БЕЗ ЗАМЕЧАНИЙ</span></div>
+        <div class="jd-ck"><span class="jd-ci">06</span><span class="jd-cn">Стилоскопирование (марка стали)</span><span class="jd-dots"></span><span class="jd-cs ok">✓ СТАЛЬ 20 ПОДТВ.</span></div>
+      </div>
+      <hr class="jd-div">
+      <div class="jd-verdict">
+        <span class="jd-vl">Заключение ОТК</span>
+        <div class="jd-vv-wrap">
+          <span class="jd-vv">ПРИНЯТО</span>
+          <div class="jd-stamp">ОТК<br>№ 0847<br>ПЭ · 25</div>
+        </div>
+      </div>
+    </div>
+    <div class="jrn-side">
+      <div class="jrn-slbl">ДРУГИЕ ЗАПИСИ</div>
+      <div class="ji act"><div class="ji-code">2025/0847 · 14.03.2025</div><div class="ji-name">Труба 219×12 Сталь 20 — 12 шт.</div><div class="ji-tag ok">● ПРИНЯТО</div></div>
+      <div class="ji"><div class="ji-code">2025/0848 · 14.03.2025</div><div class="ji-name">Лист 16×2000 09Г2С — 8 листов</div><div class="ji-tag ok">● ПРИНЯТО</div></div>
+      <div class="ji"><div class="ji-code">2025/0849 · 15.03.2025</div><div class="ji-name">Поковка DN300 Сталь 20 — 4 шт.</div><div class="ji-tag ok">● ПРИНЯТО</div></div>
+      <div class="ji"><div class="ji-code">2025/0850 · 15.03.2025</div><div class="ji-name">Труба 159×7 12Х18Н10Т — 6 шт.</div><div class="ji-tag ok">● ПРИНЯТО</div></div>
+      <div class="ji"><div class="ji-code">2025/0851 · 15.03.2025</div><div class="ji-name">Труба 108×6 09Г2С — 18 шт.</div><div class="ji-tag pend">○ НА ПРОВЕРКЕ</div></div>
+      <div class="ji"><div class="ji-code">2025/0852 · 16.03.2025</div><div class="ji-name">Прокат круглый Ø120 Сталь 20</div><div class="ji-tag pend">○ НА ПРОВЕРКЕ</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ §06 МОЩНОСТИ ═══════════════════════ -->
+<section id="capacity">
+  <div class="cap-hd">
+    <div class="cap-tag">ПРОИЗВОДСТВЕННЫЕ ВОЗМОЖНОСТИ</div>
+    <span class="sec-hd-en">PRODUCTION CAPACITY</span>
+  </div>
+  <div class="cap-body">
+    <div class="cap-anchor">
+      <div class="cap-anchor-kicker">МАКСИМАЛЬНЫЙ ДИАМЕТР ОБРАБОТКИ</div>
+      <div class="cap-anchor-num">2500</div>
+      <div class="cap-anchor-unit">мм</div>
+      <div class="cap-anchor-note">Обрабатываем крупногабаритные изделия без передачи на субподряд — полный цикл внутри одного предприятия</div>
+      <div class="cap-anchor-badge">без субподряда · без посредников</div>
+    </div>
+    <div class="cap-list">
+      <div class="cap-row">
+        <div class="cap-row-num">DN 15–1400</div>
+        <div class="cap-row-info">
+          <div class="cap-row-label">Размерный ряд изделий</div>
+          <div class="cap-row-note">от мелкой арматуры до крупных патрубков и корпусных деталей</div>
+        </div>
+      </div>
+      <div class="cap-row">
+        <div class="cap-row-num">40+</div>
+        <div class="cap-row-info">
+          <div class="cap-row-label">Станков ЧПУ в парке</div>
+          <div class="cap-row-note">токарные · фрезерные · расточные · шлифовальные</div>
+        </div>
+      </div>
+      <div class="cap-row">
+        <div class="cap-row-num">PN 250</div>
+        <div class="cap-row-info">
+          <div class="cap-row-label">Бар — максимальное давление</div>
+          <div class="cap-row-note">высоконагруженные системы ТЭС и АЭС</div>
+        </div>
+      </div>
+      <div class="cap-row">
+        <div class="cap-row-num">7–35</div>
+        <div class="cap-row-info">
+          <div class="cap-row-label">Дней — производственный цикл</div>
+          <div class="cap-row-note">от принятия ТЗ до отгрузки с документами</div>
+        </div>
+      </div>
+      <div class="cap-row">
+        <div class="cap-row-num">6 методов НК</div>
+        <div class="cap-row-info">
+          <div class="cap-row-label">Неразрушающего контроля</div>
+          <div class="cap-row-note">ВК · МК · УЗК · РК · ПВК · Гидроиспытание</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ §FLEET — МАШИННЫЙ ПАРК ═══════════════════════ -->
+<section id="fleet">
+  <div class="fl-hd">
+    <div class="fl-tag">МАШИННЫЙ ПАРК</div>
+    <span class="sec-hd-en">EQUIPMENT FLEET</span>
+  </div>
+  <div class="fl-body">
+    <div class="fl-anchor">
+      <div class="fl-anchor-kicker">ПАРК ОБОРУДОВАНИЯ</div>
+      <div class="fl-anchor-num">43</div>
+      <div class="fl-anchor-unit">единицы</div>
+      <div class="fl-anchor-stats">
+        <div class="fl-astat"><span class="fl-astat-v">6</span><span class="fl-astat-k">Технологических групп</span></div>
+        <div class="fl-astat"><span class="fl-astat-v">2500 мм</span><span class="fl-astat-k">Макс. диаметр</span></div>
+        <div class="fl-astat"><span class="fl-astat-v">40 МПа</span><span class="fl-astat-k">Испыт. давление</span></div>
+        <div class="fl-astat"><span class="fl-astat-v">900°C</span><span class="fl-astat-k">Темп. термообработки</span></div>
+      </div>
+    </div>
+    <div class="fl-matrix">
+      <div class="fl-group">
+        <div class="fl-group-hd"><span class="fl-group-cat">Токарная группа</span><span class="fl-group-cnt">8 ед.</span></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Карусельный ДЛА 2500</div><div class="fl-item-spec">Ø до 2500 мм<span class="fl-item-qty">×2</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Токарный ЧПУ DMTG CKD6163</div><div class="fl-item-spec">Ø до 630 мм<span class="fl-item-qty">×4</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Токарно-винторезный 16К20</div><div class="fl-item-spec">Ø до 400 мм<span class="fl-item-qty">×2</span></div></div></div>
+      </div>
+      <div class="fl-group">
+        <div class="fl-group-hd"><span class="fl-group-cat">Фрезерно-расточная</span><span class="fl-group-cnt">5 ед.</span></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Горизонт.-расточной 2А614Ф1</div><div class="fl-item-spec">стол 1600×1000 мм<span class="fl-item-qty">×2</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Вертикальный ОЦ DMTG VMC850</div><div class="fl-item-spec">850×500 мм<span class="fl-item-qty">×3</span></div></div></div>
+      </div>
+      <div class="fl-group">
+        <div class="fl-group-hd"><span class="fl-group-cat">Прессовое оборудование</span><span class="fl-group-cnt">3 ед.</span></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Гидравлический пресс П6330</div><div class="fl-item-spec">усилие 2500 т.с.<span class="fl-item-qty">×1</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Гидравлический пресс П6322</div><div class="fl-item-spec">усилие 630 т.с.<span class="fl-item-qty">×2</span></div></div></div>
+      </div>
+      <div class="fl-group">
+        <div class="fl-group-hd"><span class="fl-group-cat">Сварочные посты</span><span class="fl-group-cnt">12 постов</span></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Сварочный автомат АДФ-1200</div><div class="fl-item-spec">до 1200А · МА-169Б<span class="fl-item-qty">×4</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Орбитальная сварка УОНИИ</div><div class="fl-item-spec">Ø 57–219 мм<span class="fl-item-qty">×2</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Посты НАКС ESAB Aristo</div><div class="fl-item-spec">ручная дуговая<span class="fl-item-qty">×6</span></div></div></div>
+      </div>
+      <div class="fl-group">
+        <div class="fl-group-hd"><span class="fl-group-cat">Термические печи</span><span class="fl-group-cnt">7 ед.</span></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Камерная печь SNOL 900</div><div class="fl-item-spec">до 900°C · объём 2 м³<span class="fl-item-qty">×3</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Печь с кипящим слоем КС-400</div><div class="fl-item-spec">до 700°C<span class="fl-item-qty">×1</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Индукционный нагрев ВЧИ-25</div><div class="fl-item-spec">до 500°C<span class="fl-item-qty">×1</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Закалочный бак масло/вода</div><div class="fl-item-spec">V = 4 м³<span class="fl-item-qty">×2</span></div></div></div>
+      </div>
+      <div class="fl-group">
+        <div class="fl-group-hd"><span class="fl-group-cat">Контроль и испытания</span><span class="fl-group-cnt">8 ед.</span></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">УЗ-дефектоскоп УД3-71</div><div class="fl-item-spec">стенка ≥ 3 мм<span class="fl-item-qty">×3</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Рентгенаппарат РАП-150/300</div><div class="fl-item-spec">Ø до 400 мм<span class="fl-item-qty">×1</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Твердомер ТЭМП-4</div><div class="fl-item-spec">HB 20–450<span class="fl-item-qty">×2</span></div></div></div>
+        <div class="fl-item"><div class="fl-item-bar"></div><div class="fl-item-body"><div class="fl-item-name">Стенд гидроиспытаний ГИ-40</div><div class="fl-item-spec">до 40 МПа<span class="fl-item-qty">×2</span></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ §GALLERY — ЦЕХ В ОБЪЕКТИВЕ ═══════════════════════ -->
+<section id="gallery">
+  <div class="gal-hd">
+    <div class="gal-tag">ФОТОДОКУМЕНТАЦИЯ</div>
+    <span class="sec-hd-en">PRODUCTION IN LENS</span>
+  </div>
+  <div class="gal-intro">
+    <div class="gal-headline">ЦЕХ<br>В ОБЪЕКТИВЕ</div>
+    <div class="gal-desc">Съёмка в рабочую смену без постановки. Станки, люди, металл — всё как есть. Так работает завод каждый день.</div>
+  </div>
+  <div class="gal-stage" id="galStage">
+    <div class="gal-track" id="galTrack">
+      <div class="gal-item">
+        <div class="gal-img-wrap">
+          <img class="gal-img" src="mrmglgry-promen-photo-hor-1.jpg" alt="Цех механообработки" loading="lazy" draggable="false">
+          <div class="gal-ov"></div>
+          <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
+          <div class="gal-crn bl"></div><div class="gal-crn br"></div>
+          <div class="gal-meta-top">
+            <span class="gal-num">ФОТО 01 / 07</span>
+            <span class="gal-zone">ЦЕХ МЕХАНООБРАБОТКИ</span>
+          </div>
+          <div class="gal-info">
+            <div class="gal-info-name">Токарный парк ЧПУ</div>
+            <div class="gal-info-detail">КАРУСЕЛЬНЫЙ ДЛА 2500 · ТОЧНОСТЬ ±0.01 ММ</div>
+          </div>
+        </div>
+        <div class="gal-caption">УЧАСТОК ПРЕЦИЗИОННОЙ ОБРАБОТКИ · 8 ЕДИНИЦ ОБОРУДОВАНИЯ</div>
+      </div>
+      <div class="gal-item">
+        <div class="gal-img-wrap">
+          <img class="gal-img" src="mrmglguy-promen-photo-hor-2.jpg" alt="Сварочный участок" loading="lazy" draggable="false">
+          <div class="gal-ov"></div>
+          <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
+          <div class="gal-crn bl"></div><div class="gal-crn br"></div>
+          <div class="gal-meta-top">
+            <span class="gal-num">ФОТО 02 / 07</span>
+            <span class="gal-zone">СВАРОЧНЫЙ УЧАСТОК</span>
+          </div>
+          <div class="gal-info">
+            <div class="gal-info-name">Автоматическая дуговая сварка</div>
+            <div class="gal-info-detail">АДФ-1200 · ДО 1200А · НАКС II УРОВЕНЬ</div>
+          </div>
+        </div>
+        <div class="gal-caption">12 СВАРОЧНЫХ ПОСТОВ · НЕРЖАВЕЮЩАЯ И ЛЕГИРОВАННАЯ СТАЛЬ</div>
+      </div>
+      <div class="gal-item">
+        <div class="gal-img-wrap">
+          <img class="gal-img" src="mrmglgv7-promen-photo-hor-3.jpg" alt="Склад металла" loading="lazy" draggable="false">
+          <div class="gal-ov"></div>
+          <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
+          <div class="gal-crn bl"></div><div class="gal-crn br"></div>
+          <div class="gal-meta-top">
+            <span class="gal-num">ФОТО 03 / 07</span>
+            <span class="gal-zone">СКЛАД МЕТАЛЛА</span>
+          </div>
+          <div class="gal-info">
+            <div class="gal-info-name">Склад проката и заготовок</div>
+            <div class="gal-info-detail">680 М² · 8 МАРОК СТАЛИ · ГОСТ 8732-78</div>
+          </div>
+        </div>
+        <div class="gal-caption">ВХОДНОЙ КОНТРОЛЬ КАЖДОЙ ПАРТИИ МАТЕРИАЛА</div>
+      </div>
+      <div class="gal-item">
+        <div class="gal-img-wrap">
+          <img class="gal-img" src="mrmglgvk-promen-photo-hor-4.jpg" alt="Зона технического контроля" loading="lazy" draggable="false">
+          <div class="gal-ov"></div>
+          <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
+          <div class="gal-crn bl"></div><div class="gal-crn br"></div>
+          <div class="gal-meta-top">
+            <span class="gal-num">ФОТО 04 / 07</span>
+            <span class="gal-zone">ОТДЕЛ КОНТРОЛЯ</span>
+          </div>
+          <div class="gal-info">
+            <div class="gal-info-name">Зона технического контроля</div>
+            <div class="gal-info-detail">УЗК · РК · МК · ГИДРОИСПЫТАНИЕ ДО 40 МПА</div>
+          </div>
+        </div>
+        <div class="gal-caption">6 МЕТОДОВ НЕРАЗРУШАЮЩЕГО КОНТРОЛЯ · НАКС</div>
+      </div>
+      <div class="gal-item">
+        <div class="gal-img-wrap">
+          <img class="gal-img" src="mrmhgnjq-promen-photo-5.jpg" alt="Производственный цех" loading="lazy" draggable="false">
+          <div class="gal-ov"></div>
+          <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
+          <div class="gal-crn bl"></div><div class="gal-crn br"></div>
+          <div class="gal-meta-top">
+            <span class="gal-num">ФОТО 05 / 07</span>
+            <span class="gal-zone">ПРОИЗВОДСТВЕННЫЙ ЦЕХ</span>
+          </div>
+          <div class="gal-info">
+            <div class="gal-info-name">Рабочая смена</div>
+            <div class="gal-info-detail">ПРОИЗВОДСТВО · ЕЖЕДНЕВНЫЙ РЕЖИМ</div>
+          </div>
+        </div>
+        <div class="gal-caption"></div>
+      </div>
+      <div class="gal-item">
+        <div class="gal-img-wrap">
+          <img class="gal-img" src="mrmhgnk1-promen-photo-6.jpg" alt="Производственный цех" loading="lazy" draggable="false">
+          <div class="gal-ov"></div>
+          <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
+          <div class="gal-crn bl"></div><div class="gal-crn br"></div>
+          <div class="gal-meta-top">
+            <span class="gal-num">ФОТО 06 / 07</span>
+            <span class="gal-zone">ПРОИЗВОДСТВЕННЫЙ ЦЕХ</span>
+          </div>
+          <div class="gal-info">
+            <div class="gal-info-name">Металлообработка</div>
+            <div class="gal-info-detail">ТОЧНОСТЬ · ОПЫТ · РЕЗУЛЬТАТ</div>
+          </div>
+        </div>
+        <div class="gal-caption"></div>
+      </div>
+      <div class="gal-item">
+        <div class="gal-img-wrap">
+          <img class="gal-img" src="mrmhgnk7-promen-photo-7.jpg" alt="Производственный цех" loading="lazy" draggable="false">
+          <div class="gal-ov"></div>
+          <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
+          <div class="gal-crn bl"></div><div class="gal-crn br"></div>
+          <div class="gal-meta-top">
+            <span class="gal-num">ФОТО 07 / 07</span>
+            <span class="gal-zone">ПРОИЗВОДСТВЕННЫЙ ЦЕХ</span>
+          </div>
+          <div class="gal-info">
+            <div class="gal-info-name">Завод в работе</div>
+            <div class="gal-info-detail">ПРОМЫШЛЕННАЯ ЭНЕРГЕТИКА · ЧЕЛЯБИНСК</div>
+          </div>
+        </div>
+        <div class="gal-caption"></div>
+      </div>
+    </div>
+  </div>
+  <div class="gal-footer">
+    <div class="gal-dots">
+      <div class="gal-dot gal-act"></div>
+      <div class="gal-dot"></div>
+      <div class="gal-dot"></div>
+      <div class="gal-dot"></div>
+      <div class="gal-dot"></div>
+      <div class="gal-dot"></div>
+      <div class="gal-dot"></div>
+    </div>
+    <div class="gal-hint">← → &nbsp; ПЕРЕТАЩИТЕ ДЛЯ НАВИГАЦИИ</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ §07 PORTAL ═══════════════════════ -->
+<section id="portal">
+  <div class="portal-left">
+    <div class="portal-hd">
+      <div class="portal-tag">КОМПЛЕКТ СОПРОВОДИТЕЛЬНОЙ ДОКУМЕНТАЦИИ</div>
+      <span class="sec-hd-en">НА КАЖДОЕ ИЗДЕЛИЕ</span>
+    </div>
+    <div class="portal-docs">
+      <div class="pdoc">
+        <div class="pdoc-code">ПП</div>
+        <div><div class="pdoc-name">Паспорт изделия</div><div class="pdoc-desc">Индивидуальный паспорт с данными плавки, результатами НК, термообработки и гидроиспытаний. На каждое изделие без исключения.</div></div>
+        <div class="pdoc-badge">ГОСТ 2.601<br>100% изделий</div>
+      </div>
+      <div class="pdoc">
+        <div class="pdoc-code">СК</div>
+        <div><div class="pdoc-name">Сертификат качества</div><div class="pdoc-desc">Сертификат на партию продукции — химсостав, механические свойства, применённые нормативные документы. ТР ТС 032.</div></div>
+        <div class="pdoc-badge">ТР ТС 032<br>На партию</div>
+      </div>
+      <div class="pdoc">
+        <div class="pdoc-code">НК</div>
+        <div><div class="pdoc-name">Протоколы НК</div><div class="pdoc-desc">Протоколы неразрушающего контроля по применённым методам (ВК/МК/УЗК/РК/ПВК) с заключениями специалистов II–III уровня.</div></div>
+        <div class="pdoc-badge">НП-045-18<br>НАКС II–III</div>
+      </div>
+      <div class="pdoc">
+        <div class="pdoc-code">ТО</div>
+        <div><div class="pdoc-name">Трассировочность плавки</div><div class="pdoc-desc">Сквозная прослеживаемость от плавки заготовки до готового изделия — номер плавки, марка стали, результаты входного контроля.</div></div>
+        <div class="pdoc-badge">ГОСТ 7566<br>По плавке</div>
+      </div>
+      <div class="pdoc">
+        <div class="pdoc-code">РК</div>
+        <div><div class="pdoc-name">Радиографический контроль</div><div class="pdoc-desc">Рентген сварных швов по ГОСТ 7512, 100% сварных соединений. Заключение специалиста РК II уровня. Архив снимков 5 лет.</div></div>
+        <div class="pdoc-badge">ГОСТ 7512<br>100% швов</div>
+      </div>
+      <div class="pdoc">
+        <div class="pdoc-code">ГИ</div>
+        <div><div class="pdoc-name">Протокол гидроиспытания</div><div class="pdoc-desc">Испытательное давление 1.5×PN, выдержка 10 минут. Результат — отсутствие течей и деформаций. Протокол с временно́й меткой.</div></div>
+        <div class="pdoc-badge">РД 26-15-88<br>1.5 × PN</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER ZONE — sticky CTA + footer slides over -->
+<div class="footer-zone" data-od-id="path-4">
+<section class="s10" id="order-cta">
+  <div class="s10-inner">
+    <div class="s10-left">
+      <div class="s10-eyebrow">
+        <span class="s10-eye-num">11</span>
+        <span class="s10-eye-label">ЗАПРОС</span>
+      </div>
+      <h2 class="s10-h2">Передайте<br>нам<br>исходные<br>данные</h2>
+      <p class="s10-sub">Укажите параметры изделия или прикрепите чертёж — мы подберём нормативный документ, материал и срок изготовления. Ответ в течение одного рабочего дня.</p>
+      <div class="s10-contacts">
+        <div class="s10-contact-row">
+          <span class="s10-contact-k">ТЕЛЕФОН</span>
+          <a class="s10-contact-v" href="tel:+73512170099">+7 (351) 217-00-99</a>
+        </div>
+        <div class="s10-contact-row">
+          <span class="s10-contact-k">ПОЧТА</span>
+          <a class="s10-contact-v" href="mailto:zakaz@prom-en.com">zakaz@prom-en.com</a>
+        </div>
+        <div class="s10-contact-row">
+          <span class="s10-contact-k">АДРЕС</span>
+          <span class="s10-contact-v">Челябинск, Орджоникидзе 37</span>
+        </div>
+        <div class="s10-contact-row">
+          <span class="s10-contact-k">ВРЕМЯ</span>
+          <span class="s10-contact-v">Пн–Пт, 09:00–18:00 МСК</span>
+        </div>
+      </div>
+    </div>
+    <div class="s10-right">
+      <div class="s10-form-label">ФОРМА ЗАПРОСА — ПЭ-ФОРМА/11</div>
+      <form id="s10-form" novalidate>
+        <div class="s10-form">
+          <div class="s10-field">
+            <label class="s10-field-label" for="f-name">НАИМЕНОВАНИЕ</label>
+            <input id="f-name" type="text" placeholder="Отвод 90°, тройник, переход…" autocomplete="off">
+          </div>
+          <div class="s10-field">
+            <label class="s10-field-label" for="f-std">СТАНДАРТ</label>
+            <input id="f-std" type="text" placeholder="ГОСТ 17375, ОСТ 108, СТО…" autocomplete="off">
+          </div>
+          <div class="s10-field">
+            <label class="s10-field-label" for="f-dn">DN / D, мм</label>
+            <input id="f-dn" type="text" placeholder="DN 100 / Ø 108" autocomplete="off">
+          </div>
+          <div class="s10-field">
+            <label class="s10-field-label" for="f-pn">ДАВЛЕНИЕ, МПа</label>
+            <input id="f-pn" type="text" placeholder="PN 160 / 16 МПа" autocomplete="off">
+          </div>
+          <div class="s10-field">
+            <label class="s10-field-label" for="f-mat">МАТЕРИАЛ</label>
+            <input id="f-mat" type="text" placeholder="09Г2С, 12Х1МФ, 08Х18Н10Т…" autocomplete="off">
+          </div>
+          <div class="s10-field">
+            <label class="s10-field-label" for="f-qty">КОЛИЧЕСТВО, шт</label>
+            <input id="f-qty" type="text" placeholder="100" autocomplete="off">
+          </div>
+          <div class="s10-field s10-field--wide">
+            <label class="s10-field-label" for="f-deadline">СРОК</label>
+            <input id="f-deadline" type="text" placeholder="30 календарных дней" autocomplete="off">
+          </div>
+          <div class="s10-file-row">
+            <span class="s10-file-label-txt">ЧЕРТЁЖ / КД</span>
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;">
+              <label class="s10-file-btn" for="f-file">
+                ↑ ПРИКРЕПИТЬ ФАЙЛ
+                <input id="f-file" type="file" accept=".pdf,.dwg,.dxf,.png,.jpg" style="display:none">
+              </label>
+              <span class="s10-file-name" id="s10-file-name">PDF, DWG, DXF</span>
+            </div>
+          </div>
+        </div>
+        <div class="s10-actions">
+          <button type="submit" class="s10-submit">ОТПРАВИТЬ ЗАПРОС →</button>
+          <a class="s10-ghost-link" href="mailto:zakaz@prom-en.com">Написать напрямую</a>
+        </div>
+        <p class="s10-note">Ответ в течение 1 рабочего дня · Запрос без обязательств</p>
+      </form>
+      <div class="s10-success" id="s10-success">
+        ✓ ЗАПРОС ПРИНЯТ. Наш инженер свяжется с вами в течение рабочего дня.
+      </div>
+    </div>
+  </div>
+</section>
+<footer class="site-footer" id="footer">
+  <div class="ft-statement">
+    <div class="ft-kicker">ПРОМЫШЛЕННАЯ ЭНЕРГЕТИКА / prom-en.com</div>
+    <h2 class="ft-headline">Готовы<br>к работе</h2>
+    <p class="ft-tagline">Производство деталей и сборочных единиц трубопроводов для объектов атомной и тепловой энергетики. Единичные и серийные партии. Сертификат 3.1.</p>
+    <a class="ft-cta" href="mailto:zakaz@prom-en.com">Отправить запрос →</a>
+  </div>
+  <div class="ft-grid">
+    <div class="ft-cell">
+      <div class="ft-cell-label">КОНТАКТЫ</div>
+      <div class="ft-cell-val mono"><a href="mailto:zakaz@prom-en.com">zakaz@prom-en.com</a><br><a href="tel:+73512170099">+7 (351) 217-00-99</a><br>Пн–Пт, 09:00–18:00 МСК</div>
+    </div>
+    <div class="ft-cell">
+      <div class="ft-cell-label">ПАРАМЕТРЫ</div>
+      <div class="ft-cell-val mono">DN 15 — DN 1400<br>PN до 250 / 25 МПа<br>ГОСТ · ОСТ · СТО · ТУ</div>
+    </div>
+    <div class="ft-cell">
+      <div class="ft-cell-label">СПЕЦИАЛИЗАЦИЯ</div>
+      <div class="ft-cell-val">ТЭС<br>АЭС</div>
+    </div>
+    <div class="ft-cell">
+      <div class="ft-cell-label">НАВИГАЦИЯ</div>
+      <ul class="ft-nav-list">
+        <li><a href="hero-variant-d.html">Главная</a></li>
+        <li><a href="katalog.html">Каталог</a></li>
+        <li><a href="sdt.html">Соединительные детали</a></li>
+        <li><a href="#s1">Производство</a></li>
+        <li><a href="#">Качество</a></li>
+        <li><a href="#">О заводе</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ft-bar">
+    <span class="ft-copy">© 2017–2026 Промышленная Энергетика. Все права защищены.</span>
+    <span class="ft-idx">ПЭ-02.PRD / REV.3</span>
+  </div>
+</footer>
+</div>
+
+<script>
+/* ── Scene 2: Staggered column reveal ── */
+(function(){
+  const cols = document.querySelectorAll('.s2-col');
+  const obs = new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting){
+      cols.forEach(function(col, i){
+        setTimeout(function(){ col.classList.add('s2-vis'); }, i * 130);
+      });
+      obs.disconnect();
+    }
+  },{threshold:0.15});
+  obs.observe(document.getElementById('s2'));
+})();
+
+/* ── История изделия: stage reveal + progress track ── */
+(function(){
+  var stages=document.querySelectorAll('.ms');
+  var mapObs=new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting){
+      stages.forEach(function(el,i){
+        setTimeout(function(){el.classList.add('ms-vis');},i*90);
+      });
+      /* progress steps */
+      var steps=document.querySelectorAll('.mp-step');
+      steps.forEach(function(el,i){
+        setTimeout(function(){el.classList.add('lit');},300+i*280);
+      });
+      mapObs.disconnect();
+    }
+  },{threshold:0.12});
+  var mapEl=document.getElementById('map');
+  if(mapEl)mapObs.observe(mapEl);
+})();
+
+/* ── Журнал: reveal checks sequentially, then stamp ── */
+(function(){
+  var jrnObs=new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting){
+      var checks=document.querySelectorAll('.jd-cs');
+      checks.forEach(function(el,i){
+        setTimeout(function(){el.classList.add('revealed');},400+i*180);
+      });
+      setTimeout(function(){
+        var stamp=document.querySelector('.jd-stamp');
+        if(stamp)stamp.classList.add('revealed');
+      }, 400 + checks.length * 180 + 400);
+      jrnObs.disconnect();
+    }
+  },{threshold:0.25});
+  var jrnEl=document.getElementById('journal');
+  if(jrnEl)jrnObs.observe(jrnEl);
+})();
+
+/* ── Capacity rows: stagger reveal ── */
+(function(){
+  var rows=document.querySelectorAll('.cap-row');
+  var capObs=new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting){
+      rows.forEach(function(r,i){
+        setTimeout(function(){r.classList.add('cap-vis');},i*100);
+      });
+      capObs.disconnect();
+    }
+  },{threshold:0.12});
+  var capEl=document.getElementById('capacity');
+  if(capEl)capObs.observe(capEl);
+})();
+
+/* ── Proof: scroll-driven clip-path reveal ── */
+(function(){
+  var section=document.getElementById('proof');
+  if(!section)return;
+  var clip=document.getElementById('prfClip');
+  var intro=document.getElementById('prfIntro');
+  var status=document.getElementById('prfStatus');
+  var main=document.getElementById('prfMain');
+  var params=document.getElementById('prfParams');
+  var target=document.getElementById('prfTarget');
+  var ann=document.getElementById('prfAnn');
+
+  function clamp(v,lo,hi){return v<lo?lo:v>hi?hi:v;}
+  function ease(t){return t<.5?2*t*t:-1+(4-2*t)*t;}
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function phase(raw,s,e){return ease(clamp((raw-s)/(e-s),0,1));}
+
+  /* Cache absolute doc-coord top — immune to sticky/transform quirks */
+  var absTop=0;
+  function recache(){
+    absTop=section.getBoundingClientRect().top+(window.pageYOffset||0);
+  }
+  recache();
+  window.addEventListener('resize',recache,{passive:true});
+  window.addEventListener('load',recache);
+
+  var raf=null;
+  function update(){
+    var sy=window.pageYOffset||0;
+    var scrolled=Math.max(0,sy-absTop);
+    var travel=Math.max(1,section.offsetHeight-window.innerHeight);
+    var raw=clamp(scrolled/travel,0,1);
+
+    /* — Phase 0: intro frame fades out 0→0.38 — */
+    if(intro)intro.style.opacity=String(1-phase(raw,0,0.38));
+
+    /* — Phase 1: clip iris opens 0→0.52 — */
+    var clipP=phase(raw,0,0.52);
+    var iV=lerp(28,0,clipP);
+    var iH=lerp(20,0,clipP);
+    var br=lerp(2,0,clipP);
+    if(clip)clip.style.clipPath=
+      'inset('+iV.toFixed(2)+'% '+iH.toFixed(2)+'% round '+br.toFixed(1)+'px)';
+
+    /* — Phase 2: status bar fades in 0.38→0.58 — */
+    if(status)status.style.opacity=String(phase(raw,0.38,0.58));
+
+    /* — Phase 3: params strip fades in 0.42→0.60 — */
+    if(params)params.style.opacity=String(phase(raw,0.42,0.60));
+
+    /* — Phase 4: main copy rises in 0.46→0.74 — */
+    var mainP=phase(raw,0.46,0.74);
+    if(main){
+      main.style.opacity=String(mainP);
+      main.style.transform='translateY('+lerp(22,0,mainP).toFixed(1)+'px)';
+    }
+
+    /* — Phase 5: measurement target + annotation 0.54→0.78 — */
+    if(target)target.style.opacity=String(phase(raw,0.54,0.78));
+    if(ann)ann.style.opacity=String(phase(raw,0.58,0.80));
+
+    raf=null;
+  }
+
+  function onScroll(){if(!raf)raf=requestAnimationFrame(update);}
+  /* Both listeners: window for Chrome/FF, document for Safari overflow-x:hidden edge case */
+  window.addEventListener('scroll',onScroll,{passive:true});
+  document.addEventListener('scroll',onScroll,{passive:true});
+  update();
+
+  /* Running clock — starts at 08:47:00 and counts forward */
+  var base=new Date();base.setHours(8,47,0,0);
+  var t0=Date.now();
+  function pad(n){return n<10?'0'+n:''+n;}
+  (function tick(){
+    var sec=Math.floor((Date.now()-t0)/1000);
+    var d=new Date(base.getTime()+sec*1000);
+    var el=document.getElementById('prfClock');
+    if(el)el.textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+    setTimeout(tick,1000);
+  })();
+})();
+
+/* ── Fleet: stagger reveal ── */
+(function(){
+  var groups=document.querySelectorAll('.fl-group');
+  var flObs=new IntersectionObserver(function(entries){
+    if(entries[0].isIntersecting){
+      groups.forEach(function(g,i){
+        setTimeout(function(){g.classList.add('fl-vis');},i*90);
+      });
+      flObs.disconnect();
+    }
+  },{threshold:0.1});
+  var flEl=document.getElementById('fleet');
+  if(flEl)flObs.observe(flEl);
+})();
+
+/* ── Gallery: drag + inertia ── */
+(function(){
+  var stage=document.getElementById('galStage');
+  var track=document.getElementById('galTrack');
+  if(!stage||!track)return;
+  var items=Array.from(track.querySelectorAll('.gal-item'));
+  var dots=Array.from(document.querySelectorAll('.gal-dot'));
+  var x=0,velX=0,isDragging=false,startMouseX=0,startX=0,lastMouseX=0,raf=null,activeIdx=0,targetX=null;
+  /* measure actual inter-item stride from DOM to match CSS gap exactly */
+  function itemW(){
+    if(!items[0])return 400;
+    if(items.length>1)return items[1].offsetLeft-items[0].offsetLeft;
+    return items[0].offsetWidth+16;
+  }
+  function maxX(){return -(items.length-1)*itemW();}
+  function clamp(v,lo,hi){return v<lo?lo:v>hi?hi:v;}
+  function snapTarget(){var iw=itemW();var idx=Math.max(0,Math.min(items.length-1,Math.round(-x/iw)));return -idx*iw;}
+  function setActive(idx){
+    if(idx===activeIdx)return;
+    activeIdx=idx;
+    dots.forEach(function(d,i){d.classList.toggle('gal-act',i===idx);});
+  }
+  function updateScales(){
+    /* item.offsetLeft is relative to stage (offsetParent=stage, which has padding).
+       cx anchors at the left-edge slot center so item 0 at x=0 gets scale=1.0,
+       which visually aligns the active card with the section heading. */
+    var padL=parseFloat(getComputedStyle(stage).paddingLeft)||56;
+    var iw=itemW();
+    var sw=stage.offsetWidth;
+    var cx=padL+iw/2;
+    var closestD=Infinity,closestI=0;
+    items.forEach(function(item,i){
+      var left=item.offsetLeft+x;
+      var center=left+item.offsetWidth/2;
+      var dist=Math.abs(center-cx);
+      if(dist<closestD){closestD=dist;closestI=i;}
+      var t=Math.max(0,1-dist/(sw*0.55));
+      item.style.transform='scale('+(0.88+0.12*t).toFixed(3)+')';
+      item.style.opacity=(0.42+0.58*t).toFixed(3);
+    });
+    setActive(closestI);
+  }
+  function tick(){
+    if(!isDragging){
+      if(targetX!==null){
+        /* smooth dot-navigation lerp */
+        var diff=targetX-x;
+        if(Math.abs(diff)<0.5){x=targetX;targetX=null;}
+        else x+=diff*0.14;
+      } else {
+        velX*=0.92;
+        if(Math.abs(velX)<0.3){
+          velX=0;
+          var target=snapTarget();var diff=target-x;
+          if(Math.abs(diff)<0.4){x=target;track.style.transform='translateX('+x.toFixed(2)+'px)';updateScales();raf=null;return;}
+          x+=diff*0.10;
+        } else {x+=velX;x=clamp(x,maxX()-60,60);}
+      }
+    }
+    x=clamp(x,maxX()-40,40);
+    track.style.transform='translateX('+x.toFixed(2)+'px)';
+    updateScales();
+    raf=requestAnimationFrame(tick);
+  }
+  function startRaf(){if(!raf)raf=requestAnimationFrame(tick);}
+  stage.addEventListener('mousedown',function(e){
+    targetX=null;
+    isDragging=true;startMouseX=e.clientX;startX=x;lastMouseX=e.clientX;velX=0;
+    stage.classList.add('is-dragging');document.body.style.userSelect='none';
+    e.preventDefault();startRaf();
+  });
+  window.addEventListener('mousemove',function(e){
+    if(!isDragging)return;
+    velX=e.clientX-lastMouseX;lastMouseX=e.clientX;
+    x=clamp(startX+(e.clientX-startMouseX),maxX()-100,100);
+    track.style.transform='translateX('+x.toFixed(2)+'px)';updateScales();
+  });
+  window.addEventListener('mouseup',function(){
+    if(!isDragging)return;
+    isDragging=false;stage.classList.remove('is-dragging');document.body.style.userSelect='';startRaf();
+  });
+  stage.addEventListener('touchstart',function(e){
+    targetX=null;
+    isDragging=true;startMouseX=e.touches[0].clientX;startX=x;lastMouseX=e.touches[0].clientX;velX=0;startRaf();
+  },{passive:true});
+  stage.addEventListener('touchmove',function(e){
+    if(!isDragging)return;
+    var cx=e.touches[0].clientX;
+    velX=cx-lastMouseX;lastMouseX=cx;
+    x=clamp(startX+(cx-startMouseX),maxX()-60,60);
+    track.style.transform='translateX('+x.toFixed(2)+'px)';updateScales();
+  },{passive:true});
+  stage.addEventListener('touchend',function(){isDragging=false;startRaf();});
+  /* wheel: accumulate velocity only — no direct x jump — gives smooth trackpad feel */
+  stage.addEventListener('wheel',function(e){
+    if(Math.abs(e.deltaY)>Math.abs(e.deltaX))return;
+    e.preventDefault();
+    targetX=null;
+    velX=clamp(velX-e.deltaX*0.28,-22,22);
+    startRaf();
+  },{passive:false});
+  dots.forEach(function(dot,i){
+    dot.addEventListener('click',function(){
+      velX=0;
+      targetX=clamp(-i*itemW(),maxX(),0);
+      startRaf();
+    });
+  });
+  requestAnimationFrame(function(){updateScales();});
+})();
+
+/* ── S10 Form ── */
+(function(){
+  var fileInput=document.getElementById('f-file');
+  var fileNameEl=document.getElementById('s10-file-name');
+  if(fileInput&&fileNameEl){
+    fileInput.addEventListener('change',function(){
+      fileNameEl.textContent=fileInput.files.length?fileInput.files[0].name:'PDF, DWG, DXF';
+    });
+  }
+  var form=document.getElementById('s10-form');
+  var success=document.getElementById('s10-success');
+  if(form&&success){
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      form.style.display='none';
+      success.style.display='block';
+    });
+  }
+  if('IntersectionObserver' in window){
+    var s10Left=document.querySelector('#order-cta .s10-left');
+    if(s10Left){
+      s10Left.style.cssText+='opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;';
+      var io=new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';io.unobserve(e.target);}
+        });
+      },{threshold:0.15});
+      io.observe(s10Left);
+    }
+    var fields=document.querySelectorAll('#order-cta .s10-field, #order-cta .s10-file-row, #order-cta .s10-actions');
+    var fieldsAnimated=false;
+    var io2=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting&&!fieldsAnimated){
+          fieldsAnimated=true;
+          fields.forEach(function(f,i){
+            f.style.opacity='0';f.style.transform='translateX(10px)';
+            f.style.transition='opacity .3s ease '+(i*50)+'ms,transform .3s ease '+(i*50)+'ms';
+            setTimeout(function(){f.style.opacity='1';f.style.transform='translateX(0)';},i*50+30);
+          });
+          io2.unobserve(e.target);
+        }
+      });
+    },{threshold:0.1});
+    var s10Right=document.querySelector('#order-cta .s10-right');
+    if(s10Right)io2.observe(s10Right);
+  }
+})();
+
+/* ── Sidenav ── */
+const allSections=document.querySelectorAll('#s1,#proof,#s2,#grades,#map,#shopmap,#thermal,#journal,#capacity,#fleet,#gallery,#portal,#order-cta');
+const navItems=document.querySelectorAll('.sidenav-item');
+const sio=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navItems.forEach(n=>n.classList.remove('sn-active'));
+      const a=document.querySelector('.sidenav-item[href="#'+e.target.id+'"]');
+      if(a)a.classList.add('sn-active');
+    }
+  });
+},{threshold:0.38});
+allSections.forEach(s=>sio.observe(s));
+
+/* ── Clock ── */
+(function tick(){
+  const t=new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('navClock').textContent=t+' · ЧЛБ';
+  setTimeout(tick,1000);
+})();
+</script>
+</body>
+</html>

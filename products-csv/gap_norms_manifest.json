@@ -1,0 +1,85 @@
+{
+  "generated_at": "2026-07-22T07:45:39.774297+00:00",
+  "output_csv": "products-csv/products_gap_variable.csv",
+  "total_rows": 603,
+  "sources": [
+    {
+      "normative_key": "СТО 321.06",
+      "source_url": "http://gost.gtsever.ru/Data2/1/4293819/4293819596.htm",
+      "status": "ok",
+      "rows": 57,
+      "note": "",
+      "skipped": []
+    },
+    {
+      "normative_key": "СТО 79814898 112-2009",
+      "source_url": "https://pkfdetal.ru/katalog/kolena-sto/kolena-sto-79814898-112-2009",
+      "status": "ok",
+      "rows": 72,
+      "note": "",
+      "skipped": []
+    },
+    {
+      "normative_key": "ОСТ 34.10.752-97",
+      "source_url": "https://elbows.ru/otvody/stalnye-otvody/ost-3410752-97/",
+      "status": "ok",
+      "rows": 252,
+      "note": "",
+      "skipped": []
+    },
+    {
+      "normative_key": "ГОСТ 12815-80",
+      "source_url": "https://meganorm.ru/Data2/1/4294848/4294848686.htm",
+      "status": "ok",
+      "rows": 222,
+      "note": "",
+      "skipped": []
+    },
+    {
+      "normative_key": "СТО ЦКТИ 321.14-2011",
+      "source_url": "—",
+      "status": "skipped",
+      "rows": 0,
+      "note": "Нет бесплатной HTML-таблицы (только PDF/платные базы). На лендинге указан как 321.14-2009 — уточнить обозначение.",
+      "skipped": []
+    },
+    {
+      "normative_key": "ГОСТ 17380-2001",
+      "source_url": "—",
+      "status": "skipped",
+      "rows": 0,
+      "note": "Общие ТУ на СДТ, таблиц типоразмеров нет. Для плоских заглушек — ОСТ 34.10.758-97.",
+      "skipped": []
+    },
+    {
+      "normative_key": "ГОСТ 17381",
+      "source_url": "—",
+      "status": "skipped",
+      "rows": 0,
+      "note": "В серии 17375–17379 отдельного ГОСТ 17381 нет.",
+      "skipped": []
+    },
+    {
+      "normative_key": "ГОСТ 12816-80",
+      "source_url": "—",
+      "status": "skipped",
+      "rows": 0,
+      "note": "Общие технические требования к фланцам, без таблицы размеров. Размеры — ГОСТ 12820/12821.",
+      "skipped": []
+    },
+    {
+      "normative_key": "ОСТ 36-41-81",
+      "source_url": "—",
+      "status": "skipped",
+      "rows": 0,
+      "note": "Справочный ОСТ на сварные детали, не сортамент.",
+      "skipped": []
+    }
+  ],
+  "row_counts_by_norm": {
+    "СТО 321.06": 57,
+    "СТО 79814898 112-2009": 72,
+    "ОСТ 34.10.752-97": 252,
+    "ГОСТ 12815-80": 222
+  }
+}
