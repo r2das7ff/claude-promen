@@ -21,7 +21,7 @@ function promen_range_taxonomies(): array {
 
 /** Мультивыбор: param => taxonomy. */
 function promen_multi_taxonomies(): array {
-	return [ 'steel' => 'pa_steel', 'angle' => 'pa_angle', 'gost' => 'norm' ];
+	return [ 'steel' => 'pa_steel', 'industry' => 'promen_industry', 'angle' => 'pa_angle', 'gost' => 'norm' ];
 }
 
 /** Допустимые углы отвода (остальное — мусор источника). */
@@ -29,11 +29,41 @@ function promen_valid_angles(): array {
 	return [ 15, 30, 45, 60, 90, 180 ];
 }
 
-/** Категории с отдельным лендингом (шаблон sdt.html); реестр — на корне каталога. */
+/** Версия кэша фильтров (инвалидируется на изменениях каталога). */
+function promen_filters_cache_version(): string {
+	$v = get_option( 'promen_filters_cache_version', '' );
+	if ( ! is_string( $v ) || $v === '' ) {
+		$v = (string) time();
+		update_option( 'promen_filters_cache_version', $v, false );
+	}
+	return $v;
+}
+
+/** Инвалидация кэша фильтров. */
+function promen_filters_cache_bump(): void {
+	update_option( 'promen_filters_cache_version', (string) time(), false );
+}
+
+/** Ключ transient для фильтров. */
+function promen_filters_cache_key( string $prefix, array $parts = [] ): string {
+	$raw = wp_json_encode( [ $prefix, promen_filters_cache_version(), $parts ], JSON_UNESCAPED_UNICODE );
+	return 'promen_f_' . md5( $raw ?: $prefix );
+}
+
+add_action( 'save_post_product', 'promen_filters_cache_bump', 99 );
+add_action( 'deleted_post', function ( int $post_id ) {
+	if ( get_post_type( $post_id ) === 'product' ) {
+		promen_filters_cache_bump();
+	}
+}, 99 );
+add_action( 'edited_terms', 'promen_filters_cache_bump', 99 );
+
+
+/** Категории с отдельной страницей категории (taxonomy-product_cat-<slug>.php). */
 function promen_section_landing_slugs(): array {
-	// Только категории со СВОИМ шаблоном-лендингом (taxonomy-product_cat-<slug>.php).
-	// Подкатегории (truby-bsh, opory-nepodv, flancy-plosk…) шаблона не имеют —
-	// показывают реестр товаров через archive-product.php (не лендинг).
+	if ( function_exists( 'promen_catalog_page_slugs' ) ) {
+		return promen_catalog_page_slugs();
+	}
 	return [ 'sdt', 'otvody', 'troyniki', 'perekhody', 'dnishcha', 'zaglushki', 'krepezh', 'flancy', 'bolty', 'gayki', 'shpilki', 'shayby', 'vinty', 'tochenye', 'truby', 'izolyatsiya', 'opory', 'armatura' ];
 }
 
@@ -103,6 +133,70 @@ function promen_active_multi(): array {
 	return $out;
 }
 
+/**
+ * Опубликованные product IDs в скоупе категории (кэш на 15 минут).
+ *
+ * @return int[]
+ */
+function promen_scope_product_ids( int $cat_id ): array {
+	$ckey   = promen_filters_cache_key( 'scope_ids', [ $cat_id ] );
+	$cached = get_transient( $ckey );
+	if ( is_array( $cached ) ) {
+		return array_map( 'intval', $cached );
+	}
+
+	$args = [
+		'post_type'      => 'product',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+		'no_found_rows'  => true,
+	];
+	if ( $cat_id ) {
+		$args['tax_query'] = [
+			[
+				'taxonomy'         => 'product_cat',
+				'field'            => 'term_id',
+				'terms'            => array_merge( [ $cat_id ], get_term_children( $cat_id, 'product_cat' ) ),
+				'include_children' => true,
+			],
+		];
+	}
+	$ids = array_map( 'intval', get_posts( $args ) );
+	set_transient( $ckey, $ids, 15 * MINUTE_IN_SECONDS );
+	return $ids;
+}
+
+/**
+ * IDs товаров по выбранным отраслям в рамках скоупа.
+ *
+ * @param string[] $industry_slugs
+ * @return int[]
+ */
+function promen_industry_matching_ids( array $industry_slugs, int $cat_id ): array {
+	$industry_slugs = array_values( array_unique( array_filter( array_map( 'sanitize_title', $industry_slugs ) ) ) );
+	if ( ! $industry_slugs ) {
+		return [];
+	}
+	sort( $industry_slugs );
+	$ckey   = promen_filters_cache_key( 'industry_match_ids', [ $cat_id, implode( ',', $industry_slugs ) ] );
+	$cached = get_transient( $ckey );
+	if ( is_array( $cached ) ) {
+		return array_map( 'intval', $cached );
+	}
+
+	$ids   = promen_scope_product_ids( $cat_id );
+	$match = [];
+	foreach ( $ids as $pid ) {
+		$pind = function_exists( 'promen_product_industry_slugs' ) ? promen_product_industry_slugs( (int) $pid ) : [];
+		if ( array_intersect( $industry_slugs, $pind ) ) {
+			$match[] = (int) $pid;
+		}
+	}
+	set_transient( $ckey, $match, 15 * MINUTE_IN_SECONDS );
+	return $match;
+}
+
 /** Есть ли активные фильтры/поиск (для canonical и сводки). */
 function promen_has_filters(): bool {
 	return promen_active_ranges() || promen_active_multi() || ! empty( $_GET['q'] );
@@ -122,6 +216,25 @@ function promen_range_slugs( string $param, ?float $min, ?float $max ): array {
 
 // ── Применение к запросу ─────────────────────────────────────────
 
+/** Облегчить main query, когда список рендерится из канона. */
+add_action( 'pre_get_posts', function ( WP_Query $q ): void {
+	if ( is_admin() || ! $q->is_main_query() || ! promen_catalog_uses_layer() ) {
+		return;
+	}
+	if ( ! ( $q->is_post_type_archive( 'product' ) || $q->is_tax( 'product_cat' ) || $q->is_tax( 'norm' ) ) ) {
+		return;
+	}
+	if ( $q->is_tax( 'product_cat' ) && ! promen_has_filters() && ! $q->get( 'paged' ) ) {
+		$term = get_term( (int) $q->get_queried_object_id(), 'product_cat' );
+		if ( $term && ! is_wp_error( $term ) && in_array( $term->slug, promen_section_landing_slugs(), true ) ) {
+			return;
+		}
+	}
+	$q->set( 'post__in', [ 0 ] );
+	$q->set( 'posts_per_page', 1 );
+	$q->set( 'no_found_rows', true );
+}, 5 );
+
 add_action( 'pre_get_posts', function ( WP_Query $q ) {
 	if ( is_admin() || ! $q->is_main_query() ) {
 		return;
@@ -129,8 +242,11 @@ add_action( 'pre_get_posts', function ( WP_Query $q ) {
 	if ( ! ( $q->is_post_type_archive( 'product' ) || $q->is_tax( 'product_cat' ) || $q->is_tax( 'norm' ) ) ) {
 		return;
 	}
+	if ( promen_catalog_uses_layer() ) {
+		return;
+	}
 
-	// Лендинг раздела (/catalog/sdt/): список не грузим — реестр на корне каталога.
+	// Страница категории раздела (/catalog/sdt/): список не грузим — реестр на корне каталога.
 	if ( $q->is_tax( 'product_cat' ) && ! promen_has_filters() && ! $q->get( 'paged' ) ) {
 		$term = get_term( (int) $q->get_queried_object_id(), 'product_cat' );
 		if ( $term && ! is_wp_error( $term ) && in_array( $term->slug, promen_section_landing_slugs(), true ) ) {
@@ -140,7 +256,7 @@ add_action( 'pre_get_posts', function ( WP_Query $q ) {
 		}
 	}
 
-	$q->set( 'posts_per_page', 50 );
+	$q->set( 'posts_per_page', 30 );
 
 	$tax_query = $q->get( 'tax_query' ) ?: [];
 	if ( ! is_array( $tax_query ) ) {
@@ -276,6 +392,12 @@ function promen_scope_cat_id(): int {
  * Возвращает [ slug => ['name','count'] ]. Без скоупа — глобально.
  */
 function promen_scoped_counts( string $tax, int $cat_id ): array {
+	$ckey   = promen_filters_cache_key( 'scoped_counts', [ $tax, $cat_id ] );
+	$cached = get_transient( $ckey );
+	if ( is_array( $cached ) ) {
+		return $cached;
+	}
+
 	global $wpdb;
 	if ( $cat_id ) {
 		$cat_ids = array_map( 'intval', array_merge( [ $cat_id ], get_term_children( $cat_id, 'product_cat' ) ) );
@@ -303,6 +425,7 @@ function promen_scoped_counts( string $tax, int $cat_id ): array {
 	foreach ( $rows as $r ) {
 		$out[ $r->slug ] = [ 'name' => $r->name, 'count' => (int) $r->cnt ];
 	}
+	set_transient( $ckey, $out, 15 * MINUTE_IN_SECONDS );
 	return $out;
 }
 
@@ -330,8 +453,21 @@ function promen_scoped_steel_counts( int $cat_id ): array {
 		return $cache[ $cat_id ];
 	}
 
+	$ckey   = promen_filters_cache_key( 'steel_counts', [ $cat_id ] );
+	$cached = get_transient( $ckey );
+	if ( is_array( $cached ) ) {
+		return $cache[ $cat_id ] = $cached;
+	}
+
 	global $wpdb;
 	$counts = [];
+	$term_names = [];
+	$steel_terms = get_terms( [ 'taxonomy' => 'pa_steel', 'hide_empty' => false, 'number' => 0 ] );
+	foreach ( $steel_terms ?: [] as $st ) {
+		if ( ! is_wp_error( $st ) ) {
+			$term_names[ $st->slug ] = $st->name;
+		}
+	}
 
 	$cat_join    = '';
 	$cat_prepare = [];
@@ -358,8 +494,7 @@ function promen_scoped_steel_counts( int $cat_id ): array {
 	foreach ( $rows_var ?: [] as $row ) {
 		$slug = (string) $row->slug;
 		if ( ! isset( $counts[ $slug ] ) ) {
-			$term            = get_term_by( 'slug', $slug, 'pa_steel' );
-			$counts[ $slug ] = [ 'name' => $term ? $term->name : $slug, 'count' => 0 ];
+			$counts[ $slug ] = [ 'name' => $term_names[ $slug ] ?? $slug, 'count' => 0 ];
 		}
 		$counts[ $slug ]['count'] += (int) $row->cnt;
 	}
@@ -379,21 +514,35 @@ function promen_scoped_steel_counts( int $cat_id ): array {
 	foreach ( $simple_ids ?: [] as $pid ) {
 		foreach ( promen_product_steel_slugs( (int) $pid ) as $slug ) {
 			if ( ! isset( $counts[ $slug ] ) ) {
-				$term            = get_term_by( 'slug', $slug, 'pa_steel' );
-				$counts[ $slug ] = [ 'name' => $term ? $term->name : $slug, 'count' => 0 ];
+				$counts[ $slug ] = [ 'name' => $term_names[ $slug ] ?? $slug, 'count' => 0 ];
 			}
 			$counts[ $slug ]['count']++;
 		}
 	}
 
+	set_transient( $ckey, $counts, 15 * MINUTE_IN_SECONDS );
 	return $cache[ $cat_id ] = $counts;
 }
 
 /** Опции мультивыбора: [ ['slug','name','count'] ] валидные, в скоупе, по убыв. count. */
 function promen_multi_options( string $param, int $limit = 40 ): array {
+	if ( $param === 'industry' && promen_catalog_uses_layer() && function_exists( 'promen_catalog_page_result' ) && function_exists( 'promen_industry_facet_options' ) ) {
+		return promen_industry_facet_options( promen_catalog_page_result()->facets['industry'] ?? [] );
+	}
+	if ( $param === 'industry' && function_exists( 'promen_industry_filter_options' ) ) {
+		return promen_industry_filter_options( promen_scope_cat_id() );
+	}
+	if ( promen_catalog_uses_layer() && function_exists( 'promen_catalog_page_result' ) ) {
+		return promen_catalog_facet_options( $param, promen_catalog_page_result()->facets, $limit );
+	}
+
 	$tax          = promen_multi_taxonomies()[ $param ] ?? '';
 	$cat_id       = promen_scope_cat_id();
-	$counts       = $param === 'steel' ? promen_scoped_steel_counts( $cat_id ) : promen_scoped_counts( $tax, $cat_id );
+	if ( $param === 'steel' ) {
+		$counts = promen_scoped_steel_counts( $cat_id );
+	} else {
+		$counts = promen_scoped_counts( $tax, $cat_id );
+	}
 	$valid_angles = array_map( 'strval', promen_valid_angles() );
 
 	$opts = [];
@@ -403,12 +552,8 @@ function promen_multi_options( string $param, int $limit = 40 ): array {
 		}
 		$opts[] = [ 'slug' => $slug, 'name' => $d['name'], 'count' => $d['count'] ];
 	}
-	// steel/gost — по популярности; angle — по величине.
-	if ( $param === 'angle' ) {
-		usort( $opts, fn( $a, $b ) => (float) $a['name'] <=> (float) $b['name'] );
-	} else {
-		usort( $opts, fn( $a, $b ) => $b['count'] <=> $a['count'] ?: strnatcasecmp( $a['name'], $b['name'] ) );
-	}
+	// Стабильный порядок (не по счётчику) — чипы не «скачут» при выборе фильтров.
+	$opts = promen_catalog_sort_facet_options( $opts, $param );
 	return array_slice( $opts, 0, $limit );
 }
 
@@ -498,21 +643,67 @@ function promen_build_filter_url( array $args ): string {
 }
 
 /**
- * URL корня каталога с выбранной группой (смена категории в сайдбаре).
- * Чипы/диапазоны сбрасываем — у другой категории свой набор значений.
+ * Заголовки и хлебные крошки групп каталога (сайдбар + шапка таблицы).
+ *
+ * @return array<string, array{title: string, path: string, term: WP_Term|null}>
+ */
+function promen_catalog_group_views(): array {
+	static $views = null;
+	if ( null !== $views ) {
+		return $views;
+	}
+	$views = [
+		'' => [ 'title' => 'РЕЕСТР ИЗДЕЛИЙ', 'path' => '/ Весь реестр', 'term' => null ],
+	];
+	if ( function_exists( 'promen_catalog_taxonomy_defs' ) ) {
+		foreach ( promen_catalog_taxonomy_defs() as $slug => $def ) {
+			$term = get_term_by( 'slug', $slug, 'product_cat' );
+			$views[ $slug ] = [
+				'title' => $def['title'],
+				'path'  => $def['path'],
+				'term'  => $term instanceof WP_Term ? $term : null,
+			];
+		}
+	}
+	return $views;
+}
+
+/** JSON-вид group_views для catalog.js. */
+function promen_catalog_group_views_js(): array {
+	$out = [];
+	foreach ( promen_catalog_group_views() as $slug => $view ) {
+		$term_url = '';
+		if ( $view['term'] ) {
+			$link = get_term_link( $view['term'] );
+			if ( ! is_wp_error( $link ) ) {
+				$term_url = $link;
+			}
+		}
+		$out[ $slug ] = [
+			'title'    => $view['title'],
+			'path'     => $view['path'],
+			'termUrl'  => $term_url,
+			'termName' => $view['term'] ? $view['term']->name : '',
+		];
+	}
+	return $out;
+}
+
+/**
+ * URL фильтра группы на корне каталога (?group=).
+ * Страница категории (ЧПУ) — отдельно через termUrl / «Страница категории →».
  */
 function promen_group_filter_url( ?string $group_slug ): string {
 	$base = wc_get_page_permalink( 'shop' );
-	$args = [];
-	if ( $group_slug ) {
-		$args['group'] = $group_slug;
+	if ( ! $group_slug ) {
+		return $base;
 	}
-	return $args ? add_query_arg( array_map( 'rawurlencode', $args ), $base ) : $base;
+	return add_query_arg( [ 'group' => rawurlencode( $group_slug ) ], $base );
 }
 
 /** Сводка активных фильтров: [ ['label','value','clear_url'] ] для строки-резюме. */
 function promen_active_summary(): array {
-	$labels  = [ 'dn' => 'DN', 'pn' => 'PN', 'steel' => 'Сталь', 'angle' => 'Угол', 'gost' => 'ГОСТ' ];
+	$labels  = [ 'dn' => 'DN', 'pn' => 'PN', 'steel' => 'Сталь', 'industry' => 'Отрасль', 'angle' => 'Угол', 'gost' => 'ГОСТ' ];
 	$out     = [];
 	foreach ( promen_active_ranges() as $p => $r ) {
 		$val = ( null !== $r['min'] ? (float) $r['min'] : '…' ) . '–' . ( null !== $r['max'] ? (float) $r['max'] : '…' );
@@ -520,6 +711,12 @@ function promen_active_summary(): array {
 	}
 	foreach ( promen_active_multi() as $p => $slugs ) {
 		foreach ( $slugs as $slug ) {
+			if ( $p === 'industry' ) {
+				$imap = function_exists( 'promen_industry_tag_labels' ) ? promen_industry_tag_labels() : [];
+				$val  = $imap[ $slug ] ?? strtoupper( $slug );
+				$out[] = [ 'label' => $labels[ $p ], 'value' => $val, 'clear_url' => promen_multi_toggle_url( $p, $slug ) ];
+				continue;
+			}
 			$t = get_term_by( 'slug', $slug, promen_multi_taxonomies()[ $p ] );
 			$out[] = [ 'label' => $labels[ $p ], 'value' => $t ? $t->name : $slug, 'clear_url' => promen_multi_toggle_url( $p, $slug ) ];
 		}
@@ -530,11 +727,15 @@ function promen_active_summary(): array {
 // ── Canonical / robots на отфильтрованных видах ──────────────────
 
 add_action( 'wp_head', function () {
-	if ( ! ( promen_has_filters() || promen_active_group() !== '' ) ) {
+	$group    = promen_active_group();
+	$filtered = promen_has_filters();
+	if ( ! ( $filtered || $group !== '' ) ) {
 		return;
 	}
 	if ( is_post_type_archive( 'product' ) || is_shop() ) {
-		$url = get_post_type_archive_link( 'product' );
+		// Групповой вид (?group=otvody) каноникалим на страницу категории, а не на голый /catalog/.
+		$term = $group !== '' ? get_term_by( 'slug', $group, 'product_cat' ) : null;
+		$url  = ( $term && ! is_wp_error( $term ) ) ? get_term_link( $term ) : get_post_type_archive_link( 'product' );
 	} elseif ( is_tax( 'product_cat' ) || is_tax( 'norm' ) ) {
 		$url = get_term_link( get_queried_object() );
 	} else {
@@ -542,6 +743,9 @@ add_action( 'wp_head', function () {
 	}
 	if ( $url && ! is_wp_error( $url ) ) {
 		echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
-		echo '<meta name="robots" content="noindex,follow">' . "\n";
+		// noindex — только у параметрических (фильтр/поиск) видов; чистая категория индексируется.
+		if ( $filtered ) {
+			echo '<meta name="robots" content="noindex,follow">' . "\n";
+		}
 	}
 }, 1 );

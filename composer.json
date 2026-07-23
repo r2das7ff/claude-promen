@@ -1,0 +1,19 @@
+{
+  "name": "promen/site",
+  "description": "PROM-EN catalog site",
+  "type": "project",
+  "require-dev": {
+    "phpunit/phpunit": "^9.6"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Promen\\Tests\\": "tests/"
+    },
+    "classmap": [
+      "tests/unit"
+    ]
+  },
+  "scripts": {
+    "test": "phpunit"
+  }
+}

@@ -1,6 +1,6 @@
 <?php
 /**
- * Лендинг категории СДТ — перенос design-reference/sdt.html 1:1.
+ * Страница категории категории СДТ — перенос design-reference/sdt.html 1:1.
  * Реестр исполнений (s09) — реальные серии отводов; остальные семейства
  * СДТ подключаются после расширения пилота.
  */
@@ -12,19 +12,22 @@ get_header();
 $term     = get_queried_object();
 $crumbs   = promen_breadcrumbs();
 $shop_url = wc_get_page_permalink( 'shop' );
-$otv      = get_term_by( 'slug', 'otvody', 'product_cat' );
-// /catalog/sdt/otvody/ — лендинг семейства; реестр отводов живёт на корне каталога.
-$otv_url  = add_query_arg( 'group', 'otvody', $shop_url );
-$otv_landing = $otv ? get_term_link( $otv ) : $shop_url;
-$otv_cnt  = $otv ? (int) $otv->count : 0;
+$otv      = get_term_by( 'slug', 'sdt', 'product_cat' );
+// ЧПУ категории СДТ; фильтры и живой реестр на этой же странице.
+$otv_link = ( $otv && ! is_wp_error( get_term_link( $otv ) ) ) ? get_term_link( $otv ) : $shop_url;
+$otv_url  = $otv_link;
+$otv_landing = $otv_link;
+$otv_cnt  = function_exists( 'promen_catalog_group_count' ) ? promen_catalog_group_count( 'sdt' ) : ( $otv ? (int) $otv->count : 0 );
 ?>
 <script type="application/ld+json"><?php echo promen_breadcrumbs_schema( $crumbs ); ?></script>
 
 <nav class="sidenav" aria-label="Навигация по разделам">
   <a class="sidenav-item" href="#hero"><span class="sidenav-dot"></span><span class="sidenav-label">КАТЕГОРИЯ</span></a>
   <a class="sidenav-item" href="#s01"><span class="sidenav-dot"></span><span class="sidenav-label">СУТЬ</span></a>
+  <a class="sidenav-item" href="#registry"><span class="sidenav-dot"></span><span class="sidenav-label">РЕЕСТР</span></a>
+  
   <a class="sidenav-item" href="#s02"><span class="sidenav-dot"></span><span class="sidenav-label">ТИПЫ</span></a>
-  <a class="sidenav-item" href="#s03"><span class="sidenav-dot"></span><span class="sidenav-label">РЕЕСТР</span></a>
+  <a class="sidenav-item" href="#s03"><span class="sidenav-dot"></span><span class="sidenav-label">СЕМЕЙСТВА</span></a>
   <a class="sidenav-item" href="#s04"><span class="sidenav-dot"></span><span class="sidenav-label">НОРМЫ</span></a>
   <a class="sidenav-item" href="#s05"><span class="sidenav-dot"></span><span class="sidenav-label">МАТЕРИАЛЫ</span></a>
   <a class="sidenav-item" href="#s06"><span class="sidenav-dot"></span><span class="sidenav-label">ПРИМЕНЕНИЕ</span></a>
@@ -51,15 +54,15 @@ $otv_cnt  = $otv ? (int) $otv->count : 0;
       <h1 class="hero-h1">Соединительные<br><em>детали</em><br>трубопровода</h1>
       <p class="hero-desc">Производство штампованных и сварных деталей для трубопроводных систем ТЭС, АЭС, ГРЭС, нефтегаза и химической промышленности. Исполнение по ГОСТ, ОСТ, ТУ и конструкторской документации заказчика. Полный пакет технической документации.</p>
       <div class="hero-params">
-        <div class="hp"><span class="hp-v">4 414</span><span class="hp-k">Типоразмеров</span></div>
+        <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $otv_cnt ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">5 семейств</span><span class="hp-k">Отводы · тройники · переходы · днища · заглушки</span></div>
-        <div class="hp"><span class="hp-v">DN 6–3800</span><span class="hp-k">Диапазон</span></div>
+        <div class="hp"><span class="hp-v">DN 6–1600</span><span class="hp-k">Диапазон в каталоге</span></div>
       </div>
     </div>
     <div class="hero-right">
       <div class="hud-block">
         <div class="hud-label">Технические диапазоны / SDT SPECS</div>
-        <div class="hud-row"><span class="hud-rk">DN, мм</span><span class="hud-rv">6 — 3800</span></div>
+        <div class="hud-row"><span class="hud-rk">DN, мм</span><span class="hud-rv">6 — 1600</span></div>
         <div class="hud-row"><span class="hud-rk">PN, МПа</span><span class="hud-rv">6 — 160</span></div>
         <div class="hud-row"><span class="hud-rk">Температура среды, °C</span><span class="hud-rv">−70 — +700</span></div>
         <div class="hud-row"><span class="hud-rk">Радиус гиба R / DN</span><span class="hud-rv">1,5 — 5,0</span></div>
@@ -73,6 +76,8 @@ $otv_cnt  = $otv ? (int) $otv->count : 0;
       </div>
     </div>
   </div>
+
+
 
 
 <section class="s" id="s01">
@@ -188,6 +193,9 @@ $otv_cnt  = $otv ? (int) $otv->count : 0;
     </div>
   </section>
 
+<?php promen_render_category_catalog_embed( 'sdt', (int) $otv_cnt ); ?>
+
+
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
@@ -198,59 +206,66 @@ $otv_cnt  = $otv ? (int) $otv->count : 0;
       <div class="map-root">
         <div class="map-root-label">СДТ — Соединительные детали трубопровода</div>
       </div>
+      <?php
+      $map_otv = function_exists( 'promen_catalog_group_count' ) ? promen_catalog_group_count( 'otvody' ) : 0;
+      $map_tro = function_exists( 'promen_catalog_group_count' ) ? promen_catalog_group_count( 'troyniki' ) : 0;
+      $map_per = function_exists( 'promen_catalog_group_count' ) ? promen_catalog_group_count( 'perekhody' ) : 0;
+      $map_dn  = function_exists( 'promen_catalog_group_count' ) ? promen_catalog_group_count( 'dnishcha' ) : 0;
+      $map_zag = function_exists( 'promen_catalog_group_count' ) ? promen_catalog_group_count( 'zaglushki' ) : 0;
+      ?>
       <div class="map-groups" id="mapGroups">
         <!-- ОТВОДЫ -->
         <div class="mg" data-type="otv">
           <div class="mg-hd">
             <div class="mg-code">ОТВ</div>
-            <div class="mg-cnt">4 исполнения</div>
+            <div class="mg-cnt"><?php echo esc_html( number_format_i18n( $map_otv ) ); ?> поз.</div>
           </div>
           <div class="mg-name">Отводы</div>
           <div class="mg-items">
             <div class="mg-item">Крутоизогнутые 45° / 90° / 180°<span class="mg-norm">ГОСТ 17375-2001</span></div>
             <div class="mg-item">Секторные / сварные<span class="mg-norm">ОСТ 36-21-77</span></div>
-            <div class="mg-item">Гнутые из трубных заготовок<span class="mg-norm">СТО ЦКТИ 321.01-06</span></div>
-            <div class="mg-item">Штампосварные<span class="mg-norm">ОСТ 36-20-77</span></div>
+            <div class="mg-item">Гнутые из трубных заготовок<span class="mg-norm">СТО ЦКТИ 321.x</span></div>
+            <div class="mg-item">Высокое давление / колена с опорой<span class="mg-norm">ГОСТ 22793 / 22818</span></div>
           </div>
-          <div class="mg-footer"><span class="mg-ftag">DN 15–1400</span><span class="mg-ftag">R=1,5–5DN</span><span class="mg-ftag">PN до 160</span></div>
+          <div class="mg-footer"><span class="mg-ftag">DN 6–1400</span><span class="mg-ftag">R=1,5–5DN</span><span class="mg-ftag">PN до 160</span></div>
         </div>
         <!-- ТРОЙНИКИ -->
         <div class="mg" data-type="troy">
           <div class="mg-hd">
             <div class="mg-code">ТРО</div>
-            <div class="mg-cnt">4 исполнения</div>
+            <div class="mg-cnt"><?php echo esc_html( number_format_i18n( $map_tro ) ); ?> поз.</div>
           </div>
           <div class="mg-name">Тройники</div>
           <div class="mg-items">
-            <div class="mg-item">Равнопроходные (d=D)<span class="mg-norm">ГОСТ 17376-2001</span></div>
-            <div class="mg-item">Переходные (d&lt;D)<span class="mg-norm">ГОСТ 17376-2001</span></div>
-            <div class="mg-item">Сварные крупного DN<span class="mg-norm">ОСТ 36-24-77</span></div>
-            <div class="mg-item">По СТО ЦКТИ (720.01–720.29)<span class="mg-norm">СТО ЦКТИ 720.x</span></div>
+            <div class="mg-item">Равнопроходные / переходные<span class="mg-norm">ГОСТ 17376-2001</span></div>
+            <div class="mg-item">АЭС — тройники СТО<span class="mg-norm">СТО 95.127-2013</span></div>
+            <div class="mg-item">АЭС — врезки и ответвления<span class="mg-norm">СТО 79814898.125</span></div>
+            <div class="mg-item">Сварные / ОСТ ТЭС<span class="mg-norm">ОСТ 34-42</span></div>
           </div>
-          <div class="mg-footer"><span class="mg-ftag">DN 15–1000</span><span class="mg-ftag">Разветвление</span><span class="mg-ftag">ТЭС / АЭС</span></div>
+          <div class="mg-footer"><span class="mg-ftag">DN 10–1600</span><span class="mg-ftag">Разветвление</span><span class="mg-ftag">ТЭС / АЭС</span></div>
         </div>
         <!-- ПЕРЕХОДЫ -->
         <div class="mg" data-type="pereh">
           <div class="mg-hd">
             <div class="mg-code">ПЕР</div>
-            <div class="mg-cnt">4 исполнения</div>
+            <div class="mg-cnt"><?php echo esc_html( number_format_i18n( $map_per ) ); ?> поз.</div>
           </div>
           <div class="mg-name">Переходы</div>
           <div class="mg-items">
             <div class="mg-item">Концентрические (соосные)<span class="mg-norm">ГОСТ 17378-2001</span></div>
             <div class="mg-item">Эксцентрические (смещение оси)<span class="mg-norm">ГОСТ 17378-2001</span></div>
             <div class="mg-item">Сварные / конусные<span class="mg-norm">ОСТ 36-22-77</span></div>
-            <div class="mg-item">По СТО ЦКТИ (318.01–318.03)<span class="mg-norm">СТО ЦКТИ 318.x</span></div>
+            <div class="mg-item">ОСТ энергетики<span class="mg-norm">ОСТ 34.10.42x</span></div>
           </div>
-          <div class="mg-footer"><span class="mg-ftag">DN 15–1400</span><span class="mg-ftag">Редукция</span><span class="mg-ftag">PN до 160</span></div>
+          <div class="mg-footer"><span class="mg-ftag">DN 10–1600</span><span class="mg-ftag">Редукция</span><span class="mg-ftag">PN до 160</span></div>
         </div>
       </div>
       <div class="map-groups-2">
         <div class="mg-2" data-type="dn">
           <span class="mg-2-code">ДНЩ</span>
           <span class="mg-2-name">Днища и заглушки</span>
-          <span class="mg-2-desc">Эллиптические днища (a/D=0,25) — для сосудов давления, коллекторов, закрытия торцов. Заглушки эллиптические и плоские. DN 25–4000, PN 0.6–16 МПа.</span>
-          <span class="mg-2-norm">ГОСТ 17379-2001 · ГОСТ 6533-78 · ОСТ 36-25-77</span>
+          <span class="mg-2-desc">Днища <?php echo esc_html( number_format_i18n( $map_dn ) ); ?> поз. · заглушки <?php echo esc_html( number_format_i18n( $map_zag ) ); ?> поз. Эллиптические днища и заглушки — DN 6–1600 в каталоге.</span>
+          <span class="mg-2-norm">ГОСТ 17379 · ГОСТ 6533 · ОСТ 34.10 / 24.125</span>
         </div>
         <div class="mg-2" data-type="ns">
           <span class="mg-2-code">НСТ</span>
@@ -262,6 +277,19 @@ $otv_cnt  = $otv ? (int) $otv->count : 0;
     </div>
   </section>
 
+<?php
+$sdt_family_meta = [
+  'otvody'    => [ 'СДТ-01', 'Отводы',   'крутоизогнутые, гнутые, секторные, колена с опорой', '6–1400', 'ГОСТ 17375 · 30753 · 22793 · СТО ЦКТИ 321' ],
+  'troyniki'  => [ 'СДТ-02', 'Тройники', 'равнопроходные, переходные, сварные, с опорой',      '10–1600', 'СТО 95.127 · 79814898.125 · ОСТ 34-42' ],
+  'perekhody' => [ 'СДТ-03', 'Переходы', 'концентрические, эксцентрические, сварные',           '10–1600', 'ГОСТ 17378 · ОСТ 34.10 · ОСТ 36-22' ],
+  'dnishcha'  => [ 'СДТ-04', 'Днища',    'эллиптические отбортованные для сосудов и аппаратов',  '10–1500', 'ГОСТ 6533 · ОСТ 24.125' ],
+  'zaglushki' => [ 'СДТ-05', 'Заглушки', 'эллиптические, плоские, на высокое давление',         '6–1600',  'ГОСТ 17379 · ОСТ 34.10' ],
+];
+$sdt_family_total = 0;
+foreach ( array_keys( $sdt_family_meta ) as $fk ) {
+  $sdt_family_total += function_exists( 'promen_catalog_group_count' ) ? promen_catalog_group_count( $fk ) : 0;
+}
+?>
 <section class="s s-alt" id="s03">
     <div class="s-hd">
       <div class="s-badge"><span class="s-badge-num">03</span>Реестр исполнений</div>
@@ -269,527 +297,35 @@ $otv_cnt  = $otv ? (int) $otv->count : 0;
     </div>
     <div class="reg-bar" id="regBar">
       <span class="rb-lbl">Семейства СДТ</span>
-      <span class="rb-lbl" style="opacity:.55;">Клик по строке — реестр и страница семейства</span>
-      <span class="rb-count" id="regCount">5 семейств · 4 414 типоразмеров</span>
+      <span class="rb-lbl" style="opacity:.55;">Клик — страница семейства и его реестр</span>
+      <span class="rb-count" id="regCount">5 семейств · <?php echo esc_html( number_format_i18n( $sdt_family_total ) ); ?> типоразмеров</span>
     </div>
     <div class="reg-hd">
-      <span>Норматив</span><span>Наименование</span><span>DN, мм</span><span>Позиций</span><span>Материалы</span><span>Код</span><span>Отрасль</span><span></span>
+      <span>Код</span><span>Наименование</span><span>DN, мм</span><span>Позиций</span><span>Материалы</span><span>Норматив</span><span>Отрасль</span><span></span>
     </div>
     <div id="regList">
-      <?php
-      $sdt_families = [
-        [ 'otvody',    'СДТ-01', 'Отводы',   'крутоизогнутые, гнутые, секторные, колена с опорой', '6–1400', '3 120', '09Г2С, 20, 12Х18Н10Т, 12Х1МФ', 'ГОСТ 17375 · 30753 · 22793 · СТО ЦКТИ 321' ],
-        [ 'troyniki',  'СДТ-02', 'Тройники', 'равнопроходные, переходные, сварные, с опорой',      '15–1600', '491',   '09Г2С, 12Х18Н10Т, 20, 13ХФА',  'ГОСТ 17376 · 22801 · 22822 · ОСТ 34-10' ],
-        [ 'perekhody', 'СДТ-03', 'Переходы', 'концентрические, эксцентрические, сварные',           '15–1600', '425',   '09Г2С, 08Х18Н10Т, 10, 20',     'ГОСТ 17378 · 22826 · ОСТ 36-22-77' ],
-        [ 'dnishcha',  'СДТ-04', 'Днища',    'эллиптические отбортованные для сосудов и аппаратов',  '100–3800', '250',  '09Г2С, 12Х18Н10Т, 13ХФА',      'ГОСТ 6533-1978' ],
-        [ 'zaglushki', 'СДТ-05', 'Заглушки', 'эллиптические, на Ру до 100 МПа',                      '6–600',   '128',   '09Г2С, 12Х18Н10Т, 13ХФА',      'ГОСТ 17379-2001 · 22815-1983' ],
-      ];
-      foreach ( $sdt_families as $f ) :
-        $ft = get_term_by( 'slug', $f[0], 'product_cat' );
-        $furl = $ft ? get_term_link( $ft ) : $shop_url;
+      <?php foreach ( $sdt_family_meta as $fslug => $f ) :
+        $ft = get_term_by( 'slug', $fslug, 'product_cat' );
+        $furl = ( $ft && ! is_wp_error( get_term_link( $ft ) ) ) ? get_term_link( $ft ) : $shop_url;
+        $fcnt = function_exists( 'promen_catalog_group_count' ) ? promen_catalog_group_count( $fslug ) : 0;
       ?>
-      <a class="reg-r" data-type="<?php echo esc_attr( $f[0] ); ?>" href="<?php echo esc_url( $furl ); ?>">
-        <span class="rr-i"><?php echo esc_html( $f[1] ); ?></span>
-        <span class="rr-n"><?php echo esc_html( $f[2] ); ?><small><?php echo esc_html( $f[3] ); ?></small></span>
-        <span class="rr-dn"><?php echo esc_html( $f[4] ); ?></span>
-        <span class="rr-pn"><?php echo esc_html( $f[5] ); ?> поз.</span>
-        <span class="rr-m"><?php echo esc_html( $f[6] ); ?></span>
-        <span class="rr-g"><?php echo esc_html( $f[7] ); ?></span>
+      <a class="reg-r" data-type="<?php echo esc_attr( $fslug ); ?>" href="<?php echo esc_url( $furl ); ?>">
+        <span class="rr-i"><?php echo esc_html( $f[0] ); ?></span>
+        <span class="rr-n"><?php echo esc_html( $f[1] ); ?><small><?php echo esc_html( $f[2] ); ?></small></span>
+        <span class="rr-dn"><?php echo esc_html( $f[3] ); ?></span>
+        <span class="rr-pn"><?php echo esc_html( number_format_i18n( $fcnt ) ); ?> поз.</span>
+        <span class="rr-m">по стандарту</span>
+        <span class="rr-g"><?php echo esc_html( $f[4] ); ?></span>
         <span class="rr-t"><span class="rr-tag hi">АЭС</span><span class="rr-tag">ТЭС</span></span>
         <span class="rr-arr">›</span>
       </a>
       <?php endforeach; ?>
     </div>
-    <div id="regListOld" hidden>
-      <a class="reg-r" data-type="otv" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-17375-2001', $otv_url ) ); ?>">
-        <span class="rr-i">ОТВ-001</span>
-        <span class="rr-n">Отвод крутоизогнутый штампованный<small>R = 1,5DN · тип 3D</small></span>
-        <span class="rr-dn">15–800</span>
-        <span class="rr-pn">1025 поз.</span>
-        <span class="rr-m">09Г2С, 12Х18Н10Т, 20</span>
-        <span class="rr-g">ГОСТ 17375-2001</span>
-        <span class="rr-t"><span class="rr-tag hi">АЭС</span><span class="rr-tag">ТЭС</span></span>
-        <span class="rr-arr">›</span>
-      </a>
-      <a class="reg-r" data-type="otv" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-30753-2001', $otv_url ) ); ?>">
-        <span class="rr-i">ОТВ-002</span>
-        <span class="rr-n">Отвод крутоизогнутый типа 2D<small>R ≈ DN · штампованный</small></span>
-        <span class="rr-dn">50–800</span>
-        <span class="rr-pn">616 поз.</span>
-        <span class="rr-m">09Г2С, 12Х18Н10Т, 20</span>
-        <span class="rr-g">ГОСТ 30753-2001</span>
-        <span class="rr-t"><span class="rr-tag hi">АЭС</span><span class="rr-tag">ТЭС</span></span>
-        <span class="rr-arr">›</span>
-      </a>
-      <a class="reg-r" data-type="otv" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22793-1983', $otv_url ) ); ?>">
-        <span class="rr-i">ОТВ-003</span>
-        <span class="rr-n">Отвод гнутый на Ру до 100 МПа<small>высокое давление</small></span>
-        <span class="rr-dn">6–200</span>
-        <span class="rr-pn">579 поз.</span>
-        <span class="rr-m">09Г2С, 20Х3МВФ, 20</span>
-        <span class="rr-g">ГОСТ 22793-1983</span>
-        <span class="rr-t"><span class="rr-tag hi">АЭС</span><span class="rr-tag">ТЭС</span></span>
-        <span class="rr-arr">›</span>
-      </a>
-      <a class="reg-r" data-type="otv" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22818-1983', $otv_url ) ); ?>">
-        <span class="rr-i">ОТВ-004</span>
-        <span class="rr-n">Колено с опорой<small>для трубопроводов высокого давления</small></span>
-        <span class="rr-dn">6–200</span>
-        <span class="rr-pn">109 поз.</span>
-        <span class="rr-m">09Г2С, 20Х3МВФ, 20</span>
-        <span class="rr-g">ГОСТ 22818-1983</span>
-        <span class="rr-t"><span class="rr-tag hi">АЭС</span><span class="rr-tag">ТЭС</span></span>
-        <span class="rr-arr">›</span>
-      </a>
-      <a class="reg-r" data-type="otv" href="<?php echo esc_url( add_query_arg( 'gost', 'sto-321-01', $otv_url ) ); ?>">
-        <span class="rr-i">ОТВ-005</span>
-        <span class="rr-n">Отвод гнутый СТО ЦКТИ 321.01<small>для трубопроводов ТЭС</small></span>
-        <span class="rr-dn">10–300</span>
-        <span class="rr-pn">100 поз.</span>
-        <span class="rr-m">15ГС</span>
-        <span class="rr-g">СТО 321.01</span>
-        <span class="rr-t"><span class="rr-tag hi">АЭС</span><span class="rr-tag">ТЭС</span></span>
-        <span class="rr-arr">›</span>
-      </a>
-      <a class="reg-r" data-type="otv" href="<?php echo esc_url( add_query_arg( 'gost', 'sto-321-02', $otv_url ) ); ?>">
-        <span class="rr-i">ОТВ-006</span>
-        <span class="rr-n">Отвод гнутый СТО ЦКТИ 321.02<small>для трубопроводов ТЭС</small></span>
-        <span class="rr-dn">10–300</span>
-        <span class="rr-pn">100 поз.</span>
-        <span class="rr-m">15ГС, 20</span>
-        <span class="rr-g">СТО 321.02</span>
-        <span class="rr-t"><span class="rr-tag hi">АЭС</span><span class="rr-tag">ТЭС</span></span>
-        <span class="rr-arr">›</span>
-      </a>
-      <a class="reg-r" data-type="otv" href="<?php echo esc_url( add_query_arg( 'gost', 'sto-321-05', $otv_url ) ); ?>">
-        <span class="rr-i">ОТВ-007</span>
-        <span class="rr-n">Отвод гнутый СТО ЦКТИ 321.05<small>для трубопроводов ТЭС</small></span>
-        <span class="rr-dn">0.63–300</span>
-        <span class="rr-pn">511 поз.</span>
-        <span class="rr-m">12Х1МФ</span>
-        <span class="rr-g">СТО 321.05</span>
-        <span class="rr-t"><span class="rr-tag hi">АЭС</span><span class="rr-tag">ТЭС</span></span>
-        <span class="rr-arr">›</span>
-      </a>
-      <a class="reg-r" data-type="otv" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-36-21-77', $otv_url ) ); ?>">
-        <span class="rr-i">ОТВ-008</span>
-        <span class="rr-n">Отвод сварной секторный<small>крупные диаметры</small></span>
-        <span class="rr-dn">500–1400</span>
-        <span class="rr-pn">80 поз.</span>
-        <span class="rr-m">ВСт3сп</span>
-        <span class="rr-g">ОСТ 36-21-77</span>
-        <span class="rr-t"><span class="rr-tag hi">АЭС</span><span class="rr-tag">ТЭС</span></span>
-        <span class="rr-arr">›</span>
-      </a>
-    </div>
-    <div class="reg-cta">
-      <a class="s10-submit" href="<?php echo esc_url( add_query_arg( 'group', 'sdt', $shop_url ) ); ?>" style="display:inline-flex;">Открыть весь реестр СДТ →</a>
-    </div>
-  </section>
+</section>
 
-<section class="s s-dark" id="s04">
-    <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">04</span>Нормативная база</div>
-      <div class="s-meta">REGULATORY REGISTRY</div>
-    </div>
-    <div class="s-body" style="padding-top:28px;">
-      <div class="norm-tab-bar reveal" id="normTabs">
-        <button class="nt on" data-ng="otv">Отводы</button>
-        <button class="nt" data-ng="troy">Тройники</button>
-        <button class="nt" data-ng="pereh">Переходы</button>
-        <button class="nt" data-ng="dn">Днища / Заглушки</button>
-        <button class="nt" data-ng="aes">АЭС</button>
-        <button class="nt" data-ng="gen">Общие</button>
-      </div>
-      <!-- ОТВОДЫ -->
-      <div class="norm-group nactive" id="ng-otv">
-        <div class="ng-label">Нормативная база — Отводы</div>
-        <div class="norm-grid2">
-          <div class="nc reveal">
-            <div class="nc-code">ГОСТ 17375-2001</div>
-            <div class="nc-title">Отводы крутоизогнутые бесшовные приварные</div>
-            <div class="nc-desc">Штампованные отводы из углеродистой и низколегированной стали. Углы 45°, 90°, 180°. Радиус R = 1,5DN. DN 15–500.</div>
-            <div class="nc-tags"><span class="nc-tag">Крутоизогнутые</span><span class="nc-tag">DN 15–500</span><span class="nc-tag">Действующий</span></div>
-            <button class="nc-expand-btn" onclick="toggleNc(this)">+ ещё нормативы</button>
-            <div class="nc-full">
-              <div class="nc-full-items">
-                <div class="nc-full-item">ГОСТ 30753 — общие ТУ на детали трубопроводов</div>
-                <div class="nc-full-item">СТО ЦКТИ 321.03-2009 — для трубопроводов ТЭС</div>
-                <div class="nc-full-item">СТО ЦКТИ 321.14-2009 — теплоэнергетические применения</div>
-                <div class="nc-full-item">СТО 79814898-111-2009 — энергетические системы</div>
-                <div class="nc-full-item">ТУ 24.20.40-001-13842829-2023 — ТУ предприятия</div>
-                <div class="nc-full-item">ТР ТС 032/2013 — обязателен при PN &gt; 0,05 МПа</div>
-              </div>
-            </div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2001</div>
-          </div>
-          <div class="nc reveal">
-            <div class="nc-code">ОСТ 36-21-77</div>
-            <div class="nc-title">Отводы секторные / сварные для трубопроводов</div>
-            <div class="nc-desc">Сварные секторные отводы больших диаметров. DN 100–1400, PN 6–40 МПа. Паровые и водяные тракты ТЭС и ГРЭС.</div>
-            <div class="nc-tags"><span class="nc-tag">Секторные</span><span class="nc-tag">DN 100–1400</span><span class="nc-tag">ТЭС / ГРЭС</span></div>
-            <button class="nc-expand-btn" onclick="toggleNc(this)">+ ещё нормативы</button>
-            <div class="nc-full">
-              <div class="nc-full-items">
-                <div class="nc-full-item">ОСТ 34.10.752-97 — трубопроводы тепловых электростанций</div>
-                <div class="nc-full-item">ОСТ 36-41-81 — сварные детали трубопроводов</div>
-                <div class="nc-full-item">ТС-583.000 — конкретное исполнение</div>
-                <div class="nc-full-item">СТО 79814898 112-2009 — энергетические системы</div>
-                <div class="nc-full-item">ТУ 24.20.40-001-13842829-2023 — ТУ предприятия</div>
-              </div>
-            </div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 1977</div>
-          </div>
-          <div class="nc reveal">
-            <div class="nc-code">СТО ЦКТИ 321.01–321.06</div>
-            <div class="nc-title">Отводы гнутые для трубопроводов ТЭС</div>
-            <div class="nc-desc">Серия стандартов ЦКТИ для гнутых отводов: R = 3,5–5DN. Применение в главных паропроводах и тепловых трактах ТЭС. 6 документов серии 2009 г.</div>
-            <div class="nc-tags"><span class="nc-tag">Гнутые</span><span class="nc-tag">ТЭС</span><span class="nc-tag">6 СТО ЦКТИ</span></div>
-            <button class="nc-expand-btn" onclick="toggleNc(this)">+ полный список</button>
-            <div class="nc-full">
-              <div class="nc-full-items">
-                <div class="nc-full-item">ГОСТ 22793-83 — гнутые трубы и отводы</div>
-                <div class="nc-full-item">ГОСТ 24950-81 — отводы гнутые из труб</div>
-                <div class="nc-full-item">ОСТ 36-42-81 — гнутые отводы</div>
-                <div class="nc-full-item">СТО ЦКТИ 321.01-2009 — тип 01</div>
-                <div class="nc-full-item">СТО ЦКТИ 321.02-2009 — тип 02</div>
-                <div class="nc-full-item">СТО ЦКТИ 321.03-2009 — тип 03</div>
-                <div class="nc-full-item">СТО ЦКТИ 321.04-2009 — тип 04</div>
-                <div class="nc-full-item">СТО ЦКТИ 321.05-2009 — тип 05</div>
-                <div class="nc-full-item">СТО ЦКТИ 321.06-2009 — тип 06</div>
-                <div class="nc-full-item">СТО 79814898 113-2009 — энерг. системы</div>
-                <div class="nc-full-item">СТО 79814898 750-2014 — обновлённая редакция</div>
-                <div class="nc-full-item">ТУ 24.20.40-001-13842829-2023 — ТУ предприятия</div>
-              </div>
-            </div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2009</div>
-          </div>
-          <div class="nc reveal">
-            <div class="nc-code">ОСТ 36-20-77</div>
-            <div class="nc-title">Отводы штампосварные</div>
-            <div class="nc-desc">Штампосварные отводы методом горячей штамповки. DN 25–400, R = 1,5DN. Применение в трубопроводах ТЭС и нефтехима.</div>
-            <div class="nc-tags"><span class="nc-tag">Штампосварные</span><span class="nc-tag">DN 25–400</span><span class="nc-tag">Действующий</span></div>
-            <button class="nc-expand-btn" onclick="toggleNc(this)">+ ещё нормативы</button>
-            <div class="nc-full">
-              <div class="nc-full-items">
-                <div class="nc-full-item">ГОСТ 17375-2001 — базовый стандарт на форму</div>
-                <div class="nc-full-item">ТУ 24.20.40-001-13842829-2023 — ТУ предприятия</div>
-                <div class="nc-full-item">ТР ТС 032/2013 — обязателен при PN &gt; 0,05 МПа</div>
-              </div>
-            </div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 1977</div>
-          </div>
-        </div>
-      </div>
-      <!-- ТРОЙНИКИ -->
-      <div class="norm-group" id="ng-troy">
-        <div class="ng-label">Нормативная база — Тройники</div>
-        <div class="norm-grid2 cols-1">
-          <div class="nc reveal">
-            <div class="nc-code">ГОСТ 17376-2001 + СТО ЦКТИ 720.01–720.29</div>
-            <div class="nc-title">Тройники бесшовные и сварные, в т.ч. для ТЭС по СТО ЦКТИ</div>
-            <div class="nc-desc">ГОСТ 17376-2001 — равнопроходные и переходные тройники DN 15–500. ОСТ 36-24-77 — сварные большого диаметра для ТЭС. Серия СТО ЦКТИ 720 содержит 29 стандартов (720.01–720.29, 2009–2011) для специсполнений на объектах тепловой энергетики.</div>
-            <div class="nc-tags"><span class="nc-tag">Равнопроход.</span><span class="nc-tag">Переходные</span><span class="nc-tag">Сварные</span><span class="nc-tag">ТЭС</span><span class="nc-tag">29 СТО ЦКТИ</span></div>
-            <button class="nc-expand-btn" onclick="toggleNc(this)">+ все нормативы (35 документов)</button>
-            <div class="nc-full">
-              <div class="nc-full-items">
-                <div class="nc-full-item">ГОСТ 17376-2001 — тройники бесшовные приварные</div>
-                <div class="nc-full-item">ОСТ 36-24-77 — тройники сварные</div>
-                <div class="nc-full-item">ОСТ 34.10.762-97 — тройники для ТЭС (равнопр.)</div>
-                <div class="nc-full-item">ОСТ 34.10.763-97 — тройники для ТЭС (переходные)</div>
-                <div class="nc-full-item">ОСТ 34.10.764-97 — тройники для ТЭС (тип 3)</div>
-                <div class="nc-full-item">ТС-588.000, ТС-589.000, ТС-590.000 — конкретные исполнения</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.01-2009 — тип 01 (равнопроходной)</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.02-2009 — тип 02</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.03-2009 — тип 03</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.04-2009 — тип 04</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.05-2009 — тип 05</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.06-2009 — тип 06</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.07-2009 — тип 07</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.08-2009 — тип 08</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.09-2009 — тип 09</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.10-2009 — тип 10</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.11-2009 — тип 11</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.12-2009 — тип 12</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.13-2009 — тип 13</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.14-2009 — тип 14</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.15-2009 — тип 15</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.16-2009 — тип 16</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.17-2009 — тип 17</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.18-2009 — тип 18</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.19-2009 — тип 19</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.20-2009 — тип 20</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.21-2009 — тип 21</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.22-2009 — тип 22</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.23-2009 — тип 23</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.24-2009 — тип 24</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.25-2011 — тип 25</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.26-2011 — тип 26</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.27-2011 — тип 27</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.28-2011 — тип 28</div>
-                <div class="nc-full-item">СТО ЦКТИ 720.29-2011 — тип 29</div>
-                <div class="nc-full-item">ТУ 24.20.40-001-13842829-2023 — ТУ предприятия</div>
-              </div>
-            </div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2001–2011</div>
-          </div>
-        </div>
-      </div>
-      <!-- ПЕРЕХОДЫ -->
-      <div class="norm-group" id="ng-pereh">
-        <div class="ng-label">Нормативная база — Переходы</div>
-        <div class="norm-grid2 cols-1">
-          <div class="nc reveal">
-            <div class="nc-code">ГОСТ 17378-2001 + СТО ЦКТИ 318.01–318.03</div>
-            <div class="nc-title">Переходы концентрические и эксцентрические; по СТО ЦКТИ для ТЭС</div>
-            <div class="nc-desc">ГОСТ 17378-2001 — штампованные переходы DN 25–500. ОСТ 36-22-77 — сварные конусные. СТО ЦКТИ 318.01/318.02/318.03 — специсполнения для котельных и трубопроводов ТЭС. СТО СРО-П 60542948 00015-2013 — промышленные трубопроводы.</div>
-            <div class="nc-tags"><span class="nc-tag">Концентр.</span><span class="nc-tag">Эксцентр.</span><span class="nc-tag">Сварные</span><span class="nc-tag">ТЭС</span><span class="nc-tag">СТО ЦКТИ</span></div>
-            <button class="nc-expand-btn" onclick="toggleNc(this)">+ все нормативы</button>
-            <div class="nc-full">
-              <div class="nc-full-items">
-                <div class="nc-full-item">ГОСТ 17378-2001 — переходы бесшовные приварные</div>
-                <div class="nc-full-item">ОСТ 36-22-77 — переходы сварные</div>
-                <div class="nc-full-item">ОСТ 34-10-753-97 — переходы для ТЭС</div>
-                <div class="nc-full-item">ТС 585, ТС 586 — конкретные исполнения</div>
-                <div class="nc-full-item">СТО 79814898 115-2009 — энергетические системы</div>
-                <div class="nc-full-item">СТО СРО-П 60542948 00015-2013 — промышленные трубопроводы</div>
-                <div class="nc-full-item">СТО ЦКТИ 318.01-2009 — концентрические для ТЭС</div>
-                <div class="nc-full-item">СТО ЦКТИ 318.02-2009 — эксцентрические для ТЭС</div>
-                <div class="nc-full-item">СТО ЦКТИ 318.03-2009 — сварные конусные для ТЭС</div>
-                <div class="nc-full-item">ТУ 24.20.40-001-13842829-2023 — ТУ предприятия</div>
-                <div class="nc-full-item">ТР ТС 032/2013 — обязателен при PN &gt; 0,05 МПа</div>
-              </div>
-            </div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2001–2013</div>
-          </div>
-        </div>
-      </div>
-      <!-- ДНИЩА / ЗАГЛУШКИ -->
-      <div class="norm-group" id="ng-dn">
-        <div class="ng-label">Нормативная база — Днища и заглушки</div>
-        <div class="norm-grid2 cols-1">
-          <div class="nc reveal">
-            <div class="nc-code">ГОСТ 17379-2001 · ГОСТ 6533-78 · ОСТ 36-25-77</div>
-            <div class="nc-title">Днища эллиптические, заглушки — для трубопроводов и сосудов давления</div>
-            <div class="nc-desc">ГОСТ 17379-2001 — эллиптические заглушки DN 25–1200. ГОСТ 6533-78 — отбортованные днища. ОСТ 36-25-77 — для трубопроводов тепловых сетей и ТЭС. СТО ЦКТИ 504.02-2009 — котельные объекты ТЭС.</div>
-            <div class="nc-tags"><span class="nc-tag">Эллиптические</span><span class="nc-tag">DN 25–4000</span><span class="nc-tag">Сосуды давления</span><span class="nc-tag">ТЭС</span></div>
-            <button class="nc-expand-btn" onclick="toggleNc(this)">+ все нормативы</button>
-            <div class="nc-full">
-              <div class="nc-full-items">
-                <div class="nc-full-item">ГОСТ 17379-2001 — эллиптические заглушки бесшовные</div>
-                <div class="nc-full-item">ГОСТ 6533-78 — днища отбортованные эллиптические</div>
-                <div class="nc-full-item">ОСТ 36-25-77 — днища для тепловых сетей и ТЭС</div>
-                <div class="nc-full-item">СТО ЦКТИ 504.02-2009 — котельные объекты ТЭС</div>
-                <div class="nc-full-item">ТУ 24.20.40-001-13842829-2023 — ТУ предприятия</div>
-                <div class="nc-full-item">ТР ТС 032/2013 — обязателен при PN &gt; 0,05 МПа</div>
-              </div>
-            </div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 1978–2009</div>
-          </div>
-        </div>
-      </div>
-      <!-- АЭС -->
-      <div class="norm-group" id="ng-aes">
-        <div class="ng-label">Нормативная база — Атомная энергетика</div>
-        <div class="norm-grid2">
-          <div class="nc reveal">
-            <div class="nc-code">НП-045-18</div>
-            <div class="nc-title">Правила устройства и безопасной эксплуатации трубопроводов пара и горячей воды для объектов атомной энергии</div>
-            <div class="nc-desc">Основной действующий норматив Ростехнадзора для трубопроводов на объектах атомной энергии. Заменил устаревшие редакции. Обязателен при проектировании и приёмке СДТ для АЭС.</div>
-            <div class="nc-tags"><span class="nc-tag">АЭС</span><span class="nc-tag">Действующий</span><span class="nc-tag">Ростехнадзор</span></div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2018</div>
-          </div>
-          <div class="nc reveal">
-            <div class="nc-code">НП-089-15</div>
-            <div class="nc-title">Правила ядерной безопасности реакторных установок атомных станций</div>
-            <div class="nc-desc">Нормативный документ для реакторных установок. Применяется совместно с НП-045-18 при определении требований к СДТ первого и второго контура АЭС.</div>
-            <div class="nc-tags"><span class="nc-tag">АЭС</span><span class="nc-tag">Реакторные уст.</span><span class="nc-tag">Действующий</span></div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2015</div>
-          </div>
-          <div class="nc reveal">
-            <div class="nc-code">ТР ТС 032/2013</div>
-            <div class="nc-title">Технический регламент ЕАЭС о безопасности оборудования под давлением</div>
-            <div class="nc-desc">Обязателен для всех изделий с PN &gt; 0,05 МПа на территории ЕАЭС, включая объекты АЭС. Требует декларации соответствия, паспорта и протоколов контроля.</div>
-            <div class="nc-tags"><span class="nc-tag">ЕАЭС</span><span class="nc-tag">Декларация</span><span class="nc-tag">Обязательный</span></div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2013</div>
-          </div>
-          <div class="nc reveal">
-            <div class="nc-code">ПНАЭ Г-7-008-89 / Г-7-010-89</div>
-            <div class="nc-title">Исторические документы — только как ссылочные, не основные</div>
-            <div class="nc-desc">ПНАЭ Г-7-008-89 — сварка в атомной энергетике. ПНАЭ Г-7-010-89 — контроль сварных соединений. Частично заменены актуальными НП. Используются как ссылочные в проектной документации старых АЭС.</div>
-            <div class="nc-tags"><span class="nc-tag">Исторический</span><span class="nc-tag">Ссылочный</span></div>
-            <div class="nc-note"><strong>Внимание:</strong> применять только если прямо указаны в КД заказчика. Актуальные требования — в НП-045-18 и НП-089-15.</div>
-            <div class="nc-status" style="margin-top:8px;"><div class="nc-dot" style="background:rgba(169,183,198,.35);"></div>Ссылочный / 1989</div>
-          </div>
-        </div>
-      </div>
-      <!-- ОБЩИЕ -->
-      <div class="norm-group" id="ng-gen">
-        <div class="ng-label">Нормативная база — Общие документы</div>
-        <div class="norm-grid2">
-          <div class="nc reveal">
-            <div class="nc-code">ТУ 24.20.40-001-13842829-2023</div>
-            <div class="nc-title">Технические условия предприятия — соединительные детали трубопроводов</div>
-            <div class="nc-desc">Внутренние ТУ ООО Завод «Промышленная Энергетика». Охватывают все типы СДТ собственного производства. Устанавливают дополнительные требования к контролю, испытаниям и документированию.</div>
-            <div class="nc-tags"><span class="nc-tag">ТУ предприятия</span><span class="nc-tag">Все типы СДТ</span></div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2023</div>
-          </div>
-          <div class="nc reveal">
-            <div class="nc-code">ТР ТС 032/2013</div>
-            <div class="nc-title">Технический регламент о безопасности оборудования под давлением (ЕАЭС)</div>
-            <div class="nc-desc">Обязательный регламент для всех изделий с PN &gt; 0,05 МПа на территории ЕАЭС. Требует декларирования, сертификации, паспорта изделия. Распространяется на все типы СДТ.</div>
-            <div class="nc-tags"><span class="nc-tag">ЕАЭС</span><span class="nc-tag">Обязательный</span><span class="nc-tag">Все типы</span></div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2013</div>
-          </div>
-          <div class="nc reveal">
-            <div class="nc-code">КД заказчика</div>
-            <div class="nc-title">Конструкторская документация — нестандартные и специальные исполнения</div>
-            <div class="nc-desc">Для нестандартных деталей и специсполнений изготовление ведётся по согласованным чертежам и ТУ заказчика. При необходимости предприятие разрабатывает ТУ для конкретного изделия.</div>
-            <div class="nc-tags"><span class="nc-tag">Нестандартные</span><span class="nc-tag">По ТЗ</span><span class="nc-tag">АЭС / ТЭС</span></div>
-            <div class="nc-status"><div class="nc-dot"></div>По проекту заказчика</div>
-          </div>
-          <div class="nc reveal">
-            <div class="nc-code">ГОСТ серия 17375–17380</div>
-            <div class="nc-title">Базовые ГОСТы 2001 года — детали трубопроводов бесшовные приварные</div>
-            <div class="nc-desc">Базовая серия для стандартных СДТ: ГОСТ 17375 (отводы), 17376 (тройники), 17378 (переходы), 17379 (заглушки эллипт.), 17380 (заглушки плоские). Действующие, изд. 2001.</div>
-            <div class="nc-tags"><span class="nc-tag">Базовые</span><span class="nc-tag">Действующие</span><span class="nc-tag">5 ГОСТ</span></div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2001</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+<?php promen_render_category_norms_section( 'sdt' ); ?>
 
-<section class="s s-alt" id="s05">
-    <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">05</span>Марки стали и материалы</div>
-      <div class="s-meta">STEEL GRADES</div>
-    </div>
-    <div class="s-body">
-      <div class="mat-tbl-wrap reveal">
-        <div class="mat-tbl-hd">
-          <span>Марка</span>
-          <span>Описание</span>
-          <span>Темп. среды</span>
-          <span>PN макс, МПа</span>
-          <span>ГОСТ / ТУ</span>
-          <span>Применение</span>
-        </div>
-        <!-- ROW: Ст20 -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">Ст20</div><div class="mr-std">ГОСТ 1050 / 8734 / 8732</div></div>
-          <div class="mr-desc">Углеродистая конструкционная сталь. Основной материал для стандартных трубопроводов ТЭС. Хорошая свариваемость, доступность, широкая нормативная база.</div>
-          <div class="mr-temp">до +425°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ГОСТ 8734/8732</div>
-          <div class="mr-apps"><span class="mr-app-t hi">ТЭС</span><span class="mr-app-t hi">ГРЭС</span><span class="mr-app-t">Пром</span><span class="mr-app-t">Нефтегаз</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">≥ 410</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 245</div></div>
-          <div class="me-item"><div class="me-k">δ, %</div><div class="me-v">≥ 25</div></div>
-          <div class="me-item"><div class="me-k">Темп. max</div><div class="me-v">+425°C</div></div>
-          <div class="me-item"><div class="me-k">Свариваемость</div><div class="me-v">Отличная</div></div>
-        </div></div>
-        <!-- ROW: 09Г2С -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">09Г2С</div><div class="mr-std">ГОСТ 19281 / 19282</div></div>
-          <div class="mr-desc">Низколегированная сталь для низких температур. Сохраняет ударную вязкость до −70°C. Применяется в системах нефтегаза, хранилищах СПГ, арктических условиях.</div>
-          <div class="mr-temp">−70 / +475°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ГОСТ 19281</div>
-          <div class="mr-apps"><span class="mr-app-t hi">Нефтегаз</span><span class="mr-app-t hi">ТЭС</span><span class="mr-app-t">Хим</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">≥ 490</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 345</div></div>
-          <div class="me-item"><div class="me-k">KCV при −70°C</div><div class="me-v">≥ 34 Дж/см²</div></div>
-          <div class="me-item"><div class="me-k">Темп. min</div><div class="me-v">−70°C</div></div>
-          <div class="me-item"><div class="me-k">Свариваемость</div><div class="me-v">Хорошая</div></div>
-        </div></div>
-        <!-- ROW: 15ГС -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">15ГС</div><div class="mr-std">ТУ 14-3-460 / ГОСТ 8733</div></div>
-          <div class="mr-desc">Низколегированная сталь с марганцем и кремнием. Применяется в трубопроводах ТЭС при давлениях до 16 МПа, в т.ч. в сварных отводах и переходах большого DN.</div>
-          <div class="mr-temp">до +475°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ТУ 14-3-460</div>
-          <div class="mr-apps"><span class="mr-app-t hi">ТЭС</span><span class="mr-app-t hi">ГРЭС</span><span class="mr-app-t">Нефтехим</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">≥ 450</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 275</div></div>
-          <div class="me-item"><div class="me-k">δ, %</div><div class="me-v">≥ 22</div></div>
-          <div class="me-item"><div class="me-k">Темп. max</div><div class="me-v">+475°C</div></div>
-          <div class="me-item"><div class="me-k">Свариваемость</div><div class="me-v">Хорошая</div></div>
-        </div></div>
-        <!-- ROW: 12Х1МФ -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">12Х1МФ</div><div class="mr-std">ТУ 14-3-460 / ТУ 14-3Р-55</div></div>
-          <div class="mr-desc">Теплоустойчивая сталь для паровых трубопроводов высокого давления. Основной материал главных паропроводов ТЭС. Устойчива к ползучести при длительных нагрузках.</div>
-          <div class="mr-temp">до +570°C</div>
-          <div class="mr-pn">160 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ТУ 14-3-460</div>
-          <div class="mr-apps"><span class="mr-app-t hi">ТЭС</span><span class="mr-app-t hi">ГРЭС</span><span class="mr-app-t">Главн. паропр.</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σ при 550°C</div><div class="me-v">≥ 118 МПа</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 275</div></div>
-          <div class="me-item"><div class="me-k">Жаростойкость</div><div class="me-v">до 570°C</div></div>
-          <div class="me-item"><div class="me-k">Термообработка</div><div class="me-v">Обязательно</div></div>
-          <div class="me-item"><div class="me-k">Контроль</div><div class="me-v">УЗК + ВИК</div></div>
-        </div></div>
-        <!-- ROW: 15Х5М -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">15Х5М</div><div class="mr-std">ГОСТ 550 / ТУ 14-3-561</div></div>
-          <div class="mr-desc">Жаропрочная хромомолибденовая сталь. Применяется в нефтепереработке при температурах до 650°C в сероводородсодержащих средах. Высокая коррозионная стойкость.</div>
-          <div class="mr-temp">до +650°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ГОСТ 550</div>
-          <div class="mr-apps"><span class="mr-app-t hi">Нефтегаз</span><span class="mr-app-t hi">Нефтепер.</span><span class="mr-app-t">Хим</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">Cr, %</div><div class="me-v">4,0–6,0</div></div>
-          <div class="me-item"><div class="me-k">Mo, %</div><div class="me-v">0,45–0,60</div></div>
-          <div class="me-item"><div class="me-k">Стойк. H₂S</div><div class="me-v">Высокая</div></div>
-          <div class="me-item"><div class="me-k">Темп. max</div><div class="me-v">650°C</div></div>
-          <div class="me-item"><div class="me-k">Применение</div><div class="me-v">Нефтепер.</div></div>
-        </div></div>
-        <!-- ROW: 12Х18Н10Т -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">12Х18Н10Т</div><div class="mr-std">ГОСТ 5632 / 9940 / 9941</div></div>
-          <div class="mr-desc">Аустенитная нержавеющая сталь с Ti-стабилизацией. Стандартный материал для АЭС и агрессивных сред. Устойчива к МКК, хлоридам и кислотам. Применяется в первом и втором контуре АЭС.</div>
-          <div class="mr-temp">до +700°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ГОСТ 5632</div>
-          <div class="mr-apps"><span class="mr-app-t hi">АЭС</span><span class="mr-app-t hi">Хим</span><span class="mr-app-t">ТЭС</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">≥ 540</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 196</div></div>
-          <div class="me-item"><div class="me-k">МКК стойкость</div><div class="me-v">Высокая (Ti)</div></div>
-          <div class="me-item"><div class="me-k">Темп. max</div><div class="me-v">700°C</div></div>
-          <div class="me-item"><div class="me-k">Контроль АЭС</div><div class="me-v">РК + УЗК + ВИК</div></div>
-        </div></div>
-        <!-- ROW: 08Х18Н10Т -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">08Х18Н10Т</div><div class="mr-std">ГОСТ 5632 / 9940</div></div>
-          <div class="mr-desc">Аустенитная нержавеющая сталь с пониженным содержанием углерода. Улучшенная стойкость к МКК по сравнению с 12Х18Н10Т. Применяется в химической и нефтехимической промышленности.</div>
-          <div class="mr-temp">до +600°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ГОСТ 5632</div>
-          <div class="mr-apps"><span class="mr-app-t hi">Хим</span><span class="mr-app-t hi">Нефтехим</span><span class="mr-app-t">АЭС</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">≥ 510</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 196</div></div>
-          <div class="me-item"><div class="me-k">C, %</div><div class="me-v">≤ 0,08</div></div>
-          <div class="me-item"><div class="me-k">МКК стойкость</div><div class="me-v">Высокая</div></div>
-          <div class="me-item"><div class="me-k">Свариваемость</div><div class="me-v">Отличная</div></div>
-        </div></div>
-      </div>
-    </div>
-  </section>
+<?php promen_render_materials_section( 'sdt' ); ?>
 
 <section class="s" id="s06">
     <div class="s-hd">

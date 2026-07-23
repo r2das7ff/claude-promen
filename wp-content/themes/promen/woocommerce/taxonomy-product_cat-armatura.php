@@ -12,15 +12,9 @@ $term     = get_queried_object();
 $crumbs   = promen_breadcrumbs();
 $shop_url = wc_get_page_permalink( 'shop' );
 $otv      = get_term_by( 'slug', 'armatura', 'product_cat' );
-$otv_url  = add_query_arg( 'group', 'armatura', $shop_url );
-$otv_cnt  = 0;
-$_armatura_zadvizhki = get_term_by( 'slug', 'armatura-zadvizhki', 'product_cat' );
-$otv_cnt += $_armatura_zadvizhki ? (int) $_armatura_zadvizhki->count : 0;
-$_armatura_klapany = get_term_by( 'slug', 'armatura-klapany', 'product_cat' );
-$otv_cnt += $_armatura_klapany ? (int) $_armatura_klapany->count : 0;
-$_armatura_krany = get_term_by( 'slug', 'armatura-krany', 'product_cat' );
-$otv_cnt += $_armatura_krany ? (int) $_armatura_krany->count : 0;
-if ( $otv_cnt === 0 && $otv ) { $otv_cnt = (int) $otv->count; }
+$otv_link = ( $otv && ! is_wp_error( get_term_link( $otv ) ) ) ? get_term_link( $otv ) : $shop_url;
+$otv_url  = $otv_link;
+$otv_cnt  = function_exists( 'promen_catalog_group_count' ) ? promen_catalog_group_count( 'armatura' ) : ( $otv ? (int) $otv->count : 0 );
 $n_zd = $_armatura_zadvizhki ? (int) $_armatura_zadvizhki->count : 0;
 $n_ko = $_armatura_klapany ? (int) $_armatura_klapany->count : 0;
 $n_kr = $_armatura_krany ? (int) $_armatura_krany->count : 0;
@@ -29,7 +23,9 @@ $n_kr = $_armatura_krany ? (int) $_armatura_krany->count : 0;
 
 <nav class="sidenav" aria-label="Навигация по разделам">
   <a class="sidenav-item" href="#hero"><span class="sidenav-dot"></span><span class="sidenav-label">КАТЕГОРИЯ</span></a>
-  <a class="sidenav-item" href="#s01"><span class="sidenav-dot"></span><span class="sidenav-label">РЕЕСТР</span></a>
+  <a class="sidenav-item" href="#s01"><span class="sidenav-dot"></span><span class="sidenav-label">СЕРИИ</span></a>
+  <a class="sidenav-item" href="#registry"><span class="sidenav-dot"></span><span class="sidenav-label">РЕЕСТР</span></a>
+  
   <a class="sidenav-item" href="#s02"><span class="sidenav-dot"></span><span class="sidenav-label">ТИПЫ</span></a>
   <a class="sidenav-item" href="#s03"><span class="sidenav-dot"></span><span class="sidenav-label">ПОДБОР</span></a>
   <a class="sidenav-item" href="#s04"><span class="sidenav-dot"></span><span class="sidenav-label">НОРМЫ</span></a>
@@ -63,8 +59,7 @@ $n_kr = $_armatura_krany ? (int) $_armatura_krany->count : 0;
       </div>
       <div class="hero-cta-row">
         <button class="nav-cta hero-order-btn" type="button" id="orderOpen">Оформить заявку →</button>
-        <a class="s10-ghost-link" href="<?php echo esc_url( $otv_url ); ?>">Открыть полный реестр</a>
-      </div>
+</div>
     </div>
     <div class="hero-right">
       <div class="hud-block">
@@ -84,73 +79,12 @@ $n_kr = $_armatura_krany ? (int) $_armatura_krany->count : 0;
     </div>
   </div>
 
-<section class="s s-alt" id="s01">
-    <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">01</span>Реестр исполнений</div>
-      <div class="s-meta">PRODUCT REGISTRY / ARMATURA</div>
-    </div>
-    <div class="reg-bar" id="regBar">
-      <span class="rb-lbl">Типоисполнения</span>
-      <span class="rb-lbl" style="opacity:.55;">3 группы · клик по заголовку сворачивает</span>
-      <span class="rb-count" id="regCount">3 типа · <?php echo esc_html( number_format_i18n( $otv_cnt ) ); ?> позиций</span>
-    </div>
-    <div class="reg-hd">
-      <span>Норматив</span><span>Наименование</span><span>DN</span><span>Позиций</span><span>Материал</span><span>Код</span><span>Отрасль</span><span></span>
-    </div>
-    <div id="regList">
-      <div class="reg-group open" data-group="zd">
-        <button class="reg-group-hd" type="button" aria-expanded="true">
-          <span class="rg-code">ЗД</span>
-          <span class="rg-name">Задвижки<small>клиновые стальные</small></span>
-          <span class="rg-params">ГОСТ 33257-2015</span>
-          <span class="rg-cnt"><?php echo esc_html( (string) $n_zd ); ?> поз.</span>
-          <span class="rg-chev"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </button>
-        <div class="reg-group-body">
-      <a class="reg-r" href="<?php echo esc_url( add_query_arg( 'group', 'armatura-zadvizhki', $shop_url ) ); ?>">
-        <span class="rr-i">ЗРА-ЗД</span><span class="rr-n">Задвижка клиновая<small>невыдвижной шпиндель</small></span>
-        <span class="rr-dn">50–1000</span><span class="rr-pn"><?php echo esc_html( (string) $n_zd ); ?> поз.</span><span class="rr-m">Ст20</span>
-        <span class="rr-g">ГОСТ 33257-2015</span><span class="rr-t"><span class="rr-tag hi">ТЭС</span><span class="rr-tag">НГК</span></span><span class="rr-arr">›</span>
-      </a>
-        </div>
-      </div>
-      <div class="reg-group open" data-group="ko">
-        <button class="reg-group-hd" type="button" aria-expanded="true">
-          <span class="rg-code">КО</span>
-          <span class="rg-name">Клапаны<small>обратные подъёмные</small></span>
-          <span class="rg-params">ГОСТ 33257-2015</span>
-          <span class="rg-cnt"><?php echo esc_html( (string) $n_ko ); ?> поз.</span>
-          <span class="rg-chev"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </button>
-        <div class="reg-group-body">
-      <a class="reg-r" href="<?php echo esc_url( add_query_arg( 'group', 'armatura-klapany', $shop_url ) ); ?>">
-        <span class="rr-i">ЗРА-КО</span><span class="rr-n">Клапан обратный<small>подъёмный</small></span>
-        <span class="rr-dn">15–200</span><span class="rr-pn"><?php echo esc_html( (string) $n_ko ); ?> поз.</span><span class="rr-m">Ст20</span>
-        <span class="rr-g">ГОСТ 33257-2015</span><span class="rr-t"><span class="rr-tag">Общепром.</span></span><span class="rr-arr">›</span>
-      </a>
-        </div>
-      </div>
-      <div class="reg-group open" data-group="kr">
-        <button class="reg-group-hd" type="button" aria-expanded="true">
-          <span class="rg-code">КР</span>
-          <span class="rg-name">Краны<small>шаровые полнопроходные</small></span>
-          <span class="rg-params">ГОСТ 33257-2015</span>
-          <span class="rg-cnt"><?php echo esc_html( (string) $n_kr ); ?> поз.</span>
-          <span class="rg-chev"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        </button>
-        <div class="reg-group-body">
-      <a class="reg-r" href="<?php echo esc_url( add_query_arg( 'group', 'armatura-krany', $shop_url ) ); ?>">
-        <span class="rr-i">ЗРА-КР</span><span class="rr-n">Кран шаровой<small>полнопроходный</small></span>
-        <span class="rr-dn">15–500</span><span class="rr-pn"><?php echo esc_html( (string) $n_kr ); ?> поз.</span><span class="rr-m">Ст20</span>
-        <span class="rr-g">ГОСТ 33257-2015</span><span class="rr-t"><span class="rr-tag hi">НГК</span></span><span class="rr-arr">›</span>
-      </a>
-        </div>
-      </div>
-    </div>
-    <div class="reg-cta">
-      <a class="s10-submit" href="<?php echo esc_url( $otv_url ); ?>" style="display:inline-flex;">Открыть полный реестр арматуры →</a>
-    </div>
-  </section>
+
+
+<?php promen_render_category_series_registry( 'armatura' ); ?>
+
+<?php promen_render_category_catalog_embed( 'armatura', (int) $otv_cnt ); ?>
+
 
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
@@ -214,186 +148,11 @@ $n_kr = $_armatura_krany ? (int) $_armatura_krany->count : 0;
     </div>
   </section>
 
-<section class="s s-dark" id="s04">
-    <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">04</span>Нормативная база</div>
-      <div class="s-meta">REGULATORY REGISTRY / ARMATURA</div>
-    </div>
-    <div class="s-body" style="padding-top:28px;">
-      <div class="norm-tab-bar reveal" id="normTabs">
-        <button class="nt on" data-ng="gost">ГОСТ 33257</button>
-        <button class="nt" data-ng="gen">Общие</button>
-      </div>
-      <div class="norm-group nactive" id="ng-gost">
-        <div class="ng-label">Нормативная база — Арматура</div>
-        <div class="norm-grid2 cols-1">
-          <div class="nc reveal">
-            <div class="nc-code">ГОСТ 33257-2015</div>
-            <div class="nc-title">Арматура трубопроводная. Методы контроля и испытаний</div>
-            <div class="nc-desc">Базовый стандарт каталога арматуры. Задвижки, клапаны и краны — поставка с паспортом и комплектом испытаний по объёму заказа.</div>
-            <div class="nc-tags"><span class="nc-tag">ЗРА</span><span class="nc-tag"><?php echo esc_html( number_format_i18n( $otv_cnt ) ); ?> поз.</span><span class="nc-tag">Действующий</span></div>
-            <button class="nc-expand-btn" onclick="toggleNc(this)">+ ещё нормативы</button>
-            <div class="nc-full"><div class="nc-full-items">
-              <div class="nc-full-item">ГОСТ 33257-2015 — методы контроля и испытаний</div>
-              <div class="nc-full-item">ГОСТ 9544 — нормы герметичности затворов</div>
-              <div class="nc-full-item">ТР ТС 032/2013 — при PN &gt; 0,05 МПа</div>
-            </div></div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2015</div>
-          </div>
-        </div>
-      </div>
-      <div class="norm-group" id="ng-gen">
-        <div class="ng-label">Нормативная база — Общие документы</div>
-        <div class="norm-grid2">
-          <div class="nc reveal">
-            <div class="nc-code">ТР ТС 032/2013</div>
-            <div class="nc-title">О безопасности оборудования под избыточным давлением</div>
-            <div class="nc-desc">Обязателен для арматуры на избыточное давление свыше 0,05 МПа.</div>
-            <div class="nc-tags"><span class="nc-tag">ТР ТС</span></div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий</div>
-          </div>
-          <div class="nc reveal">
-            <div class="nc-code">ТУ 24.20.40-001</div>
-            <div class="nc-title">Технические условия предприятия</div>
-            <div class="nc-desc">Комплектность поставки, маркировка и объём контроля.</div>
-            <div class="nc-tags"><span class="nc-tag">ТУ</span></div>
-            <div class="nc-status"><div class="nc-dot"></div>Действующий / 2023</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-<section class="s s-alt" id="s05">
-    <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">05</span>Марки стали и материалы</div>
-      <div class="s-meta">STEEL GRADES</div>
-    </div>
-    <div class="s-body">
-      <div class="mat-tbl-wrap reveal">
-        <div class="mat-tbl-hd">
-          <span>Марка</span>
-          <span>Описание</span>
-          <span>Темп. среды</span>
-          <span>PN макс, МПа</span>
-          <span>ГОСТ / ТУ</span>
-          <span>Применение</span>
-        </div>
-        <!-- ROW: Ст20 -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">Ст20</div><div class="mr-std">ГОСТ 1050 / 8734 / 8732</div></div>
-          <div class="mr-desc">Углеродистая конструкционная сталь. Основной материал для стандартных трубопроводов ТЭС. Хорошая свариваемость, доступность, широкая нормативная база.</div>
-          <div class="mr-temp">до +425°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ГОСТ 8734/8732</div>
-          <div class="mr-apps"><span class="mr-app-t hi">ТЭС</span><span class="mr-app-t hi">ГРЭС</span><span class="mr-app-t">Пром</span><span class="mr-app-t">Нефтегаз</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">≥ 410</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 245</div></div>
-          <div class="me-item"><div class="me-k">δ, %</div><div class="me-v">≥ 25</div></div>
-          <div class="me-item"><div class="me-k">Темп. max</div><div class="me-v">+425°C</div></div>
-          <div class="me-item"><div class="me-k">Свариваемость</div><div class="me-v">Отличная</div></div>
-        </div></div>
-        <!-- ROW: 09Г2С -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">09Г2С</div><div class="mr-std">ГОСТ 19281 / 19282</div></div>
-          <div class="mr-desc">Низколегированная сталь для низких температур. Сохраняет ударную вязкость до −70°C. Применяется в системах нефтегаза, хранилищах СПГ, арктических условиях.</div>
-          <div class="mr-temp">−70 / +475°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ГОСТ 19281</div>
-          <div class="mr-apps"><span class="mr-app-t hi">Нефтегаз</span><span class="mr-app-t hi">ТЭС</span><span class="mr-app-t">Хим</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">≥ 490</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 345</div></div>
-          <div class="me-item"><div class="me-k">KCV при −70°C</div><div class="me-v">≥ 34 Дж/см²</div></div>
-          <div class="me-item"><div class="me-k">Темп. min</div><div class="me-v">−70°C</div></div>
-          <div class="me-item"><div class="me-k">Свариваемость</div><div class="me-v">Хорошая</div></div>
-        </div></div>
-        <!-- ROW: 15ГС -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">15ГС</div><div class="mr-std">ТУ 14-3-460 / ГОСТ 8733</div></div>
-          <div class="mr-desc">Низколегированная сталь с марганцем и кремнием. Применяется в трубопроводах ТЭС при давлениях до 16 МПа, в т.ч. в сварных отводах и переходах большого DN.</div>
-          <div class="mr-temp">до +475°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ТУ 14-3-460</div>
-          <div class="mr-apps"><span class="mr-app-t hi">ТЭС</span><span class="mr-app-t hi">ГРЭС</span><span class="mr-app-t">Нефтехим</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">≥ 450</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 275</div></div>
-          <div class="me-item"><div class="me-k">δ, %</div><div class="me-v">≥ 22</div></div>
-          <div class="me-item"><div class="me-k">Темп. max</div><div class="me-v">+475°C</div></div>
-          <div class="me-item"><div class="me-k">Свариваемость</div><div class="me-v">Хорошая</div></div>
-        </div></div>
-        <!-- ROW: 12Х1МФ -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">12Х1МФ</div><div class="mr-std">ТУ 14-3-460 / ТУ 14-3Р-55</div></div>
-          <div class="mr-desc">Теплоустойчивая сталь для паровых трубопроводов высокого давления. Основной материал главных паропроводов ТЭС. Устойчива к ползучести при длительных нагрузках.</div>
-          <div class="mr-temp">до +570°C</div>
-          <div class="mr-pn">160 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ТУ 14-3-460</div>
-          <div class="mr-apps"><span class="mr-app-t hi">ТЭС</span><span class="mr-app-t hi">ГРЭС</span><span class="mr-app-t">Главн. паропр.</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σ при 550°C</div><div class="me-v">≥ 118 МПа</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 275</div></div>
-          <div class="me-item"><div class="me-k">Жаростойкость</div><div class="me-v">до 570°C</div></div>
-          <div class="me-item"><div class="me-k">Термообработка</div><div class="me-v">Обязательно</div></div>
-          <div class="me-item"><div class="me-k">Контроль</div><div class="me-v">УЗК + ВИК</div></div>
-        </div></div>
-        <!-- ROW: 15Х5М -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">15Х5М</div><div class="mr-std">ГОСТ 550 / ТУ 14-3-561</div></div>
-          <div class="mr-desc">Жаропрочная хромомолибденовая сталь. Применяется в нефтепереработке при температурах до 650°C в сероводородсодержащих средах. Высокая коррозионная стойкость.</div>
-          <div class="mr-temp">до +650°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ГОСТ 550</div>
-          <div class="mr-apps"><span class="mr-app-t hi">Нефтегаз</span><span class="mr-app-t hi">Нефтепер.</span><span class="mr-app-t">Хим</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">Cr, %</div><div class="me-v">4,0–6,0</div></div>
-          <div class="me-item"><div class="me-k">Mo, %</div><div class="me-v">0,45–0,60</div></div>
-          <div class="me-item"><div class="me-k">Стойк. H₂S</div><div class="me-v">Высокая</div></div>
-          <div class="me-item"><div class="me-k">Темп. max</div><div class="me-v">650°C</div></div>
-          <div class="me-item"><div class="me-k">Применение</div><div class="me-v">Нефтепер.</div></div>
-        </div></div>
-        <!-- ROW: 12Х18Н10Т -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">12Х18Н10Т</div><div class="mr-std">ГОСТ 5632 / 9940 / 9941</div></div>
-          <div class="mr-desc">Аустенитная нержавеющая сталь с Ti-стабилизацией. Стандартный материал для АЭС и агрессивных сред. Устойчива к МКК, хлоридам и кислотам. Применяется в первом и втором контуре АЭС.</div>
-          <div class="mr-temp">до +700°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ГОСТ 5632</div>
-          <div class="mr-apps"><span class="mr-app-t hi">АЭС</span><span class="mr-app-t hi">Хим</span><span class="mr-app-t">ТЭС</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">≥ 540</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 196</div></div>
-          <div class="me-item"><div class="me-k">МКК стойкость</div><div class="me-v">Высокая (Ti)</div></div>
-          <div class="me-item"><div class="me-k">Темп. max</div><div class="me-v">700°C</div></div>
-          <div class="me-item"><div class="me-k">Контроль АЭС</div><div class="me-v">РК + УЗК + ВИК</div></div>
-        </div></div>
-        <!-- ROW: 08Х18Н10Т -->
-        <div class="mat-r" onclick="toggleMat(this)">
-          <div><div class="mr-g">08Х18Н10Т</div><div class="mr-std">ГОСТ 5632 / 9940</div></div>
-          <div class="mr-desc">Аустенитная нержавеющая сталь с пониженным содержанием углерода. Улучшенная стойкость к МКК по сравнению с 12Х18Н10Т. Применяется в химической и нефтехимической промышленности.</div>
-          <div class="mr-temp">до +600°C</div>
-          <div class="mr-pn">100 МПа</div>
-          <div style="font-family:'DINPro',monospace;font-size:8.5px;color:var(--g1);">ГОСТ 5632</div>
-          <div class="mr-apps"><span class="mr-app-t hi">Хим</span><span class="mr-app-t hi">Нефтехим</span><span class="mr-app-t">АЭС</span></div>
-        </div>
-        <div class="mat-expand"><div class="me-grid">
-          <div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">≥ 510</div></div>
-          <div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">≥ 196</div></div>
-          <div class="me-item"><div class="me-k">C, %</div><div class="me-v">≤ 0,08</div></div>
-          <div class="me-item"><div class="me-k">МКК стойкость</div><div class="me-v">Высокая</div></div>
-          <div class="me-item"><div class="me-k">Свариваемость</div><div class="me-v">Отличная</div></div>
-        </div></div>
-      </div>
-    </div>
-  </section>
+<?php promen_render_category_norms_section( 'armatura' ); ?>
+
+
+<?php promen_render_materials_section( 'armatura' ); ?>
 
 <section class="s" id="s06">
     <div class="s-hd">

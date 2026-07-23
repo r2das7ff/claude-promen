@@ -508,6 +508,13 @@ body::before{
 .pp-k{font-family:'DINPro',monospace;font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);}
 .pp-v{font-family:'DINPro',monospace;font-size:10.5px;font-weight:600;color:var(--dark);letter-spacing:.02em;}
 .pp-chk{font-family:'DINPro',monospace;font-size:9px;color:var(--g1);text-align:right;opacity:.5;}
+.pp-mat-wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 2px;}
+.pp-mat-list{display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;}
+.pp-steel{font:inherit;font-family:'DINPro',monospace;font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--dark);background:none;border:0;padding:0;margin:0;cursor:pointer;text-decoration:none;}
+.pp-steel.is-alt{font-weight:500;color:var(--blue);text-decoration:underline;text-underline-offset:2px;}
+.pp-steel.is-active{font-weight:600;color:var(--dark);text-decoration:none;cursor:default;}
+.pp-steel:focus-visible{outline:1px solid var(--blue);outline-offset:2px;}
+.pp-mat-cert{font-family:'DINPro',monospace;font-size:10.5px;font-weight:600;color:var(--dark);white-space:nowrap;}
 .pass-ft{padding:12px 20px;border-top:1px solid var(--ln2);display:flex;justify-content:space-between;align-items:center;background:var(--bg);}
 .pass-status{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:8px;}
 .pass-status::before{content:'';width:6px;height:6px;border-radius:50%;background:#4caf50;animation:blink 1.8s step-end infinite;}

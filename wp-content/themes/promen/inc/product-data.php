@@ -12,33 +12,521 @@ function promen_get_dims( int $product_id ): array {
 	if ( ! is_array( $dims ) ) {
 		return [];
 	}
-	return promen_sanitize_dims( $dims );
+	$turned = promen_product_is_turned_reducer( $product_id, $dims );
+	$dims   = promen_sanitize_dims( $dims, [ 'turned_reducer' => $turned ] );
+	if ( $turned ) {
+		$sku  = (string) get_post_meta( $product_id, '_sku', true );
+		$dims = promen_enrich_turned_reducer_dims( $dims, $sku );
+	}
+	if ( promen_product_needs_both_pipe_ends( $product_id ) ) {
+		$dims = promen_ensure_both_pipe_ends( $dims );
+	}
+	return $dims;
+}
+
+/**
+ * Точёные переходы (ПТ): в стандарте D/D1/d/d1, стенка = (D−d)/2, d≈DN.
+ */
+function promen_product_is_turned_reducer( int $product_id, array $dims = [] ): bool {
+	$tech = (string) ( $dims['technology'] ?? '' );
+	if ( preg_match( '/точ[её]н/ui', $tech ) ) {
+		return true;
+	}
+	$slugs = wp_get_post_terms( $product_id, 'product_cat', [ 'fields' => 'slugs' ] );
+	if ( ! is_wp_error( $slugs ) && in_array( 'tochenye', $slugs, true ) ) {
+		return true;
+	}
+	$sku = (string) get_post_meta( $product_id, '_sku', true );
+	return (bool) preg_match( '/-пт-/ui', $sku );
+}
+
+/**
+ * Восстанавливает DN из dy/SKU. Стенки точёных НЕ выводим из (D−DN)/2:
+ * в ГОСТ 22826 d часто ≠ Dy, верный s = (D−d)/2 только при известном d.
+ *
+ * @param array<string, mixed> $dims
+ * @return array<string, mixed>
+ */
+function promen_enrich_turned_reducer_dims( array $dims, string $sku = '' ): array {
+	if ( preg_match( '/пт-(\d+(?:[.,]\d+)?)[xх×](\d+(?:[.,]\d+)?)-/ui', $sku, $m ) ) {
+		$dims['dn']        = str_replace( ',', '.', $m[1] );
+		$dims['dn_branch'] = str_replace( ',', '.', $m[2] );
+		$dims['dy']        = $dims['dn'];
+		$dims['dy1']       = $dims['dn_branch'];
+	} else {
+		$dy  = trim( (string) ( $dims['dy'] ?? '' ) );
+		$dy1 = trim( (string) ( $dims['dy1'] ?? '' ) );
+		if ( $dy !== '' ) {
+			$dims['dn'] = $dy;
+		}
+		if ( $dy1 !== '' ) {
+			$dims['dn_branch'] = $dy1;
+		}
+	}
+
+	$od  = trim( (string) ( $dims['outer_diameter'] ?? '' ) );
+	$od2 = trim( (string) ( $dims['outer_d_branch'] ?? '' ) );
+	$s   = trim( (string) ( $dims['wall_thickness'] ?? '' ) );
+	$s2  = trim( (string) ( $dims['wall_branch'] ?? '' ) );
+	// Внутренние диаметры торцов (d / d1 из таблицы ГОСТ) — единственный надёжный источник s.
+	$bore  = trim( (string) ( $dims['inner_diameter'] ?? ( $dims['bore'] ?? '' ) ) );
+	$bore2 = trim( (string) ( $dims['inner_d_branch'] ?? ( $dims['bore_branch'] ?? '' ) ) );
+
+	if ( $s === '' && $bore !== '' ) {
+		$w = promen_turned_wall_from_bore( $od, $bore );
+		if ( $w !== '' ) {
+			$dims['wall_thickness'] = $w;
+		}
+	}
+	if ( $s2 === '' && $bore2 !== '' ) {
+		$w2 = promen_turned_wall_from_bore( $od2, $bore2 );
+		if ( $w2 !== '' ) {
+			$dims['wall_branch'] = $w2;
+		}
+	}
+	return $dims;
+}
+
+/** s = (Dн − d)/2 для точёных; пусто, если не считается. */
+function promen_turned_wall_from_bore( string $od, string $bore ): string {
+	$od   = str_replace( ',', '.', trim( $od ) );
+	$bore = str_replace( ',', '.', trim( $bore ) );
+	if ( $od === '' || $bore === '' || ! is_numeric( $od ) || ! is_numeric( $bore ) ) {
+		return '';
+	}
+	$od_f   = (float) $od;
+	$bore_f = (float) $bore;
+	if ( $bore_f <= 0 || $od_f <= $bore_f ) {
+		return '';
+	}
+	$w = ( $od_f - $bore_f ) / 2.0;
+	if ( $w < 0.5 ) {
+		return '';
+	}
+	if ( abs( $w - round( $w ) ) < 1e-6 ) {
+		return (string) (int) round( $w );
+	}
+	$formatted = number_format( $w, 2, '.', '' );
+	return rtrim( rtrim( $formatted, '0' ), '.' );
+}
+
+/**
+ * Переходы / точёные: всегда два конца (D×s и D2×s2).
+ * Равнопроходной — дублируем один известный торец.
+ */
+function promen_product_needs_both_pipe_ends( int $product_id ): bool {
+	$slugs = wp_get_post_terms( $product_id, 'product_cat', [ 'fields' => 'slugs' ] );
+	if ( is_wp_error( $slugs ) || ! $slugs ) {
+		$family = (string) get_post_meta( $product_id, '_promen_family', true );
+		return (bool) preg_match( '/переход|точён|точен/ui', $family );
+	}
+	return (bool) array_intersect( $slugs, [ 'perekhody', 'tochenye' ] );
+}
+
+/**
+ * Дополняет второй торец перехода: пустой → копия первого; недостающую стенку зеркалит.
+ */
+function promen_ensure_both_pipe_ends( array $dims ): array {
+	$od  = trim( (string) ( $dims['outer_diameter'] ?? '' ) );
+	$s   = trim( (string) ( $dims['wall_thickness'] ?? '' ) );
+	$od2 = trim( (string) ( $dims['outer_d_branch'] ?? '' ) );
+	$s2  = trim( (string) ( $dims['wall_branch'] ?? '' ) );
+	$dn  = trim( (string) ( $dims['dn'] ?? ( $dims['dy'] ?? '' ) ) );
+	$dn2 = trim( (string) ( $dims['dn_branch'] ?? ( $dims['dy1'] ?? '' ) ) );
+
+	// Только второй торец — переносим на основной.
+	if ( $od === '' && $od2 !== '' ) {
+		$dims['outer_diameter'] = $od2;
+		$od                     = $od2;
+		if ( $s === '' && $s2 !== '' ) {
+			$dims['wall_thickness'] = $s2;
+			$s                      = $s2;
+		}
+	}
+
+	// Нет второго торца (равнопроходной / недозаполнено) — дублируем первый.
+	if ( $od !== '' && $od2 === '' ) {
+		$dims['outer_d_branch'] = $od;
+		$od2                    = $od;
+		if ( $s !== '' && $s2 === '' ) {
+			$dims['wall_branch'] = $s;
+			$s2                  = $s;
+		}
+		if ( $dn !== '' && ( $dn2 === '' || $dn2 === $dn ) ) {
+			$dims['dn_branch'] = $dn;
+			$dn2               = $dn;
+		}
+		$dims['equal_pass'] = 'да';
+	}
+
+	// Оба OD есть, но стенка только с одной стороны — зеркалим.
+	if ( $od !== '' && $od2 !== '' ) {
+		if ( $s === '' && $s2 !== '' ) {
+			$dims['wall_thickness'] = $s2;
+			$s                      = $s2;
+		}
+		if ( $s2 === '' && $s !== '' ) {
+			$dims['wall_branch'] = $s;
+			$s2                  = $s;
+		}
+	}
+
+	// DN2 пуст при равных OD — тоже дублируем.
+	if ( $od !== '' && $od2 !== '' && $od === $od2 && $dn !== '' && $dn2 === '' ) {
+		$dims['dn_branch'] = $dn;
+	}
+
+	return $dims;
 }
 
 /**
  * Убирает «DN = номер исполнения» (бобышки ОСТ 24.125.57: dn=01…09 = execution).
  * Реальный размер остаётся в outer_diameter / wall_thickness.
+ * Также чинит DN, ошибочно взятый из допуска (+0,63) или номера фигуры (2–5).
+ *
+ * @param array<string, mixed>         $dims
+ * @param array{turned_reducer?: bool} $opts
+ * @return array<string, mixed>
  */
-function promen_sanitize_dims( array $dims ): array {
+function promen_sanitize_dims( array $dims, array $opts = [] ): array {
+	$turned = ! empty( $opts['turned_reducer'] )
+		|| (bool) preg_match( '/точ[её]н/ui', (string) ( $dims['technology'] ?? '' ) );
+
 	$dn = trim( (string) ( $dims['dn'] ?? '' ) );
 	$ex = trim( (string) ( $dims['execution'] ?? '' ) );
 	$od = trim( (string) ( $dims['outer_diameter'] ?? '' ) );
+
+	// Мусорный dy (13/19/60…) не промоутим в dn при наличии OD —
+	// для точёных OD→DN может быть пуст, но dy всё равно ненадёжен.
+	if ( $dn === '' && ( $od === '' || $turned ) ) {
+		$dy = trim( (string) ( $dims['dy'] ?? '' ) );
+		if ( $dy !== '' && ! promen_dn_looks_junk( $dy ) && ( $turned || promen_dn_is_standard( $dy ) ) ) {
+			$dn         = $dy;
+			$dims['dn'] = $dy;
+		}
+	}
+
+	// Трубный DN из OD — только для сварных/штампованных. У точёных D≠труба,
+	// а DN = внутренний проход (d); подмена ломает стенки (D−DN)/2.
+	// У фланцев outer_diameter = D фланца, не трубы — не выводить DN из него.
+	$is_flange = promen_dims_look_like_flange( $dims );
+	if ( $od !== '' && ! $turned && ! $is_flange ) {
+		$inferred = promen_pipe_dn_from_od( $od );
+		if ( $inferred !== '' ) {
+			$dims['dn'] = $inferred;
+			$dn         = $inferred;
+		}
+	}
+
 	if ( $dn !== '' && $ex !== '' && $dn === $ex && preg_match( '/^0?[1-9]$/', $dn ) && $od !== '' ) {
 		unset( $dims['dn'] );
+		$dn = '';
 	}
 	// Мусор n: stud_count совпал с наружным диаметром.
 	$n  = trim( (string) ( $dims['stud_count'] ?? '' ) );
 	if ( $n !== '' && $od !== '' && $n === $od ) {
 		unset( $dims['stud_count'] );
 	}
+
+	if ( $od !== '' && ! $turned && ! $is_flange ) {
+		$inferred = promen_pipe_dn_from_od( $od );
+		$dn_junk  = promen_dn_looks_junk( $dn );
+		if ( ! $dn_junk && $inferred !== '' && $dn !== '' && is_numeric( str_replace( ',', '.', $dn ) ) ) {
+			// Масса/служебное число вместо DN (2196 при OD 820 → DN 800).
+			$dn_val = (float) str_replace( ',', '.', $dn );
+			$inf_val = (float) $inferred;
+			if ( abs( $dn_val - $inf_val ) >= 1 && ( $dn_val > 1600 || $dn_val > $inf_val * 2 ) ) {
+				$dn_junk = true;
+			}
+		}
+		if ( $dn_junk ) {
+			if ( $inferred !== '' ) {
+				$dims['dn'] = $inferred;
+				$dn         = $inferred;
+			} elseif ( $dn !== '' ) {
+				unset( $dims['dn'] );
+				$dn = '';
+			}
+		}
+	}
+
+	$od_branch = trim( (string) ( $dims['outer_d_branch'] ?? '' ) );
+	$dn_branch = trim( (string) ( $dims['dn_branch'] ?? '' ) );
+	// dy1 — для точёных это реальный DN2; иначе только если dn_branch пуст и нет OD2.
+	if ( $dn_branch === '' && ( $od_branch === '' || $turned ) ) {
+		$dy1 = trim( (string) ( $dims['dy1'] ?? '' ) );
+		if ( $dy1 !== '' && ! promen_dn_looks_junk( $dy1 ) && ( $turned || promen_dn_is_standard( $dy1 ) ) ) {
+			$dn_branch         = $dy1;
+			$dims['dn_branch'] = $dy1;
+		}
+	} elseif ( $dn_branch === '' && $od_branch !== '' ) {
+		// dn_branch пуст, но OD2 есть — не тащим dy1.
+		$dn_branch = '';
+	}
+
+	// НЕ промоутим dy в dn здесь: это уже сделано выше с проверкой standard.
+	// Блок ниже был источником «Переходы 10/20» и dn=13/19/60.
+
+	// DN2 ошибочно записан в outer_d_branch (пустой OD → витрина «Переходы 10»).
+	if ( $od === '' && $od_branch !== '' && $dn_branch !== ''
+		&& is_numeric( str_replace( ',', '.', $od_branch ) )
+		&& is_numeric( str_replace( ',', '.', $dn_branch ) )
+		&& abs( (float) str_replace( ',', '.', $od_branch ) - (float) str_replace( ',', '.', $dn_branch ) ) < 1e-6
+	) {
+		unset( $dims['outer_d_branch'] );
+		$od_branch = '';
+	}
+
+	if ( $od_branch !== '' && ! $turned ) {
+		$inferred_branch = promen_pipe_dn_from_od( $od_branch );
+		if ( $inferred_branch !== '' && ( $dn_branch === '' || promen_dn_looks_junk( $dn_branch ) || ( is_numeric( str_replace( ',', '.', $dn_branch ) ) && abs( (float) str_replace( ',', '.', $dn_branch ) - (float) $inferred_branch ) >= 1 && (float) str_replace( ',', '.', $dn_branch ) > 1600 ) ) ) {
+			$dims['dn_branch'] = $inferred_branch;
+			$dn_branch         = $inferred_branch;
+		} elseif ( $dn_branch !== '' && $inferred_branch !== '' && is_numeric( str_replace( ',', '.', $dn_branch ) ) && abs( (float) str_replace( ',', '.', $dn_branch ) - (float) $od_branch ) < 1e-6 ) {
+			// DN2 ошибочно = Dн2 (133 вместо 125).
+			$dims['dn_branch'] = $inferred_branch;
+			$dn_branch         = $inferred_branch;
+		}
+	}
+
+	// Обогащение OD из DN, если в мете только условные проходы.
+	if ( ! $turned && $od === '' && $dn !== '' && ! promen_dn_looks_junk( $dn ) ) {
+		$filled = promen_pipe_od_from_dn( $dn );
+		if ( $filled !== '' ) {
+			$dims['outer_diameter'] = $filled;
+			$od                     = $filled;
+		}
+	}
+	if ( ! $turned && $od_branch === '' && $dn_branch !== '' && ! promen_dn_looks_junk( $dn_branch ) ) {
+		$filled_branch = promen_pipe_od_from_dn( $dn_branch );
+		if ( $filled_branch !== '' ) {
+			$dims['outer_d_branch'] = $filled_branch;
+			$od_branch             = $filled_branch;
+		}
+	}
+
+	$angle = trim( (string) ( $dims['angle'] ?? '' ) );
+	if ( $angle !== '' && ! promen_angle_is_plausible( $angle ) ) {
+		unset( $dims['angle'] );
+	}
+
+	// Физически невозможная стенка (s >= D/2 → внутренний Ø <= 0): не выводим
+	// геометрию, чтобы не врать (гейт правдивости на показе/индексации).
+	foreach ( [ [ 'outer_diameter', 'wall_thickness' ], [ 'outer_d_branch', 'wall_branch' ] ] as $pair ) {
+		$pd = (float) ( $dims[ $pair[0] ] ?? 0 );
+		$ps = (float) ( $dims[ $pair[1] ] ?? 0 );
+		if ( $pd > 0 && $ps > 0 && $ps >= $pd / 2 ) {
+			unset( $dims[ $pair[0] ], $dims[ $pair[1] ] );
+		}
+	}
+
 	return $dims;
 }
 
+/** DN из допуска/фигуры/мусора (0.63, 4, …) — не условный проход. */
+function promen_dn_looks_junk( string $dn ): bool {
+	if ( $dn === '' ) {
+		return true;
+	}
+	$normalized = str_replace( ',', '.', $dn );
+	if ( ! is_numeric( $normalized ) ) {
+		return false;
+	}
+	$value = (float) $normalized;
+	if ( $value < 6 ) {
+		return true;
+	}
+	// Дробный DN почти всегда допуск (+0,63), а не Dy.
+	if ( abs( $value - round( $value ) ) > 1e-6 ) {
+		return true;
+	}
+	return false;
+}
+
+function promen_angle_is_plausible( string $angle ): bool {
+	$normalized = str_replace( ',', '.', $angle );
+	if ( ! is_numeric( $normalized ) ) {
+		return false;
+	}
+	$value = (float) $normalized;
+	return in_array( $value, [ 15.0, 30.0, 45.0, 60.0, 90.0, 180.0 ], true );
+}
+
+/** Условный проход по наружному диаметру трубы (мм). */
+function promen_pipe_dn_from_od( string $od ): string {
+	$raw = str_replace( ',', '.', trim( $od ) );
+	if ( $raw === '' ) {
+		return '';
+	}
+	// Целый OD (160, 180, 219) — нельзя rtrim('0'), иначе 160→16→DN15.
+	if ( preg_match( '/^\d+$/', $raw ) ) {
+		$normalized = $raw;
+	} else {
+		$normalized = rtrim( rtrim( $raw, '0' ), '.' );
+	}
+	if ( $normalized === '' ) {
+		return '';
+	}
+	static $map = [
+		'10.2'  => '10',
+		'13.5'  => '10',
+		'14'    => '10',
+		'16'    => '15',
+		'17'    => '10',
+		'17.2'  => '15',
+		'18'    => '15',
+		'21.3'  => '20',
+		'22'    => '20',
+		'25'    => '20',
+		'26.7'  => '25',
+		'26.9'  => '25',
+		'27'    => '25',
+		'32'    => '25',
+		'33.4'  => '32',
+		'33.7'  => '32',
+		'38'    => '32',
+		'42.2'  => '40',
+		'42.4'  => '40',
+		'45'    => '40',
+		'48.3'  => '40',
+		'57'    => '50',
+		'60.3'  => '50',
+		'76'    => '65',
+		'76.1'  => '65',
+		'88.9'  => '80',
+		'89'    => '80',
+		'101.6' => '80',
+		'108'   => '100',
+		'114'   => '100',
+		'114.3' => '100',
+		'133'   => '125',
+		'139.7' => '125',
+		'159'   => '150',
+		'168'   => '150',
+		'168.3' => '150',
+		'219'   => '200',
+		'219.1' => '200',
+		'245'   => '150',
+		'273'   => '250',
+		'299'   => '300',
+		'323.9' => '300',
+		'325'   => '300',
+		'351'   => '350',
+		'355.6' => '350',
+		'377'   => '350',
+		'402'   => '400',
+		'406.4' => '400',
+		'426'   => '400',
+		'457'   => '450',
+		'465'   => '350',
+		'480'   => '450',
+		'530'   => '500',
+		'630'   => '600',
+		'720'   => '700',
+		'820'   => '800',
+		'920'   => '900',
+		'1000'  => '1000',
+		'1020'  => '1000',
+		'1220'  => '1200',
+		'1420'  => '1400',
+		'1620'  => '1600',
+	];
+	if ( isset( $map[ $normalized ] ) ) {
+		return $map[ $normalized ];
+	}
+	// Exact float key fallback (159.0 → 159). Целые не трогаем rtrim('0').
+	if ( preg_match( '/^\d+$/', $normalized ) ) {
+		return $map[ $normalized ] ?? '';
+	}
+	$key = (string) (float) $normalized;
+	$key = rtrim( rtrim( $key, '0' ), '.' );
+	return $map[ $key ] ?? $map[ $normalized ] ?? '';
+}
+
+/** Наружный диаметр трубы по DN (обратная к promen_pipe_dn_from_od). */
+function promen_pipe_od_from_dn( string $dn ): string {
+	$raw = str_replace( ',', '.', trim( $dn ) );
+	if ( $raw === '' || ! is_numeric( $raw ) ) {
+		return '';
+	}
+	// Целый DN (10, 20, 100, 1200) — нельзя rtrim('0'), иначе 10→1, 1200→12.
+	if ( preg_match( '/^\d+$/', $raw ) ) {
+		$key = $raw;
+	} else {
+		$key = rtrim( rtrim( $raw, '0' ), '.' );
+	}
+	static $map = [
+		'6'    => '10.2',
+		'8'    => '13.5',
+		'10'   => '17.2',
+		'15'   => '21.3',
+		'20'   => '26.9',
+		'25'   => '33.7',
+		'32'   => '42.4',
+		'40'   => '48.3',
+		'50'   => '60.3',
+		'65'   => '76.1',
+		'80'   => '88.9',
+		'100'  => '114.3',
+		'125'  => '139.7',
+		'150'  => '168.3',
+		'200'  => '219.1',
+		'250'  => '273',
+		'300'  => '325',
+		'350'  => '377',
+		'400'  => '426',
+		'450'  => '480',
+		'500'  => '530',
+		'600'  => '630',
+		'700'  => '720',
+		'800'  => '820',
+		'900'  => '920',
+		'1000' => '1020',
+		'1200' => '1220',
+		'1400' => '1420',
+		'1600' => '1620',
+	];
+	$int_key = (string) (int) (float) $raw;
+	return $map[ $key ] ?? $map[ $int_key ] ?? '';
+}
+
 /** Норматив для витрины: meta, иначе разбор title / designation. */
+/**
+ * Норматив к каноническому русскому виду: латинские слаги (sto-95-127) →
+ * «СТО 95.127-2013», пробелы → точка. Пользователь: «на русском, не sto».
+ */
+function promen_norm_canonical( string $key ): string {
+	$key = trim( $key );
+	if ( $key === '' || strcasecmp( $key, 'k' ) === 0 ) {
+		return '';
+	}
+	static $slug_map = [
+		'sto-95-127'       => 'СТО 95.127-2013',
+		'sto-95-119'       => 'СТО 95.119-2013',
+		'sto-95-115'       => 'СТО 95.115-2013',
+		'sto-95-126'       => 'СТО 95.126-2013',
+		'sto-79814898-125' => 'СТО 79814898.125-2009',
+		'sto-79814898-111' => 'СТО 79814898.111-2009',
+		'sto-321-05'       => 'СТО 321.05-2009',
+		'sto-321-02'       => 'СТО 321.02-2009',
+		'sto-321-03'       => 'СТО 321.03-2009',
+	];
+	$low = strtolower( $key );
+	if ( isset( $slug_map[ $low ] ) ) {
+		return $slug_map[ $low ];
+	}
+	// Общий случай латинского слага → русский префикс (год, если неизвестен, опускаем).
+	if ( preg_match( '/^(sto|ost|gost|tu)-(.+)$/i', $key, $m ) ) {
+		$pref = [ 'sto' => 'СТО', 'ost' => 'ОСТ', 'gost' => 'ГОСТ', 'tu' => 'ТУ' ][ strtolower( $m[1] ) ];
+		return $pref . ' ' . str_replace( '-', '.', $m[2] );
+	}
+	return $key;
+}
+
 function promen_product_norm_key( int $product_id ): string {
 	$nk = trim( (string) get_post_meta( $product_id, '_promen_norm_key', true ) );
 	if ( $nk !== '' && strcasecmp( $nk, 'k' ) !== 0 ) {
-		return $nk;
+		return promen_norm_canonical( $nk );
 	}
 	$title = (string) get_the_title( $product_id );
 	$gost  = trim( (string) get_post_meta( $product_id, '_promen_gost_designation', true ) );
@@ -47,10 +535,10 @@ function promen_product_norm_key( int $product_id ): string {
 			continue;
 		}
 		if ( preg_match( '/((?:ГОСТ|ОСТ|СТО|ТУ)\s*(?:СРО-П\s*)?[^\s,]{3,}(?:-\d{2,4})?)/ui', $text, $m ) ) {
-			return preg_replace( '/\s+/u', ' ', trim( $m[1] ) );
+			return promen_norm_canonical( preg_replace( '/\s+/u', ' ', trim( $m[1] ) ) );
 		}
 	}
-	return ( $nk !== '' && strcasecmp( $nk, 'k' ) !== 0 ) ? $nk : '';
+	return promen_norm_canonical( $nk );
 }
 
 /**
@@ -61,6 +549,9 @@ function promen_product_norm_key( int $product_id ): string {
  * key рендерится в archive-product.php (switch по ключу).
  */
 function promen_catalog_columns( string $group ): array {
+	if ( function_exists( 'promen_catalog_schema_columns' ) ) {
+		return promen_catalog_schema_columns( $group );
+	}
 	// Каждый диаметр и стенка — ОТДЕЛЬНАЯ колонка (как у конкурентов).
 	$DN    = [ 'key' => 'dn',     'label' => 'DN',          'w' => '52px' ];
 	$D     = [ 'key' => 'd',      'label' => 'Dн, мм',      'w' => '64px' ];
@@ -129,8 +620,14 @@ function promen_catalog_cell( string $key, array $dims, array $fast, int $pid ):
 			$v = $g( 'flange_thickness' ) ?: $g( 'b' );
 			return $v !== '' ? promen_fmt_dim( $v ) : '—';
 		case 'flange_type':
-			$v = $g( 'flange_type' ) ?: $g( 'product_type' );
-			return $v !== '' ? $v : '—';
+			return promen_flange_type_label( $g( 'flange_type' ) ?: $g( 'product_type' ) );
+		case 'dbolt':
+			return $g( 'bolt_circle_d' ) !== '' ? promen_fmt_dim( $g( 'bolt_circle_d' ) ) : '—';
+		case 'bolts':
+			$n = $g( 'stud_count' ); $m = $g( 'bolt_d' );
+			if ( $n !== '' && $m !== '' ) return $n . '×M' . promen_fmt_dim( $m );
+			if ( $n !== '' ) return $n . ' шт';
+			return '—';
 		case 'exec':
 			$v = $g( 'execution' );
 			return $v !== '' ? $v : '—';
@@ -157,6 +654,22 @@ function promen_catalog_cell( string $key, array $dims, array $fast, int $pid ):
 	return '—';
 }
 
+/** Человекочитаемый тип фланца из кода (01/11/ФП/ФВ). */
+function promen_flange_type_label( string $code ): string {
+	$code = trim( $code );
+	if ( $code === '' ) {
+		return '—';
+	}
+	static $map = [
+		'01' => 'Плоский 01',
+		'11' => 'Воротник. 11',
+		'21' => 'Свободный 21',
+		'ФП' => 'Плоский ФП',
+		'ФВ' => 'Воротник. ФВ',
+	];
+	return $map[ $code ] ?? $code;
+}
+
 /**
  * Пара(ы) D×s без исполнения: «108×4» или «108×4-89×4» для перехода/тройника.
  */
@@ -180,7 +693,25 @@ function promen_dxs_label( array $dims ): string {
 	if ( $pair1 !== '' && $pair2 !== '' ) {
 		return $pair1 . '-' . $pair2;
 	}
-	return $pair1 !== '' ? $pair1 : $pair2;
+	// Один торец + признак равнопроходного перехода — дублируем D×s-D×s.
+	if ( $pair1 !== '' || $pair2 !== '' ) {
+		$one = $pair1 !== '' ? $pair1 : $pair2;
+		if ( ! empty( $dims['equal_pass'] ) ) {
+			return $one . '-' . $one;
+		}
+		return $one;
+	}
+
+	// Fallback: только DN (без D×s).
+	$dn  = trim( (string) ( $dims['dn'] ?? ( $dims['dy'] ?? '' ) ) );
+	$dn2 = trim( (string) ( $dims['dn_branch'] ?? ( $dims['dy1'] ?? '' ) ) );
+	if ( $dn !== '' && $dn2 !== '' ) {
+		return 'DN' . promen_fmt_dim( $dn ) . '×DN' . promen_fmt_dim( $dn2 );
+	}
+	if ( $dn !== '' ) {
+		return 'DN' . promen_fmt_dim( $dn );
+	}
+	return '';
 }
 
 /**
@@ -381,6 +912,245 @@ function promen_product_steel_display( int $product_id, ?array $active_slugs = n
 	];
 }
 
+/** Короткие подписи для лейблов в таблице реестра. */
+function promen_industry_tag_labels(): array {
+	return [
+		'aes' => 'АЭС',
+		'tes' => 'ТЭС',
+		'gkh' => 'ЖКХ',
+		'ngk' => 'НГК',
+	];
+}
+
+/**
+ * Опции фильтра «Отрасль» из фасетов канонического поиска (скоуп = текущая группа + фильтры).
+ *
+ * @param array<string, int> $counts_by_slug
+ * @return array<int, array{slug: string, name: string, count: int}>
+ */
+function promen_industry_facet_options( array $counts_by_slug ): array {
+	$opts = [];
+	foreach ( promen_industry_tag_labels() as $slug => $name ) {
+		$opts[] = [
+			'slug'  => $slug,
+			'name'  => $name,
+			'count' => (int) ( $counts_by_slug[ $slug ] ?? 0 ),
+		];
+	}
+	return $opts;
+}
+
+/**
+ * Опции фильтра «Отрасль» по таксономии (fallback без канонического слоя).
+ *
+ * @return array<int, array{slug: string, name: string, count: int}>
+ */
+function promen_industry_filter_options( ?int $cat_id = null ): array {
+	$cat_id = $cat_id ?? ( function_exists( 'promen_scope_cat_id' ) ? promen_scope_cat_id() : 0 );
+	$scoped = function_exists( 'promen_scoped_counts' )
+		? promen_scoped_counts( 'promen_industry', $cat_id )
+		: [];
+	$counts = [];
+	foreach ( $scoped as $slug => $d ) {
+		$counts[ $slug ] = (int) ( $d['count'] ?? 0 );
+	}
+	return promen_industry_facet_options( $counts );
+}
+
+/**
+ * Отрасли по нормативу изделия (эвристика по реестру норм витрины).
+ *
+ * @return string[]
+ */
+function promen_industry_slugs_from_norm( string $norm ): array {
+	$norm = mb_strtolower( trim( $norm ), 'UTF-8' );
+	if ( $norm === '' ) {
+		return [];
+	}
+
+	$rules = [
+		'aes' => [
+			'/(?:нп|пнаэ)[\s.\-]*0?\d/u',
+			'/атом|аэс/u',
+			'/гост\s*1737[5-9]/u',
+			'/гост\s*22793|гост\s*22818/u',
+			'/гост\s*33259|гост\s*28759/u',
+			'/гост\s*33522/u',
+			'/ост\s*36[\-\s]*17/u',
+			'/сто\s*(?:цкти\s*)?318\.0[12]/u',
+			'/сто\s*(?:цкти\s*)?321\./u',
+			'/сто\s*(?:цкти\s*)?504\.02/u',
+			'/сто\s*(?:цкти\s*)?720\.01/u',
+		],
+		'tes' => [
+			'/(?:ост\s*34|сто\s*цкти|грес|тэс)/u',
+		],
+		'ngk' => [
+			'/(?:ост\s*36|сро\-п|ту\s|\bapi\b|нефт|газ|нефтехим)/u',
+		],
+		'gkh' => [
+			'/(?:гост\s*3262|гост\s*30732|жкх|теплосет)/u',
+			'/гост\s*1737[5-8]/u',
+			'/гост\s*17380/u',
+			'/гост\s*30753/u',
+			'/ост\s*36[\-\s]*25/u',
+		],
+	];
+
+	$out = [];
+	foreach ( $rules as $slug => $patterns ) {
+		foreach ( $patterns as $pattern ) {
+			if ( preg_match( $pattern, $norm ) ) {
+				$out[] = $slug;
+				break;
+			}
+		}
+	}
+	return $out;
+}
+
+/** Слаги отраслей → подписи для фильтров и подсказок. */
+function promen_industry_labels(): array {
+	return [
+		'aes' => 'АЭС',
+		'tes' => 'ТЭС/ГРЭС',
+		'gkh' => 'ЖКХ/теплосети',
+		'ngk' => 'Нефтегаз/нефтехим',
+	];
+}
+
+/** Создать термины отраслей (идемпотентно). */
+function promen_ensure_industry_terms(): void {
+	if ( ! taxonomy_exists( 'promen_industry' ) ) {
+		return;
+	}
+	foreach ( promen_industry_labels() as $slug => $name ) {
+		if ( ! term_exists( $slug, 'promen_industry' ) ) {
+			wp_insert_term( $name, 'promen_industry', [ 'slug' => $slug ] );
+		}
+	}
+}
+
+/**
+ * Эвристика отраслей по нормативу и категории (при импорте / пересборке).
+ *
+ * @return string[]
+ */
+function promen_infer_industry_slugs( int $product_id ): array {
+	$norm = promen_product_norm_key( $product_id );
+	$out  = promen_industry_slugs_from_norm( $norm );
+
+	$terms = get_the_terms( $product_id, 'product_cat' );
+	if ( $terms && ! is_wp_error( $terms ) ) {
+		$slugs = wp_list_pluck( $terms, 'slug' );
+		if ( array_intersect( $slugs, [ 'truby-vgp', 'izolyatsiya', 'opory', 'opory-nepodv', 'opory-skolz', 'opory-pruzh', 'zaglushki', 'flancy-plosk' ] ) ) {
+			$out[] = 'gkh';
+		}
+		if ( array_intersect( $slugs, [ 'flancy', 'flancy-plosk', 'flancy-vorot', 'sdt', 'otvody', 'troyniki', 'perekhody' ] ) ) {
+			$out[] = 'ngk';
+		}
+		if ( array_intersect( $slugs, [ 'truby', 'truby-bsh', 'truby-es', 'truby-ppu' ] ) ) {
+			$out[] = 'gkh';
+		}
+		if ( array_intersect( $slugs, [ 'armatura', 'armatura-zadvizhki', 'armatura-klapany', 'armatura-krany' ] ) ) {
+			$out[] = 'ngk';
+		}
+		if ( array_intersect( $slugs, [ 'sdt', 'otvody', 'troyniki', 'perekhody', 'dnishcha', 'zaglushki', 'tochenye' ] ) ) {
+			$out[] = 'tes';
+		}
+	}
+
+	$out = array_values( array_unique( $out ) );
+
+	// Гарантируем минимум одну отрасль для витрины.
+	if ( ! $out ) {
+		if ( $terms && ! is_wp_error( $terms ) ) {
+			$slugs = wp_list_pluck( $terms, 'slug' );
+			if ( array_intersect( $slugs, [ 'truby', 'truby-bsh', 'truby-es', 'truby-ppu', 'truby-vgp', 'izolyatsiya', 'opory', 'opory-nepodv', 'opory-skolz', 'opory-pruzh' ] ) ) {
+				$out[] = 'gkh';
+			} elseif ( array_intersect( $slugs, [ 'sdt', 'otvody', 'troyniki', 'perekhody', 'dnishcha', 'zaglushki', 'flancy', 'flancy-plosk', 'flancy-vorot', 'armatura' ] ) ) {
+				$out[] = 'ngk';
+			}
+		}
+	}
+
+	return array_values( array_unique( $out ) );
+}
+
+/** Привязать отрасли к товару (таксономия promen_industry). */
+function promen_sync_product_industries( int $product_id ): void {
+	if ( ! taxonomy_exists( 'promen_industry' ) ) {
+		return;
+	}
+	promen_ensure_industry_terms();
+	$slugs    = promen_infer_industry_slugs( $product_id );
+	$term_ids = [];
+	foreach ( $slugs as $slug ) {
+		$term = get_term_by( 'slug', $slug, 'promen_industry' );
+		if ( $term ) {
+			$term_ids[] = (int) $term->term_id;
+		}
+	}
+	wp_set_object_terms( $product_id, $term_ids, 'promen_industry', false );
+}
+
+/**
+ * Слаги отраслей товара (из таксономии).
+ *
+ * @return string[]
+ */
+function promen_product_industry_slugs( int $product_id ): array {
+	static $cache = [];
+	if ( isset( $cache[ $product_id ] ) ) {
+		return $cache[ $product_id ];
+	}
+	$terms = wp_get_post_terms( $product_id, 'promen_industry', [ 'fields' => 'slugs' ] );
+	if ( ! is_wp_error( $terms ) && $terms ) {
+		return $cache[ $product_id ] = array_values( $terms );
+	}
+	return $cache[ $product_id ] = promen_infer_industry_slugs( $product_id );
+}
+
+/** Человекочитаемые подписи отраслей товара. */
+function promen_product_industry_labels( int $product_id ): array {
+	$labels = promen_industry_labels();
+	$out    = [];
+	foreach ( promen_product_industry_slugs( $product_id ) as $slug ) {
+		$out[] = $labels[ $slug ] ?? strtoupper( $slug );
+	}
+	return $out;
+}
+
+/** Строка для колонки «Отрасль» в реестре. */
+function promen_product_industry_display( int $product_id ): string {
+	$labels = promen_product_industry_labels( $product_id );
+	return $labels ? implode( ', ', $labels ) : '';
+}
+
+/**
+ * HTML лейблов отраслей для ячейки таблицы (как в design-reference/katalog.html).
+ *
+ * @param string[] $slugs
+ */
+function promen_industry_tags_html( array $slugs, int $limit = 3 ): string {
+	$labels = promen_industry_tag_labels();
+	$slugs  = array_values( array_unique( array_filter( $slugs ) ) );
+	if ( ! $slugs ) {
+		return '—';
+	}
+	$tags = [];
+	foreach ( array_slice( $slugs, 0, $limit ) as $slug ) {
+		$text = $labels[ $slug ] ?? strtoupper( $slug );
+		$cls  = 'pr-tag' . ( $slug === 'aes' ? ' hi' : '' );
+		$tags[] = '<span class="' . esc_attr( $cls ) . '">' . esc_html( $text ) . '</span>';
+	}
+	$extra = count( $slugs ) - $limit;
+	if ( $extra > 0 ) {
+		$tags[] = '<span class="pr-tag">+' . (int) $extra . '</span>';
+	}
+	return '<span class="pr-tags">' . implode( '', $tags ) . '</span>';
+}
+
 /** Слаги категорий крепежа (родитель + семейства). */
 function promen_fastener_slugs(): array {
 	return [ 'krepezh', 'bolty', 'gayki', 'shpilki', 'shayby', 'vinty' ];
@@ -484,7 +1254,12 @@ function promen_product_display_title( int $product_id ): string {
  * Кэш — в транзиенте на серию.
  */
 function promen_get_series( WC_Product $product ): array {
-	$norm   = get_post_meta( $product->get_id(), '_promen_norm_key', true );
+	$norm = trim( (string) get_post_meta( $product->get_id(), '_promen_norm_key', true ) );
+	if ( $norm === '' || strcasecmp( $norm, 'k' ) === 0 ) {
+		$norm = function_exists( 'promen_product_norm_key' )
+			? promen_product_norm_key( $product->get_id() )
+			: '';
+	}
 	$family = get_post_meta( $product->get_id(), '_promen_family', true );
 	if ( ! $norm || ! $family ) {
 		return [];
@@ -498,6 +1273,22 @@ function promen_get_series( WC_Product $product ): array {
 		return $series;
 	}
 
+	// Братья: family + термин tax=norm (предпочтительно) или meta _promen_norm_key.
+	$meta_query = [ [ 'key' => '_promen_family', 'value' => $family ] ];
+	$tax_query  = [];
+	if ( $angle !== '' ) {
+		$tax_query[] = [ 'taxonomy' => 'pa_angle', 'field' => 'name', 'terms' => $angle ];
+	}
+	$norm_term = get_term_by( 'name', $norm, 'norm' );
+	if ( ! $norm_term && function_exists( 'promen_translit' ) ) {
+		$norm_term = get_term_by( 'slug', promen_translit( $norm ), 'norm' );
+	}
+	if ( $norm_term && ! is_wp_error( $norm_term ) ) {
+		$tax_query[] = [ 'taxonomy' => 'norm', 'field' => 'term_id', 'terms' => [ (int) $norm_term->term_id ] ];
+	} else {
+		$meta_query[] = [ 'key' => '_promen_norm_key', 'value' => $norm ];
+	}
+
 	$q = new WP_Query( [
 		'post_type'      => 'product',
 		'post_status'    => 'publish',
@@ -505,13 +1296,8 @@ function promen_get_series( WC_Product $product ): array {
 		'orderby'        => 'ID',
 		'order'          => 'ASC',
 		'no_found_rows'  => true,
-		'meta_query'     => [
-			[ 'key' => '_promen_norm_key', 'value' => $norm ],
-			[ 'key' => '_promen_family', 'value' => $family ],
-		],
-		'tax_query'      => $angle !== '' ? [
-			[ 'taxonomy' => 'pa_angle', 'field' => 'name', 'terms' => $angle ],
-		] : [],
+		'meta_query'     => $meta_query,
+		'tax_query'      => $tax_query,
 		'fields'         => 'ids',
 	] );
 
@@ -568,6 +1354,16 @@ function promen_get_series( WC_Product $product ): array {
 	return $series;
 }
 
+/** Сброс кэша размерных рядов (после импорта / правки нормативов). */
+function promen_flush_series_cache(): int {
+	global $wpdb;
+	return (int) $wpdb->query(
+		"DELETE FROM {$wpdb->options}
+		 WHERE option_name LIKE '\\_transient\\_promen\\_series%'
+		    OR option_name LIKE '\\_transient\\_timeout\\_promen\\_series%'"
+	);
+}
+
 /**
  * Карта вариаций для конфигуратора:
  * [ steel_slug ][ supervised_slug ] => [ sku, variation_id ].
@@ -595,6 +1391,32 @@ function promen_attr_options( WC_Product $product, string $tax ): array {
 	$out = [];
 	foreach ( wc_get_product_terms( $product->get_id(), $tax ) as $t ) {
 		$out[ $t->slug ] = $t->name;
+	}
+	// Variable: стали/надзор часто только на вариациях — подтягиваем из карты.
+	if ( ! $out && $product->is_type( 'variable' ) && in_array( $tax, [ 'pa_steel', 'pa_supervised' ], true ) ) {
+		$map = promen_get_variation_map( $product );
+		if ( $tax === 'pa_steel' ) {
+			foreach ( array_keys( $map ) as $slug ) {
+				if ( $slug === '' ) {
+					continue;
+				}
+				$term = get_term_by( 'slug', $slug, $tax );
+				$out[ $slug ] = $term && ! is_wp_error( $term ) ? $term->name : $slug;
+			}
+		} else {
+			$sups = [];
+			foreach ( $map as $by_sup ) {
+				foreach ( array_keys( $by_sup ) as $slug ) {
+					if ( $slug !== '' ) {
+						$sups[ $slug ] = true;
+					}
+				}
+			}
+			foreach ( array_keys( $sups ) as $slug ) {
+				$term = get_term_by( 'slug', $slug, $tax );
+				$out[ $slug ] = $term && ! is_wp_error( $term ) ? $term->name : $slug;
+			}
+		}
 	}
 	return $out;
 }
@@ -687,7 +1509,16 @@ function promen_product_schema( WC_Product $product ): string {
 		$data['category'] = $cat_name;
 	}
 	if ( $steels ) {
-		$data['material'] = $steels[0]->name;
+		$steel_names = array_values( array_map( fn( $t ) => $t->name, $steels ) );
+		// material как массив всех доступных марок — отражает вариативность карточки.
+		$data['material'] = count( $steel_names ) > 1 ? $steel_names : $steel_names[0];
+		if ( count( $steel_names ) > 1 ) {
+			$data['additionalProperty'][] = [
+				'@type' => 'PropertyValue',
+				'name'  => 'Марки стали',
+				'value' => implode( ', ', $steel_names ),
+			];
+		}
 	}
 	if ( $norm_key ) {
 		$data['additionalProperty'][] = [
@@ -949,7 +1780,9 @@ function promen_category_group( int $product_id ): string {
  * рабочее давление при температуре (напр. 4.02 МПа при 545°C), не номинальный класс.
  */
 function promen_pn_is_nominal( string $group ): bool {
-	return $group === 'flange';
+	// Фланцы и арматура имеют реальный номинальный класс PN; у СДТ pn — вычисленное
+	// давление, поэтому недостоверно.
+	return $group === 'flange' || $group === 'valve';
 }
 
 /**

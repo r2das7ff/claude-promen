@@ -1,0 +1,565 @@
+<?php
+/**
+ * Поисковый слой каталога: Meilisearch + SQL fallback.
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/** Запрос каталога (парсинг из REST/GET). */
+class Promen_Catalog_Query {
+
+	public string $group = '';
+	public string $q = '';
+	public ?float $dn_min = null;
+	public ?float $dn_max = null;
+	public ?float $pn_min = null;
+	public ?float $pn_max = null;
+	/** @var string[] */
+	public array $steel = [];
+	/** @var string[] */
+	public array $gost = [];
+	/** @var string[] */
+	public array $angle = [];
+	/** @var string[] */
+	public array $industry = [];
+	public int $page = 1;
+	public int $per_page = 50;
+	public string $sort_field = 'dn';
+	public string $sort_dir = 'asc';
+	public bool $sort_explicit = false;
+	public string $scope = '';
+
+	public static function from_array( array $params ): self {
+		$q = new self();
+		$q->group = sanitize_title( (string) ( $params['group'] ?? '' ) );
+		$q->q     = sanitize_text_field( (string) ( $params['q'] ?? '' ) );
+		$q->scope = ( (string) ( $params['scope'] ?? '' ) === 'all' ) ? 'all' : '';
+
+		foreach ( [ 'dn', 'pn' ] as $p ) {
+			$min_key = $p . '_min';
+			$max_key = $p . '_max';
+			if ( isset( $params[ $min_key ] ) && $params[ $min_key ] !== '' ) {
+				$q->{$p . '_min'} = (float) $params[ $min_key ];
+			}
+			if ( isset( $params[ $max_key ] ) && $params[ $max_key ] !== '' ) {
+				$q->{$p . '_max'} = (float) $params[ $max_key ];
+			}
+		}
+
+		foreach ( [ 'steel', 'gost', 'angle', 'industry' ] as $p ) {
+			if ( empty( $params[ $p ] ) ) {
+				continue;
+			}
+			$raw = is_array( $params[ $p ] ) ? $params[ $p ] : explode( ',', (string) $params[ $p ] );
+			$q->{$p} = array_values( array_unique( array_filter( array_map( 'sanitize_title', $raw ) ) ) );
+		}
+
+		$q->page     = max( 1, (int) ( $params['page'] ?? 1 ) );
+		$q->per_page = min( 100, max( 1, (int) ( $params['per_page'] ?? 50 ) ) );
+
+		if ( ! empty( $params['sort'] ) && is_string( $params['sort'] ) ) {
+			$parts = explode( ':', $params['sort'] );
+			if ( ! empty( $parts[0] ) ) {
+				$q->sort_field    = sanitize_key( $parts[0] );
+				$q->sort_explicit = true;
+			}
+			if ( ! empty( $parts[1] ) && in_array( strtolower( $parts[1] ), [ 'asc', 'desc' ], true ) ) {
+				$q->sort_dir = strtolower( $parts[1] );
+			}
+		} elseif ( $q->group !== '' && function_exists( 'promen_catalog_schema_sort' ) ) {
+			$def = promen_catalog_schema_sort( $q->group );
+			$q->sort_field = $def['field'];
+			$q->sort_dir   = $def['dir'];
+		}
+
+		return $q;
+	}
+
+	/** @return string[] */
+	public function category_slugs(): array {
+		if ( $this->scope === 'all' ) {
+			return []; // поиск по всему каталогу (без категорийного фильтра)
+		}
+		return $this->group !== '' ? promen_catalog_group_slugs( $this->group ) : [];
+	}
+
+	/** @return string[] */
+	public function facet_fields(): array {
+		if ( $this->group === '' ) {
+			return [ 'steel', 'gost', 'angle', 'pn', 'industry' ];
+		}
+		return function_exists( 'promen_catalog_schema_facets' )
+			? promen_catalog_schema_facets( $this->group )
+			: [ 'steel', 'gost' ];
+	}
+}
+
+/** Результат поиска. */
+class Promen_Catalog_Search_Result {
+
+	public function __construct(
+		public array $hits,
+		public int $total,
+		public int $page,
+		public int $per_page,
+		public array $facets,
+		public string $engine
+	) {}
+}
+
+interface Promen_Catalog_Search_Engine {
+	public function search( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result;
+	public function upsert( array $document ): bool;
+	public function delete( int $product_id ): bool;
+	public function reindex_all( ?callable $progress = null ): int;
+	public function health(): bool;
+	public function count_indexed(): int;
+	public function engine_name(): string;
+}
+
+/**
+ * Построить filter-строку Meilisearch из запроса (unit-testable).
+ */
+function promen_catalog_meili_filter( Promen_Catalog_Query $query ): string {
+	$parts = [];
+
+	$slugs = $query->category_slugs();
+	if ( $slugs ) {
+		$cat = array_map(
+			static fn( string $s ): string => 'category = "' . str_replace( '"', '\\"', $s ) . '"',
+			$slugs
+		);
+		$parts[] = '(' . implode( ' OR ', $cat ) . ')';
+	}
+
+	if ( null !== $query->dn_min ) {
+		$parts[] = 'dn >= ' . $query->dn_min;
+	}
+	if ( null !== $query->dn_max ) {
+		$parts[] = 'dn <= ' . $query->dn_max;
+	}
+	if ( null !== $query->pn_min ) {
+		$parts[] = 'pn >= ' . $query->pn_min;
+	}
+	if ( null !== $query->pn_max ) {
+		$parts[] = 'pn <= ' . $query->pn_max;
+	}
+
+	if ( $query->steel ) {
+		$steel = array_map(
+			static fn( string $s ): string => 'steels = "' . str_replace( '"', '\\"', $s ) . '"',
+			$query->steel
+		);
+		$parts[] = '(' . implode( ' OR ', $steel ) . ')';
+	}
+	if ( $query->gost ) {
+		$gost = array_map(
+			static fn( string $s ): string => 'norm_slug = "' . str_replace( '"', '\\"', $s ) . '"',
+			$query->gost
+		);
+		$parts[] = '(' . implode( ' OR ', $gost ) . ')';
+	}
+	if ( $query->angle ) {
+		$ang = array_map(
+			static function ( string $s ): string {
+				$v = is_numeric( $s ) ? (float) $s : $s;
+				return 'angle = ' . $v;
+			},
+			$query->angle
+		);
+		$parts[] = '(' . implode( ' OR ', $ang ) . ')';
+	}
+	if ( $query->industry ) {
+		$ind = array_map(
+			static fn( string $s ): string => 'industries = "' . str_replace( '"', '\\"', $s ) . '"',
+			$query->industry
+		);
+		$parts[] = '(' . implode( ' OR ', $ind ) . ')';
+	}
+
+	return implode( ' AND ', $parts );
+}
+
+function promen_meili_url(): string {
+	return rtrim( (string) ( getenv( 'PROMEN_MEILI_URL' ) ?: 'http://meilisearch:7700' ), '/' );
+}
+
+function promen_meili_key(): string {
+	return (string) ( getenv( 'PROMEN_MEILI_KEY' ) ?: 'promen_dev_key' );
+}
+
+function promen_meili_index(): string {
+	return 'products';
+}
+
+/** HTTP к Meilisearch. */
+function promen_meili_request( string $method, string $path, ?array $body = null ): array {
+	$args = [
+		'method'  => $method,
+		'timeout' => 30,
+		'headers' => [
+			'Authorization' => 'Bearer ' . promen_meili_key(),
+			'Content-Type'  => 'application/json',
+		],
+	];
+	if ( null !== $body ) {
+		$args['body'] = wp_json_encode( $body );
+	}
+	$res = wp_remote_request( promen_meili_url() . $path, $args );
+	if ( is_wp_error( $res ) ) {
+		return [ 'ok' => false, 'error' => $res->get_error_message(), 'data' => null ];
+	}
+	$code = wp_remote_retrieve_response_code( $res );
+	$raw  = wp_remote_retrieve_body( $res );
+	$data = $raw !== '' ? json_decode( $raw, true ) : [];
+	return [
+		'ok'    => $code >= 200 && $code < 300,
+		'code'  => $code,
+		'data'  => is_array( $data ) ? $data : [],
+		'error' => $code >= 300 ? ( $raw ?: 'HTTP ' . $code ) : '',
+	];
+}
+
+class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
+
+	public function health(): bool {
+		$r = promen_meili_request( 'GET', '/health' );
+		return $r['ok'];
+	}
+
+	public function engine_name(): string {
+		return 'meili';
+	}
+
+	public function ensure_index(): void {
+		promen_meili_request( 'POST', '/indexes', [
+			'uid'        => promen_meili_index(),
+			'primaryKey' => 'product_id',
+		] );
+		promen_meili_request( 'PATCH', '/indexes/' . promen_meili_index() . '/settings', [
+			'searchableAttributes' => [ 'search_text', 'sku', 'title', 'norm', 'family' ],
+			'filterableAttributes' => [ 'category', 'steels', 'industries', 'norm_slug', 'dn', 'dn2', 'pn', 'angle' ],
+			'sortableAttributes'   => [ 'dn', 'pn', 'mass', 'title' ],
+			// Иначе estimatedTotalHits капается на 1000 → счётчик не меняется при
+			// фильтрации крупных категорий (отводы ~1900). Поднимаем потолок.
+			'pagination'           => [ 'maxTotalHits' => 100000 ],
+		] );
+	}
+
+	public function search( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result {
+		$filter = promen_catalog_meili_filter( $query );
+		$body   = [
+			'q'      => $query->q,
+			'limit'  => $query->per_page,
+			'offset' => ( $query->page - 1 ) * $query->per_page,
+			'facets' => $this->facet_attrs( $query ),
+		];
+		if ( $filter !== '' ) {
+			$body['filter'] = $filter;
+		}
+		// При текстовом поиске без явной сортировки — отдаём ранжирование Meili
+		// по релевантности (иначе форс-сортировка dn затирает качество поиска).
+		if ( $query->q === '' || $query->sort_explicit ) {
+			$sort_field = in_array( $query->sort_field, [ 'dn', 'pn', 'mass', 'title' ], true )
+				? $query->sort_field
+				: 'dn';
+			$body['sort'] = [ $sort_field . ':' . ( $query->sort_dir === 'desc' ? 'desc' : 'asc' ) ];
+		}
+
+		$r = promen_meili_request( 'POST', '/indexes/' . promen_meili_index() . '/search', $body );
+		if ( ! $r['ok'] ) {
+			throw new RuntimeException( 'Meilisearch search failed: ' . ( $r['error'] ?? 'unknown' ) );
+		}
+		$data   = $r['data'];
+		$hits   = [];
+		foreach ( (array) ( $data['hits'] ?? [] ) as $hit ) {
+			$hits[] = $this->normalize_hit( $hit );
+		}
+		$facets = $this->normalize_facets( (array) ( $data['facetDistribution'] ?? [] ) );
+
+		return new Promen_Catalog_Search_Result(
+			$hits,
+			(int) ( $data['estimatedTotalHits'] ?? $data['totalHits'] ?? count( $hits ) ),
+			$query->page,
+			$query->per_page,
+			$facets,
+			'meili'
+		);
+	}
+
+	/** @return string[] */
+	private function facet_attrs( Promen_Catalog_Query $query ): array {
+		$map = [
+			'steel'    => 'steels',
+			'gost'     => 'norm_slug',
+			'angle'    => 'angle',
+			'pn'       => 'pn',
+			'industry' => 'industries',
+		];
+		$out = [];
+		foreach ( $query->facet_fields() as $f ) {
+			if ( isset( $map[ $f ] ) ) {
+				$out[] = $map[ $f ];
+			}
+		}
+		return array_values( array_unique( $out ) );
+	}
+
+	private function normalize_hit( array $hit ): array {
+		unset( $hit['_formatted'] );
+		return $hit;
+	}
+
+	private function normalize_facets( array $raw ): array {
+		$rename = [
+			'steels'     => 'steel',
+			'norm_slug'  => 'gost',
+			'industries' => 'industry',
+		];
+		$out = [];
+		foreach ( $raw as $field => $dist ) {
+			$key = $rename[ $field ] ?? $field;
+			$out[ $key ] = $dist;
+		}
+		return $out;
+	}
+
+	public function upsert( array $document ): bool {
+		$this->ensure_index();
+		$r = promen_meili_request(
+			'POST',
+			'/indexes/' . promen_meili_index() . '/documents',
+			[ $document ]
+		);
+		return $r['ok'];
+	}
+
+	public function delete( int $product_id ): bool {
+		$r = promen_meili_request( 'DELETE', '/indexes/' . promen_meili_index() . '/documents/' . $product_id );
+		return $r['ok'] || ( $r['code'] ?? 0 ) === 404;
+	}
+
+	public function reindex_all( ?callable $progress = null ): int {
+		$this->ensure_index();
+		global $wpdb;
+		$table = promen_catalog_table_name();
+		$ids   = $wpdb->get_col( "SELECT product_id FROM {$table} ORDER BY product_id ASC" );
+		$batch = [];
+		$n     = 0;
+		foreach ( $ids as $pid ) {
+			$doc = promen_catalog_get( (int) $pid );
+			if ( ! $doc ) {
+				continue;
+			}
+			$batch[] = $doc;
+			if ( count( $batch ) >= 500 ) {
+				promen_meili_request( 'POST', '/indexes/' . promen_meili_index() . '/documents', $batch );
+				$n += count( $batch );
+				$batch = [];
+				if ( $progress ) {
+					$progress( $n, count( $ids ) );
+				}
+			}
+		}
+		if ( $batch ) {
+			promen_meili_request( 'POST', '/indexes/' . promen_meili_index() . '/documents', $batch );
+			$n += count( $batch );
+		}
+		return $n;
+	}
+
+	public function count_indexed(): int {
+		$r = promen_meili_request( 'GET', '/indexes/' . promen_meili_index() . '/stats' );
+		return $r['ok'] ? (int) ( $r['data']['numberOfDocuments'] ?? 0 ) : 0;
+	}
+}
+
+class Promen_Sql_Fallback_Engine implements Promen_Catalog_Search_Engine {
+
+	public function engine_name(): string {
+		return 'sql';
+	}
+
+	public function health(): bool {
+		return true;
+	}
+
+	public function search( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result {
+		global $wpdb;
+		$table  = promen_catalog_table_name();
+		$where  = [ '1=1' ];
+		$args   = [];
+
+		$slugs = $query->category_slugs();
+		if ( $slugs ) {
+			$ph      = implode( ',', array_fill( 0, count( $slugs ), '%s' ) );
+			$where[] = "category IN ({$ph})";
+			$args    = array_merge( $args, $slugs );
+		}
+		if ( null !== $query->dn_min ) {
+			$where[] = 'dn >= %f';
+			$args[]  = $query->dn_min;
+		}
+		if ( null !== $query->dn_max ) {
+			$where[] = 'dn <= %f';
+			$args[]  = $query->dn_max;
+		}
+		if ( null !== $query->pn_min ) {
+			$where[] = 'pn >= %f';
+			$args[]  = $query->pn_min;
+		}
+		if ( null !== $query->pn_max ) {
+			$where[] = 'pn <= %f';
+			$args[]  = $query->pn_max;
+		}
+		if ( $query->gost ) {
+			$ph      = implode( ',', array_fill( 0, count( $query->gost ), '%s' ) );
+			$where[] = "norm_slug IN ({$ph})";
+			$args    = array_merge( $args, $query->gost );
+		}
+		if ( $query->angle ) {
+			$ang = array_map( 'floatval', $query->angle );
+			$ph  = implode( ',', array_fill( 0, count( $ang ), '%f' ) );
+			$where[] = "angle IN ({$ph})";
+			$args    = array_merge( $args, $ang );
+		}
+		if ( $query->steel ) {
+			$steel_w = [];
+			foreach ( $query->steel as $s ) {
+				$steel_w[] = 'steels_json LIKE %s';
+				$args[]    = '%"' . $wpdb->esc_like( $s ) . '"%';
+			}
+			$where[] = '(' . implode( ' OR ', $steel_w ) . ')';
+		}
+		if ( $query->industry ) {
+			$ind_w = [];
+			foreach ( $query->industry as $s ) {
+				$ind_w[] = 'industries_json LIKE %s';
+				$args[]  = '%"' . $wpdb->esc_like( $s ) . '"%';
+			}
+			$where[] = '(' . implode( ' OR ', $ind_w ) . ')';
+		}
+		if ( $query->q !== '' ) {
+			$like    = '%' . $wpdb->esc_like( $query->q ) . '%';
+			$where[] = '(payload LIKE %s OR sku LIKE %s)';
+			$args[]  = $like;
+			$args[]  = $like;
+		}
+
+		$where_sql = implode( ' AND ', $where );
+		$count_sql = "SELECT COUNT(*) FROM {$table} WHERE {$where_sql}";
+		$total     = (int) ( $args ? $wpdb->get_var( $wpdb->prepare( $count_sql, $args ) ) : $wpdb->get_var( $count_sql ) );
+
+		$sort_field = in_array( $query->sort_field, [ 'dn', 'pn', 'angle' ], true ) ? $query->sort_field : 'dn';
+		$sort_dir   = $query->sort_dir === 'desc' ? 'DESC' : 'ASC';
+		$offset     = ( $query->page - 1 ) * $query->per_page;
+
+		$list_sql = "SELECT payload FROM {$table} WHERE {$where_sql} ORDER BY {$sort_field} {$sort_dir} LIMIT %d OFFSET %d";
+		$list_args = array_merge( $args, [ $query->per_page, $offset ] );
+		$rows      = $wpdb->get_col( $wpdb->prepare( $list_sql, $list_args ) );
+
+		$hits = [];
+		foreach ( $rows as $payload ) {
+			$doc = json_decode( $payload, true );
+			if ( is_array( $doc ) ) {
+				$hits[] = $doc;
+			}
+		}
+
+		$facets = promen_sql_compute_facets( $query, $where_sql, $args );
+
+		return new Promen_Catalog_Search_Result(
+			$hits,
+			$total,
+			$query->page,
+			$query->per_page,
+			$facets,
+			'sql'
+		);
+	}
+
+	public function upsert( array $document ): bool {
+		return true;
+	}
+
+	public function delete( int $product_id ): bool {
+		return true;
+	}
+
+	public function reindex_all( ?callable $progress = null ): int {
+		return promen_catalog_count();
+	}
+
+	public function count_indexed(): int {
+		return promen_catalog_count();
+	}
+}
+
+/**
+ * Подсчёт фасетов для SQL fallback (упрощённо — по всем строкам в скоупе).
+ */
+function promen_sql_compute_facets( Promen_Catalog_Query $query, string $where_sql, array $args ): array {
+	global $wpdb;
+	$table = promen_catalog_table_name();
+	$sql   = "SELECT steels_json, industries_json, norm_slug, angle, pn FROM {$table} WHERE {$where_sql}";
+	$rows  = $args ? $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A ) : $wpdb->get_results( $sql, ARRAY_A );
+
+	$facets = [ 'steel' => [], 'gost' => [], 'angle' => [], 'pn' => [], 'industry' => [] ];
+	foreach ( $rows ?: [] as $row ) {
+		$steels = json_decode( $row['steels_json'] ?? '[]', true );
+		if ( is_array( $steels ) ) {
+			foreach ( $steels as $s ) {
+				$facets['steel'][ $s ] = ( $facets['steel'][ $s ] ?? 0 ) + 1;
+			}
+		}
+		$inds = json_decode( $row['industries_json'] ?? '[]', true );
+		if ( is_array( $inds ) ) {
+			foreach ( $inds as $s ) {
+				$facets['industry'][ $s ] = ( $facets['industry'][ $s ] ?? 0 ) + 1;
+			}
+		}
+		if ( ! empty( $row['norm_slug'] ) ) {
+			$facets['gost'][ $row['norm_slug'] ] = ( $facets['gost'][ $row['norm_slug'] ] ?? 0 ) + 1;
+		}
+		if ( isset( $row['angle'] ) && $row['angle'] !== null && $row['angle'] !== '' ) {
+			$key = (string) (float) $row['angle'];
+			$facets['angle'][ $key ] = ( $facets['angle'][ $key ] ?? 0 ) + 1;
+		}
+		if ( isset( $row['pn'] ) && $row['pn'] !== null && $row['pn'] !== '' ) {
+			$key = (string) (float) $row['pn'];
+			$facets['pn'][ $key ] = ( $facets['pn'][ $key ] ?? 0 ) + 1;
+		}
+	}
+	return $facets;
+}
+
+function promen_catalog_search_engine(): Promen_Catalog_Search_Engine {
+	$meili = new Promen_Meili_Engine();
+	if ( $meili->health() ) {
+		return $meili;
+	}
+	return new Promen_Sql_Fallback_Engine();
+}
+
+function promen_catalog_search( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result {
+	try {
+		return promen_catalog_search_engine()->search( $query );
+	} catch ( Throwable $e ) {
+		return ( new Promen_Sql_Fallback_Engine() )->search( $query );
+	}
+}
+
+function promen_catalog_search_reconcile(): array {
+	$canon = promen_catalog_count();
+	$meili = new Promen_Meili_Engine();
+	if ( ! $meili->health() ) {
+		return [ 'ok' => false, 'canon' => $canon, 'indexed' => 0, 'drift' => $canon, 'message' => 'meili unavailable' ];
+	}
+	$indexed = $meili->count_indexed();
+	return [
+		'ok'      => $canon === $indexed,
+		'canon'   => $canon,
+		'indexed' => $indexed,
+		'drift'   => abs( $canon - $indexed ),
+	];
+}

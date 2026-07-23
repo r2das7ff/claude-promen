@@ -34,6 +34,10 @@ while ( have_posts() ) :
 	$length = $dims['length'] ?? ( $dims['length_mm'] ?? '' );
 	$mass  = $product->get_weight();
 	$has_branch = $d2 !== '' || $s2 !== '';
+	// Переходы / точёные: в карточке всегда показываем оба торца (равнопроходной — дубликат).
+	if ( function_exists( 'promen_product_needs_both_pipe_ends' ) && promen_product_needs_both_pipe_ends( $product->get_id() ) ) {
+		$has_branch = true;
+	}
 	$is_fastener = promen_product_is_fastener( $product->get_id() );
 	$fast        = promen_fastener_dims( $dims );
 	$thread_m    = $fast['M'];
@@ -42,6 +46,21 @@ while ( have_posts() ) :
 	$accuracy    = $fast['accuracy'];
 	$washer_type = $fast['washer'];
 	$mat_grade   = $fast['steel'];
+	if ( $mat_grade === '' && ! empty( $dims['material_grade'] ) ) {
+		$mat_grade = (string) $dims['material_grade'];
+	}
+	if ( $mat_grade === '' && ! empty( $dims['material'] ) ) {
+		$mat_grade = (string) $dims['material'];
+	}
+	// Нет атрибута, но марка есть в dims — показать в паспорте.
+	if ( ! $steels && $mat_grade !== '' ) {
+		$term = get_term_by( 'name', $mat_grade, 'pa_steel' );
+		if ( ! $term ) {
+			$term = get_term_by( 'slug', sanitize_title( $mat_grade ), 'pa_steel' );
+		}
+		$slug = ( $term && ! is_wp_error( $term ) ) ? $term->slug : sanitize_title( $mat_grade );
+		$steels = [ $slug => function_exists( 'promen_fmt_steel' ) ? promen_fmt_steel( $mat_grade ) : $mat_grade ];
+	}
 	if ( $is_fastener && $length === '' && $fast['length'] !== '' ) {
 		$length = $fast['length'];
 	}
@@ -93,9 +112,13 @@ while ( have_posts() ) :
 		$key = $is_fastener
 			? ( ( $s['thread'] !== '' ? $s['thread'] : $s['dn'] ) )
 			: $s['dn'];
-		if ( $key !== '' && ! isset( $dn_options[ $key ] ) ) {
-			$dn_options[ $key ] = $s['url'];
+		if ( $key === '' || isset( $dn_options[ $key ] ) ) {
+			continue;
 		}
+		if ( ! $is_fastener && function_exists( 'promen_dn_looks_junk' ) && promen_dn_looks_junk( (string) $key ) ) {
+			continue;
+		}
+		$dn_options[ $key ] = $s['url'];
 	}
 	uksort( $dn_options, fn( $a, $b ) => (float) $a <=> (float) $b );
 
@@ -255,28 +278,33 @@ while ( have_posts() ) :
               <div class="pp-row" data-field="material"><span class="pp-k">Материал</span><span class="pp-v" id="ppMat"><?php echo esc_html( promen_fmt_steel( $mat_grade ) ); ?></span><span class="pp-chk">✓</span></div>
             <?php endif; ?>
           <?php elseif ( $is_flange ) : ?>
-            <?php if ( $dn !== '' || $pn_ok ) : ?>
-              <div class="pp-row" data-field="dn"><span class="pp-k">DN · PN</span><span class="pp-v" id="ppDnPn"><?php
-                echo esc_html( trim( ( $dn !== '' ? 'DN ' . $dn : '' ) . ( $pn_ok ? '  PN ' . $pn : '' ) ) );
-              ?></span><span class="pp-chk">✓</span></div>
+            <?php if ( $dn !== '' ) : ?>
+              <div class="pp-row" data-field="dn"><span class="pp-k">DN</span><span class="pp-v">DN <?php echo esc_html( $dn ); ?></span><span class="pp-chk">✓</span></div>
+            <?php endif; ?>
+            <?php if ( $pn_ok ) : ?>
+              <div class="pp-row" data-field="pn"><span class="pp-k">PN</span><span class="pp-v">PN <?php echo esc_html( $pn ); ?></span><span class="pp-chk">✓</span></div>
+            <?php endif; ?>
+            <?php if ( $flange_type !== '' ) : ?>
+              <div class="pp-row" data-field="ftype"><span class="pp-k">Тип</span><span class="pp-v"><?php echo esc_html( promen_flange_type_label( $flange_type ) ); ?></span><span class="pp-chk">✓</span></div>
             <?php endif; ?>
             <?php if ( $seal_face !== '' ) : ?>
-              <div class="pp-row" data-field="seal"><span class="pp-k">Уплотнение</span><span class="pp-v"><?php echo esc_html( $seal_face ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="seal"><span class="pp-k">Уплотн. поверхность</span><span class="pp-v"><?php echo esc_html( $seal_face ); ?></span><span class="pp-chk">✓</span></div>
             <?php endif; ?>
             <?php if ( $flange_series !== '' ) : ?>
               <div class="pp-row" data-field="series"><span class="pp-k">Ряд</span><span class="pp-v"><?php echo esc_html( $flange_series ); ?></span><span class="pp-chk">✓</span></div>
             <?php endif; ?>
             <?php
-              $geo = array_filter( [
-                $d_out !== '' ? ( 'D ' . promen_fmt_dim( $d_out ) ) : '',
-                $d_inner !== '' ? ( 'd ' . promen_fmt_dim( $d_inner ) ) : '',
-                $bolt_circle !== '' ? ( 'D1 ' . promen_fmt_dim( $bolt_circle ) ) : '',
-                $flange_b !== '' ? ( 'b ' . promen_fmt_dim( $flange_b ) ) : '',
-              ] );
+              // Единый набор геометрии фланца — по строке на размер, чёткие подписи.
+              $flange_geo = [
+                'D наружный'   => $d_out !== '' ? promen_fmt_dim( $d_out ) . ' мм' : '',
+                'D болт. окр.' => $bolt_circle !== '' ? promen_fmt_dim( $bolt_circle ) . ' мм' : '',
+                'd внутренний' => $d_inner !== '' ? promen_fmt_dim( $d_inner ) . ' мм' : '',
+                'Толщина b'    => $flange_b !== '' ? promen_fmt_dim( $flange_b ) . ' мм' : '',
+              ];
             ?>
-            <?php if ( $geo ) : ?>
-              <div class="pp-row" data-field="geo"><span class="pp-k">D · d · D1 · b</span><span class="pp-v"><?php echo esc_html( implode( ' · ', $geo ) ); ?> мм</span><span class="pp-chk">✓</span></div>
-            <?php endif; ?>
+            <?php foreach ( $flange_geo as $lbl => $val ) : if ( $val === '' ) continue; ?>
+              <div class="pp-row" data-field="geo"><span class="pp-k"><?php echo esc_html( $lbl ); ?></span><span class="pp-v"><?php echo esc_html( $val ); ?></span><span class="pp-chk">✓</span></div>
+            <?php endforeach; ?>
             <?php if ( $stud_count !== '' || $bolt_d !== '' ) : ?>
               <div class="pp-row" data-field="bolts"><span class="pp-k">Крепёж</span><span class="pp-v"><?php
                 $bolt_lbl = trim(
@@ -322,7 +350,23 @@ while ( have_posts() ) :
             <?php endif; ?>
           <?php endif; ?>
           <?php if ( $steels ) : ?>
-            <div class="pp-row" data-field="material"><span class="pp-k">Материал</span><span class="pp-v" id="ppMat"><?php echo esc_html( reset( $steels ) ); ?> · серт. 3.1</span><span class="pp-chk">✓</span></div>
+            <div class="pp-row" data-field="material">
+              <span class="pp-k">Материал</span>
+              <span class="pp-v pp-mat-wrap" id="ppMat">
+                <span class="pp-mat-list" id="ppMatList" role="list">
+                  <?php
+                  $first_steel = true;
+                  foreach ( $steels as $st_slug => $st_name ) :
+                    ?>
+                    <button type="button" class="pp-steel<?php echo $first_steel ? ' is-active' : ' is-alt'; ?>" role="listitem" data-steel="<?php echo esc_attr( $st_slug ); ?>"<?php echo $first_steel ? ' aria-current="true"' : ''; ?>><?php echo esc_html( $st_name ); ?></button><?php
+                    $first_steel = false;
+                  endforeach;
+                  ?>
+                </span>
+                <span class="pp-mat-cert"> · серт. 3.1</span>
+              </span>
+              <span class="pp-chk">✓</span>
+            </div>
           <?php endif; ?>
           <?php if ( $mass_ok ) : ?>
             <div class="pp-row" data-field="mass"><span class="pp-k">Масса<?php echo $cat_group === 'pipe' ? ', кг/м' : ', кг'; ?></span><span class="pp-v" id="ppMass"><?php echo esc_html( $mass ); ?></span><span class="pp-chk">≈</span></div>

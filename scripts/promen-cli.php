@@ -169,6 +169,23 @@ class Promen_Import_Command {
 			}
 			WP_CLI::runcommand( 'term recount product_cat norm pa_steel pa_supervised pa_dn pa_pn pa_angle', [ 'launch' => false, 'exit_error' => false ] );
 			WP_CLI::runcommand( 'cache flush', [ 'launch' => false, 'exit_error' => false ] );
+			if ( function_exists( 'promen_flush_series_cache' ) ) {
+				$flushed = promen_flush_series_cache();
+				WP_CLI::log( "Сброс кэша серий конфигуратора: {$flushed}." );
+			}
+			if ( function_exists( 'promen_catalog_rebuild' ) ) {
+				WP_CLI::log( 'Пересборка канона каталога…' );
+				$n = promen_catalog_rebuild();
+				WP_CLI::log( "Канон: {$n} строк." );
+			}
+			if ( class_exists( 'Promen_Meili_Engine' ) ) {
+				$meili = new Promen_Meili_Engine();
+				if ( $meili->health() ) {
+					WP_CLI::log( 'Индексация Meilisearch…' );
+					$indexed = $meili->reindex_all();
+					WP_CLI::log( "Meilisearch: {$indexed} документов." );
+				}
+			}
 		}
 
 		$r = $this->report;
@@ -214,7 +231,7 @@ class Promen_Import_Command {
 		}
 
 		$nk = trim( (string) ( $row['normative_key'] ?? '' ) );
-		if ( $nk === '' || strcasecmp( $nk, 'k' ) === 0 ) {
+		if ( $nk === '' || $this->is_junk_normative_key( $nk ) ) {
 			$resolved = $this->resolve_normative_key( $row );
 			if ( $resolved !== '' ) {
 				$row['normative_key'] = $resolved;
@@ -318,6 +335,9 @@ class Promen_Import_Command {
 		if ( $variable ) {
 			$this->parent_ids[ $row['sku'] ] = $id;
 		}
+		if ( function_exists( 'promen_catalog_upsert' ) ) {
+			promen_catalog_upsert( (int) $id );
+		}
 		$this->report[ $existing_id ? 'updated' : 'created' ]++;
 	}
 
@@ -350,6 +370,9 @@ class Promen_Import_Command {
 		$variation->set_attributes( $attrs );
 
 		$variation->save();
+		if ( function_exists( 'promen_catalog_upsert' ) ) {
+			promen_catalog_upsert( (int) $parent_id );
+		}
 		$this->report['variations']++;
 	}
 
@@ -379,7 +402,8 @@ class Promen_Import_Command {
 		};
 
 		if ( $variable ) {
-			$add( 'steel', explode( '|', $row['attr_steel'] ), true );
+			// Опции стали на родителе синхронизируются из вариаций (promen_sync_variable_parent_steels).
+			$add( 'steel', [], true );
 			$add( 'supervised', explode( '|', $row['attr_supervised'] ), true );
 		} else {
 			// У simple-товаров сталь и надзор — обычные (невариационные) атрибуты.
@@ -496,7 +520,8 @@ class Promen_Import_Command {
 	}
 
 	private function norm_term( string $norm_key ): array {
-		if ( $norm_key === '' ) {
+		$norm_key = trim( $norm_key );
+		if ( $norm_key === '' || $this->is_junk_normative_key( $norm_key ) ) {
 			return [];
 		}
 		if ( ! isset( $this->norm_cache[ $norm_key ] ) ) {
@@ -513,6 +538,18 @@ class Promen_Import_Command {
 			}
 		}
 		return [ $this->norm_cache[ $norm_key ] ];
+	}
+
+	/** Мусор вроде «k» / одиночной буквы — не термин норматива. */
+	private function is_junk_normative_key( string $key ): bool {
+		$key = trim( $key );
+		if ( $key === '' ) {
+			return true;
+		}
+		if ( preg_match( '/^[A-Za-zА-Яа-яЁё]$/u', $key ) ) {
+			return true;
+		}
+		return strcasecmp( $key, 'k' ) === 0;
 	}
 
 	// ── Атрибуты ─────────────────────────────────────────────────
@@ -674,6 +711,133 @@ class Promen_Import_Command {
 	}
 }
 
+class Promen_Catalog_Command {
+
+	public function catalog_rebuild( array $args, array $assoc ): void {
+		if ( ! function_exists( 'promen_catalog_rebuild' ) ) {
+			WP_CLI::error( 'Канон каталога не загружен (тема promen).' );
+		}
+		promen_catalog_maybe_install();
+		promen_catalog_maybe_install();
+		if ( function_exists( 'promen_ensure_industry_terms' ) ) {
+			promen_ensure_industry_terms();
+		}
+		$n = promen_catalog_rebuild( function ( int $done, int $total ) {
+			if ( $done % 500 === 0 || $done === $total ) {
+				WP_CLI::log( "… {$done}/{$total}" );
+			}
+		} );
+		WP_CLI::success( "Канон пересобран: {$n} строк." );
+	}
+
+	/** Привязать отрасли (promen_industry) ко всем товарам и обновить канон. */
+	public function industry_sync( array $args, array $assoc ): void {
+		if ( ! function_exists( 'promen_sync_product_industries' ) ) {
+			WP_CLI::error( 'Функции отраслей не загружены (тема promen).' );
+		}
+		promen_catalog_maybe_install();
+		promen_ensure_industry_terms();
+		$ids = get_posts( [
+			'post_type'      => 'product',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+		] );
+		$n = 0;
+		foreach ( $ids as $pid ) {
+			promen_sync_product_industries( (int) $pid );
+			if ( function_exists( 'promen_catalog_upsert' ) ) {
+				promen_catalog_upsert( (int) $pid );
+			}
+			$n++;
+			if ( $n % 500 === 0 ) {
+				WP_CLI::log( "… {$n}/" . count( $ids ) );
+			}
+		}
+		WP_CLI::success( "Отрасли синхронизированы для {$n} товаров." );
+	}
+
+	public function catalog_verify( array $args, array $assoc ): void {
+		$category = $assoc['category'] ?? 'troyniki';
+		if ( ! function_exists( 'promen_catalog_steel_counts' ) ) {
+			WP_CLI::error( 'Канон каталога не загружен.' );
+		}
+
+		$published = (int) wp_count_posts( 'product' )->publish;
+		$canon     = promen_catalog_count();
+		WP_CLI::log( "Опубликовано товаров: {$published}, строк канона: {$canon}" );
+
+		$listed = [];
+		$term   = get_term_by( 'slug', $category, 'product_cat' );
+		if ( ! $term ) {
+			WP_CLI::warning( "Категория не найдена: {$category}" );
+		} else {
+			$args_q = [
+				'post_type'      => 'product',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'tax_query'      => [
+					[
+						'taxonomy'         => 'product_cat',
+						'field'            => 'term_id',
+						'terms'            => [ $term->term_id ],
+						'include_children' => true,
+					],
+				],
+			];
+			foreach ( get_posts( $args_q ) as $pid ) {
+				foreach ( promen_product_steel_slugs( (int) $pid ) as $slug ) {
+					$listed[ $slug ] = true;
+				}
+			}
+		}
+
+		$filter_counts = promen_catalog_steel_counts( $category );
+		$orphan        = array_diff( array_keys( $filter_counts ), array_keys( $listed ) );
+		if ( $orphan ) {
+			WP_CLI::warning( 'Orphan steel в каноне: ' . implode( ', ', $orphan ) );
+		} else {
+			WP_CLI::log( 'Orphan steel: нет.' );
+		}
+
+		$reconcile = promen_catalog_search_reconcile();
+		WP_CLI::log( 'Reconcile: canon=' . $reconcile['canon'] . ' indexed=' . $reconcile['indexed'] . ' drift=' . $reconcile['drift'] );
+
+		if ( $orphan || ! $reconcile['ok'] ) {
+			WP_CLI::error( 'catalog-verify FAILED' );
+		}
+		WP_CLI::success( 'catalog-verify OK' );
+	}
+
+	public function search_reindex( array $args, array $assoc ): void {
+		$meili = new Promen_Meili_Engine();
+		if ( ! $meili->health() ) {
+			WP_CLI::error( 'Meilisearch недоступен.' );
+		}
+		$n = $meili->reindex_all( function ( int $done, int $total ) {
+			if ( $done % 500 === 0 || $done === $total ) {
+				WP_CLI::log( "… {$done}/{$total}" );
+			}
+		} );
+		WP_CLI::success( "Meilisearch: проиндексировано {$n} документов." );
+	}
+
+	public function search_reconcile( array $args, array $assoc ): void {
+		$r = promen_catalog_search_reconcile();
+		WP_CLI::log( wp_json_encode( $r, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT ) );
+		if ( ! $r['ok'] ) {
+			WP_CLI::error( 'Drift обнаружен.' );
+		}
+		WP_CLI::success( 'Drift = 0' );
+	}
+}
+
 WP_CLI::add_command( 'promen import', [ new Promen_Import_Command(), 'import' ] );
 WP_CLI::add_command( 'promen verify', [ new Promen_Import_Command(), 'verify' ] );
 WP_CLI::add_command( 'promen content', [ new Promen_Import_Command(), 'content' ] );
+WP_CLI::add_command( 'promen catalog-rebuild', [ new Promen_Catalog_Command(), 'catalog_rebuild' ] );
+WP_CLI::add_command( 'promen industry-sync', [ new Promen_Catalog_Command(), 'industry_sync' ] );
+WP_CLI::add_command( 'promen catalog-verify', [ new Promen_Catalog_Command(), 'catalog_verify' ] );
+WP_CLI::add_command( 'promen search-reindex', [ new Promen_Catalog_Command(), 'search_reindex' ] );
+WP_CLI::add_command( 'promen search-reconcile', [ new Promen_Catalog_Command(), 'search_reconcile' ] );

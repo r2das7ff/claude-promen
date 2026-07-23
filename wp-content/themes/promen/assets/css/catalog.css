@@ -80,6 +80,9 @@ body::before{
 
 /* ── BODY LAYOUT ── */
 .cat-body{display:grid;grid-template-columns:268px 1fr;flex:1;}
+.catalog-embed .cat-body,
+.catalog-embed__body{grid-template-columns:1fr;}
+.catalog-embed .cat-main{width:100%;}
 
 /* ── SIDEBAR ── */
 .cat-sb{
@@ -189,6 +192,12 @@ body::before{
   font-family:'DINPro',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);
   gap:0 14px;background:var(--bg);
 }
+.tbl-hd .th-sort{cursor:pointer;display:inline-flex;align-items:center;gap:3px;user-select:none;transition:color .12s;}
+.tbl-hd .th-sort:hover{color:var(--dark);}
+.tbl-hd .th-sort.is-active{color:var(--blue);}
+.tbl-hd .th-sort:focus-visible{outline:1px solid var(--blue);outline-offset:2px;}
+.tbl-hd .th-arr{font-size:9px;opacity:.55;font-style:normal;}
+.tbl-hd .th-sort.is-active .th-arr{opacity:1;}
 /* Тройники / переходы / точеные: DN D s DN2 d s2 */
 .tbl-hd.tbl-hd--branch,
 a.prod-row.prod-row--branch{
@@ -232,8 +241,14 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
 .pr-idx{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.06em;color:var(--g1);display:inline-block;border:1px solid var(--ln2);padding:1px 5px;background:var(--bg2);white-space:nowrap;}
 .pr-name{font-size:13px;font-weight:500;color:var(--dark);letter-spacing:.005em;line-height:1.3;}
 .pr-name small{display:block;font-size:8.5px;font-weight:400;color:var(--g2);letter-spacing:.07em;margin-top:2px;}
-.pr-dn,.pr-dn2,.pr-pn,.pr-size,.pr-dxs,.pr-d,.pr-s,.pr-d2,.pr-s2,.pr-angle,.pr-radius,.pr-height,.pr-mass,.pr-thread,.pr-length,.pr-strength{font-family:'DINProCond',monospace;font-weight:700;font-size:13px;color:var(--dark);letter-spacing:.01em;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.pr-dn,.pr-dn2,.pr-pn,.pr-size,.pr-dxs,.pr-d,.pr-s,.pr-d2,.pr-s2,.pr-angle,.pr-radius,.pr-height,.pr-mass,.pr-thread,.pr-length,.pr-strength,.pr-dbolt,.pr-bolts,.pr-exec{font-family:'DINProCond',monospace;font-weight:700;font-size:13px;color:var(--dark);letter-spacing:.01em;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .pr-size,.pr-dxs,.pr-d,.pr-d2{color:var(--blue);white-space:nowrap;}
+/* Тип фланца — текстовая метка, не число: аккуратный чип. */
+.pr-flange_type{display:inline-flex;align-items:center;width:fit-content;max-width:100%;font-family:'DINPro',sans-serif;font-weight:600;font-size:9px;letter-spacing:.04em;line-height:1;color:var(--g1);background:var(--bg2);border:1px solid var(--ln2);border-radius:2px;padding:3px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prod-row:hover .pr-flange_type{border-color:var(--g1);color:var(--dark);}
+/* Пустой тип — обычный прочерк, без чипа. */
+.pr-flange_type.is-empty{background:none;border:none;padding:0;color:var(--g2);font-family:'DINProCond',monospace;font-size:13px;}
+.prod-row:hover .pr-flange_type.is-empty{border:none;color:var(--g2);}
 .pr-s,.pr-s2{color:var(--dark);white-space:nowrap;}
 .pr-name .pr-size-compact{display:none;}
 .pr-mat{font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.04em;color:var(--blue);line-height:1.5;}
@@ -245,7 +260,9 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
 .pr-norm-more:hover{border-color:var(--g1);color:var(--g1);}
 .pdp-norm-note{margin-top:10px;font-size:10px;font-weight:300;line-height:1.65;color:var(--blue);padding:10px 12px;background:var(--g1b);border-left:2px solid var(--g1);}
 .pr-tags{display:flex;gap:3px;flex-wrap:wrap;align-items:center;}
-.pr-tag{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;padding:2px 5px;border:1px solid var(--ln2);color:var(--g2);white-space:nowrap;}
+.pr-ind{display:flex;align-items:center;min-width:0;}
+.pr-ind .pr-tags{justify-content:flex-start;}
+.pr-tag{font-family:'DINPro',monospace;font-size:7px;letter-spacing:.1em;text-transform:uppercase;padding:2px 5px;border:1px solid var(--ln2);color:var(--g2);white-space:nowrap;line-height:1.3;}
 .pr-tag.hi{border-color:rgba(109,140,166,.5);color:var(--g1);}
 .pr-arr{display:flex;align-items:center;justify-content:center;color:var(--ln2);font-size:14px;transition:color .12s,transform .12s;}
 .prod-row:hover .pr-arr{color:var(--g1);transform:translateX(3px);}
@@ -253,6 +270,8 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
 .cat-empty{padding:80px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;}
 .ce-code{font-family:'DINProCond',monospace;font-weight:900;font-size:80px;color:var(--ln);line-height:1;letter-spacing:-.04em;}
 .ce-msg{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--g2);}
+.ce-all{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.1em;color:var(--blue);border-bottom:1px solid currentColor;padding-bottom:2px;cursor:pointer;}
+.ce-all:hover{color:var(--dark);}
 
 /* ── CTA SECTION ── */
 .cat-cta{
@@ -749,10 +768,12 @@ a.sbn-item{display:grid;}
 .cbf-lbl{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);margin:0 6px 0 14px;}
 .cbf-group:first-child .cbf-lbl{margin-left:0;}
 a.c-chip{display:inline-block;}
-.cat-pagination{padding:22px 40px 60px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;}
-.cat-pagination a,.cat-pagination span.current{display:inline-block;padding:8px 13px;border:1px solid var(--ln2);margin-right:6px;color:var(--blue);transition:all .12s;}
-.cat-pagination a:hover{background:var(--bg2);color:var(--dark);}
+.cat-pagination{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:22px 40px 60px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;}
+.cat-pagination a,.cat-pagination span.current{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:0 12px;border:1px solid var(--ln2);margin:0;color:var(--blue);transition:all .12s;}
+.cat-pagination a:hover{background:var(--bg2);color:var(--dark);border-color:var(--g1);}
 .cat-pagination span.current{background:var(--dark);color:var(--white);border-color:var(--dark);}
+.cat-pagination a.prev,.cat-pagination a.next{font-weight:600;letter-spacing:.04em;}
+.cat-pagination span.dots{display:inline-flex;align-items:flex-end;padding:0 2px;color:var(--g2);border:none;user-select:none;}
 a.ce-reset{display:inline-block;}
 
 /* ── Контент-блок категории под списком ── */
@@ -862,9 +883,16 @@ a.sbn-child:hover::before{background:var(--g1);width:20px;}
 .cbf-multi a.c-chip{display:inline-flex;align-items:center;gap:0;}
 .c-chip-n{font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.02em;color:var(--g1);opacity:.75;margin-left:7px;}
 .cbf-multi a.c-chip.on .c-chip-n{color:var(--g2);opacity:.85;}
-.c-chip--extra{display:none;}
-.c-chip--more{color:var(--g1);border-style:dashed;}
-.c-chip--more:hover{color:var(--dark);border-color:var(--g1);}
+.c-chip--extra{display:none !important;}
+.c-chip--zero{opacity:.45;pointer-events:none;}
+button.c-chip--more{
+  display:inline-flex;align-items:center;
+  color:var(--g1);border-style:dashed;cursor:pointer;
+  background:transparent;font:inherit;letter-spacing:inherit;text-transform:inherit;
+}
+button.c-chip--more:hover{color:var(--dark);border-color:var(--g1);}
+.cbf-multi.is-expanded{flex-wrap:wrap;}
+.cbf-multi.is-expanded .c-chip--extra{display:inline-flex !important;}
 
 /* Сводка активных фильтров */
 .cb-summary{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:10px 40px 0;}
@@ -904,5 +932,8 @@ a.sbn-child:hover::before{background:var(--g1);width:20px;}
   background:var(--g1);color:var(--white);font-family:'DINPro',monospace;font-size:9px;border-radius:9px;
 }
 .cb-toggle[aria-expanded="true"] .cb-toggle-n{background:var(--white);color:var(--dark);}
-.cb-filters{max-height:520px;overflow:hidden;transition:max-height .28s ease,opacity .2s,margin .2s;opacity:1;margin-top:10px;}
-.cb-filters.is-collapsed{max-height:0;opacity:0;margin-top:0;}
+.cb-filters{max-height:520px;overflow-x:hidden;overflow-y:auto;transition:max-height .28s ease,opacity .2s,margin .2s;opacity:1;margin-top:10px;}
+.cb-filters.is-collapsed{max-height:0;overflow:hidden;opacity:0;margin-top:0;}
+@media(max-width:900px){
+  .cbf-multi.is-expanded{flex-wrap:wrap;overflow-x:visible;}
+}

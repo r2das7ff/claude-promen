@@ -62,6 +62,33 @@
     return null;
   }
 
+  function renderSteelList() {
+    var list = document.getElementById('ppMatList');
+    if (!list) return;
+    var steels = data.steels || {};
+    var slugs = Object.keys(steels);
+    if (!slugs.length) return;
+    // Активная первая, остальные — ссылки.
+    var ordered = slugs.slice();
+    if (state.steel && ordered.indexOf(state.steel) >= 0) {
+      ordered = [state.steel].concat(ordered.filter(function (s) { return s !== state.steel; }));
+    }
+    list.innerHTML = ordered.map(function (slug) {
+      var active = slug === state.steel;
+      return '<button type="button" class="pp-steel' + (active ? ' is-active' : ' is-alt') + '"' +
+        ' data-steel="' + slug.replace(/"/g, '') + '"' +
+        (active ? ' aria-current="true"' : '') + '>' +
+        (steels[slug] || slug) + '</button>';
+    }).join('');
+  }
+
+  function setSteel(slug) {
+    if (!slug || !(data.steels || {})[slug]) return;
+    state.steel = slug;
+    if (matSel) matSel.value = slug;
+    render();
+  }
+
   function syncForm() {
     var steelName = (data.steels || {})[state.steel] || '';
     var variation = currentVariation();
@@ -84,7 +111,6 @@
     var steelName = (data.steels || {})[state.steel] || '';
     var supName = (data.sups || {})[state.sup] || '';
     var heroMat = document.getElementById('heroMat');
-    var ppMat = document.getElementById('ppMat');
     var ppSup = document.getElementById('ppSup');
     var cfgLine = document.getElementById('cfgLine');
     var cfgSku = document.getElementById('cfgSku');
@@ -93,7 +119,7 @@
     var qcMark = document.getElementById('qcMark');
 
     if (steelName && heroMat) heroMat.textContent = steelName;
-    if (steelName && ppMat) ppMat.textContent = steelName + ' · серт. 3.1';
+    renderSteelList();
     if (supName && ppSup) ppSup.textContent = supName;
     if (steelName && qcMat) qcMat.textContent = steelName + ' · серт. 3.1';
     if (steelName && qcMark) qcMark.textContent = 'ПЭ · ' + steelName + ' · плавка по поставке';
@@ -145,10 +171,20 @@
     }
     state.steel = matSel.value || null;
     matSel.addEventListener('change', function () {
-      state.steel = matSel.value;
-      render();
+      setSteel(matSel.value);
     });
+  } else if (data.steels) {
+    var urlSteelOnly = param('steel');
+    var steelKeys = Object.keys(data.steels);
+    state.steel = (urlSteelOnly && data.steels[urlSteelOnly]) ? urlSteelOnly : (steelKeys[0] || null);
   }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('#ppMatList .pp-steel');
+    if (!btn || btn.classList.contains('is-active')) return;
+    e.preventDefault();
+    setSteel(btn.getAttribute('data-steel'));
+  });
 
   if (supGrid) {
     var urlSup = param('nadzor');

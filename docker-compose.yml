@@ -14,12 +14,25 @@ services:
       interval: 5s
       retries: 10
 
+  meilisearch:
+    image: getmeili/meilisearch:v1.11
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: promen_dev_key
+      MEILI_ENV: development
+    ports:
+      - "7700:7700"
+    volumes:
+      - ./.docker/meili:/meili_data
+
   wordpress:
     image: wordpress:php8.3-apache
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
+      meilisearch:
+        condition: service_started
     ports:
       - "8080:80"
     environment:
@@ -27,6 +40,8 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: wp
       WORDPRESS_DB_PASSWORD: wp
+      PROMEN_MEILI_URL: http://meilisearch:7700
+      PROMEN_MEILI_KEY: promen_dev_key
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_MEMORY_LIMIT', '512M');
         define('WP_ENVIRONMENT_TYPE', 'local');
@@ -43,12 +58,16 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      meilisearch:
+        condition: service_started
     user: "33:33"
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: wp
       WORDPRESS_DB_PASSWORD: wp
+      PROMEN_MEILI_URL: http://meilisearch:7700
+      PROMEN_MEILI_KEY: promen_dev_key
     volumes:
       - ./.docker/wp:/var/www/html
       - ./wp-content/themes/promen:/var/www/html/wp-content/themes/promen

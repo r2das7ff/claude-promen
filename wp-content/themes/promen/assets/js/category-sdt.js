@@ -84,4 +84,14 @@
       if (count) count.textContent = n + ' серий';
     });
   });
+
+  // Нормативная база: показать скрытые карточки (>6).
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-norm-more]');
+    if (!btn) return;
+    var wrap = btn.closest('.norm-group');
+    var grid = wrap ? wrap.querySelector('[data-norm-grid]') : null;
+    if (grid) grid.classList.add('is-expanded');
+    btn.remove();
+  });
 })();

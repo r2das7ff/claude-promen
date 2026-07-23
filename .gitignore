@@ -1,10 +1,13 @@
+# Локальные дампы БД
+.backups/
+*.sql.gz
+
+# Docker volumes
 .docker/
-.DS_Store
-.claude/
+
+# Composer (регенерируется composer install)
 vendor/
-composer.lock
-.env
-.env.*
-!.env.example
-node_modules/
-*.log
+
+# OS
+.DS_Store
+**/.DS_Store

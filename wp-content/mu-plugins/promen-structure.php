@@ -19,6 +19,22 @@ add_action( 'init', function () {
 		'show_in_rest'      => true,
 		'rewrite'           => [ 'slug' => 'normativy', 'with_front' => false ],
 	] );
+
+	register_taxonomy( 'promen_industry', 'product', [
+		'labels'            => [
+			'name'          => 'Отрасли',
+			'singular_name' => 'Отрасль',
+		],
+		'public'            => false,
+		'hierarchical'      => false,
+		'show_ui'           => false,
+		'show_admin_column' => false,
+		'show_in_rest'      => false,
+	] );
+
+	if ( function_exists( 'promen_ensure_industry_terms' ) ) {
+		promen_ensure_industry_terms();
+	}
 } );
 
 /**

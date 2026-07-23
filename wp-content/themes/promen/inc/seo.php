@@ -73,3 +73,32 @@ add_filter( 'wp_sitemaps_posts_entry', function ( $entry, $post ) {
 	}
 	return $entry;
 }, 10, 2 );
+
+/**
+ * 301 со схлопнутых при дедупе позиций на выжившего.
+ * Карта promen_dedup_redirects: старый post_name → ID выжившего.
+ */
+add_action( 'template_redirect', function (): void {
+	if ( ! is_404() ) {
+		return;
+	}
+	$map = get_option( 'promen_dedup_redirects', [] );
+	if ( ! is_array( $map ) || ! $map ) {
+		return;
+	}
+	$path = (string) parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH );
+	$path = trim( $path, '/' );
+	if ( $path === '' ) {
+		return;
+	}
+	$seg = ( $pos = strrpos( $path, '/' ) ) !== false ? substr( $path, $pos + 1 ) : $path;
+	$seg = sanitize_title( rawurldecode( $seg ) );
+	if ( $seg === '' || empty( $map[ $seg ] ) ) {
+		return;
+	}
+	$url = get_permalink( (int) $map[ $seg ] );
+	if ( $url ) {
+		wp_safe_redirect( $url, 301 );
+		exit;
+	}
+}, 1 );

@@ -1,11 +1,29 @@
 /**
- * AJAX-фильтры каталога.
- * Чипсы, пагинация, поиск и сайдбар-группы (?group=) — без перезагрузки.
- * URL через pushState; «назад» работает.
+ * Каталог: фильтры и пагинация через JSON API (/wp-json/promen/v1/catalog).
  */
 (function () {
+  function expandMoreChips(more) {
+    var box = more.closest('.cbf-multi');
+    if (!box) return;
+    box.classList.add('is-expanded');
+    box.querySelectorAll('.c-chip--extra').forEach(function (c) {
+      c.classList.remove('c-chip--extra');
+    });
+    more.remove();
+  }
+
+  // capture: перехватываем до AJAX-обработчика ссылок (.c-chip)
+  document.addEventListener('click', function (e) {
+    var more = e.target.closest('.c-chip--more');
+    if (!more) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    expandMoreChips(more);
+  }, true);
+
+  var cfg = window.promenCatalog || {};
   var list = document.getElementById('productList');
-  if (!list) return;
+  if (!list || !cfg.apiUrl) return;
 
   var count = document.getElementById('pCount');
   var pagination = document.querySelector('.cat-pagination');
@@ -13,91 +31,452 @@
   var mainTitle = document.getElementById('mainTitle');
   var pathCatLink = document.getElementById('pathCatLink');
   var catNav = document.getElementById('catNav');
+  var searchForm = document.querySelector('.cb-search');
+  var tblHd = document.getElementById('tblHd');
 
-  function replaceNode(id) {
-    var cur = document.getElementById(id);
-    var next = window._promenDoc && window._promenDoc.getElementById(id);
-    if (cur && next) cur.replaceWith(next);
+  function esc(s) {
+    if (s == null) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
-  function swap(url, push) {
+  function groupFromHref(href) {
+    var u = new URL(href, location.origin);
+    var g = u.searchParams.get('group');
+    if (g) return g;
+    var views = cfg.views || {};
+    var path = u.pathname.replace(/\/$/, '');
+    var slug;
+    for (slug in views) {
+      if (!slug || !views[slug] || !views[slug].termUrl) continue;
+      try {
+        var tp = new URL(views[slug].termUrl, location.origin).pathname.replace(/\/$/, '');
+        if (tp === path) return slug;
+      } catch (e) { /* ignore bad termUrl */ }
+    }
+    return '';
+  }
+
+  function parsePageUrl(url) {
+    var u = new URL(url, location.origin);
+    var p = { group: groupFromHref(u.toString()) || cfg.group || '', page: 1 };
+    u.searchParams.forEach(function (v, k) {
+      if (k === 'group') return; // группа из ЧПУ / ?group=
+      if (k === 'paged') p.page = parseInt(v, 10) || 1;
+      else if (k === 'page') p.page = parseInt(v, 10) || 1;
+      else p[k] = v;
+    });
+    return { url: u, params: p };
+  }
+
+  function buildApiQuery(params) {
+    var q = new URLSearchParams();
+    if (params.group) q.set('group', params.group);
+    if (params.q) q.set('q', params.q);
+    if (params.page && params.page > 1) q.set('page', String(params.page));
+    q.set('per_page', String(cfg.perPage || 30));
+    ['dn', 'pn'].forEach(function (p) {
+      if (params[p + '_min']) q.set(p + '_min', params[p + '_min']);
+      if (params[p + '_max']) q.set(p + '_max', params[p + '_max']);
+    });
+    ['steel', 'industry', 'angle', 'gost'].forEach(function (p) {
+      if (params[p]) q.set(p, params[p]);
+    });
+    if (params.sort) q.set('sort', params.sort);
+    if (params.scope === 'all') q.set('scope', 'all');
+    return q.toString();
+  }
+
+  function gridTpl(columns) {
+    var widths = (columns || []).map(function (c) { return c.w; }).join(' ');
+    return '150px minmax(200px,1fr) ' + widths + ' 120px 96px 32px';
+  }
+
+  var SORT_FIELDS = { dn: 'dn', mass: 'mass', massm: 'mass', pn: 'pn' };
+  function currentSort() {
+    var s = (new URL(location.href)).searchParams.get('sort') || '';
+    var p = s.split(':');
+    return { field: p[0] || '', dir: p[1] === 'desc' ? 'desc' : 'asc' };
+  }
+
+  var industryTagLabels = (cfg.industryTags) || { aes: 'АЭС', tes: 'ТЭС', gkh: 'ЖКХ', ngk: 'НГК' };
+
+  function industryTagsHtml(slugs) {
+    slugs = (slugs || []).slice(0, 3);
+    if (!slugs.length) return '—';
+    var tags = slugs.map(function (s) {
+      var lbl = industryTagLabels[s] || s.toUpperCase();
+      return '<span class="pr-tag' + (s === 'aes' ? ' hi' : '') + '">' + esc(lbl) + '</span>';
+    }).join('');
+    return '<span class="pr-tags">' + tags + '</span>';
+  }
+
+  function renderRow(hit, columns, tpl, i) {
+    var cells = (columns || []).map(function (col) {
+      var val = (hit.cells && hit.cells[col.key]) ? hit.cells[col.key] : '—';
+      return '<span class="pr-' + esc(col.key) + '">' + esc(val) + '</span>';
+    }).join('');
+    var delay = Math.min(i * 0.025, 0.35);
+  return '<a class="prod-row" href="' + esc(hit.url) + '" style="grid-template-columns:' + esc(tpl) + ';animation-delay:' + delay + 's"' +
+      ' data-sku="' + esc(hit.sku) + '" data-title="' + esc(hit.title) + '"' +
+      ' data-norm="' + esc(hit.norm) + '" data-steel="' + esc(hit.steel_display) + '"' +
+      ' data-industry="' + esc(hit.industry_display) + '">' +
+      '<span class="pr-norm"><span class="pr-norm-code">' + esc(hit.norm || '—') + '</span></span>' +
+      '<span class="pr-name">' + esc(hit.title) + (hit.family ? '<small>' + esc(hit.family) + '</small>' : '') + '</span>' +
+      cells +
+      '<span class="pr-mat">' + esc(hit.steel_display || '—') + '</span>' +
+      '<span class="pr-ind">' + industryTagsHtml(hit.industries) + '</span>' +
+      '<span class="pr-arr">›</span></a>';
+  }
+
+  function renderList(data) {
+    var cols = data.columns || [];
+    var tpl = gridTpl(cols);
+    if (tblHd) {
+      tblHd.style.gridTemplateColumns = tpl;
+      var cs = currentSort();
+      var hdr = '<span>Норматив</span><span>Наименование</span>';
+      cols.forEach(function (c) {
+        var sf = SORT_FIELDS[c.key];
+        if (!sf) { hdr += '<span>' + esc(c.label) + '</span>'; return; }
+        var active = sf === cs.field;
+        var arr = active ? (cs.dir === 'desc' ? '↓' : '↑') : '⇅';
+        hdr += '<span class="th-sort' + (active ? ' is-active' : '') + '" role="button" tabindex="0" data-sort-field="' + esc(sf) + '" title="Сортировать">' +
+          esc(c.label) + '<i class="th-arr">' + arr + '</i></span>';
+      });
+      hdr += '<span>Материал</span><span>Отрасль</span><span></span>';
+      tblHd.innerHTML = hdr;
+    }
+    if (!data.hits || !data.hits.length) {
+      var u = new URL(location.href);
+      var qv = u.searchParams.get('q') || '';
+      var grp = u.searchParams.get('group') || '';
+      var allLink = '';
+      if (qv && (grp || u.searchParams.get('scope') !== 'all')) {
+        var au = new URL(location.pathname, location.origin);
+        au.searchParams.set('q', qv);
+        au.searchParams.set('scope', 'all');
+        allLink = '<a class="ce-all" href="' + esc(au.toString()) + '">Искать «' + esc(qv) + '» во всём каталоге →</a>';
+      }
+      list.innerHTML = '<div class="cat-empty"><div class="ce-code">—</div>' +
+        '<div class="ce-msg">Нет позиций по заданным параметрам</div>' + allLink +
+        '<a class="ce-reset" href="' + esc(location.pathname) + '">Сбросить фильтры</a></div>';
+      return;
+    }
+    list.innerHTML = data.hits.map(function (h, i) { return renderRow(h, cols, tpl, i); }).join('');
+  }
+
+  function chipHref(param, slug, pageUrl) {
+    var u = new URL(pageUrl);
+    var cur = (u.searchParams.get(param) || '').split(',').filter(Boolean);
+    var i = cur.indexOf(slug);
+    if (i >= 0) cur.splice(i, 1); else cur.push(slug);
+    if (cur.length) u.searchParams.set(param, cur.join(',')); else u.searchParams.delete(param);
+    u.searchParams.delete('paged');
+    u.searchParams.delete('page');
+    return u.toString();
+  }
+
+  function renderFilters(data, pageUrl) {
+    var filtersEl = document.getElementById('cbFilters');
+    if (!filtersEl) return;
+    var facets = data.facets || {};
+    var facetParams = data.facet_params || Object.keys(facets);
+    var rangeOptions = data.range_options || {};
+    var labels = cfg.labels || {};
+    var html = '';
+
+    (data.ranges || []).forEach(function (param) {
+      var opts = rangeOptions[param] || [];
+      if (!opts.length) return;
+      var lbl = (cfg.rangeLbl && cfg.rangeLbl[param]) || param;
+      var u = new URL(pageUrl);
+      var min = u.searchParams.get(param + '_min') || '';
+      var max = u.searchParams.get(param + '_max') || '';
+      html += '<div class="cbf-range" data-param="' + esc(param) + '">';
+      html += '<span class="cbf-lbl">' + esc(lbl) + '</span>';
+      html += '<select class="cbf-sel" data-bound="min"><option value="">от</option>';
+      opts.forEach(function (o) {
+        var val = String(o.val != null ? o.val : o.name);
+        html += '<option value="' + esc(val) + '"' + (min === val ? ' selected' : '') + '>' + esc(o.name) + '</option>';
+      });
+      html += '</select><span class="cbf-dash">–</span>';
+      html += '<select class="cbf-sel" data-bound="max"><option value="">до</option>';
+      opts.forEach(function (o) {
+        var val = String(o.val != null ? o.val : o.name);
+        html += '<option value="' + esc(val) + '"' + (max === val ? ' selected' : '') + '>' + esc(o.name) + '</option>';
+      });
+      html += '</select></div>';
+    });
+
+    facetParams.forEach(function (param) {
+      if (param === 'pn') return;
+      var opts = facets[param] || [];
+      if (param === 'industry' && cfg.industryTags) {
+        var counts = {};
+        opts.forEach(function (o) { counts[o.slug] = o.count; });
+        opts = Object.keys(cfg.industryTags).map(function (slug) {
+          return { slug: slug, name: cfg.industryTags[slug], count: counts[slug] || 0 };
+        });
+      }
+      if (!opts.length) return;
+      var u = new URL(pageUrl);
+      var sel = (u.searchParams.get(param) || '').split(',').filter(Boolean);
+      var vis = 6;
+      html += '<div class="cbf-multi" data-param="' + esc(param) + '">';
+      html += '<span class="cbf-lbl">' + esc(labels[param] || param) + '</span>';
+      opts.forEach(function (o, i) {
+        var on = sel.indexOf(o.slug) >= 0;
+        var empty = o.count === 0;
+        html += '<a class="c-chip' + (on ? ' on' : '') + (empty ? ' c-chip--zero' : '') + (i >= vis ? ' c-chip--extra' : '') + '" href="' + esc(chipHref(param, o.slug, pageUrl)) + '">' +
+          esc(o.name) + '<span class="c-chip-n">' + o.count + '</span></a>';
+      });
+      if (opts.length > vis) {
+        html += '<button type="button" class="c-chip c-chip--more">+ ещё ' + (opts.length - vis) + '</button>';
+      }
+      html += '</div>';
+    });
+
+    filtersEl.innerHTML = html;
+    if (data.group) filtersEl.dataset.group = data.group;
+  }
+
+  function renderPagination(data, pageUrl) {
+    if (!pagination) return;
+    var pages = data.pages || 0;
+    if (pages <= 1) { pagination.innerHTML = ''; return; }
+    var u = new URL(pageUrl);
+    var cur = data.page || 1;
+    function link(p, label, cls) {
+      u.searchParams.set('paged', String(p));
+      return '<a class="' + cls + '" href="' + esc(u.toString()) + '">' + label + '</a> ';
+    }
+    var html = '';
+    if (cur > 1) html += link(cur - 1, '← Назад', 'prev page-numbers');
+
+    // Компактное окно: 1, последняя и ±2 вокруг текущей; разрывы — многоточие.
+    var win = 2, set = {};
+    set[1] = 1; set[pages] = 1;
+    for (var i = cur - win; i <= cur + win; i++) { if (i >= 1 && i <= pages) set[i] = 1; }
+    var list = Object.keys(set).map(Number).sort(function (a, b) { return a - b; });
+    var prev = 0;
+    for (var j = 0; j < list.length; j++) {
+      var p = list[j];
+      if (p - prev > 1) html += '<span class="page-numbers dots">…</span> ';
+      if (p === cur) html += '<span class="page-numbers current">' + p + '</span> ';
+      else html += link(p, String(p), 'page-numbers');
+      prev = p;
+    }
+    if (cur < pages) html += link(cur + 1, 'Вперёд →', 'next page-numbers');
+    pagination.innerHTML = html.trim();
+  }
+
+  function updateCount(total) {
+    if (!count) return;
+    count.textContent = Number(total).toLocaleString('ru-RU') + ' позиций';
+    count.classList.remove('pop');
+    void count.offsetWidth;
+    count.classList.add('pop');
+  }
+
+  var sidebarParentActive = {
+    sbnSdt: ['', 'sdt'],
+    sbnFlancy: ['flancy'],
+    sbnKrepezh: ['krepezh'],
+    sbnTruby: ['truby'],
+    sbnOpory: ['opory'],
+    sbnArmatura: ['armatura']
+  };
+
+  var sidebarOpenGroups = {
+    sbnFlancy: ['flancy', 'flancy-plosk', 'flancy-vorot', 'flancy-01', 'flancy-11'],
+    sbnKrepezh: ['krepezh', 'bolty', 'gayki', 'shpilki', 'shayby', 'vinty'],
+    sbnTruby: ['truby', 'truby-bsh', 'truby-es', 'truby-ppu', 'truby-vgp'],
+    sbnOpory: ['opory', 'opory-nepodv', 'opory-skolz', 'opory-pruzh'],
+    sbnArmatura: ['armatura', 'armatura-zadvizhki', 'armatura-klapany', 'armatura-krany']
+  };
+
+  function updateSidebar(group) {
+    group = group || '';
+    if (!catNav) return;
+
+    catNav.querySelectorAll('.active').forEach(function (el) { el.classList.remove('active'); });
+
+    catNav.querySelectorAll('a.sbn-filter').forEach(function (a) {
+      if (groupFromHref(a.href) !== group) return;
+      if (a.classList.contains('sbn-child')) {
+        a.classList.add('active');
+      } else if (a.classList.contains('sbn-parent-link')) {
+        var item = a.closest('.sbn-item');
+        if (item) item.classList.add('active');
+      } else {
+        a.classList.add('active');
+      }
+    });
+
+    Object.keys(sidebarParentActive).forEach(function (id) {
+      var box = document.getElementById(id);
+      if (!box) return;
+      if (sidebarParentActive[id].indexOf(group) >= 0) {
+        var parent = box.querySelector('.sbn-item--parent');
+        if (parent) parent.classList.add('active');
+      }
+    });
+
+    var sdt = document.getElementById('sbnSdt');
+    if (sdt) sdt.classList.add('open');
+
+    Object.keys(sidebarOpenGroups).forEach(function (id) {
+      var box = document.getElementById(id);
+      if (!box) return;
+      var open = sidebarOpenGroups[id].indexOf(group) >= 0;
+      box.classList.toggle('open', open);
+      var btn = box.querySelector('.sbn-toggle');
+      if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    var views = cfg.views || {};
+    var view = views[group] || views[''] || {};
+    if (pathSub && view.path) pathSub.textContent = view.path;
+    if (mainTitle && view.title) mainTitle.textContent = view.title;
+
+    if (!pathCatLink) {
+      var titleRow = document.querySelector('.mh-title-row');
+      if (titleRow) {
+        pathCatLink = document.createElement('a');
+        pathCatLink.id = 'pathCatLink';
+        pathCatLink.className = 'mh-cat-link';
+        pathCatLink.innerHTML = 'Страница категории<span class="gr-go-arr" aria-hidden="true">→</span>';
+        titleRow.appendChild(pathCatLink);
+      }
+    }
+    if (pathCatLink) {
+      var onCatPage = false;
+      if (view.termUrl) {
+        try {
+          onCatPage = new URL(view.termUrl, location.origin).pathname.replace(/\/$/, '') === location.pathname.replace(/\/$/, '');
+        } catch (e) { onCatPage = false; }
+      }
+      if (view.termUrl && !onCatPage) {
+        pathCatLink.href = view.termUrl;
+        pathCatLink.title = view.termName
+          ? ('Открыть страницу категории «' + view.termName + '»')
+          : 'Открыть страницу категории';
+        pathCatLink.removeAttribute('hidden');
+        pathCatLink.style.display = '';
+      } else {
+        pathCatLink.href = '#';
+        pathCatLink.title = '';
+        pathCatLink.setAttribute('hidden', '');
+        pathCatLink.style.display = 'none';
+      }
+    }
+  }
+
+  function scrollToCatalog() {
+    var target = document.getElementById('registry') || document.querySelector('.catalog-embed');
+    if (!target) return;
+    target.classList.add('is-flash');
+    setTimeout(function () { target.classList.remove('is-flash'); }, 900);
+    // Скролл-контейнер — body (html/body height:100%), не window.
+    // scrollIntoView сам находит нужный контейнер; абсолютные координаты не нужны.
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    } catch (err) {
+      target.scrollIntoView(true);
+    }
+  }
+
+  function markSeriesActive(gost) {
+    document.querySelectorAll('#regList a.reg-r').forEach(function (r) {
+      var on = false;
+      try {
+        on = !!gost && new URL(r.href, location.origin).searchParams.get('gost') === gost;
+      } catch (err) { /* ignore */ }
+      r.classList.toggle('is-active', on);
+      if (on) r.setAttribute('aria-current', 'true');
+      else r.removeAttribute('aria-current');
+    });
+  }
+
+  function swap(url, push, opts) {
+    opts = opts || {};
+    var parsed = parsePageUrl(url);
     list.style.opacity = '.35';
-    fetch(url, { headers: { 'X-Requested-With': 'fetch' } })
-      .then(function (r) { return r.text(); })
-      .then(function (html) {
-        var doc = new DOMParser().parseFromString(html, 'text/html');
-        window._promenDoc = doc;
-        var newList = doc.getElementById('productList');
-        var newCount = doc.getElementById('pCount');
-        var newPag = doc.querySelector('.cat-pagination');
-        var newPath = doc.getElementById('pathSub');
-        var newTitle = doc.getElementById('mainTitle');
-        var newCatLink = doc.getElementById('pathCatLink');
-        var newNav = doc.getElementById('catNav');
-
-        if (newList) list.innerHTML = newList.innerHTML;
-        if (newCount && count) {
-          count.textContent = newCount.textContent;
-          count.classList.remove('pop');
-          void count.offsetWidth;
-          count.classList.add('pop');
-        }
-        // Шапка колонок реестра меняется с группой (DN/PN у фланцев ≠ угол у отводов).
-        replaceNode('tblHd');
-        // Панель фильтров и сводку заменяем целиком (счётчики/опции пересчитаны).
-        replaceNode('cbFilters');
-        replaceNode('cbSummary');
+    fetch(cfg.apiUrl + '?' + buildApiQuery(parsed.params), { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        renderList(data);
+        renderFilters(data, parsed.url.toString());
+        renderPagination(data, parsed.url.toString());
+        updateCount(data.total || 0);
+        updateSidebar(parsed.params.group);
+        markSeriesActive(parsed.params.gost || '');
         if (window._promenBindFilterToggle) window._promenBindFilterToggle();
-        // Обновить счётчик активных фильтров на кнопке-переключателе.
-        var tgl = document.getElementById('cbToggle');
-        if (tgl) {
-          var n = document.querySelectorAll('#cbSummary .cbs-tag').length;
-          var badge = tgl.querySelector('.cb-toggle-n');
-          if (n > 0) {
-            if (!badge) { badge = document.createElement('span'); badge.className = 'cb-toggle-n'; tgl.appendChild(badge); }
-            badge.textContent = n;
-          } else if (badge) { badge.remove(); }
-        }
-        if (newPag && pagination) { pagination.innerHTML = newPag.innerHTML; }
-        if (newPath && pathSub) pathSub.textContent = newPath.textContent;
-        if (newTitle && mainTitle) mainTitle.textContent = newTitle.textContent;
-
-        if (pathCatLink || newCatLink) {
-          var row = document.querySelector('.mh-title-row');
-          if (row) {
-            var existing = document.getElementById('pathCatLink');
-            if (existing) existing.remove();
-            if (newCatLink) row.appendChild(newCatLink.cloneNode(true));
-            pathCatLink = document.getElementById('pathCatLink');
-          }
-        }
-        if (newNav && catNav) catNav.innerHTML = newNav.innerHTML;
-
         list.style.opacity = '';
-        if (push) history.pushState({ promen: true }, '', url);
-        window.scrollTo({ top: document.querySelector('.cmd-bar').offsetTop - 80, behavior: 'smooth' });
+        if (push) history.pushState({ promen: true }, '', parsed.url.toString());
+        if (opts.scroll !== false) scrollToCatalog();
       })
       .catch(function () { location.href = url; });
   }
 
-  // Клики: мультичипсы, пагинация, сводка, сброс, сайдбар-группы.
   document.addEventListener('click', function (e) {
-    // «+ ещё» — раскрыть скрытые чипсы группы.
-    var more = e.target.closest('.c-chip--more');
-    if (more) {
-      e.preventDefault();
-      more.closest('.cbf-multi').querySelectorAll('.c-chip--extra').forEach(function (c) { c.classList.remove('c-chip--extra'); });
-      more.remove();
-      return;
+    if (e.target.closest('.c-chip--more')) return;
+
+    // Серия из «Реестра исполнений» / ссылки «в реестре» → фильтр без перезагрузки.
+    var series = e.target.closest('a.reg-r, a.sg-link');
+    if (series && series.href && list) {
+      var su;
+      try { su = new URL(series.href, location.origin); } catch (err) { su = null; }
+      var gost = su && su.searchParams.get('gost');
+      if (gost) {
+        e.preventDefault();
+        var dest = new URL(location.href);
+        dest.searchParams.set('gost', gost);
+        dest.searchParams.delete('paged');
+        dest.searchParams.delete('page');
+        dest.hash = '';
+        markSeriesActive(gost);
+        swap(dest.toString(), true, { scroll: true });
+        return;
+      }
     }
-    var a = e.target.closest('.c-chip, .cat-pagination a, .ce-reset, a.sbn-filter, .cbs-tag, .cbs-reset');
+
+    var a = e.target.closest('a.c-chip, .cat-pagination a, .ce-reset, .ce-all, a.sbn-filter, .cbs-tag, .cbs-reset');
     if (!a || !a.href) return;
     if (a.classList.contains('mh-cat-link')) return;
     e.preventDefault();
     swap(a.href, true);
   });
 
-  // Сворачивание панели фильтров (состояние переживает AJAX-подмену).
+  // Клик по сортируемой шапке (DN/PN/Масса) — toggle asc/desc.
+  function applySort(field) {
+    var cs = currentSort();
+    var dir = (cs.field === field && cs.dir === 'asc') ? 'desc' : 'asc';
+    var u = new URL(location.href);
+    u.searchParams.set('sort', field + ':' + dir);
+    u.searchParams.delete('paged');
+    u.searchParams.delete('page');
+    swap(u.toString(), true);
+  }
+  document.addEventListener('click', function (e) {
+    var th = e.target.closest('.th-sort[data-sort-field]');
+    if (!th) return;
+    e.preventDefault();
+    applySort(th.getAttribute('data-sort-field'));
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var th = e.target.closest && e.target.closest('.th-sort[data-sort-field]');
+    if (!th) return;
+    e.preventDefault();
+    applySort(th.getAttribute('data-sort-field'));
+  });
+
   function bindFilterToggle() {
     var toggle = document.getElementById('cbToggle');
     var panel = document.getElementById('cbFilters');
@@ -112,7 +491,6 @@
   bindFilterToggle();
   window._promenBindFilterToggle = bindFilterToggle;
 
-  // Диапазоны DN/PN — селекты «от/до».
   document.addEventListener('change', function (e) {
     var sel = e.target.closest('.cbf-range .cbf-sel');
     if (!sel) return;
@@ -120,15 +498,10 @@
     var param = box.dataset.param;
     var min = box.querySelector('[data-bound=min]').value;
     var max = box.querySelector('[data-bound=max]').value;
-    var filtersEl = document.getElementById('cbFilters');
-    var url = new URL(filtersEl.dataset.base, location.origin);
-    // сохраняем прочие активные параметры из текущего URL
-    new URL(location.href).searchParams.forEach(function (v, k) {
-      if (k !== param + '_min' && k !== param + '_max' && k !== 'paged') url.searchParams.set(k, v);
-    });
+    var url = new URL(location.href);
     if (min) url.searchParams.set(param + '_min', min); else url.searchParams.delete(param + '_min');
     if (max) url.searchParams.set(param + '_max', max); else url.searchParams.delete(param + '_max');
-    if (filtersEl.dataset.group) url.searchParams.set('group', filtersEl.dataset.group);
+    url.searchParams.delete('paged');
     swap(url.toString(), true);
   });
 
@@ -144,69 +517,33 @@
   }
 
   window.addEventListener('popstate', function () {
-    swap(location.href, false);
+    swap(location.href, false, { scroll: false });
   });
+
+  markSeriesActive(parsePageUrl(location.href).params.gost || '');
 })();
 
-/* PDP: клик по строке реестра открывает боковой паспорт (как в katalog.html). */
+/* PDP + sidebar + KB — без изменений */
 (function () {
   var pdp = document.getElementById('pdp');
   var overlay = document.getElementById('pdpOverlay');
   if (!pdp || !overlay) return;
-
   var openBtn = document.getElementById('pdpOpen');
-
   function fill(row) {
     var d = row.dataset;
     document.getElementById('pdpCode').textContent = d.sku || '';
     document.getElementById('pdpTitle').textContent = d.title || '';
     document.getElementById('pdpSub').textContent = d.family || '';
-    var params = d.fastener ? [
-      ['Резьба / Ø', d.thread], ['Длина L, мм', d.length],
-      ['Класс прочности', d.strength], ['Класс точности', d.accuracy],
-      ['Тип шайбы', d.washer],
-      ['Масса, кг', d.mass],
-      ['Материал', d.steel], ['Поднадзорность', d.sup]
-    ] : d.flange ? [
-      ['DN, мм', d.dn], ['PN', d.pn], ['Тип', d.ftype],
-      ['Уплотнение', d.seal], ['D нар., мм', d.d], ['b, мм', d.b],
-      ['D1, мм', d.d1], ['n × d болта', (d.n && d.boltd) ? (d.n + '×M' + d.boltd) : (d.n || '')],
-      ['Масса, кг', d.mass],
-      ['Материал', d.steel], ['Поднадзорность', d.sup]
-    ] : [
-      ['DN, мм', d.dn], ['PN, МПа', d.pn],
-      [d.d2 ? 'D1, мм' : 'D нар., мм', d.d],
-      [d.s2 ? 'Стенка s1, мм' : 'Стенка s, мм', d.wall],
-      ['D2, мм', d.d2], ['Стенка s2, мм', d.s2],
-      ['Исп.', d.exec],
-      ['Угол', d.angle ? d.angle + '°' : ''], ['Масса, кг', d.mass],
-      ['Материал', d.steel], ['Поднадзорность', d.sup]
-    ];
-    params = params.filter(function (p) { return p[1]; });
+    var params = [
+      ['Материал', d.steel], ['Отрасль', d.industry], ['Норматив', d.norm]
+    ].filter(function (p) { return p[1]; });
     document.getElementById('pdpParams').innerHTML = params.map(function (p) {
       return '<div class="pdp-prow"><span class="pdp-pk">' + p[0] + '</span><span class="pdp-pv">' + p[1] + '</span></div>';
     }).join('');
-    document.getElementById('pdpNorms').innerHTML = d.norm ? '<span class="pdp-tag">' + d.norm + '</span>' : '';
-    document.getElementById('pdpSectors').innerHTML = ['ТЭС', 'АЭС', 'Нефтехим', 'ЖКХ'].map(function (s) {
-      return '<span class="pdp-sector">' + s + '</span>';
-    }).join('');
-    document.getElementById('pdpMarks').innerHTML = ['Паспорт изделия', 'Сертификат 3.1', 'ВИК', 'УЗК по запросу'].map(function (m) {
-      return '<span class="pdp-mark">' + m + '</span>';
-    }).join('');
     if (openBtn) openBtn.href = row.href;
   }
-
-  function open() {
-    pdp.classList.add('open');
-    overlay.classList.add('show');
-  }
-  function close() {
-    pdp.classList.remove('open');
-    overlay.classList.remove('show');
-  }
-
-  // Клик по строке — обычный переход на страницу товара (single-product).
-  // PDP-препросмотр открывается только по клику на стрелку › в конце строки.
+  function open() { pdp.classList.add('open'); overlay.classList.add('show'); }
+  function close() { pdp.classList.remove('open'); overlay.classList.remove('show'); }
   document.addEventListener('click', function (e) {
     var arrow = e.target.closest('.prod-row .pr-arr');
     if (!arrow) return;
@@ -218,13 +555,11 @@
     fill(row);
     open();
   });
-
   document.getElementById('pdpClose').addEventListener('click', close);
   overlay.addEventListener('click', close);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 })();
 
-/* Сайдбар: сворачивание/разворачивание семейств (делегирование — переживает AJAX). */
 (function () {
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('.sbn-toggle');
@@ -237,7 +572,6 @@
   });
 })();
 
-/* База знаний каталога: вкладки + FAQ-аккордеон (как в katalog.html). */
 (function () {
   var tabs = document.querySelectorAll('.kb-tab');
   var panels = document.querySelectorAll('.kb-panel');
