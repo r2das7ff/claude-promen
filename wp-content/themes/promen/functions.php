@@ -13,6 +13,14 @@ add_action( 'after_setup_theme', function () {
 	add_theme_support( 'woocommerce' );
 } );
 
+/**
+ * Числа по-русски: «4 598», а не «4,598» — WP-локаль en_US форматирует
+ * тысячные запятой во всех живых счётчиках (разделитель — неразрывный пробел).
+ */
+add_filter( 'number_format_i18n', function ( $formatted, $number, $decimals ) {
+	return number_format( (float) $number, (int) $decimals, ',', "\u{00A0}" );
+}, 10, 3 );
+
 require_once __DIR__ . '/inc/product-data.php';
 require_once __DIR__ . '/inc/catalog-terms.php';
 require_once __DIR__ . '/inc/catalog-schema.php';

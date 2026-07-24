@@ -19,7 +19,7 @@ return [
       </nav>
       <div class="hero-eyebrow">КР / Гайки · изготовление под заказ</div>
       <h1 class="hero-h1">Гайки<br><em>шестигранные</em><br>и фланцевые</h1>
-      <p class="hero-desc">Гайки для фланцевых соединений ГОСТ 9064, шестигранные ГОСТ 5915 / 10605, низкие, колпачковые и с уменьшенным размером под ключ. В реестре — 168 позиций. Подбор по резьбе M.</p>
+      <p class="hero-desc">Гайки для фланцевых соединений ГОСТ 9064, шестигранные ГОСТ 5915 / 10605, низкие, колпачковые и с уменьшенным размером под ключ. В реестре — <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по резьбе M.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">M × L</span><span class="hp-k">Резьба / длина</span></div>
@@ -40,10 +40,10 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 9064-1970</span><span class="hud-rv live">26 поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 10605-1994</span><span class="hud-rv live">24 поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 5915-1970</span><span class="hud-rv live">22 поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 5927-1970</span><span class="hud-rv live">24 поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 9064-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-9064-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 10605-1994</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-10605-1994' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 5915-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-5915-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 5927-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-5927-1970' ) ) ); ?> поз.</span></div>
       </div>
     </div>
   </div>
@@ -61,12 +61,12 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(1,1fr);max-width:480px;">
         <div class="mg" data-type="main">
-          <div class="mg-hd"><div class="mg-code">Г</div><div class="mg-cnt">168 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">Г</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'gayki', 'main' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Гайки</div>
           <div class="mg-items">
             <div class="mg-item">Фланцевые<span class="mg-norm">ГОСТ 9064</span></div><div class="mg-item">Шестигранные<span class="mg-norm">ГОСТ 5915 / 10605</span></div><div class="mg-item">Низкие<span class="mg-norm">ГОСТ 5916 / 10607</span></div><div class="mg-item">Колпачковые / под ключ<span class="mg-norm">ГОСТ 5929 / 5927</span></div>
           </div>
-          <div class="mg-footer"><span class="mg-ftag">Г</span><span class="mg-ftag">168 поз.</span></div>
+          <div class="mg-footer"><span class="mg-ftag">Г</span><span class="mg-ftag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'gayki', 'main' ) ) ); ?> поз.</span></div>
         </div>
       </div>
     </div>

@@ -39,8 +39,8 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 22826-1983</span><span class="hud-rv live">89 поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ОСТ 34-42-664-84</span><span class="hud-rv live">10 поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 22826-1983</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ОСТ 34-42-664-84</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'ost-34-42-664-84' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Марки стали</span><span class="hud-rv live">9 марок</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>

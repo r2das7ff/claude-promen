@@ -40,7 +40,7 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 30732-2020</span><span class="hud-rv live">72 поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 30732-2020</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'izolyatsiya', 'gost-30732-2020' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Оболочка ПЭ</span><span class="hud-rv live">бесканальная</span></div>
         <div class="hud-row"><span class="hud-rk">Оболочка ОЦ</span><span class="hud-rv live">канальная / надзем</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>

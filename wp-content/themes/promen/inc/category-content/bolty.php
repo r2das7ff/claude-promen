@@ -19,7 +19,7 @@ return [
       </nav>
       <div class="hero-eyebrow">КР / Болты · изготовление под заказ</div>
       <h1 class="hero-h1">Болты<br><em>крепежные</em><br>стальные</h1>
-      <p class="hero-desc">Болты фундаментные, с шестигранной и уменьшенной головкой, высокопрочные: ГОСТ 22032 / 22043, 7798 / 7795 / 7796, 7805 / 7808, 10602. В реестре — 10&nbsp;467 позиций. Подбор по резьбе M и длине L.</p>
+      <p class="hero-desc">Болты фундаментные, с шестигранной и уменьшенной головкой, высокопрочные: ГОСТ 22032 / 22043, 7798 / 7795 / 7796, 7805 / 7808, 10602. В реестре — <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по резьбе M и длине L.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">M × L</span><span class="hp-k">Резьба / длина</span></div>
@@ -40,10 +40,10 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 22032-1976</span><span class="hud-rv live">2 301 поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 7805-1970</span><span class="hud-rv live">1 936 поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 7798-1970</span><span class="hud-rv live">1 512 поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 10602-1994</span><span class="hud-rv live">242 поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 22032-1976</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'bolty', 'gost-22032-1976' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 7805-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'bolty', 'gost-7805-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 7798-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'bolty', 'gost-7798-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 10602-1994</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'bolty', 'gost-10602-1994' ) ) ); ?> поз.</span></div>
       </div>
     </div>
   </div>
@@ -61,12 +61,12 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(1,1fr);max-width:480px;">
         <div class="mg" data-type="main">
-          <div class="mg-hd"><div class="mg-code">Б</div><div class="mg-cnt">10 467 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">Б</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'bolty', 'main' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Болты</div>
           <div class="mg-items">
             <div class="mg-item">Фундаментные<span class="mg-norm">ГОСТ 22032 / 22043</span></div><div class="mg-item">Шестигранные<span class="mg-norm">ГОСТ 7798 / 7795 / 7796</span></div><div class="mg-item">Уменьшенная головка<span class="mg-norm">ГОСТ 7805 / 7808</span></div><div class="mg-item">Высокопрочные<span class="mg-norm">ГОСТ 10602</span></div>
           </div>
-          <div class="mg-footer"><span class="mg-ftag">Б</span><span class="mg-ftag">10 467 поз.</span></div>
+          <div class="mg-footer"><span class="mg-ftag">Б</span><span class="mg-ftag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'bolty', 'main' ) ) ); ?> поз.</span></div>
         </div>
       </div>
     </div>

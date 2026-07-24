@@ -60,7 +60,7 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(4,1fr);">
         <div class="mg" data-type="psh">
-          <div class="mg-hd"><div class="mg-code">ПШ</div><div class="mg-cnt">278 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ПШ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'perekhody', 'psh' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Бесшовные приварные</div>
           <div class="mg-items">
             <div class="mg-item">Концентрические (ПК)<span class="mg-norm">ГОСТ 17378-2001</span></div>
@@ -80,7 +80,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">Ру до 100 МПа</span><span class="mg-ftag">Поднадзорные</span></div>
         </div>
         <div class="mg" data-type="psv">
-          <div class="mg-hd"><div class="mg-code">ПСВ</div><div class="mg-cnt">57 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ПСВ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'perekhody', 'psv' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Сварные крупный DN</div>
           <div class="mg-items">
             <div class="mg-item">Сварные конусные<span class="mg-norm">ОСТ 36-22-77</span></div>
@@ -90,7 +90,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">DN 300–1600</span><span class="mg-ftag">ТЭС / ГРЭС</span></div>
         </div>
         <div class="mg" data-type="pt">
-          <div class="mg-hd"><div class="mg-code">ПТ</div><div class="mg-cnt">22 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ПТ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'perekhody', 'pt' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Точёные и мелкий DN</div>
           <div class="mg-items">
             <div class="mg-item">Точёные ЦКТИ<span class="mg-norm">СТО 318.01</span></div>

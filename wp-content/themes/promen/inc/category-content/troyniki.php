@@ -61,7 +61,7 @@ return [
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(4,1fr);">
         <!-- ШТАМПОВАННЫЕ -->
         <div class="mg" data-type="tsh">
-          <div class="mg-hd"><div class="mg-code">ТШ</div><div class="mg-cnt">96 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ТШ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'troyniki', 'tsh' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Штампованные</div>
           <div class="mg-items">
             <div class="mg-item">Равнопроходные (d = D)<span class="mg-norm">ГОСТ 17376-2001</span></div>
@@ -72,7 +72,7 @@ return [
         </div>
         <!-- РУ 100 -->
         <div class="mg" data-type="tr1">
-          <div class="mg-hd"><div class="mg-code">Т-100</div><div class="mg-cnt">222 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">Т-100</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'troyniki', 'tr1' ) ) ); ?> поз.</div></div>
           <div class="mg-name">На Ру до 100 МПа</div>
           <div class="mg-items">
             <div class="mg-item">Без опоры<span class="mg-norm">ГОСТ 22801-83</span></div>
@@ -83,7 +83,7 @@ return [
         </div>
         <!-- СВАРНЫЕ -->
         <div class="mg" data-type="tsv">
-          <div class="mg-hd"><div class="mg-code">ТСВ</div><div class="mg-cnt">140 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ТСВ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'troyniki', 'tsv' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Сварные для ТЭС</div>
           <div class="mg-items">
             <div class="mg-item">Равнопроходные и переходные<span class="mg-norm">ОСТ 34-10-762…765-97</span></div>
@@ -94,7 +94,7 @@ return [
         </div>
         <!-- ТЕПЛОСЕТИ -->
         <div class="mg" data-type="tts">
-          <div class="mg-hd"><div class="mg-code">ТТС</div><div class="mg-cnt">33 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ТТС</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'troyniki', 'tts' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Тепловые сети</div>
           <div class="mg-items">
             <div class="mg-item">По типовой серии<span class="mg-norm">СЕРИЯ 4.903-10</span></div>
@@ -129,7 +129,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Тройники равнопроходные штампованные — бесшовные приварные</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 17376-2001</span><span class="sg-tag">DN 15–600</span><span class="sg-tag">96 позиций</span>
+              <span class="sg-tag hi">ГОСТ 17376-2001</span><span class="sg-tag">DN 15–600</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'troyniki', 'gost-17376-2001' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'troyniki', 'gost-17376-2001' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-17376-2001', $ctx['url'] ) ); ?>">К штампованным в реестре →</a>
           </div>
@@ -165,7 +165,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Тройники Ру 100 — с опорой (ГОСТ 22822) и без (ГОСТ 22801)</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 22801-83</span><span class="sg-tag hi">ГОСТ 22822-83</span><span class="sg-tag">DN 6–200</span><span class="sg-tag">222 позиции</span>
+              <span class="sg-tag hi">ГОСТ 22801-83</span><span class="sg-tag hi">ГОСТ 22822-83</span><span class="sg-tag">DN 6–200</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'troyniki', 'gost-22801-1983' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'troyniki', 'gost-22801-1983' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22801-1983', $ctx['url'] ) ); ?>">К тройникам Ру 100 в реестре →</a>
           </div>
@@ -183,7 +183,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Тройники сварные — ОСТ 34-10-762…765-97, DN до 1600</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ОСТ 34-10-762…765</span><span class="sg-tag">DN 65–1600</span><span class="sg-tag">140 позиций</span>
+              <span class="sg-tag hi">ОСТ 34-10-762…765</span><span class="sg-tag">DN 65–1600</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'troyniki', 'ost-34-10-764-97' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'troyniki', 'ost-34-10-764-97' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-34-10-764-97', $ctx['url'] ) ); ?>">К сварным в реестре →</a>
           </div>

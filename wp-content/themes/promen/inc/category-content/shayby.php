@@ -19,7 +19,7 @@ return [
       </nav>
       <div class="hero-eyebrow">КР / Шайбы · изготовление под заказ</div>
       <h1 class="hero-h1">Шайбы<br><em>пружинные</em><br>и усиленные</h1>
-      <p class="hero-desc">Шайбы ГОСТ 6402 и усиленные ГОСТ 11371 для болтовых и шпилечных соединений. В реестре — 98 позиций. Подбор по номинальному диаметру резьбы M.</p>
+      <p class="hero-desc">Шайбы ГОСТ 6402 и усиленные ГОСТ 11371 для болтовых и шпилечных соединений. В реестре — <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по номинальному диаметру резьбы M.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">M × L</span><span class="hp-k">Резьба / длина</span></div>
@@ -40,8 +40,8 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 6402-1970</span><span class="hud-rv live">80 поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 11371-1978</span><span class="hud-rv live">18 поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 6402-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shayby', 'gost-6402-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 11371-1978</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shayby', 'gost-11371-1978' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
         <div class="hud-row"><span class="hud-rk">Комплект</span><span class="hud-rv live">с болтом / шпилькой</span></div>
       </div>
@@ -61,12 +61,12 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(1,1fr);max-width:480px;">
         <div class="mg" data-type="main">
-          <div class="mg-hd"><div class="mg-code">Ш</div><div class="mg-cnt">98 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">Ш</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'shayby', 'main' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Шайбы</div>
           <div class="mg-items">
             <div class="mg-item">Пружинные / плоские<span class="mg-norm">ГОСТ 6402</span></div><div class="mg-item">Усиленные<span class="mg-norm">ГОСТ 11371</span></div>
           </div>
-          <div class="mg-footer"><span class="mg-ftag">Ш</span><span class="mg-ftag">98 поз.</span></div>
+          <div class="mg-footer"><span class="mg-ftag">Ш</span><span class="mg-ftag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'shayby', 'main' ) ) ); ?> поз.</span></div>
         </div>
       </div>
     </div>

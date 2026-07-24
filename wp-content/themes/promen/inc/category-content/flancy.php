@@ -60,7 +60,7 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(4,1fr);">
         <div class="mg" data-type="t11">
-          <div class="mg-hd"><div class="mg-code">11</div><div class="mg-cnt">273 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">11</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'flancy', 't11' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Воротниковые тип 11</div>
           <div class="mg-items">
             <div class="mg-item">Приварные встык<span class="mg-norm">ГОСТ 33259-2015</span></div>
@@ -80,17 +80,17 @@ return [
           <div class="mg-footer"><span class="mg-ftag">Тип 01</span><span class="mg-ftag">PN до 250</span></div>
         </div>
         <div class="mg" data-type="fp">
-          <div class="mg-hd"><div class="mg-code">ФП</div><div class="mg-cnt">211 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ФП</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'flancy', 'fp' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Плоские приварные</div>
           <div class="mg-items">
             <div class="mg-item">Трубопроводные<span class="mg-norm">ГОСТ 12820-80</span></div>
             <div class="mg-item">Сосудовые<span class="mg-norm">ГОСТ 28759.2-2022</span></div>
             <div class="mg-item">Ру 0,1–2,5 МПа / аппараты<span class="mg-norm">DN 10–4000</span></div>
           </div>
-          <div class="mg-footer"><span class="mg-ftag">ФП</span><span class="mg-ftag">211 поз.</span></div>
+          <div class="mg-footer"><span class="mg-ftag">ФП</span><span class="mg-ftag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'flancy', 'fp' ) ) ); ?> поз.</span></div>
         </div>
         <div class="mg" data-type="fv">
-          <div class="mg-hd"><div class="mg-code">ФВ</div><div class="mg-cnt">32 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ФВ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'flancy', 'fv' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Воротниковые 12821</div>
           <div class="mg-items">
             <div class="mg-item">Приварные встык<span class="mg-norm">ГОСТ 12821-80</span></div>
@@ -124,7 +124,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Фланцы ГОСТ 33259 — тип 11 (воротниковые) или тип 01 (плоские)</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 33259-2015</span><span class="sg-tag">тип 11 / 01</span><span class="sg-tag">412 позиций</span>
+              <span class="sg-tag hi">ГОСТ 33259-2015</span><span class="sg-tag">тип 11 / 01</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'flancy', 'gost-33259-2015' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'flancy', 'gost-33259-2015' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-33259-2015', $ctx['url'] ) ); ?>">К фланцам 33259 в реестре →</a>
           </div>
@@ -142,7 +142,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Фланцы плоские приварные ФП по ГОСТ 12820-80</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 12820-80</span><span class="sg-tag">ФП</span><span class="sg-tag">111 позиций</span>
+              <span class="sg-tag hi">ГОСТ 12820-80</span><span class="sg-tag">ФП</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'flancy', 'gost-12820-1980' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'flancy', 'gost-12820-1980' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-12820-1980', $ctx['url'] ) ); ?>">К плоским в реестре →</a>
           </div>
@@ -178,7 +178,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Сосудовые фланцы по ГОСТ 28759.2-2022</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 28759.2-2022</span><span class="sg-tag">DN 400–4000</span><span class="sg-tag">100 позиций</span>
+              <span class="sg-tag hi">ГОСТ 28759.2-2022</span><span class="sg-tag">DN 400–4000</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'flancy', 'gost-28759-2-2022' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'flancy', 'gost-28759-2-2022' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-28759-2-2022', $ctx['url'] ) ); ?>">К сосудовым в реестре →</a>
           </div>

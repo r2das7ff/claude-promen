@@ -19,7 +19,7 @@ return [
       </nav>
       <div class="hero-eyebrow">КР · Семейство изделий — изготовление под заказ</div>
       <h1 class="hero-h1">Крепёж<br><em>фланцевый</em><br>и монтажный</h1>
-      <p class="hero-desc">Болты, шпильки, гайки, шайбы и винты для фланцевых соединений и общепромышленного монтажа: ГОСТ 7798 / 7805 / 22032, шпильки ГОСТ 15590 / 9066 и ОСТ 26-2040, гайки и шайбы по ряду ГОСТ. Пять типов, 13&nbsp;746 позиций. Подбор по резьбе M и длине L.</p>
+      <p class="hero-desc">Болты, шпильки, гайки, шайбы и винты для фланцевых соединений и общепромышленного монтажа: ГОСТ 7798 / 7805 / 22032, шпильки ГОСТ 15590 / 9066 и ОСТ 26-2040, гайки и шайбы по ряду ГОСТ. Пять типов, <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по резьбе M и длине L.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">M × L</span><span class="hp-k">Резьба / длина</span></div>

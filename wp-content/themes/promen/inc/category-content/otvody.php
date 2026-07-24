@@ -63,7 +63,7 @@ return [
         <div class="mg" data-type="ok">
           <div class="mg-hd">
             <div class="mg-code">ОК</div>
-            <div class="mg-cnt">1 641 поз.</div>
+            <div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'otvody', 'ok' ) ) ); ?> поз.</div>
           </div>
           <div class="mg-name">Крутоизогнутые</div>
           <div class="mg-items">
@@ -77,7 +77,7 @@ return [
         <div class="mg" data-type="og">
           <div class="mg-hd">
             <div class="mg-code">ОГ</div>
-            <div class="mg-cnt">1 290 поз.</div>
+            <div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'otvody', 'og' ) ) ); ?> поз.</div>
           </div>
           <div class="mg-name">Гнутые</div>
           <div class="mg-items">
@@ -91,7 +91,7 @@ return [
         <div class="mg" data-type="ko">
           <div class="mg-hd">
             <div class="mg-code">КО</div>
-            <div class="mg-cnt">109 поз.</div>
+            <div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'otvody', 'ko' ) ) ); ?> поз.</div>
           </div>
           <div class="mg-name">Колена с опорой</div>
           <div class="mg-items">
@@ -105,7 +105,7 @@ return [
         <div class="mg" data-type="oss">
           <div class="mg-hd">
             <div class="mg-code">ОСС</div>
-            <div class="mg-cnt">80 поз.</div>
+            <div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'otvody', 'oss' ) ) ); ?> поз.</div>
           </div>
           <div class="mg-name">Сварные секторные</div>
           <div class="mg-items">
@@ -142,7 +142,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Отводы крутоизогнутые штампованные — R = 1,5DN (тип 3D) или R ≈ DN (тип 2D)</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 17375-2001</span><span class="sg-tag hi">ГОСТ 30753-2001</span><span class="sg-tag">DN 15–800</span><span class="sg-tag">1 641 позиция</span>
+              <span class="sg-tag hi">ГОСТ 17375-2001</span><span class="sg-tag hi">ГОСТ 30753-2001</span><span class="sg-tag">DN 15–800</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'otvody', 'gost-17375-2001' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'otvody', 'gost-17375-2001' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-17375-2001', $ctx['url'] ) ); ?>">К крутоизогнутым в реестре →</a>
           </div>
@@ -163,7 +163,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Отводы гнутые с увеличенным радиусом — R = 3,5–5DN, углы от 15°</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">СТО ЦКТИ 321.01/321.02/321.05</span><span class="sg-tag">DN 10–300</span><span class="sg-tag">711 позиций</span>
+              <span class="sg-tag hi">СТО ЦКТИ 321.01/321.02/321.05</span><span class="sg-tag">DN 10–300</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'otvody', 'sto-321-05' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'otvody', 'sto-321-05' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'sto-321-05', $ctx['url'] ) ); ?>">К гнутым СТО ЦКТИ в реестре →</a>
           </div>
@@ -183,7 +183,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Отводы гнутые Ру 100 и колена с опорой — усиленная стенка, опорная пята</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 22793-83</span><span class="sg-tag hi">ГОСТ 22818-83</span><span class="sg-tag">DN 6–200</span><span class="sg-tag">688 позиций</span>
+              <span class="sg-tag hi">ГОСТ 22793-83</span><span class="sg-tag hi">ГОСТ 22818-83</span><span class="sg-tag">DN 6–200</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'otvody', 'gost-22793-1983' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'otvody', 'gost-22793-1983' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22793-1983', $ctx['url'] ) ); ?>">К отводам Ру 100 в реестре →</a>
           </div>
@@ -203,7 +203,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Отводы сварные секторные — сборка из сегментов, R = 1,5DN</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ОСТ 36-21-77</span><span class="sg-tag">DN 500–1400</span><span class="sg-tag">80 позиций</span>
+              <span class="sg-tag hi">ОСТ 36-21-77</span><span class="sg-tag">DN 500–1400</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'otvody', 'ost-36-21-77' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'otvody', 'ost-36-21-77' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-36-21-77', $ctx['url'] ) ); ?>">К секторным в реестре →</a>
           </div>

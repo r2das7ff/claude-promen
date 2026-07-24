@@ -60,7 +60,7 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(2,1fr);">
         <div class="mg" data-type="ze">
-          <div class="mg-hd"><div class="mg-code">ЗЭ</div><div class="mg-cnt">93 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ЗЭ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'zaglushki', 'ze' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Эллиптические приварные</div>
           <div class="mg-items">
             <div class="mg-item">Бесшовные приварные встык<span class="mg-norm">ГОСТ 17379-2001</span></div>
@@ -70,7 +70,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">DN 15–600</span><span class="mg-ftag">Основной тип</span></div>
         </div>
         <div class="mg" data-type="zf">
-          <div class="mg-hd"><div class="mg-code">ЗФ</div><div class="mg-cnt">35 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ЗФ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'zaglushki', 'zf' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Фланцевые Ру до 100 МПа</div>
           <div class="mg-items">
             <div class="mg-item">Фланцевое присоединение<span class="mg-norm">ГОСТ 22815-83</span></div>
@@ -104,7 +104,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Заглушки эллиптические приварные — тип ЗЭ по ГОСТ 17379</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 17379-2001</span><span class="sg-tag">тип ЗЭ</span><span class="sg-tag">93 позиции</span>
+              <span class="sg-tag hi">ГОСТ 17379-2001</span><span class="sg-tag">тип ЗЭ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'zaglushki', 'gost-17379-2001' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'zaglushki', 'gost-17379-2001' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-17379-2001', $ctx['url'] ) ); ?>">К эллиптическим в реестре →</a>
           </div>
@@ -122,7 +122,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Заглушки фланцевые на Ру св. 10 до 100 МПа — ГОСТ 22815</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 22815-83</span><span class="sg-tag">тип ЗФ</span><span class="sg-tag">35 позиций</span>
+              <span class="sg-tag hi">ГОСТ 22815-83</span><span class="sg-tag">тип ЗФ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'zaglushki', 'gost-22815-1983' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'zaglushki', 'gost-22815-1983' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22815-1983', $ctx['url'] ) ); ?>">К фланцевым в реестре →</a>
           </div>

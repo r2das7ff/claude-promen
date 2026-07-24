@@ -19,7 +19,7 @@ return [
       </nav>
       <div class="hero-eyebrow">КР / Шпильки · изготовление под заказ</div>
       <h1 class="hero-h1">Шпильки<br><em>фланцевые</em><br>и монтажные</h1>
-      <p class="hero-desc">Шпильки общепромышленные и для фланцевых соединений: ГОСТ 15590 / 15591, ГОСТ 9066, ОСТ 26-2040-96, ГОСТ 10494 (Ст20). В реестре — 3&nbsp;012 позиций. Подбор по резьбе M и длине L.</p>
+      <p class="hero-desc">Шпильки общепромышленные и для фланцевых соединений: ГОСТ 15590 / 15591, ГОСТ 9066, ОСТ 26-2040-96, ГОСТ 10494 (Ст20). В реестре — <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по резьбе M и длине L.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">M × L</span><span class="hp-k">Резьба / длина</span></div>
@@ -40,9 +40,9 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 15590-1970</span><span class="hud-rv live">1 505 поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 9066-1970</span><span class="hud-rv live">662 поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ОСТ 26-2040-96</span><span class="hud-rv live">398 поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 15590-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shpilki', 'gost-15590-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 9066-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shpilki', 'gost-9066-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ОСТ 26-2040-96</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shpilki', 'ost-26-2040-96' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 10494-1980</span><span class="hud-rv live">Ст20 · 207</span></div>
       </div>
     </div>
@@ -61,12 +61,12 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(1,1fr);max-width:480px;">
         <div class="mg" data-type="main">
-          <div class="mg-hd"><div class="mg-code">ШП</div><div class="mg-cnt">3 012 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ШП</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'shpilki', 'main' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Шпильки</div>
           <div class="mg-items">
             <div class="mg-item">Общепромышленные<span class="mg-norm">ГОСТ 15590 / 15591</span></div><div class="mg-item">Фланцевые<span class="mg-norm">ГОСТ 9066</span></div><div class="mg-item">Сосуды и аппараты<span class="mg-norm">ОСТ 26-2040</span></div><div class="mg-item">Ст20<span class="mg-norm">ГОСТ 10494</span></div>
           </div>
-          <div class="mg-footer"><span class="mg-ftag">ШП</span><span class="mg-ftag">3 012 поз.</span></div>
+          <div class="mg-footer"><span class="mg-ftag">ШП</span><span class="mg-ftag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'shpilki', 'main' ) ) ); ?> поз.</span></div>
         </div>
       </div>
     </div>

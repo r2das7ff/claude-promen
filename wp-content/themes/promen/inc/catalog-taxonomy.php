@@ -575,6 +575,45 @@ function promen_catalog_group_norm_stats( string $group, int $limit = 0, bool $m
 }
 
 /**
+ * Живой счётчик норматива в группе (для HUD/подбора вместо захардкоженных цифр).
+ * Годовые и «ГОСТ Р» варианты слага схлопываются к базе: gost-22032 == gost-22032-1976.
+ */
+function promen_category_norm_count( string $group, string $norm_slug ): int {
+	static $cache = [];
+	if ( ! isset( $cache[ $group ] ) ) {
+		$cache[ $group ] = promen_catalog_group_norm_stats( $group, 0, false );
+	}
+	$base = static function ( string $s ): string {
+		$s = (string) preg_replace( '/^gost-r-/', 'gost-', $s );
+		return (string) preg_replace( '/-(19|20)\d{2}$/', '', $s );
+	};
+	$want = $base( $norm_slug );
+	$n    = 0;
+	foreach ( $cache[ $group ] as $row ) {
+		if ( $base( (string) $row['slug'] ) === $want ) {
+			$n += (int) $row['count'];
+		}
+	}
+	return $n;
+}
+
+/**
+ * Живой счётчик группы типоисполнений (bucket из promen_catalog_series_groups)
+ * — для карты s02 вместо захардкоженных цифр.
+ */
+function promen_category_bucket_count( string $group, string $key ): int {
+	static $cache = [];
+	if ( ! isset( $cache[ $group ] ) ) {
+		$norms            = promen_catalog_group_norm_stats( $group, 0, false );
+		$cache[ $group ]  = [];
+		foreach ( promen_catalog_bucket_series_norms( $group, $norms ) as $b ) {
+			$cache[ $group ][ (string) $b['key'] ] = (int) $b['count'];
+		}
+	}
+	return $cache[ $group ][ $key ] ?? 0;
+}
+
+/**
  * Группы типоисполнений для реестра s01 (код / название / match-префиксы slug).
  *
  * @return list<array{key:string,code:string,name:string,small:string,match:list<string>}>
