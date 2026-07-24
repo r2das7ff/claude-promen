@@ -41,4 +41,32 @@ final class MeiliQueryBuilderTest extends TestCase {
 		$this->assertStringContainsString( 'norm_slug = "gost-17376-2001"', $filter );
 		$this->assertStringContainsString( ' OR ', $filter );
 	}
+
+	public function test_exclude_drops_own_group_but_keeps_others(): void {
+		$q = new Promen_Catalog_Query();
+		$q->group  = 'otvody';
+		$q->gost   = [ 'gost-17375-2001' ];
+		$q->steel  = [ '20' ];
+		$q->dn_min = 50;
+
+		$filter = promen_catalog_meili_filter( $q, [ 'gost' ] );
+		$this->assertStringNotContainsString( 'norm_slug', $filter, 'исключённая группа не фильтрует' );
+		$this->assertStringContainsString( 'steels = "20"', $filter );
+		$this->assertStringContainsString( 'dn >= 50', $filter );
+		$this->assertStringContainsString( 'category = "otvody"', $filter, 'категория остаётся всегда' );
+
+		$no_dn = promen_catalog_meili_filter( $q, [ 'dn' ] );
+		$this->assertStringNotContainsString( 'dn >=', $no_dn );
+		$this->assertStringContainsString( 'norm_slug = "gost-17375-2001"', $no_dn );
+	}
+
+	public function test_active_facets_lists_only_groups_with_selection(): void {
+		$q = new Promen_Catalog_Query();
+		$q->gost   = [ 'gost-17375-2001' ];
+		$q->pn_max = 16;
+		$this->assertSame( [ 'gost', 'pn' ], promen_catalog_query_active_facets( $q ) );
+
+		$empty = new Promen_Catalog_Query();
+		$this->assertSame( [], promen_catalog_query_active_facets( $empty ) );
+	}
 }

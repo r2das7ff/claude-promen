@@ -63,67 +63,96 @@ $with_pdp      = $promen_registry_with_pdp ?? true;
           </div>
         </div>
         <div class="cmd-bar">
+          <?php
+          // Единая логика опций с REST: сужение несовместимого при активных
+          // фильтрах, полный универсум без них (promen_catalog_filter_state).
+          $promen_fq    = promen_catalog_query_from_request();
+          $filter_state = promen_catalog_filter_state( $promen_fq, $catalog );
+          $facet_opts   = $filter_state['facet_options'];
+          $range_opts   = $filter_state['range_options'];
+
+          $range_lbls = $is_fastener_ui
+            ? [ 'dn' => 'M, мм' ]
+            : [ 'dn' => 'DN, мм', 'pn' => 'PN, МПа' ];
+          $multis = $is_fastener_ui
+            ? [ 'gost' => 'ГОСТ', 'steel' => 'Сталь' ]
+            : [ 'gost' => 'ГОСТ', 'steel' => 'Сталь', 'angle' => 'Угол' ];
+          $act_ranges = promen_active_ranges();
+          $act_multi  = promen_active_multi();
+          $summary    = promen_active_summary();
+          $active_n   = count( $summary );
+          $sel_ind    = $act_multi['industry'][0] ?? '';
+          ?>
           <div class="cb-search-row">
             <form class="cb-search" method="get" action="">
               <div class="cb-search-ic">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
               </div>
-              <input id="searchInput" name="q" type="text" value="<?php echo esc_attr( sanitize_text_field( wp_unslash( $_GET['q'] ?? '' ) ) ); ?>" placeholder="Поиск по наименованию, ГОСТ, типоразмеру…">
+              <input id="searchInput" name="q" type="text" value="<?php echo esc_attr( sanitize_text_field( wp_unslash( $_GET['q'] ?? '' ) ) ); ?>" placeholder="Поиск по наименованию, ГОСТ, типоразмеру…" autocomplete="off">
             </form>
-            <?php
-            $ranges  = $is_fastener_ui
-              ? [ 'dn' => 'M, мм' ]
-              : [ 'dn' => 'DN, мм', 'pn' => 'PN, МПа' ];
-            $multis  = $is_fastener_ui
-              ? [ 'industry' => 'Отрасль', 'steel' => 'Сталь', 'gost' => 'ГОСТ' ]
-              : [ 'industry' => 'Отрасль', 'steel' => 'Сталь', 'angle' => 'Угол', 'gost' => 'ГОСТ' ];
-            $act_ranges = promen_active_ranges();
-            $act_multi  = promen_active_multi();
-            $summary    = promen_active_summary();
-            $active_n   = count( $summary );
-            ?>
+            <div class="cb-tabs" id="cbTabs" aria-label="Фильтр по отрасли">
+              <a class="cb-tab<?php echo $sel_ind === '' ? ' on' : ''; ?>" href="<?php echo esc_url( promen_clear_param_url( 'industry' ) ); ?>" data-industry="">Все отрасли</a>
+              <?php foreach ( (array) ( $facet_opts['industry'] ?? [] ) as $o ) :
+                $on   = $sel_ind === $o['slug'];
+                // Single-select: клик по активному — сброс на «Все отрасли».
+                $href = $on ? promen_clear_param_url( 'industry' ) : promen_build_filter_url( array_merge( promen_current_filter_args(), [ 'industry' => $o['slug'] ] ) );
+                ?>
+                <a class="cb-tab<?php echo $on ? ' on' : ''; ?>" href="<?php echo esc_url( $href ); ?>" data-industry="<?php echo esc_attr( $o['slug'] ); ?>"><?php echo esc_html( $o['name'] ); ?><span class="cb-tab-n"><?php echo esc_html( number_format_i18n( (int) $o['count'] ) ); ?></span></a>
+              <?php endforeach; ?>
+            </div>
             <button type="button" class="cb-toggle" id="cbToggle" aria-expanded="false">
               <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
               Фильтры<?php if ( $active_n ) : ?><span class="cb-toggle-n"><?php echo esc_html( $active_n ); ?></span><?php endif; ?>
             </button>
+            <a class="cb-reset" id="cbReset" href="<?php echo esc_url( promen_reset_url() ); ?>"<?php echo $active_n ? '' : ' hidden'; ?>><span class="cb-reset-x" aria-hidden="true">✕</span>Сбросить<span class="cb-reset-n"><?php echo esc_html( $active_n ); ?></span></a>
             <div class="chips-count" id="pCount" aria-live="polite"><?php echo esc_html( number_format_i18n( $total ) ); ?> позиций</div>
           </div>
           <div class="cb-filters is-collapsed" id="cbFilters" data-base="<?php echo esc_url( promen_filters_base_url() ); ?>"<?php echo $group !== '' ? ' data-group="' . esc_attr( $group ) . '"' : ''; ?>>
-            <?php foreach ( $ranges as $param => $lbl ) :
-              $opts = promen_range_options( $param );
+            <div class="cbf-sliders">
+            <?php foreach ( $range_lbls as $param => $lbl ) :
+              $opts = (array) ( $range_opts[ $param ] ?? [] );
               if ( ! $opts ) { continue; }
-              $cur = $act_ranges[ $param ] ?? [ 'min' => null, 'max' => null ]; ?>
-              <div class="cbf-range" data-param="<?php echo esc_attr( $param ); ?>">
+              $cur   = $act_ranges[ $param ] ?? [ 'min' => null, 'max' => null ];
+              $last  = count( $opts ) - 1;
+              $i_min = 0;
+              $i_max = $last;
+              foreach ( $opts as $i => $o ) {
+                if ( null !== $cur['min'] && (float) $o['val'] <= (float) $cur['min'] ) { $i_min = $i; }
+                if ( null !== $cur['max'] && (float) $o['val'] <= (float) $cur['max'] ) { $i_max = $i; }
+              }
+              if ( $i_max < $i_min ) { $i_max = $i_min; }
+              $vals = wp_json_encode( array_map( static fn( $o ) => [ 'val' => (float) $o['val'], 'name' => (string) $o['name'] ], $opts ) );
+              ?>
+              <div class="cbf-slider" data-param="<?php echo esc_attr( $param ); ?>" data-values="<?php echo esc_attr( $vals ); ?>">
                 <span class="cbf-lbl"><?php echo esc_html( $lbl ); ?></span>
-                <select class="cbf-sel" data-bound="min" aria-label="<?php echo esc_attr( $lbl ); ?> от">
-                  <option value="">от</option>
-                  <?php foreach ( $opts as $o ) : ?>
-                    <option value="<?php echo esc_attr( $o['val'] ); ?>"<?php selected( $cur['min'], (float) $o['val'] ); ?>><?php echo esc_html( $o['name'] ); ?></option>
-                  <?php endforeach; ?>
-                </select>
-                <span class="cbf-dash">–</span>
-                <select class="cbf-sel" data-bound="max" aria-label="<?php echo esc_attr( $lbl ); ?> до">
-                  <option value="">до</option>
-                  <?php foreach ( $opts as $o ) : ?>
-                    <option value="<?php echo esc_attr( $o['val'] ); ?>"<?php selected( $cur['max'], (float) $o['val'] ); ?>><?php echo esc_html( $o['name'] ); ?></option>
-                  <?php endforeach; ?>
-                </select>
+                <div class="cbf-track">
+                  <div class="cbf-fill"></div>
+                  <input type="range" class="cbf-r" data-bound="min" min="0" max="<?php echo esc_attr( $last ); ?>" step="1" value="<?php echo esc_attr( $i_min ); ?>" aria-label="<?php echo esc_attr( $lbl ); ?> от">
+                  <input type="range" class="cbf-r" data-bound="max" min="0" max="<?php echo esc_attr( $last ); ?>" step="1" value="<?php echo esc_attr( $i_max ); ?>" aria-label="<?php echo esc_attr( $lbl ); ?> до">
+                </div>
+                <span class="cbf-val"><?php
+                  $has_range = ( null !== $cur['min'] || null !== $cur['max'] );
+                  echo esc_html( $has_range ? ( $opts[ $i_min ]['name'] . ' – ' . $opts[ $i_max ]['name'] ) : ( $opts[0]['name'] . ' – ' . $opts[ $last ]['name'] ) );
+                ?></span>
               </div>
             <?php endforeach; ?>
+            </div>
 
             <?php foreach ( $multis as $param => $lbl ) :
-              $opts = promen_multi_options( $param, 40 );
+              $opts = (array) ( $facet_opts[ $param ] ?? [] );
               if ( ! $opts ) { continue; }
               $sel = $act_multi[ $param ] ?? [];
-              $vis = 6; ?>
+              $vis = 8; ?>
               <div class="cbf-multi" data-param="<?php echo esc_attr( $param ); ?>">
                 <span class="cbf-lbl"><?php echo esc_html( $lbl ); ?></span>
+                <div class="cbf-chips">
                 <?php foreach ( $opts as $i => $o ) : $on = in_array( $o['slug'], $sel, true ); ?>
                   <a class="c-chip<?php echo $on ? ' on' : ''; ?><?php echo (int) $o['count'] === 0 ? ' c-chip--zero' : ''; ?><?php echo $i >= $vis ? ' c-chip--extra' : ''; ?>" href="<?php echo esc_url( promen_multi_toggle_url( $param, $o['slug'] ) ); ?>" data-count="<?php echo esc_attr( $o['count'] ); ?>"><?php echo esc_html( $o['name'] ); ?><span class="c-chip-n"><?php echo esc_html( $o['count'] ); ?></span></a>
                 <?php endforeach; ?>
                 <?php if ( count( $opts ) > $vis ) : ?>
                   <button type="button" class="c-chip c-chip--more">+ ещё <?php echo count( $opts ) - $vis; ?></button>
                 <?php endif; ?>
+                </div>
               </div>
             <?php endforeach; ?>
           </div>

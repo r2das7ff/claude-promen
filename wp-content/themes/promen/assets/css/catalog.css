@@ -865,3 +865,59 @@ button.c-chip--more:hover{color:var(--dark);border-color:var(--g1);}
 /* ── Этап 7: добор из смешанных комбо-селекторов макета (top-level-only) ── */
 .pr-dn{font-family:'DINProCond',monospace;font-weight:700;font-size:13px;color:var(--dark);letter-spacing:.01em;font-variant-numeric:tabular-nums;}
 .pr-pn{font-family:'DINProCond',monospace;font-weight:700;font-size:13px;color:var(--dark);letter-spacing:.01em;font-variant-numeric:tabular-nums;}
+
+/* ── Фильтры v3: табы отрасли, dual-range слайдеры, грид-панель, сброс ── */
+.cb-search-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:0;}
+.cb-search{flex:1 1 240px;min-width:180px;}
+
+.cb-tabs{display:inline-flex;align-items:stretch;border:1px solid var(--ln2);background:var(--white);flex-shrink:0;}
+.cb-tab{display:inline-flex;align-items:center;gap:6px;padding:0 13px;height:40px;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);border-right:1px solid var(--ln2);transition:background .12s,color .12s;white-space:nowrap;}
+.cb-tab:last-child{border-right:none;}
+.cb-tab:hover{color:var(--dark);background:var(--bg2);}
+.cb-tab.on{background:var(--dark);color:var(--white);}
+.cb-tab.on:hover{background:var(--blue);color:var(--white);}
+.cb-tab-n{font-size:8px;opacity:.6;}
+.cb-tab.on .cb-tab-n{opacity:.75;}
+
+.cb-reset{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 14px;border:1px solid var(--ln2);background:var(--bg);font-family:'DINPro',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);transition:all .12s;flex-shrink:0;cursor:pointer;}
+.cb-reset:hover{color:var(--dark);border-color:var(--g1);background:rgba(109,140,166,.08);}
+.cb-reset[hidden]{display:none;}
+.cb-reset-x{font-size:10px;line-height:1;}
+.cb-reset-n{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;background:var(--dark);color:var(--white);font-size:8.5px;border-radius:8px;}
+
+.cb-filters{display:block;}
+.cb-filters:not(.is-collapsed){padding-top:12px;}
+.cbf-sliders{display:flex;flex-wrap:wrap;gap:10px 40px;padding-bottom:10px;}
+.cbf-slider{display:flex;align-items:center;gap:12px;flex:0 1 400px;min-width:280px;}
+.cbf-slider .cbf-lbl{width:56px;margin:0;flex-shrink:0;}
+.cbf-track{position:relative;flex:1;height:26px;min-width:150px;}
+.cbf-track::before{content:'';position:absolute;left:0;right:0;top:12px;height:2px;background:var(--ln2);}
+.cbf-fill{position:absolute;top:12px;height:2px;background:var(--dark);left:0;right:0;}
+.cbf-r{position:absolute;left:0;top:0;width:100%;height:26px;margin:0;-webkit-appearance:none;appearance:none;background:none;pointer-events:none;}
+.cbf-r::-webkit-slider-runnable-track{-webkit-appearance:none;appearance:none;background:none;border:none;height:26px;}
+.cbf-r::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;pointer-events:auto;width:14px;height:14px;margin-top:6px;background:var(--white);border:2px solid var(--dark);cursor:pointer;transition:background .12s;}
+.cbf-r::-webkit-slider-thumb:hover{background:var(--bg2);}
+.cbf-r::-moz-range-track{background:none;border:none;}
+.cbf-r::-moz-range-thumb{pointer-events:auto;width:10px;height:10px;border-radius:0;background:var(--white);border:2px solid var(--dark);cursor:pointer;}
+.cbf-r:focus-visible{outline:none;}
+.cbf-r:focus-visible::-webkit-slider-thumb{outline:2px solid var(--blue);outline-offset:2px;}
+.cbf-r:focus-visible::-moz-range-thumb{outline:2px solid var(--blue);outline-offset:2px;}
+.cbf-val{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.06em;color:var(--dark);white-space:nowrap;min-width:96px;}
+
+.cb-filters .cbf-multi{display:grid;grid-template-columns:56px minmax(0,1fr);align-items:start;gap:0 12px;padding:8px 0;border-top:1px dashed var(--ln);}
+.cb-filters .cbf-multi .cbf-lbl{margin:6px 0 0;}
+.cbf-chips{display:flex;flex-wrap:wrap;gap:4px;min-width:0;}
+
+@media(min-width:901px){
+  .cb-toggle{display:none;}
+  /* Десктоп: панель фильтров всегда развёрнута — это основной инструмент каталога. */
+  .cb-filters.is-collapsed{max-height:none;overflow:visible;opacity:1;padding-top:12px;}
+}
+@media(max-width:900px){
+  .cb-tabs{order:3;width:100%;overflow-x:auto;scrollbar-width:none;}
+  .cb-tabs::-webkit-scrollbar{display:none;}
+  .cb-tab{flex:1 0 auto;justify-content:center;}
+  .cbf-slider{flex:1 1 100%;min-width:0;}
+  .cb-filters .cbf-multi{grid-template-columns:1fr;overflow:visible;}
+  .cb-filters .cbf-multi .cbf-lbl{margin:0 0 6px;}
+}

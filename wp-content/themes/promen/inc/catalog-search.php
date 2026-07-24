@@ -119,9 +119,15 @@ interface Promen_Catalog_Search_Engine {
 
 /**
  * Построить filter-строку Meilisearch из запроса (unit-testable).
+ *
+ * @param string[] $exclude Группы фильтров, НЕ включаемые в выражение
+ *                          ('steel'|'gost'|'angle'|'industry'|'dn'|'pn') —
+ *                          для disjunctive-фасетов: опции своей группы
+ *                          считаются без её собственного фильтра.
  */
-function promen_catalog_meili_filter( Promen_Catalog_Query $query ): string {
+function promen_catalog_meili_filter( Promen_Catalog_Query $query, array $exclude = [] ): string {
 	$parts = [];
+	$skip  = static fn( string $p ): bool => in_array( $p, $exclude, true );
 
 	$slugs = $query->category_slugs();
 	if ( $slugs ) {
@@ -132,34 +138,38 @@ function promen_catalog_meili_filter( Promen_Catalog_Query $query ): string {
 		$parts[] = '(' . implode( ' OR ', $cat ) . ')';
 	}
 
-	if ( null !== $query->dn_min ) {
-		$parts[] = 'dn >= ' . $query->dn_min;
+	if ( ! $skip( 'dn' ) ) {
+		if ( null !== $query->dn_min ) {
+			$parts[] = 'dn >= ' . $query->dn_min;
+		}
+		if ( null !== $query->dn_max ) {
+			$parts[] = 'dn <= ' . $query->dn_max;
+		}
 	}
-	if ( null !== $query->dn_max ) {
-		$parts[] = 'dn <= ' . $query->dn_max;
-	}
-	if ( null !== $query->pn_min ) {
-		$parts[] = 'pn >= ' . $query->pn_min;
-	}
-	if ( null !== $query->pn_max ) {
-		$parts[] = 'pn <= ' . $query->pn_max;
+	if ( ! $skip( 'pn' ) ) {
+		if ( null !== $query->pn_min ) {
+			$parts[] = 'pn >= ' . $query->pn_min;
+		}
+		if ( null !== $query->pn_max ) {
+			$parts[] = 'pn <= ' . $query->pn_max;
+		}
 	}
 
-	if ( $query->steel ) {
+	if ( $query->steel && ! $skip( 'steel' ) ) {
 		$steel = array_map(
 			static fn( string $s ): string => 'steels = "' . str_replace( '"', '\\"', $s ) . '"',
 			$query->steel
 		);
 		$parts[] = '(' . implode( ' OR ', $steel ) . ')';
 	}
-	if ( $query->gost ) {
+	if ( $query->gost && ! $skip( 'gost' ) ) {
 		$gost = array_map(
 			static fn( string $s ): string => 'norm_slug = "' . str_replace( '"', '\\"', $s ) . '"',
 			$query->gost
 		);
 		$parts[] = '(' . implode( ' OR ', $gost ) . ')';
 	}
-	if ( $query->angle ) {
+	if ( $query->angle && ! $skip( 'angle' ) ) {
 		$ang = array_map(
 			static function ( string $s ): string {
 				$v = is_numeric( $s ) ? (float) $s : $s;
@@ -169,7 +179,7 @@ function promen_catalog_meili_filter( Promen_Catalog_Query $query ): string {
 		);
 		$parts[] = '(' . implode( ' OR ', $ang ) . ')';
 	}
-	if ( $query->industry ) {
+	if ( $query->industry && ! $skip( 'industry' ) ) {
 		$ind = array_map(
 			static fn( string $s ): string => 'industries = "' . str_replace( '"', '\\"', $s ) . '"',
 			$query->industry
@@ -178,6 +188,27 @@ function promen_catalog_meili_filter( Promen_Catalog_Query $query ): string {
 	}
 
 	return implode( ' AND ', $parts );
+}
+
+/**
+ * Активные фасет-группы запроса (у которых есть собственный выбор).
+ *
+ * @return string[] из 'steel'|'gost'|'angle'|'industry'|'dn'|'pn'
+ */
+function promen_catalog_query_active_facets( Promen_Catalog_Query $query ): array {
+	$out = [];
+	foreach ( [ 'steel', 'gost', 'angle', 'industry' ] as $p ) {
+		if ( $query->{$p} ) {
+			$out[] = $p;
+		}
+	}
+	if ( null !== $query->dn_min || null !== $query->dn_max ) {
+		$out[] = 'dn';
+	}
+	if ( null !== $query->pn_min || null !== $query->pn_max ) {
+		$out[] = 'pn';
+	}
+	return $out;
 }
 
 function promen_meili_url(): string {
@@ -249,6 +280,8 @@ class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
 			// Иначе estimatedTotalHits капается на 1000 → счётчик не меняется при
 			// фильтрации крупных категорий (отводы ~1900). Поднимаем потолок.
 			'pagination'           => [ 'maxTotalHits' => 100000 ],
+			// DN-ряд крупных групп длиннее дефолтных 100 значений фасета.
+			'faceting'             => [ 'maxValuesPerFacet' => 300 ],
 		] );
 		self::$index_ensured = true;
 	}
@@ -316,7 +349,63 @@ class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
 				$out[] = $map[ $f ];
 			}
 		}
+		// dn/pn — всегда: по их распределению сужаются ряды слайдеров диапазонов.
+		$out[] = 'dn';
+		$out[] = 'pn';
 		return array_values( array_unique( $out ) );
+	}
+
+	/** Meili-атрибут фасета для группы фильтра. */
+	private function facet_attr_for( string $param ): string {
+		$map = [
+			'steel'    => 'steels',
+			'gost'     => 'norm_slug',
+			'angle'    => 'angle',
+			'pn'       => 'pn',
+			'dn'       => 'dn',
+			'industry' => 'industries',
+		];
+		return $map[ $param ] ?? $param;
+	}
+
+	/**
+	 * Disjunctive-фасеты одним HTTP /multi-search: для каждой активной группы
+	 * распределение считается без её собственного фильтра (иначе в группе
+	 * остаётся только выбранное, а «исключать несовместимое» должно работать
+	 * лишь между группами). dn/pn включаются для сужения границ слайдеров.
+	 *
+	 * @param string[] $params Группы, которым нужно «minus-self» распределение.
+	 * @return array<string, array<string, int>> param => distribution
+	 */
+	public function disjunctive_facets( Promen_Catalog_Query $query, array $params ): array {
+		if ( ! $params ) {
+			return [];
+		}
+		$queries = [];
+		foreach ( $params as $p ) {
+			$q = [
+				'indexUid' => promen_meili_index(),
+				'q'        => $query->q,
+				'limit'    => 0,
+				'facets'   => [ $this->facet_attr_for( $p ) ],
+			];
+			$filter = promen_catalog_meili_filter( $query, [ $p ] );
+			if ( $filter !== '' ) {
+				$q['filter'] = $filter;
+			}
+			$queries[] = $q;
+		}
+		$r = promen_meili_request( 'POST', '/multi-search', [ 'queries' => $queries ], 5 );
+		if ( ! $r['ok'] ) {
+			throw new RuntimeException( 'Meilisearch multi-search failed: ' . ( $r['error'] ?? 'unknown' ) );
+		}
+		$out     = [];
+		$results = (array) ( $r['data']['results'] ?? [] );
+		foreach ( $params as $i => $p ) {
+			$dist = (array) ( $results[ $i ]['facetDistribution'][ $this->facet_attr_for( $p ) ] ?? [] );
+			$out[ $p ] = array_map( 'intval', $dist );
+		}
+		return $out;
 	}
 
 	private function normalize_hit( array $hit ): array {
@@ -398,11 +487,17 @@ class Promen_Sql_Fallback_Engine implements Promen_Catalog_Search_Engine {
 		return true;
 	}
 
-	public function search( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result {
+	/**
+	 * WHERE-условие из запроса (с той же семантикой exclude, что у Meili-билдера).
+	 *
+	 * @param string[] $exclude
+	 * @return array{sql: string, args: array}
+	 */
+	public function build_where( Promen_Catalog_Query $query, array $exclude = [] ): array {
 		global $wpdb;
-		$table  = promen_catalog_table_name();
-		$where  = [ '1=1' ];
-		$args   = [];
+		$where = [ '1=1' ];
+		$args  = [];
+		$skip  = static fn( string $p ): bool => in_array( $p, $exclude, true );
 
 		$slugs = $query->category_slugs();
 		if ( $slugs ) {
@@ -410,34 +505,38 @@ class Promen_Sql_Fallback_Engine implements Promen_Catalog_Search_Engine {
 			$where[] = "category IN ({$ph})";
 			$args    = array_merge( $args, $slugs );
 		}
-		if ( null !== $query->dn_min ) {
-			$where[] = 'dn >= %f';
-			$args[]  = $query->dn_min;
+		if ( ! $skip( 'dn' ) ) {
+			if ( null !== $query->dn_min ) {
+				$where[] = 'dn >= %f';
+				$args[]  = $query->dn_min;
+			}
+			if ( null !== $query->dn_max ) {
+				$where[] = 'dn <= %f';
+				$args[]  = $query->dn_max;
+			}
 		}
-		if ( null !== $query->dn_max ) {
-			$where[] = 'dn <= %f';
-			$args[]  = $query->dn_max;
+		if ( ! $skip( 'pn' ) ) {
+			if ( null !== $query->pn_min ) {
+				$where[] = 'pn >= %f';
+				$args[]  = $query->pn_min;
+			}
+			if ( null !== $query->pn_max ) {
+				$where[] = 'pn <= %f';
+				$args[]  = $query->pn_max;
+			}
 		}
-		if ( null !== $query->pn_min ) {
-			$where[] = 'pn >= %f';
-			$args[]  = $query->pn_min;
-		}
-		if ( null !== $query->pn_max ) {
-			$where[] = 'pn <= %f';
-			$args[]  = $query->pn_max;
-		}
-		if ( $query->gost ) {
+		if ( $query->gost && ! $skip( 'gost' ) ) {
 			$ph      = implode( ',', array_fill( 0, count( $query->gost ), '%s' ) );
 			$where[] = "norm_slug IN ({$ph})";
 			$args    = array_merge( $args, $query->gost );
 		}
-		if ( $query->angle ) {
+		if ( $query->angle && ! $skip( 'angle' ) ) {
 			$ang = array_map( 'floatval', $query->angle );
 			$ph  = implode( ',', array_fill( 0, count( $ang ), '%f' ) );
 			$where[] = "angle IN ({$ph})";
 			$args    = array_merge( $args, $ang );
 		}
-		if ( $query->steel ) {
+		if ( $query->steel && ! $skip( 'steel' ) ) {
 			$steel_w = [];
 			foreach ( $query->steel as $s ) {
 				$steel_w[] = 'steels_json LIKE %s';
@@ -445,7 +544,7 @@ class Promen_Sql_Fallback_Engine implements Promen_Catalog_Search_Engine {
 			}
 			$where[] = '(' . implode( ' OR ', $steel_w ) . ')';
 		}
-		if ( $query->industry ) {
+		if ( $query->industry && ! $skip( 'industry' ) ) {
 			$ind_w = [];
 			foreach ( $query->industry as $s ) {
 				$ind_w[] = 'industries_json LIKE %s';
@@ -460,7 +559,33 @@ class Promen_Sql_Fallback_Engine implements Promen_Catalog_Search_Engine {
 			$args[]  = $like;
 		}
 
-		$where_sql = implode( ' AND ', $where );
+		return [ 'sql' => implode( ' AND ', $where ), 'args' => $args ];
+	}
+
+	/**
+	 * Disjunctive-фасеты в fallback-режиме: по скану на активную группу.
+	 *
+	 * @param string[] $params
+	 * @return array<string, array<string, int>>
+	 */
+	public function disjunctive_facets( Promen_Catalog_Query $query, array $params ): array {
+		$out = [];
+		foreach ( $params as $p ) {
+			$w   = $this->build_where( $query, [ $p ] );
+			$all = promen_sql_compute_facets( $query, $w['sql'], $w['args'] );
+			$key = in_array( $p, [ 'dn' ], true ) ? 'dn' : $p;
+			$out[ $p ] = (array) ( $all[ $key ] ?? [] );
+		}
+		return $out;
+	}
+
+	public function search( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result {
+		global $wpdb;
+		$table = promen_catalog_table_name();
+		$w     = $this->build_where( $query );
+		$args  = $w['args'];
+
+		$where_sql = $w['sql'];
 		$count_sql = "SELECT COUNT(*) FROM {$table} WHERE {$where_sql}";
 		$total     = (int) ( $args ? $wpdb->get_var( $wpdb->prepare( $count_sql, $args ) ) : $wpdb->get_var( $count_sql ) );
 
@@ -515,10 +640,10 @@ class Promen_Sql_Fallback_Engine implements Promen_Catalog_Search_Engine {
 function promen_sql_compute_facets( Promen_Catalog_Query $query, string $where_sql, array $args ): array {
 	global $wpdb;
 	$table = promen_catalog_table_name();
-	$sql   = "SELECT steels_json, industries_json, norm_slug, angle, pn FROM {$table} WHERE {$where_sql}";
+	$sql   = "SELECT steels_json, industries_json, norm_slug, angle, pn, dn FROM {$table} WHERE {$where_sql}";
 	$rows  = $args ? $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A ) : $wpdb->get_results( $sql, ARRAY_A );
 
-	$facets = [ 'steel' => [], 'gost' => [], 'angle' => [], 'pn' => [], 'industry' => [] ];
+	$facets = [ 'steel' => [], 'gost' => [], 'angle' => [], 'pn' => [], 'dn' => [], 'industry' => [] ];
 	foreach ( $rows ?: [] as $row ) {
 		$steels = json_decode( $row['steels_json'] ?? '[]', true );
 		if ( is_array( $steels ) ) {
@@ -543,8 +668,34 @@ function promen_sql_compute_facets( Promen_Catalog_Query $query, string $where_s
 			$key = (string) (float) $row['pn'];
 			$facets['pn'][ $key ] = ( $facets['pn'][ $key ] ?? 0 ) + 1;
 		}
+		if ( isset( $row['dn'] ) && $row['dn'] !== null && $row['dn'] !== '' ) {
+			$key = (string) (float) $row['dn'];
+			$facets['dn'][ $key ] = ( $facets['dn'][ $key ] ?? 0 ) + 1;
+		}
 	}
 	return $facets;
+}
+
+/**
+ * Disjunctive-фасеты для активных групп: у своей группы распределение
+ * считается без её собственного фильтра. Meili — одним /multi-search,
+ * недоступен — SQL-fallback по скану на группу.
+ *
+ * @param string[] $params
+ * @return array<string, array<string, int>>
+ */
+function promen_catalog_disjunctive_facets( Promen_Catalog_Query $query, array $params ): array {
+	if ( ! $params ) {
+		return [];
+	}
+	if ( ! promen_meili_marked_down() ) {
+		try {
+			return ( new Promen_Meili_Engine() )->disjunctive_facets( $query, $params );
+		} catch ( Throwable $e ) {
+			promen_meili_marked_down( true );
+		}
+	}
+	return ( new Promen_Sql_Fallback_Engine() )->disjunctive_facets( $query, $params );
 }
 
 /**

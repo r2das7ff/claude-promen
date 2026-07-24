@@ -306,3 +306,8 @@ a.s10-contact-v:hover{color:var(--blue);}
   .ft-cell{padding:18px 16px 18px 20px;}
   .ft-bar{padding:12px 20px;}
 }
+
+/* Тач-экраны: гасим системную подсветку тапа (бирюзовая вспышка на кликах);
+   доступность сохраняем видимым focus-visible с нулевой специфичностью. */
+*{-webkit-tap-highlight-color:transparent;}
+:where(a,button,[role="button"],summary):focus-visible{outline:2px solid var(--blue);outline-offset:2px;}

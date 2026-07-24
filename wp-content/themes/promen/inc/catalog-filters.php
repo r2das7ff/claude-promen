@@ -429,10 +429,21 @@ function promen_scoped_counts( string $tax, int $cat_id ): array {
 	return $out;
 }
 
-/** Опции числового диапазона (from/to): отсортированные валидные значения в скоупе. */
-function promen_range_options( string $param ): array {
+/**
+ * Опции числового диапазона (from/to): отсортированные валидные значения в скоупе.
+ *
+ * @param string|null $group Слаг группы; null — скоуп из текущего WP-запроса
+ *                           (в REST-контексте is_tax/is_shop ложны — там группу
+ *                           нужно передавать явно, иначе ряд будет глобальным).
+ */
+function promen_range_options( string $param, ?string $group = null ): array {
+	if ( null === $group ) {
+		$cat_id = promen_scope_cat_id();
+	} else {
+		$cat_id = $group === '' ? 0 : (int) ( promen_term_map( 'product_cat' )[ $group ]['id'] ?? 0 );
+	}
 	$tax    = promen_range_taxonomies()[ $param ] ?? '';
-	$counts = promen_scoped_counts( $tax, promen_scope_cat_id() );
+	$counts = promen_scoped_counts( $tax, $cat_id );
 	$opts   = [];
 	foreach ( promen_numeric_terms( $tax ) as $t ) {
 		if ( isset( $counts[ $t['slug'] ] ) ) {

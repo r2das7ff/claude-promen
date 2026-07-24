@@ -180,6 +180,114 @@
     return u.toString();
   }
 
+  function activeFilterCount(u) {
+    var n = 0;
+    ['steel', 'gost', 'angle', 'industry'].forEach(function (p) {
+      var v = u.searchParams.get(p);
+      if (v) n += v.split(',').filter(Boolean).length;
+    });
+    ['dn', 'pn'].forEach(function (p) {
+      if (u.searchParams.get(p + '_min') || u.searchParams.get(p + '_max')) n++;
+    });
+    return n;
+  }
+
+  // Отрасль — single-select табы (клик по активному = сброс на «Все отрасли»).
+  function renderTabs(data, pageUrl) {
+    var box = document.getElementById('cbTabs');
+    if (!box) return;
+    var u = new URL(pageUrl);
+    var sel = (u.searchParams.get('industry') || '').split(',').filter(Boolean)[0] || '';
+    function href(slug) {
+      var t = new URL(pageUrl);
+      t.searchParams.delete('paged');
+      t.searchParams.delete('page');
+      if (slug && slug !== sel) t.searchParams.set('industry', slug);
+      else t.searchParams.delete('industry');
+      return t.toString();
+    }
+    var opts = (data.facets && data.facets.industry) || [];
+    var html = '<a class="cb-tab' + (sel === '' ? ' on' : '') + '" href="' + esc(href('')) + '" data-industry="">Все отрасли</a>';
+    opts.forEach(function (o) {
+      var on = sel === o.slug;
+      html += '<a class="cb-tab' + (on ? ' on' : '') + '" href="' + esc(href(o.slug)) + '" data-industry="' + esc(o.slug) + '">' +
+        esc(o.name) + '<span class="cb-tab-n">' + Number(o.count).toLocaleString('ru-RU') + '</span></a>';
+    });
+    box.innerHTML = html;
+  }
+
+  function renderReset(pageUrl) {
+    var el = document.getElementById('cbReset');
+    if (!el) return;
+    var u = new URL(pageUrl);
+    var n = activeFilterCount(u);
+    var ru = new URL(location.pathname, location.origin);
+    var g = u.searchParams.get('group');
+    if (g) ru.searchParams.set('group', g);
+    el.href = ru.toString();
+    var badge = el.querySelector('.cb-reset-n');
+    if (badge) badge.textContent = n;
+    if (n) el.removeAttribute('hidden'); else el.setAttribute('hidden', '');
+
+    var toggle = document.getElementById('cbToggle');
+    if (toggle) {
+      var tb = toggle.querySelector('.cb-toggle-n');
+      if (n) {
+        if (!tb) {
+          tb = document.createElement('span');
+          tb.className = 'cb-toggle-n';
+          toggle.appendChild(tb);
+        }
+        tb.textContent = n;
+      } else if (tb) {
+        tb.remove();
+      }
+    }
+  }
+
+  function updateSliderUI(box) {
+    var vals;
+    try { vals = JSON.parse(box.dataset.values || '[]'); } catch (e) { vals = []; }
+    if (!vals.length) return;
+    var minI = box.querySelector('[data-bound=min]');
+    var maxI = box.querySelector('[data-bound=max]');
+    var fill = box.querySelector('.cbf-fill');
+    var out = box.querySelector('.cbf-val');
+    var a = +minI.value, b = +maxI.value, last = vals.length - 1;
+    if (fill) {
+      fill.style.left = (a / last * 100) + '%';
+      fill.style.right = (100 - b / last * 100) + '%';
+    }
+    if (out) out.textContent = vals[a].name + ' – ' + vals[b].name;
+    // Оба бегунка в правом углу — сверху должен быть min, иначе не растащить.
+    minI.style.zIndex = a >= last ? 5 : 3;
+    maxI.style.zIndex = 4;
+  }
+
+  function sliderHtml(param, opts, u) {
+    var lbl = (cfg.rangeLbl && cfg.rangeLbl[param]) || param;
+    var min = parseFloat(u.searchParams.get(param + '_min'));
+    var max = parseFloat(u.searchParams.get(param + '_max'));
+    var last = opts.length - 1, iMin = 0, iMax = last;
+    var vals = opts.map(function (o) {
+      return { val: parseFloat(o.val != null ? o.val : o.name), name: String(o.name) };
+    });
+    vals.forEach(function (o, i) {
+      if (!isNaN(min) && o.val <= min) iMin = i;
+      if (!isNaN(max) && o.val <= max) iMax = i;
+    });
+    if (iMax < iMin) iMax = iMin;
+    var valTxt = vals[iMin].name + ' – ' + vals[iMax].name;
+    return '<div class="cbf-slider" data-param="' + esc(param) + '" data-values="' + esc(JSON.stringify(vals)) + '">' +
+      '<span class="cbf-lbl">' + esc(lbl) + '</span>' +
+      '<div class="cbf-track"><div class="cbf-fill"></div>' +
+      '<input type="range" class="cbf-r" data-bound="min" min="0" max="' + last + '" step="1" value="' + iMin + '" aria-label="' + esc(lbl) + ' от">' +
+      '<input type="range" class="cbf-r" data-bound="max" min="0" max="' + last + '" step="1" value="' + iMax + '" aria-label="' + esc(lbl) + ' до">' +
+      '</div><span class="cbf-val">' + esc(valTxt) + '</span></div>';
+  }
+
+  var CHIP_ORDER = ['gost', 'steel', 'angle'];
+
   function renderFilters(data, pageUrl) {
     var filtersEl = document.getElementById('cbFilters');
     if (!filtersEl) return;
@@ -187,47 +295,25 @@
     var facetParams = data.facet_params || Object.keys(facets);
     var rangeOptions = data.range_options || {};
     var labels = cfg.labels || {};
+    var u = new URL(pageUrl);
     var html = '';
 
+    var sliders = '';
     (data.ranges || []).forEach(function (param) {
       var opts = rangeOptions[param] || [];
-      if (!opts.length) return;
-      var lbl = (cfg.rangeLbl && cfg.rangeLbl[param]) || param;
-      var u = new URL(pageUrl);
-      var min = u.searchParams.get(param + '_min') || '';
-      var max = u.searchParams.get(param + '_max') || '';
-      html += '<div class="cbf-range" data-param="' + esc(param) + '">';
-      html += '<span class="cbf-lbl">' + esc(lbl) + '</span>';
-      html += '<select class="cbf-sel" data-bound="min"><option value="">от</option>';
-      opts.forEach(function (o) {
-        var val = String(o.val != null ? o.val : o.name);
-        html += '<option value="' + esc(val) + '"' + (min === val ? ' selected' : '') + '>' + esc(o.name) + '</option>';
-      });
-      html += '</select><span class="cbf-dash">–</span>';
-      html += '<select class="cbf-sel" data-bound="max"><option value="">до</option>';
-      opts.forEach(function (o) {
-        var val = String(o.val != null ? o.val : o.name);
-        html += '<option value="' + esc(val) + '"' + (max === val ? ' selected' : '') + '>' + esc(o.name) + '</option>';
-      });
-      html += '</select></div>';
+      if (opts.length > 1) sliders += sliderHtml(param, opts, u);
     });
+    if (sliders) html += '<div class="cbf-sliders">' + sliders + '</div>';
 
-    facetParams.forEach(function (param) {
-      if (param === 'pn') return;
+    CHIP_ORDER.forEach(function (param) {
+      if (facetParams.indexOf(param) < 0) return;
       var opts = facets[param] || [];
-      if (param === 'industry' && cfg.industryTags) {
-        var counts = {};
-        opts.forEach(function (o) { counts[o.slug] = o.count; });
-        opts = Object.keys(cfg.industryTags).map(function (slug) {
-          return { slug: slug, name: cfg.industryTags[slug], count: counts[slug] || 0 };
-        });
-      }
       if (!opts.length) return;
-      var u = new URL(pageUrl);
       var sel = (u.searchParams.get(param) || '').split(',').filter(Boolean);
-      var vis = 6;
+      var vis = 8;
       html += '<div class="cbf-multi" data-param="' + esc(param) + '">';
       html += '<span class="cbf-lbl">' + esc(labels[param] || param) + '</span>';
+      html += '<div class="cbf-chips">';
       opts.forEach(function (o, i) {
         var on = sel.indexOf(o.slug) >= 0;
         var empty = o.count === 0;
@@ -237,11 +323,14 @@
       if (opts.length > vis) {
         html += '<button type="button" class="c-chip c-chip--more">+ ещё ' + (opts.length - vis) + '</button>';
       }
-      html += '</div>';
+      html += '</div></div>';
     });
 
     filtersEl.innerHTML = html;
     if (data.group) filtersEl.dataset.group = data.group;
+    filtersEl.querySelectorAll('.cbf-slider').forEach(updateSliderUI);
+    renderTabs(data, pageUrl);
+    renderReset(pageUrl);
   }
 
   function renderPagination(data, pageUrl) {
@@ -446,11 +535,12 @@
       }
     }
 
-    var a = e.target.closest('a.c-chip, .cat-pagination a, .ce-reset, .ce-all, a.sbn-filter, .cbs-tag, .cbs-reset');
+    var a = e.target.closest('a.c-chip, .cat-pagination a, .ce-reset, .ce-all, a.sbn-filter, .cbs-tag, .cbs-reset, a.cb-tab, a.cb-reset');
     if (!a || !a.href) return;
     if (a.classList.contains('mh-cat-link')) return;
     e.preventDefault();
-    swap(a.href, true);
+    var keepPos = a.classList.contains('cb-tab') || a.classList.contains('cb-reset') || a.classList.contains('c-chip');
+    swap(a.href, true, keepPos ? { scroll: false } : {});
   });
 
   // Клик по сортируемой шапке (DN/PN/Масса) — toggle asc/desc.
@@ -491,28 +581,75 @@
   bindFilterToggle();
   window._promenBindFilterToggle = bindFilterToggle;
 
-  document.addEventListener('change', function (e) {
-    var sel = e.target.closest('.cbf-range .cbf-sel');
-    if (!sel) return;
-    var box = sel.closest('.cbf-range');
-    var param = box.dataset.param;
-    var min = box.querySelector('[data-bound=min]').value;
-    var max = box.querySelector('[data-bound=max]').value;
-    var url = new URL(location.href);
-    if (min) url.searchParams.set(param + '_min', min); else url.searchParams.delete(param + '_min');
-    if (max) url.searchParams.set(param + '_max', max); else url.searchParams.delete(param + '_max');
-    url.searchParams.delete('paged');
-    swap(url.toString(), true);
+  // Слайдеры DN/PN: input — живое обновление подписи/заливки, change — запрос.
+  document.addEventListener('input', function (e) {
+    var r = e.target.closest && e.target.closest('.cbf-slider .cbf-r');
+    if (!r) return;
+    var box = r.closest('.cbf-slider');
+    var minI = box.querySelector('[data-bound=min]');
+    var maxI = box.querySelector('[data-bound=max]');
+    if (+minI.value > +maxI.value) {
+      if (r === minI) maxI.value = minI.value; else minI.value = maxI.value;
+    }
+    updateSliderUI(box);
   });
+
+  document.addEventListener('change', function (e) {
+    var r = e.target.closest && e.target.closest('.cbf-slider .cbf-r');
+    if (!r) return;
+    var box = r.closest('.cbf-slider');
+    var vals;
+    try { vals = JSON.parse(box.dataset.values || '[]'); } catch (err) { vals = []; }
+    if (!vals.length) return;
+    var param = box.dataset.param;
+    var a = +box.querySelector('[data-bound=min]').value;
+    var b = +box.querySelector('[data-bound=max]').value;
+    var url = new URL(location.href);
+    // Крайние позиции = «без ограничения»: параметр из URL убираем.
+    if (a <= 0) url.searchParams.delete(param + '_min');
+    else url.searchParams.set(param + '_min', String(vals[a].val));
+    if (b >= vals.length - 1) url.searchParams.delete(param + '_max');
+    else url.searchParams.set(param + '_max', String(vals[b].val));
+    url.searchParams.delete('paged');
+    swap(url.toString(), true, { scroll: false });
+  });
+
+  // Поиск: живой, без Enter (Enter тоже работает — submit ниже).
+  var searchInput = searchForm && searchForm.querySelector('input[name=q]');
+  var qTimer = null;
+
+  function applySearch(val) {
+    var url = new URL(location.href);
+    var cur = url.searchParams.get('q') || '';
+    if (val === cur) return;
+    url.searchParams.delete('paged');
+    if (val) url.searchParams.set('q', val); else url.searchParams.delete('q');
+    swap(url.toString(), true, { scroll: false });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function () {
+      clearTimeout(qTimer);
+      var val = searchInput.value.trim();
+      qTimer = setTimeout(function () {
+        if (val.length === 1) return; // один символ — ждём продолжения
+        applySearch(val);
+      }, 350);
+    });
+    searchInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && searchInput.value !== '') {
+        searchInput.value = '';
+        clearTimeout(qTimer);
+        applySearch('');
+      }
+    });
+  }
 
   if (searchForm) {
     searchForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      var q = searchForm.querySelector('input[name=q]').value.trim();
-      var url = new URL(location.href);
-      url.searchParams.delete('paged');
-      if (q) url.searchParams.set('q', q); else url.searchParams.delete('q');
-      swap(url.toString(), true);
+      clearTimeout(qTimer);
+      applySearch(searchForm.querySelector('input[name=q]').value.trim());
     });
   }
 

@@ -54,40 +54,7 @@ function promen_rest_catalog( WP_REST_Request $request ): WP_REST_Response {
 	}
 	$result->hits = $hits;
 
-	// Полный универсум опций группы (без мультивыбора) с наложением текущих
-	// счётчиков → опции НЕ исчезают и НЕ «скачут» при выборе (0 = серым).
-	$universe = promen_catalog_facet_universe( $group );
-	$merged   = [];
-	foreach ( $facets as $param ) {
-		$univ = (array) ( $universe[ $param ] ?? [] );
-		$live = (array) ( $result->facets[ $param ] ?? [] );
-		if ( ! $univ ) {
-			$merged[ $param ] = $live;
-			continue;
-		}
-		$dist = [];
-		foreach ( $univ as $slug => $c ) {
-			$dist[ $slug ] = (int) ( $live[ $slug ] ?? 0 );
-		}
-		foreach ( $live as $slug => $c ) {
-			if ( ! isset( $dist[ $slug ] ) ) {
-				$dist[ $slug ] = (int) $c;
-			}
-		}
-		$merged[ $param ] = $dist;
-	}
-
-	$facet_options = promen_rest_build_facet_options( $merged, $facets );
-	if ( in_array( 'industry', $facets, true ) && function_exists( 'promen_industry_facet_options' ) ) {
-		$facet_options['industry'] = promen_industry_facet_options( $result->facets['industry'] ?? [] );
-	}
-
-	$range_options = [];
-	foreach ( $ranges as $r ) {
-		if ( function_exists( 'promen_range_options' ) ) {
-			$range_options[ $r ] = promen_range_options( $r );
-		}
-	}
+	$state = promen_catalog_filter_state( $query, $result );
 
 	return new WP_REST_Response( [
 		'hits'          => $result->hits,
@@ -95,14 +62,108 @@ function promen_rest_catalog( WP_REST_Request $request ): WP_REST_Response {
 		'page'          => $result->page,
 		'per_page'      => $result->per_page,
 		'pages'         => (int) ceil( $result->total / max( 1, $result->per_page ) ),
-		'facets'        => $facet_options,
-		'range_options' => $range_options,
+		'facets'        => $state['facet_options'],
+		'range_options' => $state['range_options'],
 		'columns'       => $columns,
 		'ranges'        => $ranges,
 		'facet_params'  => $facets,
 		'engine'        => $result->engine,
 		'group'         => $group,
 	], 200 );
+}
+
+/**
+ * Опции фасетов и ряды диапазонов для запроса — общая логика REST и SSR-партиала.
+ *
+ * Без активных фильтров — полный универсум группы (позиции опций стабильны,
+ * нули серым). С активными фильтрами — режим сужения: опции, несовместимые
+ * с выбором в ДРУГИХ группах, скрываются; распределение собственной группы
+ * считается без её фильтра (disjunctive), чтобы внутри группы можно было
+ * расширять выбор. Ряды DN/PN сужаются к реально доступным значениям —
+ * слайдеры не предлагают пустых диапазонов.
+ *
+ * @return array{facet_options: array<string, array>, range_options: array<string, array>}
+ */
+function promen_catalog_filter_state( Promen_Catalog_Query $query, Promen_Catalog_Search_Result $result ): array {
+	$group  = $query->group;
+	$facets = promen_catalog_schema_facets( $group );
+	$ranges = promen_catalog_schema_ranges( $group );
+
+	$active      = promen_catalog_query_active_facets( $query );
+	$has_filters = $active || $query->q !== '';
+	$dj          = $active ? promen_catalog_disjunctive_facets( $query, $active ) : [];
+
+	$merged = [];
+	if ( $has_filters ) {
+		foreach ( $facets as $param ) {
+			$dist  = (array) ( $dj[ $param ] ?? $result->facets[ $param ] ?? [] );
+			$sel   = in_array( $param, [ 'steel', 'gost', 'angle', 'industry' ], true ) ? (array) $query->{$param} : [];
+			$clean = [];
+			foreach ( $dist as $slug => $c ) {
+				if ( (int) $c > 0 ) {
+					$clean[ (string) $slug ] = (int) $c;
+				}
+			}
+			// Выбранное не исчезает даже при нулевом счёте — иначе фильтр не снять.
+			foreach ( $sel as $s ) {
+				if ( ! isset( $clean[ $s ] ) ) {
+					$clean[ $s ] = (int) ( $dist[ $s ] ?? 0 );
+				}
+			}
+			$merged[ $param ] = $clean;
+		}
+	} else {
+		// Полный универсум опций группы с наложением текущих счётчиков.
+		$universe = promen_catalog_facet_universe( $group );
+		foreach ( $facets as $param ) {
+			$univ = (array) ( $universe[ $param ] ?? [] );
+			$live = (array) ( $result->facets[ $param ] ?? [] );
+			if ( ! $univ ) {
+				$merged[ $param ] = $live;
+				continue;
+			}
+			$dist = [];
+			foreach ( $univ as $slug => $c ) {
+				$dist[ $slug ] = (int) ( $live[ $slug ] ?? 0 );
+			}
+			foreach ( $live as $slug => $c ) {
+				if ( ! isset( $dist[ $slug ] ) ) {
+					$dist[ $slug ] = (int) $c;
+				}
+			}
+			$merged[ $param ] = $dist;
+		}
+	}
+
+	$facet_options = promen_rest_build_facet_options( $merged, $facets );
+	if ( in_array( 'industry', $facets, true ) && function_exists( 'promen_industry_facet_options' ) ) {
+		$ind_dist = (array) ( $dj['industry'] ?? $result->facets['industry'] ?? [] );
+		$facet_options['industry'] = promen_industry_facet_options( array_map( 'intval', $ind_dist ) );
+	}
+
+	$range_options = [];
+	foreach ( $ranges as $r ) {
+		$full = function_exists( 'promen_range_options' ) ? promen_range_options( $r, $group ) : [];
+		if ( $has_filters && $full ) {
+			$dist = (array) ( $dj[ $r ] ?? $result->facets[ $r ] ?? [] );
+			if ( $dist ) {
+				$avail = [];
+				foreach ( array_keys( $dist ) as $v ) {
+					$avail[ (string) (float) $v ] = true;
+				}
+				$narrow = array_values( array_filter(
+					$full,
+					static fn( array $o ): bool => isset( $avail[ (string) (float) $o['val'] ] )
+				) );
+				if ( $narrow ) {
+					$full = $narrow;
+				}
+			}
+		}
+		$range_options[ $r ] = $full;
+	}
+
+	return [ 'facet_options' => $facet_options, 'range_options' => $range_options ];
 }
 
 /**
