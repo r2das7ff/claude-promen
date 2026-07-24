@@ -35,5 +35,42 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_dequeue_script( 'wc-cart-fragments' );
 }, 20 );
 
+/**
+ * Фронт без покупки — значит без jQuery и WC-скриптов вовсе (−139KB, −7 запросов):
+ * тема на vanilla JS, а sourcebuster/order-attribution/add-to-cart мертвы без корзины.
+ * Залогиненных не трогаем (админ-бар и служебные сценарии).
+ */
+add_action( 'wp_enqueue_scripts', function () {
+	if ( is_admin() || is_user_logged_in() ) {
+		return;
+	}
+	$dead = [
+		'wc-cart-fragments',
+		'wc-add-to-cart',
+		'wc-single-product',
+		'woocommerce',
+		'wc-order-attribution',
+		'sourcebuster-js',
+		'wc-js-cookie',
+		'js-cookie',
+		'wc-jquery-blockui',
+		'jquery-blockui',
+		'jquery-migrate',
+		'jquery',
+	];
+	foreach ( $dead as $handle ) {
+		wp_dequeue_script( $handle );
+	}
+}, 100 );
+
+/** CSS WC-блоков (~350KB raw) грузится хуком блоковых ассетов — снимаем там же. */
+add_action( 'enqueue_block_assets', function () {
+	if ( is_admin() || is_user_logged_in() ) {
+		return;
+	}
+	wp_dequeue_style( 'wc-blocks-style' );
+	wp_deregister_style( 'wc-blocks-style' );
+}, 100 );
+
 /** Складские статусы наружу не показываем («под заказ» — всегда). */
 add_filter( 'woocommerce_get_stock_html', '__return_empty_string' );

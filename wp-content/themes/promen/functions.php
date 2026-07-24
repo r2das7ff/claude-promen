@@ -5,7 +5,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PROMEN_VERSION', '0.31.0' );
+define( 'PROMEN_VERSION', '0.32.0' );
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );
@@ -38,6 +38,21 @@ add_action( 'send_headers', function () {
 		nocache_headers();
 	}
 } );
+
+/**
+ * Preload критичных начертаний: CondBlack — LCP-заголовки, Regular — основной текст.
+ * URL без ?ver — должен байт-в-байт совпадать с url() из base.css, иначе двойная загрузка.
+ */
+add_action( 'wp_head', function () {
+	$base = get_theme_file_uri( 'assets/fonts' );
+	foreach ( [ 'DINPro-CondBlack', 'DINPro' ] as $f ) {
+		printf(
+			'<link rel="preload" href="%s/%s.woff2" as="font" type="font/woff2" crossorigin>' . "\n",
+			esc_url( $base ),
+			$f
+		);
+	}
+}, 2 );
 
 add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style( 'promen-base', get_theme_file_uri( 'assets/css/base.css' ), [], PROMEN_VERSION );

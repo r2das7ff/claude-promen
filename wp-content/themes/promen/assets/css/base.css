@@ -5,13 +5,13 @@
    сетка и адаптив — brand-spec.md + responsive-rules.md.
    ════════════════════════════════════════════════════════════ */
 
-@font-face{font-family:'DINPro';src:url('../fonts/DINPro.otf') format('opentype');font-weight:400;font-display:swap;}
-@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Light.otf') format('opentype');font-weight:300;font-display:swap;}
-@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Medium.otf') format('opentype');font-weight:500;font-display:swap;}
-@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Bold.otf') format('opentype');font-weight:700;font-display:swap;}
-@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Black.otf') format('opentype');font-weight:900;font-display:swap;}
-@font-face{font-family:'DINProCond';src:url('../fonts/DINPro-CondBlack.otf') format('opentype');font-weight:900;font-display:swap;}
-@font-face{font-family:'DINProCond';src:url('../fonts/DINPro-CondBold.otf') format('opentype');font-weight:700;font-display:swap;}
+@font-face{font-family:'DINPro';src:url('../fonts/DINPro.woff2') format('woff2');font-weight:400;font-display:swap;}
+@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Light.woff2') format('woff2');font-weight:300;font-display:swap;}
+@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Medium.woff2') format('woff2');font-weight:500;font-display:swap;}
+@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Bold.woff2') format('woff2');font-weight:700;font-display:swap;}
+@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Black.woff2') format('woff2');font-weight:900;font-display:swap;}
+@font-face{font-family:'DINProCond';src:url('../fonts/DINPro-CondBlack.woff2') format('woff2');font-weight:900;font-display:swap;}
+@font-face{font-family:'DINProCond';src:url('../fonts/DINPro-CondBold.woff2') format('woff2');font-weight:700;font-display:swap;}
 
 :root{
   --bg:#E8ECF0;--bg2:#DDE3EA;--dark:#0F2A44;--blue:#1E3D5C;
