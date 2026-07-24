@@ -60,7 +60,7 @@ function promen_catalog_group_schema( string $group ): array {
 		return [
 			'columns' => [ 'dn', 'd', 's', 'massm' ],
 			'facets'  => [ 'industry', 'steel', 'gost' ],
-			'ranges'  => [ 'dn' ],
+			'ranges'  => [ 'dn', 's' ],
 			'sort'    => [ 'field' => 'dn', 'dir' => 'asc' ],
 		];
 	}
@@ -85,37 +85,37 @@ function promen_catalog_group_schema( string $group ): array {
 		'otvody'      => [
 			'columns' => [ 'dn', 'd', 's', 'angle', 'radius', 'mass' ],
 			'facets'  => [ 'industry', 'steel', 'angle', 'gost' ],
-			'ranges'  => [ 'dn', 'pn' ],
+			'ranges'  => [ 'dn', 'pn', 's' ],
 			'sort'    => [ 'field' => 'dn', 'dir' => 'asc' ],
 		],
 		'dnishcha'    => [
 			'columns' => [ 'dn', 'd', 's', 'height', 'mass' ],
 			'facets'  => [ 'industry', 'steel', 'gost' ],
-			'ranges'  => [ 'dn', 'pn' ],
+			'ranges'  => [ 'dn', 'pn', 's' ],
 			'sort'    => [ 'field' => 'dn', 'dir' => 'asc' ],
 		],
 		'zaglushki'   => [
 			'columns' => [ 'exec', 'd', 's', 'mass' ],
 			'facets'  => [ 'industry', 'steel', 'gost' ],
-			'ranges'  => [ 'dn', 'pn' ],
+			'ranges'  => [ 'dn', 'pn', 's' ],
 			'sort'    => [ 'field' => 'd', 'dir' => 'asc' ],
 		],
 		'izolyatsiya' => [
 			'columns' => [ 'dn', 'd', 's' ],
 			'facets'  => [ 'industry', 'steel', 'gost' ],
-			'ranges'  => [ 'dn' ],
+			'ranges'  => [ 'dn', 's' ],
 			'sort'    => [ 'field' => 'dn', 'dir' => 'asc' ],
 		],
 		'troyniki', 'perekhody', 'tochenye' => [
 			'columns' => [ 'dn', 'd', 's', 'dn2', 'd2', 's2', 'mass' ],
 			'facets'  => [ 'industry', 'steel', 'gost' ],
-			'ranges'  => [ 'dn', 'pn' ],
+			'ranges'  => [ 'dn', 'pn', 's' ],
 			'sort'    => [ 'field' => 'dn', 'dir' => 'asc' ],
 		],
 		default => [
 			'columns' => [ 'dn', 'd', 's', 'mass' ],
 			'facets'  => [ 'industry', 'steel', 'angle', 'gost' ],
-			'ranges'  => [ 'dn', 'pn' ],
+			'ranges'  => [ 'dn', 'pn', 's' ],
 			'sort'    => [ 'field' => 'dn', 'dir' => 'asc' ],
 		],
 	};

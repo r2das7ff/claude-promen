@@ -14,9 +14,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/** Числовые фильтры-диапазоны: param => taxonomy. */
+/** Числовые фильтры-диапазоны: param => taxonomy (ряды из терминов атрибутов). */
 function promen_range_taxonomies(): array {
 	return [ 'dn' => 'pa_dn', 'pn' => 'pa_pn' ];
+}
+
+/** Все диапазонные параметры (стенка s — без таксономии, ряд из канона). */
+function promen_range_params(): array {
+	return [ 'dn', 'pn', 's' ];
 }
 
 /** Мультивыбор: param => taxonomy. */
@@ -108,7 +113,7 @@ function promen_numeric_terms( string $tax ): array {
 /** Активные диапазоны: [ 'dn'=>['min'=>?float,'max'=>?float], … ] (только заданные). */
 function promen_active_ranges(): array {
 	$out = [];
-	foreach ( promen_range_taxonomies() as $param => $tax ) {
+	foreach ( promen_range_params() as $param ) {
 		$min = isset( $_GET[ $param . '_min' ] ) && $_GET[ $param . '_min' ] !== '' ? (float) $_GET[ $param . '_min' ] : null;
 		$max = isset( $_GET[ $param . '_max' ] ) && $_GET[ $param . '_max' ] !== '' ? (float) $_GET[ $param . '_max' ] : null;
 		if ( null !== $min || null !== $max ) {
@@ -272,9 +277,14 @@ add_action( 'pre_get_posts', function ( WP_Query $q ) {
 	}
 
 	// Диапазоны DN/PN → набор слагов (пустой набор = заведомо ничего, чтобы не «протекало»).
+	// Стенка s таксономии не имеет — в legacy-режиме WP_Query не фильтрует по ней.
 	foreach ( promen_active_ranges() as $param => $r ) {
+		$tax = promen_range_taxonomies()[ $param ] ?? '';
+		if ( $tax === '' ) {
+			continue;
+		}
 		$slugs = promen_range_slugs( $param, $r['min'], $r['max'] );
-		$tax_query[] = [ 'taxonomy' => promen_range_taxonomies()[ $param ], 'field' => 'slug', 'terms' => $slugs ?: [ '__none__' ] ];
+		$tax_query[] = [ 'taxonomy' => $tax, 'field' => 'slug', 'terms' => $slugs ?: [ '__none__' ] ];
 	}
 
 	// Мультивыбор → OR внутри группы, AND между группами.
@@ -437,6 +447,9 @@ function promen_scoped_counts( string $tax, int $cat_id ): array {
  *                           нужно передавать явно, иначе ряд будет глобальным).
  */
 function promen_range_options( string $param, ?string $group = null ): array {
+	if ( 's' === $param ) {
+		return promen_wall_range_options( $group ?? '' );
+	}
 	if ( null === $group ) {
 		$cat_id = promen_scope_cat_id();
 	} else {
@@ -451,6 +464,48 @@ function promen_range_options( string $param, ?string $group = null ): array {
 		}
 	}
 	return $opts; // уже по возрастанию
+}
+
+/**
+ * Ряд толщин стенки группы — из канона (у стенки нет таксономии-атрибута).
+ * Transient с версией фильтров, как у остальных кэшей.
+ *
+ * @return array<int, array{val: float, name: string}>
+ */
+function promen_wall_range_options( string $group ): array {
+	static $cache = [];
+	if ( isset( $cache[ $group ] ) ) {
+		return $cache[ $group ];
+	}
+	$ckey   = promen_filters_cache_key( 'wall_range', [ $group ] );
+	$cached = get_transient( $ckey );
+	if ( is_array( $cached ) ) {
+		return $cache[ $group ] = $cached;
+	}
+
+	global $wpdb;
+	$table = promen_catalog_table_name();
+	$slugs = $group !== '' ? promen_catalog_group_slugs( $group ) : [];
+	if ( $slugs ) {
+		$ph   = implode( ',', array_fill( 0, count( $slugs ), '%s' ) );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$vals = $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT s FROM {$table} WHERE s IS NOT NULL AND s > 0 AND category IN ({$ph}) ORDER BY s ASC", $slugs ) );
+	} else {
+		$vals = $wpdb->get_col( "SELECT DISTINCT s FROM {$table} WHERE s IS NOT NULL AND s > 0 ORDER BY s ASC" );
+	}
+
+	$opts = [];
+	foreach ( $vals ?: [] as $v ) {
+		$f = (float) $v;
+		// 2 → «2», 2.50 → «2,5» — как в ячейках реестра.
+		$name   = rtrim( rtrim( number_format( $f, 2, '.', '' ), '0' ), '.' );
+		$opts[] = [ 'val' => $f, 'name' => str_replace( '.', ',', $name ) ];
+	}
+	// Пустоту не кэшируем: запрос в окне миграции не должен залипать на 15 мин.
+	if ( $opts ) {
+		set_transient( $ckey, $opts, 15 * MINUTE_IN_SECONDS );
+	}
+	return $cache[ $group ] = $opts;
 }
 
 /**
@@ -573,7 +628,7 @@ function promen_multi_options( string $param, int $limit = 40 ): array {
 /** Все параметры фильтров (для сброса/сохранения). */
 function promen_filter_param_keys(): array {
 	$keys = [ 'q', 'paged' ];
-	foreach ( array_keys( promen_range_taxonomies() ) as $p ) {
+	foreach ( promen_range_params() as $p ) {
 		$keys[] = $p . '_min';
 		$keys[] = $p . '_max';
 	}
@@ -710,7 +765,7 @@ function promen_group_filter_url( ?string $group_slug ): string {
 
 /** Сводка активных фильтров: [ ['label','value','clear_url'] ] для строки-резюме. */
 function promen_active_summary(): array {
-	$labels  = [ 'dn' => 'DN', 'pn' => 'PN', 'steel' => 'Сталь', 'industry' => 'Отрасль', 'angle' => 'Угол', 'gost' => 'ГОСТ' ];
+	$labels  = [ 'dn' => 'DN', 'pn' => 'PN', 's' => 'Стенка', 'steel' => 'Сталь', 'industry' => 'Отрасль', 'angle' => 'Угол', 'gost' => 'ГОСТ' ];
 	$out     = [];
 	foreach ( promen_active_ranges() as $p => $r ) {
 		$val = ( null !== $r['min'] ? (float) $r['min'] : '…' ) . '–' . ( null !== $r['max'] ? (float) $r['max'] : '…' );

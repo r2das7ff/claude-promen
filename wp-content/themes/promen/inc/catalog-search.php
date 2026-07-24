@@ -14,6 +14,8 @@ class Promen_Catalog_Query {
 	public ?float $dn_max = null;
 	public ?float $pn_min = null;
 	public ?float $pn_max = null;
+	public ?float $s_min = null;
+	public ?float $s_max = null;
 	/** @var string[] */
 	public array $steel = [];
 	/** @var string[] */
@@ -35,7 +37,7 @@ class Promen_Catalog_Query {
 		$q->q     = sanitize_text_field( (string) ( $params['q'] ?? '' ) );
 		$q->scope = ( (string) ( $params['scope'] ?? '' ) === 'all' ) ? 'all' : '';
 
-		foreach ( [ 'dn', 'pn' ] as $p ) {
+		foreach ( [ 'dn', 'pn', 's' ] as $p ) {
 			$min_key = $p . '_min';
 			$max_key = $p . '_max';
 			if ( isset( $params[ $min_key ] ) && $params[ $min_key ] !== '' ) {
@@ -154,6 +156,14 @@ function promen_catalog_meili_filter( Promen_Catalog_Query $query, array $exclud
 			$parts[] = 'pn <= ' . $query->pn_max;
 		}
 	}
+	if ( ! $skip( 's' ) ) {
+		if ( null !== $query->s_min ) {
+			$parts[] = 's >= ' . $query->s_min;
+		}
+		if ( null !== $query->s_max ) {
+			$parts[] = 's <= ' . $query->s_max;
+		}
+	}
 
 	if ( $query->steel && ! $skip( 'steel' ) ) {
 		$steel = array_map(
@@ -207,6 +217,9 @@ function promen_catalog_query_active_facets( Promen_Catalog_Query $query ): arra
 	}
 	if ( null !== $query->pn_min || null !== $query->pn_max ) {
 		$out[] = 'pn';
+	}
+	if ( null !== $query->s_min || null !== $query->s_max ) {
+		$out[] = 's';
 	}
 	return $out;
 }
@@ -275,7 +288,7 @@ class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
 		] );
 		promen_meili_request( 'PATCH', '/indexes/' . promen_meili_index() . '/settings', [
 			'searchableAttributes' => [ 'search_text', 'sku', 'title', 'norm', 'family' ],
-			'filterableAttributes' => [ 'category', 'steels', 'industries', 'norm_slug', 'dn', 'dn2', 'pn', 'angle' ],
+			'filterableAttributes' => [ 'category', 'steels', 'industries', 'norm_slug', 'dn', 'dn2', 'pn', 'angle', 's' ],
 			'sortableAttributes'   => [ 'dn', 'pn', 'mass', 'title' ],
 			// Иначе estimatedTotalHits капается на 1000 → счётчик не меняется при
 			// фильтрации крупных категорий (отводы ~1900). Поднимаем потолок.
@@ -349,9 +362,10 @@ class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
 				$out[] = $map[ $f ];
 			}
 		}
-		// dn/pn — всегда: по их распределению сужаются ряды слайдеров диапазонов.
+		// dn/pn/s — всегда: по их распределению сужаются ряды слайдеров диапазонов.
 		$out[] = 'dn';
 		$out[] = 'pn';
+		$out[] = 's';
 		return array_values( array_unique( $out ) );
 	}
 
@@ -363,6 +377,7 @@ class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
 			'angle'    => 'angle',
 			'pn'       => 'pn',
 			'dn'       => 'dn',
+			's'        => 's',
 			'industry' => 'industries',
 		];
 		return $map[ $param ] ?? $param;
@@ -525,6 +540,16 @@ class Promen_Sql_Fallback_Engine implements Promen_Catalog_Search_Engine {
 				$args[]  = $query->pn_max;
 			}
 		}
+		if ( ! $skip( 's' ) ) {
+			if ( null !== $query->s_min ) {
+				$where[] = 's >= %f';
+				$args[]  = $query->s_min;
+			}
+			if ( null !== $query->s_max ) {
+				$where[] = 's <= %f';
+				$args[]  = $query->s_max;
+			}
+		}
 		if ( $query->gost && ! $skip( 'gost' ) ) {
 			$ph      = implode( ',', array_fill( 0, count( $query->gost ), '%s' ) );
 			$where[] = "norm_slug IN ({$ph})";
@@ -640,10 +665,10 @@ class Promen_Sql_Fallback_Engine implements Promen_Catalog_Search_Engine {
 function promen_sql_compute_facets( Promen_Catalog_Query $query, string $where_sql, array $args ): array {
 	global $wpdb;
 	$table = promen_catalog_table_name();
-	$sql   = "SELECT steels_json, industries_json, norm_slug, angle, pn, dn FROM {$table} WHERE {$where_sql}";
+	$sql   = "SELECT steels_json, industries_json, norm_slug, angle, pn, dn, s FROM {$table} WHERE {$where_sql}";
 	$rows  = $args ? $wpdb->get_results( $wpdb->prepare( $sql, $args ), ARRAY_A ) : $wpdb->get_results( $sql, ARRAY_A );
 
-	$facets = [ 'steel' => [], 'gost' => [], 'angle' => [], 'pn' => [], 'dn' => [], 'industry' => [] ];
+	$facets = [ 'steel' => [], 'gost' => [], 'angle' => [], 'pn' => [], 'dn' => [], 's' => [], 'industry' => [] ];
 	foreach ( $rows ?: [] as $row ) {
 		$steels = json_decode( $row['steels_json'] ?? '[]', true );
 		if ( is_array( $steels ) ) {
@@ -671,6 +696,10 @@ function promen_sql_compute_facets( Promen_Catalog_Query $query, string $where_s
 		if ( isset( $row['dn'] ) && $row['dn'] !== null && $row['dn'] !== '' ) {
 			$key = (string) (float) $row['dn'];
 			$facets['dn'][ $key ] = ( $facets['dn'][ $key ] ?? 0 ) + 1;
+		}
+		if ( isset( $row['s'] ) && $row['s'] !== null && $row['s'] !== '' ) {
+			$key = (string) (float) $row['s'];
+			$facets['s'][ $key ] = ( $facets['s'][ $key ] ?? 0 ) + 1;
 		}
 	}
 	return $facets;

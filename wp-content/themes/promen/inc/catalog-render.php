@@ -32,7 +32,7 @@ function promen_catalog_query_from_request(): Promen_Catalog_Query {
 		'scope'    => isset( $_GET['scope'] ) ? sanitize_key( wp_unslash( $_GET['scope'] ) ) : '',
 	];
 
-	foreach ( [ 'dn', 'pn' ] as $p ) {
+	foreach ( [ 'dn', 'pn', 's' ] as $p ) {
 		if ( isset( $_GET[ $p . '_min' ] ) && $_GET[ $p . '_min' ] !== '' ) {
 			$params[ $p . '_min' ] = $_GET[ $p . '_min' ];
 		}

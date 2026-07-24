@@ -245,23 +245,58 @@
     }
   }
 
+  function sliderVals(box) {
+    try { return JSON.parse(box.dataset.values || '[]'); } catch (e) { return []; }
+  }
+
   function updateSliderUI(box) {
-    var vals;
-    try { vals = JSON.parse(box.dataset.values || '[]'); } catch (e) { vals = []; }
+    var vals = sliderVals(box);
     if (!vals.length) return;
-    var minI = box.querySelector('[data-bound=min]');
-    var maxI = box.querySelector('[data-bound=max]');
+    var minR = box.querySelector('.cbf-r[data-bound=min]');
+    var maxR = box.querySelector('.cbf-r[data-bound=max]');
     var fill = box.querySelector('.cbf-fill');
-    var out = box.querySelector('.cbf-val');
-    var a = +minI.value, b = +maxI.value, last = vals.length - 1;
+    var a = +minR.value, b = +maxR.value, last = Math.max(vals.length - 1, 1);
     if (fill) {
       fill.style.left = (a / last * 100) + '%';
       fill.style.right = (100 - b / last * 100) + '%';
     }
-    if (out) out.textContent = vals[a].name + ' – ' + vals[b].name;
-    // Оба бегунка в правом углу — сверху должен быть min, иначе не растащить.
-    minI.style.zIndex = a >= last ? 5 : 3;
-    maxI.style.zIndex = 4;
+    // Поля ручного ввода: не перетираем то, что пользователь сейчас печатает.
+    box.querySelectorAll('.cbf-in').forEach(function (inp) {
+      if (inp === document.activeElement) return;
+      var i = inp.dataset.bound === 'min' ? a : b;
+      if (vals[i]) inp.value = vals[i].name;
+    });
+  }
+
+  // Применить текущие индексы бегунков к URL (крайние позиции = без ограничения).
+  function applyRange(box) {
+    var vals = sliderVals(box);
+    if (!vals.length) return;
+    var param = box.dataset.param;
+    var a = +box.querySelector('.cbf-r[data-bound=min]').value;
+    var b = +box.querySelector('.cbf-r[data-bound=max]').value;
+    var url = new URL(location.href);
+    var wasMin = url.searchParams.get(param + '_min') || '';
+    var wasMax = url.searchParams.get(param + '_max') || '';
+    if (a <= 0) url.searchParams.delete(param + '_min');
+    else url.searchParams.set(param + '_min', String(vals[a].val));
+    if (b >= vals.length - 1) url.searchParams.delete(param + '_max');
+    else url.searchParams.set(param + '_max', String(vals[b].val));
+    var nowMin = url.searchParams.get(param + '_min') || '';
+    var nowMax = url.searchParams.get(param + '_max') || '';
+    if (nowMin === wasMin && nowMax === wasMax) return; // ничего не изменилось
+    url.searchParams.delete('paged');
+    swap(url.toString(), true, { scroll: false });
+  }
+
+  // Ближайший индекс ряда к произвольному числу (для ручного ввода и клика по треку).
+  function nearestIdx(vals, x) {
+    var best = 0, bd = Infinity;
+    for (var i = 0; i < vals.length; i++) {
+      var d = Math.abs(vals[i].val - x);
+      if (d < bd) { bd = d; best = i; }
+    }
+    return best;
   }
 
   function sliderHtml(param, opts, u) {
@@ -277,13 +312,16 @@
       if (!isNaN(max) && o.val <= max) iMax = i;
     });
     if (iMax < iMin) iMax = iMin;
-    var valTxt = vals[iMin].name + ' – ' + vals[iMax].name;
     return '<div class="cbf-slider" data-param="' + esc(param) + '" data-values="' + esc(JSON.stringify(vals)) + '">' +
       '<span class="cbf-lbl">' + esc(lbl) + '</span>' +
       '<div class="cbf-track"><div class="cbf-fill"></div>' +
       '<input type="range" class="cbf-r" data-bound="min" min="0" max="' + last + '" step="1" value="' + iMin + '" aria-label="' + esc(lbl) + ' от">' +
       '<input type="range" class="cbf-r" data-bound="max" min="0" max="' + last + '" step="1" value="' + iMax + '" aria-label="' + esc(lbl) + ' до">' +
-      '</div><span class="cbf-val">' + esc(valTxt) + '</span></div>';
+      '</div><span class="cbf-io">' +
+      '<input type="text" class="cbf-in" data-bound="min" inputmode="decimal" value="' + esc(vals[iMin].name) + '" aria-label="' + esc(lbl) + ' от, ручной ввод">' +
+      '<span class="cbf-dash">–</span>' +
+      '<input type="text" class="cbf-in" data-bound="max" inputmode="decimal" value="' + esc(vals[iMax].name) + '" aria-label="' + esc(lbl) + ' до, ручной ввод">' +
+      '</span></div>';
   }
 
   var CHIP_ORDER = ['gost', 'steel', 'angle'];
@@ -581,37 +619,106 @@
   bindFilterToggle();
   window._promenBindFilterToggle = bindFilterToggle;
 
-  // Слайдеры DN/PN: input — живое обновление подписи/заливки, change — запрос.
+  // Клавиатура на бегунках (стрелки при фокусе): живой UI + запрос на change.
   document.addEventListener('input', function (e) {
     var r = e.target.closest && e.target.closest('.cbf-slider .cbf-r');
     if (!r) return;
     var box = r.closest('.cbf-slider');
-    var minI = box.querySelector('[data-bound=min]');
-    var maxI = box.querySelector('[data-bound=max]');
-    if (+minI.value > +maxI.value) {
-      if (r === minI) maxI.value = minI.value; else minI.value = maxI.value;
+    var minR = box.querySelector('.cbf-r[data-bound=min]');
+    var maxR = box.querySelector('.cbf-r[data-bound=max]');
+    if (+minR.value > +maxR.value) {
+      if (r === minR) maxR.value = minR.value; else minR.value = maxR.value;
     }
     updateSliderUI(box);
   });
-
   document.addEventListener('change', function (e) {
     var r = e.target.closest && e.target.closest('.cbf-slider .cbf-r');
     if (!r) return;
-    var box = r.closest('.cbf-slider');
-    var vals;
-    try { vals = JSON.parse(box.dataset.values || '[]'); } catch (err) { vals = []; }
+    applyRange(r.closest('.cbf-slider'));
+  });
+
+  // Мышь/тач: весь трек — одна зона. Двигается БЛИЖАЙШИЙ бегунок; при слипшихся
+  // бегунках решает сторона клика (слева — min, справа — max). Перехлёст
+  // исключён клампом, z-index-фокусы не нужны.
+  document.addEventListener('pointerdown', function (e) {
+    var track = e.target.closest && e.target.closest('.cbf-track');
+    if (!track || e.button > 0) return;
+    var box = track.closest('.cbf-slider');
+    var vals = sliderVals(box);
     if (!vals.length) return;
-    var param = box.dataset.param;
-    var a = +box.querySelector('[data-bound=min]').value;
-    var b = +box.querySelector('[data-bound=max]').value;
-    var url = new URL(location.href);
-    // Крайние позиции = «без ограничения»: параметр из URL убираем.
-    if (a <= 0) url.searchParams.delete(param + '_min');
-    else url.searchParams.set(param + '_min', String(vals[a].val));
-    if (b >= vals.length - 1) url.searchParams.delete(param + '_max');
-    else url.searchParams.set(param + '_max', String(vals[b].val));
-    url.searchParams.delete('paged');
-    swap(url.toString(), true, { scroll: false });
+    var last = vals.length - 1;
+    var rect = track.getBoundingClientRect();
+    var minR = box.querySelector('.cbf-r[data-bound=min]');
+    var maxR = box.querySelector('.cbf-r[data-bound=max]');
+
+    function idxAt(ev) {
+      var t = (ev.clientX - rect.left) / Math.max(rect.width, 1);
+      return Math.max(0, Math.min(last, Math.round(t * last)));
+    }
+
+    var i = idxAt(e);
+    var a = +minR.value, b = +maxR.value;
+    var target;
+    if (Math.abs(i - a) < Math.abs(i - b)) target = minR;
+    else if (Math.abs(i - a) > Math.abs(i - b)) target = maxR;
+    else target = i < a ? minR : maxR; // слиплись/равноудалён — по стороне клика
+
+    e.preventDefault();
+    if (track.setPointerCapture) {
+      try { track.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+    }
+
+    function move(ev) {
+      var j = idxAt(ev);
+      if (target === minR) minR.value = Math.min(j, +maxR.value);
+      else maxR.value = Math.max(j, +minR.value);
+      updateSliderUI(box);
+    }
+    function up() {
+      track.removeEventListener('pointermove', move);
+      track.removeEventListener('pointerup', up);
+      track.removeEventListener('pointercancel', up);
+      applyRange(box);
+    }
+    move(e);
+    track.addEventListener('pointermove', move);
+    track.addEventListener('pointerup', up);
+    track.addEventListener('pointercancel', up);
+  });
+
+  // Ручной ввод границ: Enter/blur — снап к ближайшему значению ряда и запрос.
+  function applyManualInput(inp) {
+    var box = inp.closest('.cbf-slider');
+    var vals = sliderVals(box);
+    if (!vals.length) return;
+    var minR = box.querySelector('.cbf-r[data-bound=min]');
+    var maxR = box.querySelector('.cbf-r[data-bound=max]');
+    var raw = inp.value.trim().replace(',', '.').replace(/[^\d.\-]/g, '');
+    var isMin = inp.dataset.bound === 'min';
+    var idx;
+    if (raw === '') {
+      idx = isMin ? 0 : vals.length - 1; // пусто = без ограничения
+    } else {
+      var x = parseFloat(raw);
+      if (isNaN(x)) { updateSliderUI(box); return; } // мусор — вернуть как было
+      idx = nearestIdx(vals, x);
+    }
+    if (isMin) minR.value = Math.min(idx, +maxR.value);
+    else maxR.value = Math.max(idx, +minR.value);
+    updateSliderUI(box);
+    applyRange(box);
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter') return;
+    var inp = e.target.closest && e.target.closest('.cbf-in');
+    if (!inp) return;
+    e.preventDefault();
+    inp.blur(); // blur применит значение
+  });
+  document.addEventListener('focusout', function (e) {
+    var inp = e.target.closest && e.target.closest('.cbf-in');
+    if (!inp) return;
+    applyManualInput(inp);
   });
 
   // Поиск: живой, без Enter (Enter тоже работает — submit ниже).

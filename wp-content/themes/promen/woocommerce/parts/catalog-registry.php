@@ -71,9 +71,16 @@ $with_pdp      = $promen_registry_with_pdp ?? true;
           $facet_opts   = $filter_state['facet_options'];
           $range_opts   = $filter_state['range_options'];
 
-          $range_lbls = $is_fastener_ui
-            ? [ 'dn' => 'M, мм' ]
-            : [ 'dn' => 'DN, мм', 'pn' => 'PN, МПа' ];
+          // Диапазоны — из схемы группы (у труб/СДТ есть стенка s, у крепежа только M).
+          $range_lbl_map = [
+            'dn' => $is_fastener_ui ? 'M, мм' : 'DN, мм',
+            'pn' => 'PN, МПа',
+            's'  => 'Стенка s, мм',
+          ];
+          $range_lbls = [];
+          foreach ( promen_catalog_schema_ranges( (string) $group ) as $rp ) {
+            $range_lbls[ $rp ] = $range_lbl_map[ $rp ] ?? $rp;
+          }
           $multis = $is_fastener_ui
             ? [ 'gost' => 'ГОСТ', 'steel' => 'Сталь' ]
             : [ 'gost' => 'ГОСТ', 'steel' => 'Сталь', 'angle' => 'Угол' ];
@@ -130,10 +137,11 @@ $with_pdp      = $promen_registry_with_pdp ?? true;
                   <input type="range" class="cbf-r" data-bound="min" min="0" max="<?php echo esc_attr( $last ); ?>" step="1" value="<?php echo esc_attr( $i_min ); ?>" aria-label="<?php echo esc_attr( $lbl ); ?> от">
                   <input type="range" class="cbf-r" data-bound="max" min="0" max="<?php echo esc_attr( $last ); ?>" step="1" value="<?php echo esc_attr( $i_max ); ?>" aria-label="<?php echo esc_attr( $lbl ); ?> до">
                 </div>
-                <span class="cbf-val"><?php
-                  $has_range = ( null !== $cur['min'] || null !== $cur['max'] );
-                  echo esc_html( $has_range ? ( $opts[ $i_min ]['name'] . ' – ' . $opts[ $i_max ]['name'] ) : ( $opts[0]['name'] . ' – ' . $opts[ $last ]['name'] ) );
-                ?></span>
+                <span class="cbf-io">
+                  <input type="text" class="cbf-in" data-bound="min" inputmode="decimal" value="<?php echo esc_attr( $opts[ $i_min ]['name'] ); ?>" aria-label="<?php echo esc_attr( $lbl ); ?> от, ручной ввод">
+                  <span class="cbf-dash">–</span>
+                  <input type="text" class="cbf-in" data-bound="max" inputmode="decimal" value="<?php echo esc_attr( $opts[ $i_max ]['name'] ); ?>" aria-label="<?php echo esc_attr( $lbl ); ?> до, ручной ввод">
+                </span>
               </div>
             <?php endforeach; ?>
             </div>

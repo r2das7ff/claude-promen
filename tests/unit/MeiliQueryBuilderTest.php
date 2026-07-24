@@ -69,4 +69,17 @@ final class MeiliQueryBuilderTest extends TestCase {
 		$empty = new Promen_Catalog_Query();
 		$this->assertSame( [], promen_catalog_query_active_facets( $empty ) );
 	}
+
+	public function test_wall_range_filter_and_exclude(): void {
+		$q = Promen_Catalog_Query::from_array( [ 'group' => 'truby', 's_min' => '2.5', 's_max' => '8' ] );
+		$this->assertSame( 2.5, $q->s_min );
+
+		$filter = promen_catalog_meili_filter( $q );
+		$this->assertStringContainsString( 's >= 2.5', $filter );
+		$this->assertStringContainsString( 's <= 8', $filter );
+		$this->assertSame( [ 's' ], promen_catalog_query_active_facets( $q ) );
+
+		$no_s = promen_catalog_meili_filter( $q, [ 's' ] );
+		$this->assertStringNotContainsString( 's >=', $no_s );
+	}
 }

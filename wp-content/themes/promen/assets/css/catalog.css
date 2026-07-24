@@ -895,14 +895,18 @@ button.c-chip--more:hover{color:var(--dark);border-color:var(--g1);}
 .cbf-fill{position:absolute;top:12px;height:2px;background:var(--dark);left:0;right:0;}
 .cbf-r{position:absolute;left:0;top:0;width:100%;height:26px;margin:0;-webkit-appearance:none;appearance:none;background:none;pointer-events:none;}
 .cbf-r::-webkit-slider-runnable-track{-webkit-appearance:none;appearance:none;background:none;border:none;height:26px;}
-.cbf-r::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;pointer-events:auto;width:14px;height:14px;margin-top:6px;background:var(--white);border:2px solid var(--dark);cursor:pointer;transition:background .12s;}
+.cbf-r::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;margin-top:6px;background:var(--white);border:2px solid var(--dark);cursor:pointer;transition:background .12s;}
 .cbf-r::-webkit-slider-thumb:hover{background:var(--bg2);}
 .cbf-r::-moz-range-track{background:none;border:none;}
-.cbf-r::-moz-range-thumb{pointer-events:auto;width:10px;height:10px;border-radius:0;background:var(--white);border:2px solid var(--dark);cursor:pointer;}
+.cbf-r::-moz-range-thumb{width:10px;height:10px;border-radius:0;background:var(--white);border:2px solid var(--dark);cursor:pointer;}
 .cbf-r:focus-visible{outline:none;}
 .cbf-r:focus-visible::-webkit-slider-thumb{outline:2px solid var(--blue);outline-offset:2px;}
 .cbf-r:focus-visible::-moz-range-thumb{outline:2px solid var(--blue);outline-offset:2px;}
-.cbf-val{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.06em;color:var(--dark);white-space:nowrap;min-width:96px;}
+.cbf-track{cursor:pointer;touch-action:none;}
+.cbf-io{display:inline-flex;align-items:center;gap:5px;flex-shrink:0;}
+.cbf-in{width:52px;height:26px;border:1px solid var(--ln2);background:var(--white);text-align:center;font-family:'DINPro',monospace;font-size:10px;letter-spacing:.04em;color:var(--dark);outline:none;transition:border-color .12s;}
+.cbf-in:hover{border-color:var(--g1);}
+.cbf-in:focus{border-color:var(--dark);}
 
 .cb-filters .cbf-multi{display:grid;grid-template-columns:56px minmax(0,1fr);align-items:start;gap:0 12px;padding:8px 0;border-top:1px dashed var(--ln);}
 .cb-filters .cbf-multi .cbf-lbl{margin:6px 0 0;}

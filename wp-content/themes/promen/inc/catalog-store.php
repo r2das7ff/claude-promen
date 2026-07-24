@@ -25,6 +25,7 @@ function promen_catalog_install_table(): void {
 		dn2 DOUBLE NULL,
 		pn DOUBLE NULL,
 		angle DOUBLE NULL,
+		s DOUBLE NULL,
 		steels_json TEXT NOT NULL,
 		industries_json TEXT NOT NULL,
 		payload LONGTEXT NOT NULL,
@@ -38,11 +39,23 @@ function promen_catalog_install_table(): void {
 
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 	dbDelta( $sql );
-	update_option( 'promen_catalog_db_version', '1.1.0', false );
+
+	// 1.2.0: колонка стенки s — наполняем из payload одним UPDATE (без rebuild).
+	global $wpdb;
+	if ( get_option( 'promen_catalog_db_version' ) !== '' && version_compare( (string) get_option( 'promen_catalog_db_version' ), '1.2.0', '<' ) ) {
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( "UPDATE {$table} SET s = CAST(JSON_UNQUOTE(JSON_EXTRACT(payload, '$.s')) AS DOUBLE) WHERE JSON_EXTRACT(payload, '$.s') IS NOT NULL AND JSON_UNQUOTE(JSON_EXTRACT(payload, '$.s')) != 'null'" );
+	}
+	update_option( 'promen_catalog_db_version', '1.2.0', false );
+
+	// Схема канона изменилась — сбрасываем version-keyed кэши фильтров/рядов.
+	if ( function_exists( 'promen_filters_cache_bump' ) ) {
+		promen_filters_cache_bump();
+	}
 }
 
 function promen_catalog_maybe_install(): void {
-	if ( get_option( 'promen_catalog_db_version' ) !== '1.1.0' ) {
+	if ( get_option( 'promen_catalog_db_version' ) !== '1.2.0' ) {
 		promen_catalog_install_table();
 	}
 }
@@ -77,12 +90,13 @@ function promen_catalog_upsert( int $product_id, bool $sync_search = true ): boo
 			'dn2'         => $doc['dn2'],
 			'pn'          => $doc['pn'],
 			'angle'       => $doc['angle'],
+			's'           => $doc['s'],
 			'steels_json'     => wp_json_encode( $doc['steels'], JSON_UNESCAPED_UNICODE ),
 			'industries_json' => wp_json_encode( $doc['industries'] ?? [], JSON_UNESCAPED_UNICODE ),
 			'payload'         => wp_json_encode( $doc, JSON_UNESCAPED_UNICODE ),
 			'updated_at'      => $now,
 		],
-		[ '%d', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%s', '%s', '%s', '%s' ]
+		[ '%d', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%f', '%s', '%s', '%s', '%s' ]
 	);
 
 	if ( $sync_search && function_exists( 'promen_catalog_search_push' ) ) {

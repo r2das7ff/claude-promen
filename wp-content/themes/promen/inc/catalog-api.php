@@ -21,6 +21,8 @@ function promen_rest_catalog( WP_REST_Request $request ): WP_REST_Response {
 		'dn_max'   => $request->get_param( 'dn_max' ),
 		'pn_min'   => $request->get_param( 'pn_min' ),
 		'pn_max'   => $request->get_param( 'pn_max' ),
+		's_min'    => $request->get_param( 's_min' ),
+		's_max'    => $request->get_param( 's_max' ),
 		'steel'    => $request->get_param( 'steel' ),
 		'industry' => $request->get_param( 'industry' ),
 		'gost'     => $request->get_param( 'gost' ),

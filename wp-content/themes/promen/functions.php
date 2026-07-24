@@ -5,7 +5,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PROMEN_VERSION', '0.33.0' );
+define( 'PROMEN_VERSION', '0.34.0' );
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );
@@ -220,6 +220,7 @@ add_action( 'wp_enqueue_scripts', function () {
 			'rangeLbl' => [
 				'dn' => 'DN, мм',
 				'pn' => 'PN, МПа',
+				's'  => 'Стенка s, мм',
 			],
 			'industryTags' => [
 				'aes' => 'АЭС',
