@@ -1,0 +1,36 @@
+== PROM-EN perf audit: after ==
+date: 2026-07-24T14:42:07+05:00
+
+--- backend (wp eval-file, каждый компонент — холодный процесс) ---
+component                 queries         ms
+search_only                     1       13.4
+registry_embed                 11       41.2
+rest_catalog                   12       37.8
+s01_series                      4       55.2
+s04_norms                       3       52.9
+sidebar                         1        1.6
+category_page                  13      148.7
+
+--- HTTP TTFB (медиана из 3, dev-стек) ---
+/catalog/                                     0.153688s
+/catalog/sdt/otvody/                          0.417889s
+/contacts/                                    0.103338s
+/wp-json/promen/v1/catalog?group=otvody       0.103348s
+
+--- страница категории: HTML и ассеты ---
+HTML: 242835 bytes raw, 36067 bytes gzip
+JS на странице:
+     24261  /wp-content/themes/promen/assets/js/catalog.js
+      4188  /wp-content/themes/promen/assets/js/category-sdt.js
+      3538  /wp-content/themes/promen/assets/js/chrome.js
+     23089  /wp-content/themes/promen/assets/js/request-modal.js
+JS итого: 55076 bytes, 4 файлов
+Шрифты (файлы, на которые ссылается base.css):
+     35664  fonts/DINPro-Black.woff2
+     38476  fonts/DINPro-Bold.woff2
+     36760  fonts/DINPro-CondBlack.woff2
+     38824  fonts/DINPro-CondBold.woff2
+     35756  fonts/DINPro-Light.woff2
+     37976  fonts/DINPro-Medium.woff2
+     37496  fonts/DINPro.woff2
+Шрифты итого: 260952 bytes
