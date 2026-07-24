@@ -1,0 +1,168 @@
+<?php
+/**
+ * Статья «Контроль качества СДТ: от входного контроля до паспорта изделия» — 1:1 из html/statya-kontrol-kachestva.html (Open Design, 2026-07-23).
+ * Хром — header.php; футер без s10 (в макете его нет).
+ */
+add_filter( 'promen_footer_form', '__return_false' );
+add_filter( 'promen_footer_idx', fn () => 'ПЭ-09.ART‑03 / REV.1' );
+
+$promen_catalog_url  = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' );
+$promen_stati_url    = ( $p = promen_page( 'stati' ) ) ? get_permalink( $p ) : home_url( '/' );
+$promen_proekty_url  = ( $p = promen_page( 'proekty' ) ) ? get_permalink( $p ) : home_url( '/' );
+$promen_contacts_url = ( $p = promen_page( 'contacts' ) ) ? get_permalink( $p ) : home_url( '/' );
+$promen_nb_url       = ( $p = promen_page( 'normativnaya-baza' ) ) ? get_permalink( $p ) : '';
+
+get_header();
+?>
+<div class="pg">
+
+  <!-- BREADCRUMB -->
+  <div class="pd-crumb">
+    <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Главная</a><span>/</span>
+    <a href="<?php echo esc_url( $promen_stati_url ); ?>">Статьи</a><span>/</span>
+    <b>Контроль качества СДТ</b>
+  </div>
+
+  <!-- HERO -->
+  <div class="ar-hero">
+    <span class="ar-cat">Контроль качества</span>
+    <h1 class="ar-h1">Контроль качества СДТ: от входного контроля до паспорта изделия</h1>
+    <p class="ar-lead">Каждая деталь на заводе проходит восемь этапов контроля прежде, чем попадёт в партию отгрузки — от идентификации плавки металла до финального пакета документов. Разбираем, что проверяется на каждом этапе и почему пропустить хотя бы один — не вариант.</p>
+    <div class="ar-meta">
+      <span>08.07.2026</span>
+      <span>Чтение · <b>9 мин</b></span>
+      <span>Инженерный отдел «Промышленная Энергетика»</span>
+    </div>
+  </div>
+
+  <!-- MEDIA -->
+  <div class="ar-media">
+    <img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-6.jpg' ) ); ?>" alt="Контроль качества на производстве" loading="eager">
+    <span class="ar-media-tag">Отдел технического контроля · Челябинск</span>
+  </div>
+
+  <!-- BODY + TOC -->
+  <div class="ar-split">
+    <article class="ar-content">
+
+      <p>Соединительная деталь трубопровода несёт то же давление и температуру, что и труба, но именно на её сварных швах, галтелях и переходах чаще всего концентрируются напряжения. Поэтому контроль качества СДТ — это не финальная проверка перед отгрузкой, а сквозной процесс, который начинается раньше, чем деталь попадает в цех, и заканчивается только вместе с паспортом изделия.</p>
+
+      <h2 id="s1"><span class="num">01</span>Восемь этапов на пути детали к паспорту</h2>
+      <p>На заводе «Промышленная Энергетика» каждая деталь — от единичной позиции по чертежу заказчика до серийной партии — проходит одну и ту же последовательность контроля, независимо от объёма партии.</p>
+
+      <div class="ar-steps">
+        <div class="ar-step"><span class="n">1</span><div class="b"><span class="t">Входной контроль</span><span class="d">Проверка партии металла на соответствие заявленному сортаменту и марке до запуска в производство.</span></div></div>
+        <div class="ar-step"><span class="n">2</span><div class="b"><span class="t">Проверка сертификатов</span><span class="d">Сверка сертификата качества на металл с требованиями нормативного документа и спецификации заказа.</span></div></div>
+        <div class="ar-step"><span class="n">3</span><div class="b"><span class="t">Идентификация плавки</span><span class="d">Каждая заготовка маркируется номером плавки — основа прослеживаемости на всех последующих этапах.</span></div></div>
+        <div class="ar-step"><span class="n">4</span><div class="b"><span class="t">Визуально-измерительный контроль (ВИК)</span><span class="d">Проверка геометрии, отсутствия видимых дефектов поверхности и сварных швов.</span></div></div>
+        <div class="ar-step"><span class="n">5</span><div class="b"><span class="t">Неразрушающий контроль (УЗК / РК)</span><span class="d">Ультразвуковой или радиографический контроль сварных швов и тела детали на внутренние дефекты.</span></div></div>
+        <div class="ar-step"><span class="n">6</span><div class="b"><span class="t">Контроль геометрии</span><span class="d">Финальная проверка размеров и допусков относительно чертежа или нормативного документа.</span></div></div>
+        <div class="ar-step"><span class="n">7</span><div class="b"><span class="t">Маркировка</span><span class="d">Нанесение маркировки детали с привязкой к плавке — обеспечивает прослеживаемость после отгрузки.</span></div></div>
+        <div class="ar-step"><span class="n">8</span><div class="b"><span class="t">Паспорт и пакет документов</span><span class="d">Формирование итогового комплекта: паспорт изделия, сертификаты, протоколы контроля.</span></div></div>
+      </div>
+
+      <h2 id="s2"><span class="num">02</span>Входной контроль и сертификаты на металл</h2>
+      <p>Прежде чем заготовка попадёт в цех, инженер ОТК сверяет сопроводительный сертификат качества с фактической маркировкой партии металла и требованиями спецификации — химический состав, механические свойства, соответствие марки стали нормативному документу объекта. Подробнее о том, как подбирается сама марка стали под параметры трубопровода, — в статье <a href="<?php echo esc_url( promen_article_url( 'vybor-stali' ) ); ?>" style="color:var(--dark);border-bottom:1px solid var(--g1);">«Как выбрать сталь для СДТ»</a>.</p>
+
+      <h2 id="s3"><span class="num">03</span>Идентификация плавки — основа прослеживаемости</h2>
+      <p>Номер плавки присваивается заготовке на входном контроле и сопровождает деталь через все этапы производства — от заготовки до готового изделия. Для объектов АЭС-класса это требование не формальность: прослеживаемость плавки должна сохраняться вплоть до маркировки готовой детали и указываться в паспорте изделия.</p>
+
+      <div class="ar-callout">
+        <span class="ar-callout-lbl">Важно</span>
+        <p>Если номер плавки теряется на любом из этапов, деталь не может быть принята ОТК — независимо от того, насколько она соответствует чертежу геометрически. Прослеживаемость — отдельное требование, а не следствие качества изготовления.</p>
+      </div>
+
+      <h2 id="s4"><span class="num">04</span>ВИК и неразрушающий контроль сварных швов</h2>
+      <p>Визуально-измерительный контроль — первый рубеж: инженер проверяет поверхность детали и геометрию невооружённым глазом и мерительным инструментом. Для сварных деталей — например, сварных отводов, о которых мы писали в статье <a href="<?php echo esc_url( promen_article_url( 'otvod-svarnoy-besshovnyy' ) ); ?>" style="color:var(--dark);border-bottom:1px solid var(--g1);">«Бесшовные и сварные отводы»</a>, — этого недостаточно: каждый шов дополнительно проходит ультразвуковой (УЗК) или радиографический (РК) контроль, который выявляет внутренние дефекты, не видимые на поверхности.</p>
+      <p>Объём и метод неразрушающего контроля определяются не по умолчанию, а нормативным документом объекта — для АЭС-класса требования, как правило, строже, чем для промышленных трубопроводов общего назначения.</p>
+
+      <div class="ar-quote">
+        <p>«Паспорт изделия — это не формальность на бумаге, а точная запись, через какие этапы контроля прошла конкретная деталь, с какой плавкой металла и с каким результатом».</p>
+      </div>
+
+      <h2 id="s5"><span class="num">05</span>Как выглядит паспорт готового изделия</h2>
+      <p>После прохождения всех этапов на деталь формируется цифровой и бумажный паспорт — карточка с полным набором данных, которая сопровождает изделие до конечного заказчика.</p>
+
+      <div class="ar-passport">
+        <div class="ar-passport-head">
+          <span>Реестр изделия · пример</span>
+          <span class="ar-passport-status"><span class="ar-passport-dot"></span>Принято ОТК</span>
+        </div>
+        <div class="ar-passport-row"><span class="k">Изделие</span><span class="v">Отвод 90° DN100</span></div>
+        <div class="ar-passport-row"><span class="k">Материал</span><span class="v">Сталь 12Х1МФ</span></div>
+        <div class="ar-passport-row"><span class="k">Плавка</span><span class="v">Идентифицирована</span></div>
+        <div class="ar-passport-row"><span class="k">Контроль</span><span class="v">ВИК / УЗК</span></div>
+        <div class="ar-passport-row"><span class="k">Документов</span><span class="v">07 / 07</span></div>
+      </div>
+
+      <h2 id="s6"><span class="num">06</span>Почему это особенно строго для АЭС и ТЭС</h2>
+      <p>Для поставок на объекты атомной и тепловой энергетики требования к контролю и прослеживаемости, как правило, выше, чем на промышленных трубопроводах общего назначения — это напрямую влияет на объём неразрушающего контроля и состав пакета документов. Подробнее о том, чем такие поставки отличаются от типового заказа, — в статье <a href="<?php echo esc_url( promen_article_url( 'postavka-aes-tes' ) ); ?>" style="color:var(--dark);border-bottom:1px solid var(--g1);">«Поставки для АЭС и ТЭС»</a>, а базовая логика нормативных документов, которые определяют объём контроля, разобрана в статье про <a href="<?php echo esc_url( promen_article_url( 'normativnaya-baza' ) ); ?>" style="color:var(--dark);border-bottom:1px solid var(--g1);">ГОСТ, ОСТ и ТУ на СДТ</a>.</p>
+
+    </article>
+
+    <!-- TOC SIDEBAR -->
+    <aside class="ar-toc">
+      <div class="ar-toc-box">
+        <span class="ar-toc-lbl">В этой статье</span>
+        <ul class="ar-toc-list" id="tocList">
+          <li><a href="#s1"><span class="n">01</span>Восемь этапов контроля</a></li>
+          <li><a href="#s2"><span class="n">02</span>Входной контроль и сертификаты</a></li>
+          <li><a href="#s3"><span class="n">03</span>Идентификация плавки</a></li>
+          <li><a href="#s4"><span class="n">04</span>ВИК и неразрушающий контроль</a></li>
+          <li><a href="#s5"><span class="n">05</span>Паспорт изделия</a></li>
+          <li><a href="#s6"><span class="n">06</span>АЭС и ТЭС — особые требования</a></li>
+        </ul>
+      </div>
+      <div class="ar-toc-cta">
+        <div class="ar-toc-cta-t">Нужен полный пакет документов?</div>
+        <p class="ar-toc-cta-p">Уточните требования объекта — инженер соберёт объём контроля под ваш нормативный документ.</p>
+        <button class="ar-toc-cta-btn" onclick="openRequestModal('solution')">Обсудить контроль →</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- TAGS -->
+  <div class="ar-tags">
+    <span class="ar-tags-lbl">Теги</span>
+    <span class="ar-tag">Контроль качества</span>
+    <span class="ar-tag">ОТК</span>
+    <span class="ar-tag">ВИК</span>
+    <span class="ar-tag">УЗК</span>
+    <span class="ar-tag">Прослеживаемость</span>
+    <span class="ar-tag">Паспорт изделия</span>
+  </div>
+
+  <!-- RELATED -->
+  <div class="pd-sec">
+    <div class="pd-sec-head">
+      <span class="pd-sec-num">→</span>
+      <h2 class="pd-sec-title">Читайте также</h2>
+    </div>
+    <div class="pd-rel-grid">
+      <a class="pd-rel" href="<?php echo esc_url( promen_article_url( 'otvod-svarnoy-besshovnyy' ) ); ?>">
+        <div class="pd-rel-media"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-7.jpg' ) ); ?>" alt="Бесшовные и сварные отводы" loading="lazy"></div>
+        <div class="pd-rel-body"><div class="pd-rel-tag">Производство</div><div class="pd-rel-title">Бесшовные и сварные отводы: в чём разница</div></div>
+      </a>
+      <a class="pd-rel" href="<?php echo esc_url( promen_article_url( 'normativnaya-baza' ) ); ?>">
+        <div class="pd-rel-media"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-4.jpg' ) ); ?>" alt="Нормативная база СДТ" loading="lazy"></div>
+        <div class="pd-rel-body"><div class="pd-rel-tag">Нормативы</div><div class="pd-rel-title">ГОСТ, ОСТ и ТУ на СДТ</div></div>
+      </a>
+      <a class="pd-rel" href="<?php echo esc_url( promen_article_url( 'postavka-aes-tes' ) ); ?>">
+        <div class="pd-rel-media"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-3.jpg' ) ); ?>" alt="Поставки для АЭС и ТЭС" loading="lazy"></div>
+        <div class="pd-rel-body"><div class="pd-rel-tag">Проекты</div><div class="pd-rel-title">Поставки для АЭС и ТЭС: требования</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="pd-cta">
+    <div>
+      <div class="pd-cta-h">Нужна полная<br>прослеживаемость <em>партии</em>?</div>
+      <p class="pd-cta-p">Опишите требования объекта — инженер подтвердит объём контроля и состав пакета документов до запуска партии.</p>
+    </div>
+    <a class="pd-cta-btn" href="javascript:void(0)" onclick="openRequestModal('solution')">Подобрать решение →</a>
+  </div>
+
+  <!-- BAR -->
+</div><!-- /.pg -->
+<?php get_footer(); ?>

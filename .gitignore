@@ -2,6 +2,9 @@
 .backups/
 *.sql.gz
 
+# Секреты окружения (пример — .env.example)
+.env
+
 # Docker volumes
 .docker/
 

@@ -1,0 +1,171 @@
+/* ============================================================
+   PROM-EN stati: список статей — фильтры, JS-рендер карточек.
+   Источник — html/stati.html (2026-07-23); хром — base.css.
+   ============================================================ */
+
+/* ── NAV (shared) ── */
+.nav{position:fixed;top:0;left:0;right:0;height:64px;z-index:200;display:flex;align-items:center;padding:0 28px 0 44px;border-bottom:1px solid var(--ln2);background:rgba(232,236,240,.97);backdrop-filter:blur(6px);}
+
+.nav-links a{display:block;height:64px;line-height:64px;padding:0 20px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-left:1px solid var(--ln);position:relative;transition:color .15s,background .15s;}
+
+/* ── LEFT STRIP ── */
+.strip{position:fixed;left:0;top:64px;bottom:0;width:44px;border-right:1px solid var(--ln2);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:20px 0 24px;background:var(--bg);}
+
+/* ── PAGE SHELL ── */
+.pg{position:relative;z-index:1;padding-top:64px;padding-left:44px;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── BREADCRUMB ── */
+.pd-crumb{display:flex;align-items:center;gap:8px;padding:28px var(--head-x) 0;font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1);}
+.pd-crumb a{transition:color .15s;}
+.pd-crumb a:hover{color:var(--dark);}
+.pd-crumb span{opacity:.5;}
+.pd-crumb b{color:var(--dark);font-weight:700;}
+
+/* ── HERO HEAD ── */
+.bl-head{position:relative;display:grid;grid-template-columns:1.3fr 1fr;gap:64px;padding:24px var(--head-x) 52px;border-bottom:1px solid var(--ln2);align-items:end;overflow:hidden;}
+.bl-head-ghost{position:absolute;top:-.12em;right:var(--head-x);font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(120px,16vw,240px);line-height:1;letter-spacing:-.03em;color:var(--dark);opacity:.04;pointer-events:none;user-select:none;z-index:0;}
+.bl-head>*:not(.bl-head-ghost){position:relative;z-index:1;} /* ghost должен остаться absolute, иначе занимает левую grid-колонку и сдвигает заголовок вправо */
+.bl-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:22px;}
+.bl-eyebrow-n{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;color:var(--white);background:var(--dark);padding:4px 9px;}
+.bl-eyebrow-l{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);}
+.bl-h1{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(46px,6.2vw,92px);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;color:var(--dark);}
+.bl-head-r{display:flex;flex-direction:column;gap:22px;}
+.bl-lead{font-size:14px;font-weight:300;line-height:1.75;color:var(--blue);max-width:480px;}
+.bl-metarow{display:flex;gap:32px;border-top:1px solid var(--ln2);padding-top:18px;}
+.bl-metaitem{display:flex;flex-direction:column;gap:5px;}
+.bl-metaitem b{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:27px;letter-spacing:-.01em;color:var(--dark);}
+.bl-metaitem span{font-family:'DINPro',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1);}
+
+/* ── HERO MEDIA BAND ── */
+.bl-media{position:relative;height:380px;overflow:hidden;border-bottom:1px solid var(--ln2);background:var(--blue);}
+.bl-media img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.3) contrast(1.05);}
+.bl-media::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,42,68,.75) 0%,rgba(15,42,68,.1) 55%,transparent 75%);pointer-events:none;}
+.bl-media-tag{position:absolute;bottom:22px;left:var(--head-x);padding:9px 16px;background:rgba(15,42,68,.88);backdrop-filter:blur(3px);font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--white);border:1px solid rgba(255,255,255,.2);z-index:1;}
+.bl-media-idx{position:absolute;top:22px;right:var(--head-x);font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.7);z-index:1;}
+
+/* ── FILTER CHIPS (sticky) ── */
+.bl-filters{position:sticky;top:64px;z-index:150;padding:20px var(--head-x);border-bottom:1px solid var(--ln2);display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:rgba(232,236,240,.96);backdrop-filter:blur(8px);}
+.bl-filter-lbl{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);opacity:.7;flex-shrink:0;}
+.bl-chips{display:flex;flex-wrap:wrap;gap:9px;}
+.bl-chip{padding:11px 18px;border:1px solid var(--ln2);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);background:var(--white);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:8px;}
+.bl-chip-n{opacity:.55;font-size:9px;}
+.bl-chip:hover{border-color:var(--g1);}
+.bl-chip.active{background:var(--dark);border-color:var(--dark);color:var(--white);}
+.bl-chip.active .bl-chip-n{opacity:.6;}
+.bl-filter-count{margin-left:auto;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1);opacity:.7;white-space:nowrap;}
+
+/* ── FEATURED (cover story) ── */
+.bl-wrap{padding:48px var(--head-x) 20px;}
+.bl-featured{position:relative;overflow:hidden;border:1px solid var(--ln2);margin-bottom:44px;min-height:460px;display:flex;align-items:flex-end;background:var(--blue);transition:border-color .2s;}
+.bl-featured:hover{border-color:var(--g1);}
+.bl-featured-media{position:absolute;inset:0;z-index:0;}
+.bl-featured-media img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.15) contrast(1.05);transition:transform .5s;}
+.bl-featured:hover .bl-featured-media img{transform:scale(1.04);}
+.bl-featured-media::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(15,42,68,.94) 0%,rgba(15,42,68,.62) 40%,rgba(15,42,68,.06) 72%);}
+.bl-featured-badge{position:absolute;top:22px;left:22px;z-index:2;padding:6px 12px;background:var(--g1);font-family:'DINPro',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--white);}
+.bl-featured-body{position:relative;z-index:2;padding:44px 48px;display:flex;flex-direction:column;gap:16px;max-width:700px;}
+.bl-featured-tag{font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--g2);}
+.bl-featured-title{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(26px,3.8vw,48px);line-height:1.05;letter-spacing:-.01em;text-transform:uppercase;color:var(--white);}
+.bl-featured-excerpt{font-size:13.5px;color:var(--g2);line-height:1.68;font-weight:300;max-width:600px;}
+.bl-featured-meta{display:flex;gap:18px;font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--g2);opacity:.9;padding-top:8px;border-top:1px solid rgba(255,255,255,.22);}
+.bl-featured-link{display:inline-flex;align-items:center;gap:8px;font-family:'DINPro',sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);align-self:flex-start;transition:gap .15s,color .15s;}
+.bl-featured:hover .bl-featured-link{gap:13px;color:var(--g2);}
+
+/* ── CARD GRID ── */
+.bl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:28px;}
+.bl-card{background:var(--white);border:1px solid var(--ln2);display:flex;flex-direction:column;transition:border-color .2s,transform .2s,box-shadow .2s;}
+.bl-card:hover{border-color:var(--g1);transform:translateY(-4px);box-shadow:0 16px 32px -16px rgba(15,42,68,.22);}
+.bl-card-media{aspect-ratio:4/3;overflow:hidden;border-bottom:1px solid var(--ln2);background:var(--blue);position:relative;}
+.bl-card-media img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.2) contrast(1.05);transition:transform .4s;}
+.bl-card:hover .bl-card-media img{transform:scale(1.06);}
+.bl-card-cat{position:absolute;top:12px;left:12px;padding:5px 10px;background:rgba(15,42,68,.85);font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--white);}
+.bl-card-body{padding:24px 26px 26px;display:flex;flex-direction:column;gap:13px;flex:1;}
+.bl-card-title{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:19px;line-height:1.2;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);}
+.bl-card-excerpt{font-size:12.5px;color:var(--blue);line-height:1.6;flex:1;font-weight:300;}
+.bl-card-meta{display:flex;justify-content:space-between;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--g1);opacity:.75;border-top:1px solid var(--ln);padding-top:12px;}
+
+/* ── CTA ── */
+.pd-cta{padding:56px var(--head-x);display:grid;grid-template-columns:1.3fr auto;align-items:center;gap:32px;border-bottom:1px solid var(--ln2);margin-top:32px;}
+.pd-cta-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(24px,2.6vw,34px);line-height:1.08;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);}
+.pd-cta-h em{color:var(--g1);font-style:normal;}
+.pd-cta-p{font-size:12.5px;color:var(--blue);margin-top:9px;max-width:460px;font-weight:300;line-height:1.62;}
+.pd-cta-btn{display:inline-flex;align-items:center;gap:10px;padding:17px 30px;background:var(--dark);color:var(--white);font-family:'DINPro',sans-serif;font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .15s;white-space:nowrap;}
+.pd-cta-btn:hover{background:var(--blue);}
+
+/* ── FOOTER BAR ── */
+.pd-bar{margin-top:auto;padding:24px var(--head-x);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;}
+.pd-bar-copy{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.08em;color:var(--g1);opacity:.7;}
+.pd-bar-idx{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.08em;color:var(--g1);opacity:.5;}
+.pd-bar-policy{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.08em;color:var(--g1);opacity:.7;text-decoration:none;transition:opacity .15s,color .15s;}
+.pd-bar-policy:hover{opacity:1;color:var(--dark);}
+
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .bl-head{grid-template-columns:1fr;gap:28px;}
+  .bl-head-ghost{display:none;}
+  .bl-media{height:300px;}
+  .bl-featured{min-height:380px;}
+  .bl-featured-body{padding:32px 32px;max-width:none;}
+}
+@media(max-width:900px){
+  .strip{display:none;}
+  .pg{padding-left:0;}
+  .bl-filters{position:static;}
+}
+@media(max-width:640px){
+  .nav-links,.nav-meta{display:none;}
+  .bl-grid{grid-template-columns:1fr;}
+  .bl-metarow{gap:20px;flex-wrap:wrap;}
+  .bl-media{height:220px;}
+  .bl-featured{min-height:320px;}
+  .bl-featured-body{padding:24px 22px;gap:12px;}
+  .bl-media-idx{display:none;}
+  .pd-cta{grid-template-columns:1fr;}
+}
+
+/* ═══ АДАПТИВ ревизии 2026-07-22: мобильное меню (порт из production.html) ═══ */
+
+/* ── Единая ось: слим-рельса 20px на 481–1024, контент 48/40/20 ── */
+@media (max-width:1024px){
+  
+  
+  
+  
+  .pd-crumb,.bl-head,.bl-filters,.bl-wrap,.pd-cta,.pd-bar{padding-left:28px;padding-right:28px;}
+}
+@media (max-width:640px){
+  .pd-crumb,.bl-head,.bl-filters,.bl-wrap,.pd-cta,.pd-bar{padding-left:20px;padding-right:20px;}
+}
+
+/* ── Пол шрифта: служебные подписи >=10px на <=1024 ── */
+@media (max-width:1024px){
+  .pd-crumb,.bl-media-tag,.bl-filter-lbl,.bl-chip-n,.bl-filter-count,.bl-featured-badge,.bl-featured-tag,.bl-card-cat,.bl-card-meta,.bl-featured-meta,.pd-bar-copy,.pd-bar-policy,.pd-bar-idx,.hs-k{font-size:10px;}
+  .bl-metaitem span{font-size:10px;}
+}
+
+/* ── Список статей: 2 колонки на планшете (как плашки проектов) ── */
+@media (min-width:641px) and (max-width:1024px){
+  .bl-grid{grid-template-columns:1fr 1fr;}
+  /* ряд «6 статей / 5 разделов / 2026 обновлено» — на всю ширину, крупнее */
+  .bl-metarow{display:grid;grid-template-columns:repeat(3,1fr);gap:0 24px;width:100%;padding-top:22px;}
+  .bl-metaitem b{font-size:clamp(34px,5.2vw,48px);}
+  .bl-metaitem span{font-size:11px;letter-spacing:.18em;}
+}
+
+/* ── Чипы фильтра: тач-цель 44px ── */
+@media (max-width:1024px){
+  .bl-chip{min-height:44px;display:inline-flex;align-items:center;}
+}
+
+/* ── Индикатор прогресса скролла под шапкой (порт с главной, виден <=1100) ── */
+.scroll-progress{position:fixed;top:var(--nav-h,64px);left:0;height:2px;width:0;background:var(--dark);z-index:199;display:none;transition:width .1s linear;pointer-events:none;}
+@media (max-width:1100px){
+  .scroll-progress{display:block;}
+}
+
+/* ═══ ФУТЕР — порт с production.html (внутри .pg: ось даёт сам .pg) ═══ */
+
+/* ── Футер = один экран на телефоне (компоновка statement как на главной) ── */
+

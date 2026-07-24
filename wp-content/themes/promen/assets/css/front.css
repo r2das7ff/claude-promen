@@ -1,0 +1,4142 @@
+/* ════════════════════════════════════════════════════════════
+   PROM-EN front: главная страница — hero + секции sfk, s2–s9.
+   Источник — html/hero-variant-d.html (Open Design, 2026-07-22),
+   хром (nav/strip/drawer/s10/футер) — base.css; здесь остаются
+   только страничные правила и фронт-специфичные вариации хрома.
+   ════════════════════════════════════════════════════════════ */
+
+/* ── FONTS ─────────────────────────────────────────────────── */
+/* ── TOKENS ─────────────────────────────────────────────────── */
+/* ── RESET ──────────────────────────────────────────────────── */
+
+img { display:block; }
+
+/* Fine background grid — как в референсе */
+
+/* ── NAV ────────────────────────────────────────────────────── */
+
+/* Live clock in nav — matches reference's top-right data */
+
+/* Burger — hidden on desktop, shown ≤1024px */
+
+/* ── MOBILE NAV DRAWER ──────────────────────────────────────── */
+
+/* ── LEFT STRIP ─────────────────────────────────────────────── */
+
+/* ── HERO LAYOUT ────────────────────────────────────────────── */
+.hero {
+  position:relative;
+  z-index:1;
+  min-height:100vh;
+  padding-top:var(--nav-h);
+  padding-left:var(--rail-w);
+  display:grid;
+  grid-template-columns:var(--hero-split);
+}
+
+/* ── LEFT CONTENT ───────────────────────────────────────────── */
+.left {
+  padding:60px 52px 60px var(--head-x);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  position:relative;
+  z-index:2;
+  min-height:calc(100vh - var(--nav-h));
+  container-type:inline-size;
+  container-name:hero-left;
+}
+
+/* "01" eyebrow row */
+.eyebrow {
+  display:flex;
+  align-items:center;
+  gap:18px;
+  margin-bottom:28px;
+  opacity:0;
+  animation:revealUp .6s .1s forwards;
+}
+.ey-num {
+  font-family:'DINPro',monospace;
+  font-size:10px;
+  letter-spacing:.2em;
+  color:var(--g1);
+  border:1px solid var(--g1);
+  padding:3px 8px;
+  line-height:1;
+  flex-shrink:0;
+  align-self:center;
+}
+.ey-label {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:700;
+  font-size:clamp(30px,3.4vw,52px);
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:var(--dark);
+  line-height:1;
+  display:flex;
+  align-items:center;
+  gap:0;
+}
+.ey-label::before { content:none; }
+
+/* Massive headline — matches reference's dominant typography */
+.h1 {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:900;
+  font-size:clamp(44px, 12.5cqi, 124px);
+  line-height:.86;
+  letter-spacing:-.015em;
+  text-transform:uppercase;
+  color:var(--dark);
+  margin-bottom:24px;
+  position:relative;
+  opacity:0;
+  transform:translateY(18px);
+  animation:revealUp .8s cubic-bezier(.16,1,.3,1) .2s forwards;
+}
+.h1-l2 { color:var(--g1); }
+
+/* Tagline — mirrors "FUNCTIONAL. DIGITAL. UNAPOLOGETIC." */
+.tagline {
+  font-family:'DINPro',monospace;
+  font-size:11px;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--g1);
+  margin-bottom:28px;
+  opacity:0;
+  animation:revealUp .6s .42s forwards;
+}
+.tagline .sep { color:var(--g1); margin:0 2px; }
+
+/* Rule with annotation */
+.rule {
+  width:100%;
+  height:1px;
+  background:var(--ln2);
+  margin-bottom:28px;
+  position:relative;
+  opacity:0;
+  animation:revealUp .5s .52s forwards;
+}
+.rule::after {
+  content:attr(data-label);
+  position:absolute;
+  right:0;
+  top:-9px;
+  font-family:'DINPro',monospace;
+  font-size:8px;
+  letter-spacing:.12em;
+  color:var(--g1);
+  background:var(--bg);
+  padding:0 8px;
+  opacity:.55;
+}
+
+/* Body text */
+.body {
+  font-size:14px;
+  font-weight:300;
+  line-height:1.72;
+  color:var(--blue);
+  max-width:440px;
+  margin-bottom:44px;
+  opacity:0;
+  animation:revealUp .6s .6s forwards;
+}
+
+/* CTAs — matches reference layout */
+.ctas {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  opacity:0;
+  animation:revealUp .6s .72s forwards;
+}
+.btn-fill {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:14px 26px;
+  background:var(--blue);
+  color:var(--white);
+  font-family:'DINPro',sans-serif;
+  font-weight:700;
+  font-size:11px;
+  line-height:1;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  border:1px solid var(--blue);
+  cursor:pointer;
+  transition:all .15s;
+}
+.btn-fill:hover { background:var(--dark); border-color:var(--dark); }
+.btn-fill .ic { font-size:1em; line-height:1; }
+
+.btn-ghost {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  padding:14px 20px;
+  background:transparent;
+  color:var(--blue);
+  font-family:'DINPro',sans-serif;
+  font-size:11px;
+  line-height:1;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  border:1px solid var(--g1);
+  cursor:pointer;
+  transition:all .15s;
+}
+.btn-ghost .bk { color:var(--g1); font-size:1em; line-height:1; }
+.btn-ghost:hover { background:var(--bg2); border-color:var(--blue); color:var(--dark); }
+
+/* Bottom data strip */
+.data-row {
+  position:absolute;
+  bottom:40px;
+  left:56px;
+  display:flex;
+  gap:0;
+  font-family:'DINPro',monospace;
+  font-size:8px;
+  letter-spacing:.15em;
+  color:var(--g1);
+  text-transform:uppercase;
+}
+.data-row span { padding-right:12px; border-right:1px solid var(--ln2); margin-right:12px; }
+.data-row span:last-child { border-right:none; margin-right:0; }
+
+/* ── RIGHT VISUAL ───────────────────────────────────────────── */
+.right {
+  position:relative;
+  min-height:calc(100vh - var(--nav-h));
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Subtle deep-blue radial glow behind the sign */
+.right-glow {
+  position:absolute;
+  width:560px; height:560px;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse, rgba(109,140,166,.18), transparent 65%);
+  pointer-events:none;
+}
+
+/* Structural frame corners — matches reference's corner marks */
+.rf {
+  position:absolute;
+  inset:32px;
+  pointer-events:none;
+  z-index:3;
+}
+.c { position:absolute; width:14px; height:14px; border-color:var(--g1); border-style:solid; opacity:.4; }
+.c-tl { top:0; left:0; border-width:1px 0 0 1px; }
+.c-tr { top:0; right:0; border-width:1px 1px 0 0; }
+.c-bl { bottom:0; left:0; border-width:0 0 1px 1px; }
+.c-br { bottom:0; right:0; border-width:0 1px 1px 0; }
+
+/* Cross-hair lines through center */
+.cross-h {
+  position:absolute;
+  left:32px; right:32px;
+  top:50%;
+  height:1px;
+  background:var(--ln);
+  pointer-events:none;
+}
+.cross-v {
+  position:absolute;
+  top:32px; bottom:32px;
+  left:50%;
+  width:1px;
+  background:var(--ln);
+  pointer-events:none;
+}
+
+/* Pixel cloud — brand blues as the "color dust" like reference's purple/green.
+   Centered the same bulletproof way as .right-glow (top/left 50% + translate
+   -50%,-50%) instead of inset:-40 — inset relied on the SVG's default
+   xMidYMid-meet letterboxing to land viewBox y=300 on .right's center, which
+   in practice drifted off-center whenever .right's aspect ratio wasn't near-
+   square. top/left 50%+translate is exact regardless of aspect ratio.
+   aspect-ratio:1 (sized off width) keeps the box itself square, so the
+   square viewBox maps in with no letterboxing and the little squares stay
+   actual squares instead of being stretched into rectangles. */
+.pixel-cloud {
+  position:absolute;
+  width:112%;
+  aspect-ratio:1;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:1;
+  pointer-events:none;
+}
+
+/* Main PE sign element */
+.pe-wrap {
+  position:relative;
+  z-index:2;
+  width:360px;
+  height:360px;
+}
+/* Main image */
+.pe-img {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  filter:drop-shadow(0 0 24px rgba(30,61,92,.18));
+  animation:glitchMain 7s step-end infinite;
+  position:relative;
+  z-index:2;
+}
+/* Ghost layer 1 — cyan channel shift */
+.pe-g1 {
+  position:absolute;
+  inset:0;
+  background:url('../img/PE_sign_blue.png') center/contain no-repeat;
+  filter:hue-rotate(25deg) saturate(2) brightness(.8);
+  opacity:0;
+  mix-blend-mode:multiply;
+  animation:ghost1 7s step-end infinite;
+  z-index:1;
+}
+/* Ghost layer 2 — warm shift */
+.pe-g2 {
+  position:absolute;
+  inset:0;
+  background:url('../img/PE_sign_blue.png') center/contain no-repeat;
+  filter:hue-rotate(-20deg) saturate(1.5) brightness(.9);
+  opacity:0;
+  mix-blend-mode:multiply;
+  animation:ghost2 7s step-end infinite;
+  z-index:1;
+}
+
+/* ── HUD OVERLAYS ───────────────────────────────────────────── */
+.hud {
+  position:absolute;
+  z-index:4;
+  pointer-events:none;
+  font-family:'DINPro',monospace;
+  font-size:9px;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+/* "РЕНДЕР 01" — top center, matches reference */
+.hud-render {
+  top:44px;
+  left:50%;
+  transform:translateX(-50%);
+  color:var(--g1);
+  opacity:.65;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  white-space:nowrap;
+}
+.hud-render::before {
+  content:'';
+  width:4px; height:4px;
+  background:var(--g1);
+  animation:blink 1.5s step-end infinite;
+  flex-shrink:0;
+}
+/* Coordinate readouts — matches "X_38.1749 / Y_-86.7676" */
+.hud-coords {
+  bottom:56px;
+  right:32px;
+  text-align:right;
+  line-height:1.9;
+  color:var(--g1);
+  opacity:.7;
+}
+.hud-coords span { color:var(--g2); }
+/* Scene marker — matches "//SCN_01" */
+.hud-scene {
+  bottom:32px;
+  left:32px;
+  color:var(--g1);
+  opacity:.4;
+  font-size:10px;
+  border-top:1px solid var(--ln2);
+  padding-top:7px;
+}
+/* Top-right technical info */
+.hud-info {
+  top:44px;
+  right:32px;
+  color:var(--g1);
+  opacity:.5;
+  text-align:right;
+  line-height:1.8;
+}
+
+/* ── ANIMATIONS ─────────────────────────────────────────────── */
+@keyframes revealUp {
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes blink {
+  0%,100% { opacity:1; }
+  50% { opacity:0; }
+}
+/* Main glitch — aggressive but sparse (every 7s) */
+@keyframes glitchMain {
+  0%,86%,100% { transform:translate(0,0); clip-path:none; filter:drop-shadow(0 0 24px rgba(30,61,92,.18)); }
+  87%  { transform:translate(-7px,0); clip-path:inset(12% 0 72% 0); filter:drop-shadow(0 0 10px rgba(30,61,92,.6)); }
+  88%  { transform:translate(5px,0);  clip-path:inset(55% 0 18% 0); filter:drop-shadow(0 0 30px rgba(109,140,166,.5)); }
+  89%  { transform:translate(-3px,2px); clip-path:inset(28% 0 44% 0); }
+  90%  { transform:translate(0,0); clip-path:none; filter:drop-shadow(0 0 24px rgba(30,61,92,.18)); }
+  91%  { transform:translate(-4px,-1px); clip-path:inset(68% 0 10% 0); filter:drop-shadow(0 0 16px rgba(30,61,92,.4)); }
+  92%  { transform:translate(0,0); clip-path:none; filter:drop-shadow(0 0 24px rgba(30,61,92,.18)); }
+}
+@keyframes ghost1 {
+  0%,86%,92%,100% { opacity:0; transform:translate(0,0); }
+  87% { opacity:.55; transform:translate(10px,0); clip-path:inset(12% 0 72% 0); }
+  88% { opacity:.3;  transform:translate(-8px,0); clip-path:inset(55% 0 18% 0); }
+  89% { opacity:.45; transform:translate(6px,0);  clip-path:inset(28% 0 44% 0); }
+  90% { opacity:0; }
+  91% { opacity:.35; transform:translate(-5px,0); clip-path:inset(68% 0 10% 0); }
+}
+@keyframes ghost2 {
+  0%,87%,92%,100% { opacity:0; transform:translate(0,0); }
+  88% { opacity:.35; transform:translate(-10px,0); clip-path:inset(12% 0 72% 0); }
+  89% { opacity:.25; transform:translate(7px,0);   clip-path:inset(55% 0 18% 0); }
+  90% { opacity:.4;  transform:translate(-4px,2px); clip-path:inset(28% 0 44% 0); }
+  91% { opacity:0; }
+}
+/* Pixel float animations */
+@keyframes pf1 { 0%,100% { transform:translate(0,0); } 50% { transform:translate(3px,-5px); } }
+@keyframes pf2 { 0%,100% { transform:translate(0,0); } 50% { transform:translate(-4px,4px); } }
+@keyframes pf3 { 0%,100% { transform:translate(0,0); } 50% { transform:translate(2px,6px); } }
+@keyframes pf4 { 0%,100% { transform:translate(0,0); } 50% { transform:translate(-3px,-3px); } }
+
+/* Glitch flicker on the h1 */
+@keyframes h1glitch {
+  0%,91%,100% { clip-path:none; transform:translateY(0); }
+  92% { clip-path:inset(18% 0 68% 0); transform:translate(-3px,0) translateY(0); }
+  93% { clip-path:inset(55% 0 22% 0); transform:translate(4px,0) translateY(0); }
+  94% { clip-path:none; transform:translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow,.h1,.tagline,.rule,.body,.ctas {
+    animation:none !important; opacity:1 !important; transform:none !important;
+  }
+  .pe-img { animation:none !important; }
+  .pe-g1, .pe-g2 { display:none; }
+  
+  .hud-render::before { animation:none !important; }
+}
+
+/* ── RESPONSIVE — HERO ──────────────────────────────────────────
+   The render-viewport visual (glow + PE mark + HUD chrome) was tried as a
+   quieter stacked banner under the text, but even stripped of its border
+   and instrument chrome it still read as its own block after the hero
+   copy. Dropped entirely on mobile/tablet — the hero is text + CTAs only
+   below 1100px, full stop. */
+@media (max-width:1100px) {
+  /* .left's own min-height was already reset, but .hero itself (the grid
+     container) still carried the desktop min-height:100vh — with .right
+     gone, that alone was still forcing the whole section to fill one full
+     screen regardless of how short the text content actually was, leaving
+     a wall of empty space before the next section starts. */
+  .hero { grid-template-columns:1fr; grid-template-rows:auto; min-height:0; }
+  .left { min-height:0; padding-top:48px; padding-bottom:40px; }
+  .right { display:none; }
+
+  .data-row {
+    position:static;
+    margin-top:32px;
+    padding-top:16px;
+    border-top:1px solid var(--ln2);
+    flex-wrap:wrap;
+    row-gap:8px;
+  }
+}
+@media (max-width:900px) {
+  
+  .hero { padding-left:0; }
+  .left { padding:40px 28px 36px; min-height:0; }
+  .ctas { flex-direction:column; align-items:stretch; }
+  .btn-fill, .btn-ghost { width:100%; }
+}
+@media (max-width:640px) {
+  
+  
+  
+  .hero { padding-top:var(--nav-h); }
+  .h1 { font-size:clamp(48px,12vw,76px); }
+  .left { padding:32px 20px 60px; }
+}
+
+/* ── SECTION 2 ──────────────────────────────────────────────── */
+.s2 {
+  position: relative;
+  z-index: 1;
+  padding-left: var(--rail-w);
+  border-top: 1px solid var(--ln2);
+}
+
+/* Header: 2-col editorial grid */
+.s2-head {
+  display: grid;
+  grid-template-columns: var(--split-even);
+  gap: 0;
+  padding: 72px 52px 56px var(--head-x);
+  border-bottom: 1px solid var(--ln2);
+  align-items: end;
+}
+.s2-kicker {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--g1);
+  margin-bottom: 24px;
+}
+.s2-kicker::before {
+  content: '02';
+  border: 1px solid var(--g1);
+  padding: 3px 8px;
+  line-height: 1;
+  font-size: 10px;
+  letter-spacing: .2em;
+}
+.s2-h2 {
+  font-family: 'DINProCond', 'DINPro', sans-serif;
+  font-weight: 900;
+  font-size: clamp(34px, 4vw, 64px);
+  line-height: .88;
+  letter-spacing: -.015em;
+  text-transform: uppercase;
+  color: var(--dark);
+}
+.s2-lead {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.72;
+  color: var(--blue);
+  max-width: 420px;
+  align-self: end;
+  padding-bottom: 4px;
+}
+
+/* ── Accordion rows ───────────────────────────────────────────── */
+.s2-row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  border-bottom: 1px solid var(--ln2);
+  cursor: pointer;
+  position: relative;
+  transition: background .15s;
+}
+.s2-row:hover { background: rgba(109,140,166,.025); }
+.s2-row::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--dark);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform .3s ease;
+}
+.s2-row.active::before { transform: scaleY(1); }
+
+/* Large step number — left spine */
+.sr-num {
+  font-family: 'DINProCond', monospace;
+  font-size: 56px;
+  font-weight: 900;
+  color: var(--ln2);
+  line-height: 1;
+  letter-spacing: -.03em;
+  padding: 20px 0 20px 24px;
+  border-right: 1px solid var(--ln2);
+  display: flex;
+  align-items: flex-start;
+  transition: color .25s;
+  user-select: none;
+}
+.s2-row.active .sr-num { color: var(--dark); }
+
+/* Collapsed title bar */
+.sr-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 44px 20px 36px;
+}
+.sr-bar-text { flex: 1; }
+.sr-title {
+  display: block;
+  font-family: 'DINProCond', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--dark);
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.sr-meta {
+  display: block;
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+.sr-plus {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  color: transparent;
+  line-height: 1;
+  transition: transform .3s;
+  flex-shrink: 0;
+}
+/* Drawn from two bars instead of the "+" text glyph — at this size DINPro's
+   own "+" character reads more like a cross than a clean plus. */
+.sr-plus::before,
+.sr-plus::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  background: var(--g2);
+  transition: background-color .25s;
+}
+.sr-plus::before { width: 14px; height: 2px; transform: translate(-50%, -50%); }
+.sr-plus::after { width: 2px; height: 14px; transform: translate(-50%, -50%); }
+.s2-row.active .sr-plus { transform: rotate(45deg); }
+.s2-row.active .sr-plus::before,
+.s2-row.active .sr-plus::after { background: var(--dark); }
+
+/* Expanded panel — 3-col: desc | 1px sep | data */
+.sr-panel {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .45s cubic-bezier(.4,0,.2,1);
+  border-top: 1px solid transparent;
+}
+.s2-row.active .sr-panel {
+  /* real height is set inline by JS (sr-panel.scrollHeight) so stacked
+     mobile columns (desc + params on top of each other) never clip —
+     this 2000px is only a no-JS fallback ceiling */
+  max-height: 2000px;
+  border-top-color: var(--ln2);
+}
+/* .sr-panel's 50/50 split is computed inside the row's content column, which
+   already lost 96px to .sr-num — shift the divider left by that much so it
+   lands on the same axis as .s2-lead in the section head. */
+.s2-row .sr-panel { grid-template-columns: calc(50% - 46px) 1px 1fr; }
+.sr-left {
+  padding: 28px 32px 36px 36px;
+  font-family: 'DINPro', monospace;
+  font-size: 13px;
+  line-height: 1.72;
+  color: var(--g1);
+}
+.sr-sep { background: var(--ln2); }
+.sr-right { padding: 28px 32px 36px 32px; }
+.sr-right-fill { padding: 0; }
+
+/* Parameter key/value pairs */
+.s2-param {
+  display: grid;
+  grid-template-columns: 122px 1fr;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--ln);
+  font-family: 'DINPro', monospace;
+  font-size: 11.5px;
+}
+.s2-param:last-child { border-bottom: none; }
+.s2-param-k {
+  font-size: 9.5px;
+  color: var(--g1);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.s2-param-v { color: var(--dark); font-weight: 600; letter-spacing: .2px; }
+
+/* Stage 3: 2×2 component grid */
+.s2-parts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1px;
+  background: var(--ln2);
+  min-height: 200px;
+}
+.s2-part {
+  background: var(--bg);
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.s2-part-name {
+  font-family: 'DINProCond', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--dark);
+  margin-bottom: 4px;
+}
+.s2-part-gost {
+  font-family: 'DINPro', monospace;
+  font-size: 9.5px;
+  letter-spacing: 1.5px;
+  color: var(--g1);
+  text-transform: uppercase;
+}
+
+/* Stage 4: checklist */
+.s2-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.s2-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--ln);
+  font-family: 'DINPro', monospace;
+  font-size: 12px;
+  letter-spacing: .3px;
+  color: var(--dark);
+}
+.s2-checklist li:last-child { border-bottom: none; }
+.s2-chk {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--g1);
+  background: rgba(109,140,166,.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--g1);
+}
+.s2-status {
+  margin-top: 16px;
+  padding: 8px 14px;
+  border: 1px solid var(--g1);
+  background: rgba(109,140,166,.1);
+  font-family: 'DINPro', monospace;
+  font-size: 8.5px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--dark);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Trust callout */
+.s2-trust {
+  border-top: 1px solid var(--ln2);
+  border-bottom: 1px solid var(--ln2);
+  padding: 30px 56px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.trust-mark {
+  font-family: 'DINPro', monospace;
+  font-size: 8px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--g1);
+  white-space: nowrap;
+  padding: 7px 12px;
+  border: 1px solid var(--ln2);
+  flex-shrink: 0;
+  opacity: .7;
+}
+.trust-text {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--blue);
+  max-width: 680px;
+}
+.trust-text strong { color: var(--dark); font-weight: 700; }
+
+/* S2 responsive */
+@media (max-width: 1100px) {
+  .s2-head { grid-template-columns: 1fr; }
+  .s2-lead { display: none; }
+}
+@media (max-width: 900px) {
+  .s2-head { padding: 56px 28px 48px; }
+  .s2-trust { padding: 24px 28px; flex-direction: column; align-items: flex-start; gap: 12px; }
+  /* Tablet portrait: the 2-col desc|params split gets too tight to read
+     comfortably — stack instead, matches how the row already reads top-to-bottom. */
+  .s2-row .sr-panel { grid-template-columns: 1fr; }
+  .sr-sep { display: none; }
+  .sr-left { padding-bottom: 0; }
+  .sr-right, .sr-right-fill { padding: 0 32px 28px 36px; }
+}
+@media (max-width: 640px) {
+  .s2-head { padding: 40px 20px; }
+  .s2-row { grid-template-columns: 64px 1fr; }
+  .sr-num { font-size: 40px; padding-left: 16px; }
+  .sr-bar { padding: 18px 24px 18px 22px; }
+  /* Title (.sr-bar) and params (.sr-right) both land on 22px here — .sr-left
+     never got the same override and was still sitting at its base 36px,
+     so the description paragraph read as indented past the heading above it. */
+  .sr-left { padding-left: 22px; }
+  .sr-right, .sr-right-fill { padding: 0 22px 28px; }
+  .s2-parts { grid-template-columns: 1fr 1fr; }
+  .s2-trust { padding: 20px; }
+}
+
+/* ══ SECTION 4 · ГЕОГРАФИЯ ПОСТАВОК ══════════════════════════ */
+.s4 {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  border-top: 1px solid var(--ln2);
+  padding-left: var(--rail-w);
+}
+.s4-head {
+  display: grid;
+  grid-template-columns: var(--split-even);
+  gap: 0;
+  padding: 72px 52px 56px var(--head-x);
+  border-bottom: 1px solid var(--ln2);
+  align-items: end;
+}
+.s4-kicker {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--g1);
+  margin-bottom: 24px;
+}
+.s4-kicker::before {
+  content: '04';
+  border: 1px solid var(--g1);
+  padding: 3px 8px;
+  font-size: 10px;
+  letter-spacing: .2em;
+  line-height: 1;
+}
+.s4-h2 {
+  font-family: 'DINProCond', 'DINPro', sans-serif;
+  font-weight: 900;
+  font-size: clamp(34px, 4vw, 64px);
+  line-height: .88;
+  letter-spacing: -.015em;
+  text-transform: uppercase;
+  color: var(--dark);
+}
+.s4-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 24px;
+}
+.s4-lead {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.72;
+  color: var(--blue);
+  max-width: 420px;
+}
+.s4-stats {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--ln2);
+  padding-top: 20px;
+}
+.s4-stat {
+  flex: 1;
+  border-right: 1px solid var(--ln2);
+  padding: 0 20px;
+}
+.s4-stat:first-child { padding-left: 0; }
+.s4-stat:last-child  { border-right: none; padding-right: 0; }
+.s4-stat-num {
+  font-family: 'DINProCond', monospace;
+  font-weight: 900;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--dark);
+  display: block;
+  margin-bottom: 4px;
+}
+.s4-stat-label {
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--g1);
+}
+/* Map container */
+.s4-map {
+  position: relative;
+  width: 100%;
+  height: 1080px;
+  overflow: hidden;
+  background: transparent;
+}
+#s4-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#s4-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+/* Map hover/tap info card */
+.s4-tooltip {
+  position: absolute;
+  z-index: 20;
+  top: 0; left: 0;
+  width: 900px;
+  max-width: calc(100% - 24px);
+  background: #fff;
+  border: 1px solid var(--ln2);
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(15,42,68,.14), 0 2px 8px rgba(15,42,68,.05);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(10px) scale(.97);
+  transform-origin: left center;
+  transition: opacity .32s cubic-bezier(.16,1,.3,1), transform .38s cubic-bezier(.16,1,.3,1);
+  will-change: opacity, transform;
+}
+.s4-tooltip:not(.visible) { pointer-events: none; }
+.s4-tooltip.visible { opacity: 1; transform: translateY(0) scale(1); }
+.s4-tt-topbar { height: 3px; background: var(--tt-accent, var(--blue)); }
+.s4-tt-body { display: flex; align-items: stretch; }
+.s4-tt-img {
+  position: relative;
+  flex: 0 0 180px;
+  width: 180px;
+  overflow: hidden;
+  background: #DCE3E9;
+  border-right: 1px solid var(--ln2);
+}
+.s4-tt-img svg, .s4-tt-img img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; }
+.s4-tt-img-tag {
+  position: absolute; left: 12px; bottom: 12px;
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--dark);
+  background: rgba(255,255,255,.92);
+  border: 1px solid var(--ln2);
+  padding: 4px 8px;
+}
+.s4-tt-content { flex: 1; min-width: 0; padding: 26px 26px; display: flex; flex-direction: column; justify-content: center; }
+.s4-tt-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ln2);
+}
+.s4-tt-label {
+  font-family: 'DINProCond', sans-serif;
+  font-weight: 900;
+  font-size: 25px;
+  line-height: 1.1;
+  color: var(--dark);
+  margin: 0;
+}
+.s4-tt-badge {
+  flex-shrink: 0;
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border: 1px solid var(--ln2);
+  white-space: nowrap;
+  color: var(--blue);
+}
+.s4-tt-badge.local { color: var(--g1); }
+.s4-tt-sub {
+  display: block;
+  margin-top: 6px;
+  font-family: 'DINPro', monospace;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--g1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s4-tt-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 0;
+  font-family: 'DINPro', monospace;
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--blue);
+  min-width: 0;
+}
+.s4-tt-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.s4-tt-dot.pulse { animation: blink 1.8s step-end infinite; }
+.s4-tt-status-txt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s4-tt-facts {
+  display: flex;
+  border-top: 1px solid var(--ln2);
+  padding-top: 16px;
+}
+.s4-tt-fact-row {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 14px;
+  border-right: 1px solid var(--ln2);
+}
+.s4-tt-fact-row:first-child { padding-left: 0; }
+.s4-tt-fact-row:last-child { border-right: none; padding-right: 0; }
+.s4-tt-fact-k {
+  font-family: 'DINPro', monospace;
+  font-size: 9.5px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--g1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s4-tt-fact-v {
+  font-family: 'DINProCond', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 1.2;
+  color: var(--dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.s4-tt-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ln2);
+}
+.s4-tt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blue);
+  border: 1px solid var(--g1);
+  color: var(--white);
+  padding: 12px 22px;
+  font-family: 'DINPro', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all .15s;
+}
+.s4-tt-btn:hover { background: var(--g1); color: var(--bg); }
+.s4-tt-link {
+  font-family: 'DINPro', monospace;
+  font-size: 9.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--g1);
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(109,140,166,.4);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color .2s;
+}
+.s4-tt-link:hover { color: var(--blue); }
+@media (max-width: 640px) {
+  .s4-tooltip { width: 400px; }
+  .s4-tt-img { flex-basis: 140px; width: 140px; }
+  .s4-tt-label { font-size: 19px; }
+  .s4-tt-content { padding: 18px 20px; }
+  .s4-tt-facts { flex-direction: column; border-top: none; padding-top: 0; gap: 12px; }
+  .s4-tt-fact-row { padding: 12px 0 0; border-right: none; border-top: 1px solid var(--ln2); }
+  .s4-tt-fact-row:first-child { padding-top: 0; border-top: none; }
+}
+@media (max-width: 480px) {
+  .s4-tooltip { width: 288px; }
+  .s4-tt-img { display: none; }
+  .s4-tt-cta { flex-direction: column; align-items: stretch; }
+  .s4-tt-btn { justify-content: center; }
+  .s4-tt-link { text-align: center; }
+}
+/* S4 responsive */
+@media (max-width: 1100px) {
+  .s4-head { grid-template-columns: 1fr; }
+  /* Matches the 28px/20px head-to-lead rhythm now unified across
+     SFK/S6/S2/S3 — this was the one section still on its own one-off 24px. */
+  .s4-right { margin-top: 28px; }
+}
+@media (max-width: 640px) {
+  .s4-right { margin-top: 20px; }
+}
+@media (max-width: 900px) {
+  .s4 { padding-left: 0; }
+  .s4-head { padding: 56px 28px 48px; }
+}
+@media (max-width: 640px) {
+  .s4-head { padding: 28px 20px 24px; }
+  /* Stacked into 3 full-width rows, each with a 40px number, this alone
+     ran ~200px+ (was only getting tighter gaps between rows, not smaller
+     rows). Kept them side by side like desktop instead — three short
+     number+label pairs fit one row easily at phone width, so this is a
+     single ~80px band instead of three ~65px ones stacked. */
+  .s4-stats { padding-top: 12px; }
+  .s4-stat { padding: 0 12px; }
+  .s4-stat:first-child { padding-left: 0; }
+  .s4-stat-num { font-size: 28px; }
+  .s4-stat-label { font-size: 8px; letter-spacing: 1px; }
+}
+
+/* ── S4 mobile list — replaces the canvas map below 900px ──────
+   The interactive canvas map was a fixed 780px tall on top of the head
+   (kicker + h2 + lead + stats) on tablet-portrait — often taller than the
+   viewport itself before the user even reached the section's own content.
+   The list view (built for phones) is the actual mobile-first answer here;
+   it just needed to kick in at the same 900px tablet boundary every other
+   section in the file uses, not wait until 640px. */
+.s4-mobile-list { display: none; }
+@media (max-width: 900px) {
+  .s4-map { display: none; }
+  .s4-mobile-list { display: flex; flex-direction: column; }
+}
+/* 22px padding + 10px inter-row gaps + a 3-fact block + two 44px-tall CTA
+   links added up to ~250px per card — ×5 destinations, that's the bulk of
+   why "compact" never actually landed here even after the map→list
+   swap point moved. Nothing below removes content, it's the same head +
+   sub + status + facts + actions every card had — just enough tighter
+   that 5 cards read as a scannable list instead of 5 small sections. */
+.s4-ml-card {
+  border-top: 1px solid var(--ln2);
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.s4-ml-card:last-child { border-bottom: 1px solid var(--ln2); }
+.s4-ml-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.s4-ml-title {
+  font-family: 'DINProCond', 'DINPro', sans-serif;
+  font-weight: 900;
+  font-size: 16px;
+  letter-spacing: -.005em;
+  text-transform: uppercase;
+  color: var(--dark);
+  line-height: 1.15;
+}
+.s4-ml-badge {
+  flex-shrink: 0;
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border: 1px solid var(--ln2);
+  color: var(--blue);
+  white-space: nowrap;
+}
+.s4-ml-badge.local { color: var(--g1); }
+.s4-ml-sub { font-family: 'DINPro', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--g1); }
+.s4-ml-status { display: flex; align-items: center; gap: 7px; font-family: 'DINPro', monospace; font-size: 10px; letter-spacing: .04em; text-transform: uppercase; color: var(--blue); }
+.s4-ml-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.s4-ml-dot.pulse { animation: blink 1.8s step-end infinite; }
+.s4-ml-facts { display: flex; flex-direction: column; gap: 4px; padding-top: 6px; margin-top: 1px; border-top: 1px solid var(--ln); }
+.s4-ml-fact { display: flex; justify-content: space-between; gap: 12px; font-family: 'DINPro', monospace; font-size: 10.5px; }
+.s4-ml-fact .k { color: var(--g1); letter-spacing: .05em; text-transform: uppercase; flex-shrink: 0; }
+.s4-ml-fact .v { color: var(--dark); font-weight: 700; text-align: right; }
+.s4-ml-cta { display: flex; gap: 20px; margin-top: 2px; flex-wrap: wrap; }
+.s4-ml-cta a {
+  display: inline-flex; align-items: center;
+  min-height: 44px;
+  font-family: 'DINPro', monospace;
+  font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--g1);
+  border-bottom: 1px solid rgba(109,140,166,.4);
+}
+.s4-ml-cta a:active { color: var(--dark); }
+
+/* ══ SECTION 3 · НАПРАВЛЕНИЯ И РЕШЕНИЯ ════════════════════════ */
+.s3 {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--ln2);
+  padding-left: var(--rail-w);
+}
+
+/* Header */
+.s3-head {
+  display: grid;
+  grid-template-columns: var(--split-even);
+  gap: 0;
+  padding: 72px 52px 56px var(--head-x);
+  border-bottom: 1px solid var(--ln2);
+  align-items: end;
+}
+.s3-kicker {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--g1);
+  margin-bottom: 24px;
+}
+.s3-kicker::before {
+  content: '03';
+  border: 1px solid var(--g1);
+  padding: 3px 8px;
+  font-size: 10px;
+  letter-spacing: .2em;
+  line-height: 1;
+}
+.s3-h2 {
+  font-family: 'DINProCond', 'DINPro', sans-serif;
+  font-weight: 900;
+  font-size: clamp(34px, 4vw, 64px);
+  line-height: .88;
+  letter-spacing: -.015em;
+  text-transform: uppercase;
+  color: var(--dark);
+}
+.s3-lead {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.72;
+  color: var(--blue);
+  max-width: 420px;
+  align-self: end;
+  padding-bottom: 4px;
+}
+
+/* ─ Asymmetric grid ──────────────────────────────────────────── */
+.s3-grid {
+  display: grid;
+  grid-template-columns: 5fr 3fr 3fr;
+  grid-template-areas:
+    "big  wide wide"
+    "big  sm1  sm2"
+    "cta  cta  cta";
+  background: var(--ln2);
+  gap: 1px;
+}
+
+/* Base card */
+.s3-card {
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+  transition: background .2s;
+}
+.s3-card:hover { background: var(--bg2); }
+
+/* Card grid placements */
+.s3-d1   { grid-area: big;  display: flex; flex-direction: column; }
+.s3-d2   { grid-area: wide; padding: 36px 40px 32px; }
+.s3-d3   { grid-area: sm1;  padding: 28px 32px 24px; }
+.s3-d4   { grid-area: sm2;  padding: 28px 32px 24px; }
+.s3-cta  { grid-area: cta;  background: var(--dark); }
+
+/* ─ D1: Big card structure ───────────────────────────────────── */
+.s3-visual {
+  background: var(--dark);
+  position: relative; /* contains .s3-schema and .s3-vis-hover */
+  overflow: hidden;
+  padding: 36px 40px 32px;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: background .25s;
+}
+.s3-d1:hover .s3-visual { background: rgba(10,32,54,.96); }
+.s3-body { padding: 30px 40px; flex: 1; }
+
+/* ─ Number labels ────────────────────────────────────────────── */
+.s3-num {
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--g1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.s3-num::after { content: ''; height: 1px; width: 28px; background: var(--ln2); }
+.s3-num-inv {
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--g1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.s3-num-inv::after { content: ''; height: 1px; width: 28px; background: rgba(109,140,166,.3); }
+
+/* ─ Typography ───────────────────────────────────────────────── */
+.s3-title {
+  font-family: 'DINProCond', monospace;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--dark);
+  line-height: 1.05;
+  margin-bottom: 5px;
+}
+.s3-title-inv {
+  font-family: 'DINProCond', monospace;
+  font-weight: 900;
+  font-size: 26px;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.s3-title-sm {
+  font-family: 'DINProCond', monospace;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  color: var(--dark);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+.s3-sub  { font-size: 10.5px; color: var(--g1); letter-spacing: .5px; margin-bottom: 18px; line-height: 1.5; }
+.s3-sub-inv { font-size: 10.5px; color: var(--g1); letter-spacing: .5px; line-height: 1.5; }
+.s3-desc { font-size: 12.5px; line-height: 1.65; color: var(--blue); margin-bottom: 20px; }
+.s3-desc-sm { font-size: 11.5px; line-height: 1.65; color: var(--blue); margin-bottom: 16px; }
+
+/* ─ Tags ─────────────────────────────────────────────────────── */
+.s3-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.s3-tag {
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--g1);
+  padding: 3px 7px;
+  border: 1px solid var(--ln2);
+  white-space: nowrap;
+}
+.s3-tag-inv {
+  font-family: 'DINPro', monospace;
+  font-size: 8.5px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--g1);
+  padding: 3px 8px;
+  border: 1px solid rgba(109,140,166,.35);
+  display: inline-block;
+}
+
+/* ─ Fitting symbols row (D2) ─────────────────────────────────── */
+.s3-fittings {
+  display: flex;
+  gap: 28px;
+  align-items: flex-end;
+  padding: 16px 0 20px;
+  border-top: 1px solid var(--ln);
+  border-bottom: 1px solid var(--ln);
+  margin: 16px 0 22px;
+}
+.s3-fitting { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.s3-fitting-lbl {
+  font-family: 'DINPro', monospace;
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--blue);
+  white-space: nowrap;
+}
+
+/* ─ Hover reveal bar ─────────────────────────────────────────── */
+.s3-hover-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15,42,68,.95);
+  padding: 9px 40px;
+  font-family: 'DINPro', monospace;
+  font-size: 9.5px;
+  letter-spacing: 1px;
+  color: var(--g1);
+  transform: translateY(100%);
+  transition: transform .3s ease;
+}
+.s3-card:hover .s3-hover-bar { transform: translateY(0); }
+.s3-d3 .s3-hover-bar, .s3-d4 .s3-hover-bar { padding: 9px 32px; }
+
+/* Hover bar for dark visual area (D1) */
+.s3-vis-hover {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0,0,0,.72);
+  padding: 10px 40px;
+  font-family: 'DINPro', monospace;
+  font-size: 9.5px;
+  letter-spacing: 1px;
+  color: var(--g1);
+  transform: translateY(100%);
+  transition: transform .3s ease;
+}
+.s3-d1:hover .s3-vis-hover { transform: translateY(0); }
+
+/* ─ Decorative accent lines ──────────────────────────────────── */
+.s3-d2::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--dark);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .4s ease;
+}
+.s3-d2:hover::after { transform: scaleX(1); }
+.s3-d3::before, .s3-d4::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--dark);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform .35s ease;
+}
+.s3-d3:hover::before, .s3-d4:hover::before { transform: scaleY(1); }
+
+/* ─ Schema decorations (abs-positioned SVGs) ─────────────────── */
+.s3-schema {
+  position: absolute;
+  pointer-events: none;
+  opacity: .2;
+  transition: opacity .3s;
+}
+.s3-card:hover .s3-schema   { opacity: .45; }
+.s3-d1 .s3-schema           { opacity: .18; }
+.s3-d1:hover .s3-schema     { opacity: .35; }
+
+/* ─ CTA ──────────────────────────────────────────────────────── */
+.s3-cta-inner {
+  padding: 40px 52px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 48px;
+  align-items: center;
+}
+.s3-cta-text {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--g2);
+  max-width: 520px;
+}
+.s3-cta-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.s3-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 28px;
+  background: var(--white);
+  color: var(--dark);
+  font-family: 'DINPro', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background .2s;
+  white-space: nowrap;
+}
+.s3-btn:hover { background: var(--bg2); }
+.s3-btn-alt {
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--g1);
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(109,140,166,.4);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .2s;
+}
+.s3-btn-alt:hover { color: var(--g2); }
+
+/* ─ S3 Responsive ────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .s3-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "big  big"
+      "wide wide"
+      "sm1  sm2"
+      "cta  cta";
+  }
+  /* justify-content:space-between only creates a gap from *leftover* height
+     past min-height — once the tags row + wrapped 2-line title fill that
+     min-height on their own (routine at this width), the leftover shrinks
+     to ~0 and the tags read as stuck to the title. gap sets a floor that
+     holds even when there's no leftover space to distribute. */
+  .s3-visual { min-height: 200px; gap: 24px; }
+
+  /* Hover only exists on a mouse — on touch this spec line would never be
+     reachable, so it stops being a reveal and becomes a normal always-on
+     footer line inside the card (both sit last in DOM, so static flow
+     places them exactly where the hover version used to slide up to).
+     Their own left/right padding was sized for an absolutely-positioned
+     bar spanning the full card edge-to-edge — in normal flow it now sits
+     *inside* the card's own padding too, so the two paddings would stack.
+     A small 16px keeps it reading as its own padded plate (not flush with
+     the edge, not double-indented) instead of matching the card axis exactly. */
+  .s3-hover-bar, .s3-vis-hover {
+    position: static;
+    transform: none;
+  }
+  .s3-hover-bar { margin-top: 16px; padding-left: 16px; padding-right: 16px; }
+  /* Was a floating dark bar with its own implicit separation from the
+     title above it — now it's just the next line in the flow, so it reads
+     as a run-on unless it gets its own top border to mark it as a distinct
+     spec line rather than a continuation of the subtitle. Same 16px as
+     .s3-hover-bar so D1's plate matches D2/D3/D4's. */
+  .s3-vis-hover { margin-top: 14px; padding-top: 12px; padding-left: 16px; padding-right: 16px; border-top: 1px solid rgba(255,255,255,.12); }
+  /* .s3-d3/.s3-d4's own compound selector (higher specificity) sets its own
+     9px 32px padding unconditionally — repeat the override here so it still wins. */
+  .s3-d3 .s3-hover-bar, .s3-d4 .s3-hover-bar { padding-left: 16px; padding-right: 16px; }
+}
+@media (max-width: 900px) {
+  .s3 { padding-left: 0; }
+  .s3-head { grid-template-columns: 1fr; padding: 56px 28px 48px; }
+  .s3-lead { display: none; }
+  /* gap:48px был горизонтальным жёлобом 2-колоночной раскладки; в стеке он
+     стал слишком большим вертикальным зазором текст↔кнопка — поджимаем. */
+  .s3-cta-inner { grid-template-columns: 1fr; padding: 32px 28px; gap: 22px; }
+  .s3-cta-actions { align-items: flex-start; }
+  /* D2 (40px) and D3/D4 (32px) only converged at the ≤640px tier — between
+     641-900px they were still on their unmatched desktop defaults. */
+  .s3-d2 { padding-left: 28px; padding-right: 28px; }
+  .s3-d3, .s3-d4 { padding-left: 28px; padding-right: 28px; }
+  /* D1 read as its own standalone section rather than the first card in the
+     grid: a purely-decorative technical SVG (zero information, desktop-only
+     texture) plus a hero-scale 26px title gave it far more visual weight
+     than D2/D3/D4's plain num+title+sub. Drop the decoration and bring the
+     title down closer to D2's scale so D1 reads as "biggest card in the
+     list", not "a different kind of block". */
+  .s3-schema { display: none; }
+  .s3-title-inv { font-size: 22px; }
+}
+@media (max-width: 640px) {
+  .s3-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas: "big" "wide" "sm1" "sm2" "cta";
+  }
+  .s3-head { padding: 40px 20px; }
+  .s3-d2   { padding: 24px 20px 20px; }
+  .s3-d3, .s3-d4 { padding: 22px 20px 20px; }
+  .s3-body   { padding: 24px 20px; }
+  .s3-visual { padding: 24px 20px; min-height: 180px; gap: 20px; }
+  .s3-cta-inner { padding: 28px 20px; }
+  /* Legacy rule from when this bar was still position:absolute — it re-adds
+     20px left/right here, overriding the 16px set at the ≤1100px tier.
+     D3/D4 dodged this via their own compound-selector override; D2 didn't,
+     which is why the two plates looked inconsistent. Match the 16px so all
+     three read the same. */
+  .s3-hover-bar { padding: 9px 16px; }
+}
+
+/* ── S5: ИСТОРИЯ ЗАВОДА — TIMELINE ──────────────────────────── */
+.s5 {
+  --s5-steps: 5;
+  position: relative;
+  z-index: 1;
+  background: var(--bg);
+  padding-left: var(--rail-w);
+  border-top: 1px solid var(--ln2);
+  /* высота задаётся JS: stickyHeight + horizontalScrollDistance */
+}
+.s5-sticky {
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100vh - var(--nav-h));
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow: hidden;
+}
+.s5-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  padding: 28px var(--head-x) 20px;
+  border-bottom: 1px solid var(--ln2);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.s5.s5-visible .s5-eyebrow { opacity: 1; transform: translateY(0); }
+.s5-eye-num {
+  font-family: 'DINPro', monospace;
+  font-size: 10px;
+  letter-spacing: .2em;
+  color: var(--g1);
+  border: 1px solid var(--g1);
+  padding: 3px 8px;
+  line-height: 1;
+}
+.s5-eye-label {
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--g1);
+  opacity: .7;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.s5-eye-label::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--g1);
+  flex-shrink: 0;
+}
+.s5-inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── TOP: Horizontal timeline ── */
+.s5-tl-wrap {
+  border-bottom: 1px solid var(--ln2);
+  position: relative;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity .65s ease .1s, transform .65s cubic-bezier(.16,1,.3,1) .1s;
+}
+.s5.s5-visible .s5-tl-wrap { opacity: 1; transform: translateY(0); }
+.s5-tl-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 56px;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+.s5-scroll-hint {
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity .5s ease 1.2s;
+}
+.s5.s5-visible .s5-scroll-hint { opacity: 1; }
+.s5-scroll-hint::after { content: '↕'; letter-spacing: 0; font-size: 11px; color: var(--g1); }
+.s5.s5-pinned .s5-scroll-hint { color: var(--g1); }
+.s5-tl-nav {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--ln2);
+}
+.s5-tl-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: var(--bg);
+  color: var(--g1);
+  font-family: 'DINPro', monospace;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.s5-tl-btn + .s5-tl-btn { border-left: 1px solid var(--ln2); }
+.s5-tl-btn:hover:not(:disabled) { background: var(--dark); color: var(--white); }
+.s5-tl-btn:disabled { opacity: .35; cursor: default; }
+.s5-tl-viewport {
+  overflow: hidden;
+  padding: 0 56px;
+}
+.s5-tl {
+  position: relative;
+  padding: 0;
+  border: none;
+}
+.s5-tl-track {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  position: relative;
+  width: max-content;
+  padding: 20px 0 36px;
+  gap: 0;
+  will-change: transform;
+}
+.s5-tl-track::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  height: 1px;
+  background: var(--ln2);
+}
+.s5-tl-progress {
+  position: absolute;
+  left: 0;
+  bottom: 18px;
+  height: 2px;
+  width: 0%;
+  background: var(--dark);
+  transition: width .55s cubic-bezier(.4,0,.2,1);
+  z-index: 2;
+}
+.s5-tl-item {
+  flex: 0 0 auto;
+  min-width: clamp(180px, 20vw, 280px);
+  padding: 0 clamp(32px, 4vw, 64px) 36px 0;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.s5-tl-item:last-child { padding-right: 0; }
+.s5-tl-node {
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--ln2);
+  background: var(--bg);
+  flex-shrink: 0;
+  position: absolute;
+  left: 0;
+  bottom: 13px;
+  z-index: 3;
+  transition: background .3s, border-color .3s, transform .3s;
+}
+.s5-tl-item.active .s5-tl-node {
+  background: var(--dark);
+  border-color: var(--dark);
+  transform: scale(1.35);
+}
+.s5-tl-item:hover:not(.active) .s5-tl-node {
+  background: var(--g1);
+  border-color: var(--g1);
+}
+.s5-tl-year {
+  display: block;
+  font-family: 'DINProCond', 'DINPro', sans-serif;
+  font-weight: 900;
+  font-size: clamp(56px, 7vw, 108px);
+  letter-spacing: -.04em;
+  color: var(--ln);
+  line-height: .82;
+  transition: color .35s, transform .35s cubic-bezier(.16,1,.3,1);
+  transform-origin: left bottom;
+}
+.s5-tl-item.active .s5-tl-year {
+  color: var(--dark);
+  transform: scale(1.02);
+}
+.s5-tl-item:hover:not(.active) .s5-tl-year { color: var(--g1); }
+.s5-tl-cat {
+  display: block;
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--blue);
+  line-height: 1.2;
+  margin-top: 10px;
+  max-width: 140px;
+  transition: color .3s;
+}
+.s5-tl-item.active .s5-tl-cat { color: var(--g1); }
+
+/* ── BOTTOM: Content — horizontal track ── */
+.s5-content {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+  opacity: 0;
+  transition: opacity .5s ease .2s;
+}
+.s5.s5-visible .s5-content { opacity: 1; }
+.s5-htrack {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: max-content;
+  will-change: transform;
+}
+.s5-hpanel {
+  flex: 0 0 auto;
+  height: 100%;
+  overflow: hidden;
+}
+.s5-slide {
+  height: 100%;
+  padding: 32px 56px 40px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+/* Desktop: все панели в горизонтальном треке — без fade-переключения */
+.s5.s5-hmode .s5-slide {
+  position: relative;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+/* Mobile: классическое переключение одного слайда */
+.s5:not(.s5-hmode) .s5-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .5s cubic-bezier(.4,0,.2,1), visibility .5s;
+  pointer-events: none;
+}
+.s5:not(.s5-hmode) .s5-slide.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.s5:not(.s5-hmode) .s5-htrack {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.s5:not(.s5-hmode) .s5-hpanel {
+  height: 0;
+  overflow: visible;
+}
+.s5-slide-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  gap: 48px 64px;
+  align-items: stretch;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+.s5-slide-head {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 100%;
+}
+
+/* Slide counter */
+.s5-slide-counter {
+  position: absolute;
+  top: 72px;
+  right: 80px;
+  font-family: 'DINPro', monospace;
+  font-size: 11px;
+  letter-spacing: .16em;
+  color: var(--blue);
+  z-index: 2;
+}
+.s5-slide-counter em { font-style: normal; color: var(--ln2); margin: 0 5px; }
+
+/* Watermark year — bottom-right, large */
+.s5-slide-bg-year {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  font-family: 'DINProCond', 'DINPro', sans-serif;
+  font-weight: 900;
+  font-size: clamp(100px, 11vw, 180px);
+  line-height: 1;
+  letter-spacing: -.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--ln);
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Period label */
+.s5-slide-period {
+  font-family: 'DINPro', monospace;
+  font-size: 11px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--g1);
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  z-index: 1;
+}
+.s5-slide-period::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--g1);
+  flex-shrink: 0;
+}
+
+/* Title */
+.s5-slide-title {
+  font-family: 'DINProCond', 'DINPro', sans-serif;
+  font-weight: 700;
+  font-size: clamp(34px, 4vw, 64px);
+  line-height: .92;
+  letter-spacing: -.03em;
+  text-transform: uppercase;
+  color: var(--dark);
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Description panel — technical spec sheet, matches s6 drawing aesthetic */
+.s5-slide-desc-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg2);
+  border: 1px solid var(--ln2);
+  position: relative;
+  align-self: stretch;
+  overflow: hidden;
+}
+/* Fine technical grid overlay */
+.s5-slide-desc-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(109,140,166,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(109,140,166,.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 0;
+}
+/* Top progress bar — fills left→right when slide becomes active */
+.s5-slide-desc-panel::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--g1);
+  z-index: 4;
+  transition: width 0s;
+}
+.s5-slide.active .s5-slide-desc-panel::after {
+  width: 100%;
+  transition: width .88s cubic-bezier(.4,0,.2,1) .04s;
+}
+/* Ghost step number — watermark, fades in when active */
+.s5-desc-bg-num {
+  position: absolute;
+  bottom: -10px; right: 18px;
+  font-family: 'DINProCond', 'DINPro', sans-serif;
+  font-weight: 900;
+  font-size: clamp(80px, 10vw, 130px);
+  line-height: 1;
+  letter-spacing: -.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--ln);
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0s;
+}
+.s5-slide.active .s5-desc-bg-num {
+  opacity: 1;
+  transition: opacity .65s ease .18s;
+}
+/* Corner registration marks — animate in when slide is active */
+.s5-desc-corner {
+  position: absolute;
+  width: 12px; height: 12px;
+  border-color: var(--g1);
+  border-style: solid;
+  opacity: .4;
+  z-index: 3;
+  transform: scale(0);
+  transition: transform 0s;
+}
+.s5-desc-corner.tl { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
+.s5-desc-corner.tr { top: 10px; right: 10px; border-width: 1px 1px 0 0; }
+.s5-desc-corner.bl { bottom: 10px; left: 10px; border-width: 0 0 1px 1px; }
+.s5-desc-corner.br { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
+.s5-slide.active .s5-desc-corner {
+  transform: scale(1);
+  transition: transform .45s cubic-bezier(.16,1,.3,1) var(--cd, .08s);
+}
+.s5-slide.active .s5-desc-corner.tl { --cd: .06s; }
+.s5-slide.active .s5-desc-corner.tr { --cd: .14s; }
+.s5-slide.active .s5-desc-corner.bl { --cd: .22s; }
+.s5-slide.active .s5-desc-corner.br { --cd: .30s; }
+.s5-desc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 14px;
+  border-bottom: 1px solid var(--ln2);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.s5-desc-top-label {
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--g1);
+}
+.s5-desc-top-num {
+  font-family: 'DINPro', monospace;
+  font-size: 10px;
+  letter-spacing: .2em;
+  line-height: 1;
+  color: var(--g1);
+  border: 1px solid var(--g1);
+  padding: 3px 8px;
+}
+.s5-desc-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  padding: 28px 24px 24px;
+  position: relative;
+  z-index: 1;
+}
+.s5-slide-desc-body {
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.s5-slide-desc {
+  font-family: 'DINPro', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.78;
+  color: var(--blue);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+.s5-desc-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px 14px;
+  border-top: 1px solid var(--ln2);
+  font-family: 'DINPro', monospace;
+  font-size: 9px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--blue);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.s5-desc-meta-tag {
+  color: var(--g1);
+  letter-spacing: .18em;
+}
+
+.s5-slide-facts {
+  display: flex;
+  border-top: 1px solid var(--ln2);
+  padding-top: 36px;
+  position: relative;
+  z-index: 1;
+}
+.s5-slide-head .s5-slide-facts {
+  margin-top: auto;
+  padding-top: 40px;
+}
+.s5-fact {
+  flex: 1;
+  padding-right: 32px;
+  border-right: 1px solid var(--ln2);
+  margin-right: 32px;
+}
+.s5-fact:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+.s5-fact-v {
+  display: block;
+  font-family: 'DINProCond', monospace;
+  font-weight: 900;
+  font-size: clamp(32px, 3.5vw, 52px);
+  letter-spacing: -.03em;
+  color: var(--dark);
+  margin-bottom: 8px;
+  line-height: 1;
+}
+.s5-fact-k {
+  display: block;
+  font-family: 'DINPro', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--g1);
+}
+
+/* Responsive */
+@media (max-width: 1280px) {
+  .s5-tl-viewport, .s5-tl-head { padding-left: 44px; padding-right: 44px; }
+  .s5-slide { padding: 48px 44px 64px; }
+  .s5-slide-counter { top: 48px; right: 44px; }
+  .s5-slide-main { gap: 40px 48px; }
+}
+@media (max-width: 1024px) {
+  .s5-tl-year { font-size: clamp(56px, 10vw, 88px); }
+  .s5-tl-item { min-width: clamp(150px, 24vw, 220px); }
+  .s5-slide-main { grid-template-columns: 1fr; gap: 32px; }
+  .s5-slide-desc-panel { max-width: 100%; }
+  .s5-desc-inner { padding: 24px 24px 20px 24px; }
+  .s5-desc-bg-num { font-size: clamp(70px, 12vw, 110px); }
+}
+@media (max-width: 1024px) {
+  .s5-tl-btn { width: 44px; height: 44px; }
+  .s5 { height: auto !important; }
+  /* min-height:100vh заставляло секцию занимать целый экран; при коротком
+     слайде (особенно на высоком планшетном вьюпорте) под контентом оставался
+     большой провал. Сажаем по контенту — высоту слайда держит .s5-content. */
+  .s5-sticky { position: relative; top: 0; height: auto; min-height: 0; }
+  .s5-tl-viewport, .s5-tl-head { padding-left: 28px; padding-right: 28px; }
+  .s5-htrack {
+    display: block;
+    width: 100%;
+    transform: none !important;
+    position: relative;
+  }
+  .s5-hpanel {
+    width: 100% !important;
+    height: 0;
+    overflow: visible;
+  }
+  .s5-hpanel .s5-slide {
+    position: absolute;
+    inset: 0;
+  }
+  .s5-tl-track { transform: none !important; }
+  .s5-tl-head { flex-wrap: wrap; gap: 12px; }
+  .s5-content { min-height: 520px; flex: none; }
+  .s5-slide { padding: 36px 28px 48px; }
+  /* .s5-slide's own 48px bottom padding exists on paper, but the active
+     slide's height is JS-measured (syncContentHeight) off scrollHeight and
+     .s5-content clips anything past that to overflow:hidden — any slack in
+     the measurement shows up as the desc panel's border and the
+     chapter-band's border reading as touching. A real margin on the panel
+     itself is part of what gets measured, so it reliably reserves the gap
+     instead of depending on the padding surviving the measure/clip round-trip. */
+  .s5-slide-desc-panel { margin-bottom: 28px; }
+  .s5-slide-bg-year { font-size: clamp(90px, 22vw, 150px); bottom: 20px; right: 10px; }
+  .s5-slide-counter { top: 36px; right: 28px; }
+}
+@media (max-width: 640px) {
+  /* Every other section lands on 20px at this tier (--head-x axis) —
+     S5 was left at 24-28px from the tablet tier and never brought in line. */
+  /* The whole point of the phone timeline+slide combo is that one step
+     fits in one screen with no internal scroll — at the sizes built for
+     desktop (72px timeline years, 48px title, 52px fact numbers, generous
+     padding everywhere) the content alone ran past 700px before browser
+     chrome even took its share. Every size below is cut specifically for
+     this breakpoint; nothing here is removed, just brought down to a scale
+     that still reads as bold/industrial at phone width. */
+  .s5-eyebrow { padding: 20px 20px 16px; }
+  .s5-tl-viewport, .s5-tl-head { padding-left: 20px; padding-right: 20px; }
+  .s5-tl-track { padding: 10px 0 14px; }
+  .s5-slide { padding: 20px 20px 20px; }
+  .s5-tl-year { font-size: clamp(26px, 9vw, 38px); line-height: .9; }
+  .s5-tl-cat { margin-top: 4px; font-size: 8px; }
+  .s5-tl-item { min-width: 110px; padding-right: 20px; padding-bottom: 14px; }
+  .s5-tl-node { bottom: 10px; }
+  .s5-scroll-hint { display: none; }
+  .s5-slide-period { margin-bottom: 10px; font-size: 9.5px; }
+  .s5-slide-title { margin-bottom: 14px; }
+  .s5-slide-facts { flex-wrap: wrap; margin-top: 16px; padding-top: 14px; }
+  .s5-fact { flex: 1 1 calc(50% - 16px); min-width: 110px; border-right: none; margin-right: 0; padding-right: 0; border-bottom: 1px solid var(--ln2); padding-bottom: 10px; margin-bottom: 10px; }
+  .s5-fact:nth-last-child(-n+2) { border-bottom: none; margin-bottom: 0; }
+  .s5-fact-v { font-size: clamp(20px, 6vw, 26px); margin-bottom: 4px; }
+  .s5-desc-inner { padding: 16px 16px 14px 16px; }
+  /* Not reducing .s5-slide-desc-panel's margin-bottom below the 28px set
+     for ≤860px — that value exists specifically to keep this panel from
+     reading as stuck to the chapter-band strip right after S5; the space
+     savings above already free enough room without touching it. */
+}
+/* ── S6: ИЗ ЧЕРТЕЖА В МЕТАЛЛ ─────────────────────────────────── */
+.s6 {
+  position:relative;
+  z-index:1;
+  padding-left:var(--rail-w);
+  border-top:1px solid var(--ln2);
+}
+.s6-head {
+  display:grid;
+  grid-template-columns:var(--split-even);
+  gap:0;
+  padding:72px 52px 56px var(--head-x);
+  border-bottom:1px solid var(--ln2);
+  align-items:end;
+}
+.s6-kicker {
+  grid-column:1 / -1;
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  font-family:'DINPro',monospace;
+  font-size:9px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--g1);
+  margin-bottom:24px;
+}
+.s6-kicker::before {
+  content:'06';
+  border:1px solid var(--g1);
+  padding:3px 8px;
+  line-height:1;
+  font-size:10px;
+  letter-spacing:.2em;
+}
+.s6-h2 {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:900;
+  font-size:clamp(34px,4vw,64px);
+  line-height:.88;
+  letter-spacing:-.015em;
+  text-transform:uppercase;
+  color:var(--dark);
+}
+.s6-lead {
+  font-size:13px;
+  font-weight:300;
+  line-height:1.72;
+  color:var(--blue);
+  max-width:420px;
+  align-self:end;
+  padding-bottom:4px;
+}
+.s6-body {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+
+/* SVG drawing panel */
+.s6-drawing-panel {
+  position:relative;
+  border-right:1px solid var(--ln2);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:60px 40px 48px;
+  min-height:520px;
+  background:var(--bg2);
+  overflow:hidden;
+}
+.s6-drawing-panel::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(109,140,166,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(109,140,166,.055) 1px, transparent 1px);
+  background-size:20px 20px;
+  pointer-events:none;
+}
+.s6-drawing {
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:290px;
+  filter:grayscale(1);
+  transition:filter 1s cubic-bezier(.4,0,.2,1);
+}
+.s6-drawing-panel:hover .s6-drawing,
+.s6-drawing.metal { filter:grayscale(0); }
+
+/* Shimmer */
+.s6-shimmer {
+  position:absolute;
+  inset:0;
+  background:linear-gradient(105deg, transparent 20%, rgba(200,220,240,.16) 50%, transparent 80%);
+  background-size:250% 100%;
+  background-position:200% 0;
+  pointer-events:none;
+  z-index:2;
+  opacity:0;
+  transition:opacity .3s;
+}
+.s6-drawing-panel:hover .s6-shimmer { opacity:1; animation:s6shimmer 1.3s ease .35s 1 both; }
+.s6-drawing-panel.drawing-active .s6-shimmer { opacity:1; animation:s6shimmer 1.3s ease .6s 1 both; }
+@keyframes s6shimmer {
+  from { background-position:200% 0; }
+  to { background-position:-200% 0; }
+}
+
+/* Corner marks */
+.s6-c { position:absolute; width:12px; height:12px; border-color:var(--g1); border-style:solid; opacity:.3; }
+.s6-c.tl { top:12px; left:12px; border-width:1px 0 0 1px; }
+.s6-c.tr { top:12px; right:12px; border-width:1px 1px 0 0; }
+.s6-c.bl { bottom:12px; left:12px; border-width:0 0 1px 1px; }
+.s6-c.br { bottom:12px; right:12px; border-width:0 1px 1px 0; }
+.s6-dwg-label {
+  position:absolute;
+  bottom:14px;
+  font-family:'DINPro',monospace;
+  font-size:7.5px;
+  letter-spacing:.18em;
+  color:var(--g1);
+  text-transform:uppercase;
+  opacity:.45;
+  z-index:3;
+  white-space:nowrap;
+}
+
+/* S6 accordion rows (isolated from s2 JS) */
+.s6-row {
+  display:grid;
+  grid-template-columns:80px 1fr;
+  border-bottom:1px solid var(--ln2);
+  cursor:pointer;
+  position:relative;
+  transition:background .15s;
+}
+.s6-row:hover { background:rgba(109,140,166,.025); }
+.s6-row::before {
+  content:'';
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:3px;
+  background:var(--dark);
+  transform:scaleY(0);
+  transform-origin:top;
+  transition:transform .3s ease;
+}
+.s6-row.active::before { transform:scaleY(1); }
+.s6-row .sr-num { font-size:44px; padding-left:18px; }
+.s6-row.active .sr-num { color:var(--dark); }
+.s6-row.active .sr-plus { transform:rotate(45deg); }
+.s6-row.active .sr-plus::before,
+.s6-row.active .sr-plus::after { background: var(--dark); }
+.s6-row.active .sr-panel {
+  /* real height is set inline by JS (sr-panel.scrollHeight), same fix as S2 —
+     220px clipped the 2-col desc|params panel as soon as it stacked to 1 col */
+  max-height:2000px;
+  border-top-color:var(--ln2);
+}
+/* .sr-num here is 80px (not 96px like S2) — needs its own offset to land on the same axis as .s6-lead. */
+.s6-row .sr-panel { grid-template-columns: calc(50% - 38px) 1px 1fr; }
+
+@media(max-width:1100px) {
+  .s6-body { grid-template-columns:1fr; }
+  .s6-drawing-panel { border-right:none; border-bottom:1px solid var(--ln2); min-height:360px; padding:40px 30px 40px; }
+  /* Stacking to 1 column drops the gap between .s6-h2 and .s6-lead to the
+     grid's base gap:0 — every other section head that keeps its lead
+     visible on mobile (SFK, S2/S3/S4's own tablet tier) converges on
+     28px/20px, so this was reading noticeably tighter than the rest of
+     the page. */
+  .s6-head { grid-template-columns:1fr; gap: 28px; }
+  .s6-lead { align-self:auto; }
+}
+@media(max-width:900px) {
+  .s6-row .sr-panel { grid-template-columns:1fr; }
+  .s6-row .sr-sep { display:none; }
+  .s6-row .sr-left { padding-bottom:0; }
+}
+@media(max-width:640px) {
+  .s6-head { padding:48px 20px 40px; gap: 20px; }
+  .s6-drawing-panel { padding:32px 16px 36px; min-height:260px; }
+  .s6-drawing { max-width:240px; }
+  .s6-row { grid-template-columns:56px 1fr; }
+  .s6-row .sr-num { font-size:32px; padding-left:12px; }
+}
+
+/* ── S7: ПАРАМЕТРЫ ПРОИЗВОДСТВА ─────────────────────────────── */
+.s7 {
+  position:relative;
+  z-index:1;
+  padding-left:var(--rail-w);
+  border-top:1px solid var(--ln2);
+}
+.s7-inner {
+  display:grid;
+  grid-template-columns:var(--split-even);
+}
+.s7-left {
+  padding:80px 56px 80px var(--head-x);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  border-right:1px solid var(--ln2);
+}
+.s7-eyebrow {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:36px;
+}
+.s7-eye-num {
+  font-family:'DINPro',monospace;
+  font-size:10px;
+  letter-spacing:.2em;
+  color:var(--g1);
+  border:1px solid var(--g1);
+  padding:3px 8px;
+  line-height:1;
+}
+.s7-eye-label {
+  font-family:'DINPro',monospace;
+  font-size:9px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--g1);
+  opacity:.6;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.s7-eye-label::before {
+  content:'';
+  width:28px; height:1px;
+  background:var(--g1);
+  flex-shrink:0;
+}
+.s7-h2 {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:900;
+  font-size:clamp(34px,4vw,64px);
+  line-height:.88;
+  letter-spacing:-.015em;
+  text-transform:uppercase;
+  color:var(--dark);
+  margin-bottom:32px;
+}
+.s7-desc {
+  font-size:13px;
+  font-weight:300;
+  line-height:1.72;
+  color:var(--blue);
+  max-width:380px;
+}
+.s7-right {
+  padding:80px 56px 80px 56px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+/* Параметр-строка */
+.s7-param {
+  display:flex;
+  align-items:baseline;
+  gap:12px;
+  padding:18px 0;
+  border-top:1px solid var(--ln2);
+  cursor:pointer;
+  position:relative;
+  transition:background .12s;
+}
+.s7-param:last-child { border-bottom:1px solid var(--ln2); }
+.s7-param:hover { background:rgba(109,140,166,.03); }
+.s7-param.highlighted { background:rgba(109,140,166,.06); }
+.s7-param.highlighted .s7-pk { color:var(--dark); }
+.s7-pk {
+  font-family:'DINPro',monospace;
+  font-size:8.5px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--g1);
+  min-width:170px;
+  flex-shrink:0;
+  transition:color .15s;
+}
+.s7-pv {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:700;
+  font-size:clamp(16px,1.8vw,22px);
+  letter-spacing:-.01em;
+  color:var(--dark);
+  flex:1;
+}
+.s7-pv.placeholder {
+  font-family:'DINPro',monospace;
+  font-size:11px;
+  font-weight:400;
+  color:var(--blue);
+  letter-spacing:.06em;
+}
+/* Tooltip */
+.s7-tt {
+  position:absolute;
+  left:0; bottom:calc(100% + 8px);
+  background:var(--dark);
+  color:var(--white);
+  font-family:'DINPro',monospace;
+  font-size:10px;
+  line-height:1.55;
+  letter-spacing:.03em;
+  padding:10px 14px;
+  white-space:nowrap;
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(4px);
+  transition:opacity .18s, transform .18s;
+  z-index:10;
+}
+.s7-param.highlighted .s7-tt { opacity:1; transform:translateY(0); }
+/* First row has no room above it for the tooltip on short mobile viewports
+   (.s7-right's own top padding is only 20px there) — flip it to open downward instead. */
+.s7-param:first-child .s7-tt { bottom:auto; top:calc(100% + 8px); transform:translateY(-4px); }
+.s7-param:first-child.highlighted .s7-tt { transform:translateY(0); }
+@media(max-width:1024px) {
+  /* На планшете оставляем 2 колонки (интро | таблица), как на десктопе —
+     иначе одноколоночная раскладка висит полупустой. Только компактнее:
+     узкий лейбл + меньшая вертикаль. В 1 колонку складываем на ≤640. */
+  .s7-left  { padding-top:60px; padding-bottom:60px; }
+  .s7-right { padding-top:60px; padding-bottom:60px; }
+  .s7-pk    { min-width:130px; }
+}
+@media(max-width:640px) {
+  .s7-inner { grid-template-columns:1fr; }
+  .s7-left { border-right:none; border-bottom:1px solid var(--ln2); padding:32px 20px; }
+  .s7-right { padding:20px 20px 28px; }
+  /* 7 rows at the desktop 18px top+bottom padding (36px/row, ~250px just
+     in padding) is the bulk of why this section ran long — halving it
+     keeps every row tappable (still well over 44px with label+value+gap)
+     while cutting roughly 120px out of the list. */
+  .s7-param { flex-direction:column; gap:4px; padding:9px 0; }
+  .s7-pv { font-size:15px; }
+  .s7-pk { min-width:auto; }
+  .s7-tt { white-space:normal; min-width:220px; }
+}
+
+/* ── S8: ПАСПОРТ ИЗДЕЛИЯ / МАРШРУТ КОНТРОЛЯ ────────────────────── */
+.s8 {
+  position:relative;
+  z-index:1;
+  padding-left:var(--rail-w);
+  border-top:1px solid var(--ln2);
+  background:var(--dark);
+  overflow:hidden;
+}
+.s8-grid-bg {
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(200,208,216,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,208,216,.04) 1px, transparent 1px);
+  background-size:80px 80px;
+  pointer-events:none;
+  z-index:0;
+}
+.s8-hud-top {
+  position:absolute;
+  top:0; left:44px; right:0;
+  height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 40px 0 0;
+  border-bottom:1px solid rgba(200,208,216,.07);
+  z-index:2;
+}
+.s8-hud-tl, .s8-hud-tr {
+  font-family:'DINPro',monospace;
+  font-size:7px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--g1);
+  opacity:.35;
+}
+.s8-inner {
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:var(--split-even);
+  min-height:100vh;
+  padding-top:34px;
+}
+/* LEFT col */
+.s8-left {
+  padding:72px var(--head-x) 80px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  border-right:1px solid rgba(200,208,216,.1);
+}
+.s8-head-block { margin-bottom:48px; }
+.s8-eyebrow {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:40px;
+}
+.s8-eye-num {
+  font-family:'DINPro',monospace;
+  font-size:10px;
+  letter-spacing:.2em;
+  color:var(--g1);
+  border:1px solid rgba(109,140,166,.4);
+  padding:3px 8px;
+  line-height:1;
+}
+.s8-eye-label {
+  font-family:'DINPro',monospace;
+  font-size:9px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--g1);
+  opacity:.55;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.s8-eye-label::before {
+  content:'';
+  width:28px; height:1px;
+  background:var(--g1);
+  opacity:.4;
+  flex-shrink:0;
+}
+.s8-h2 {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:900;
+  font-size:clamp(34px, 4vw, 64px);
+  line-height:.88;
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+  color:var(--bg);
+  margin-bottom:28px;
+}
+.s8-lead {
+  font-family:'DINPro',sans-serif;
+  font-size:12px;
+  line-height:1.75;
+  color:rgba(109,140,166,.8);
+  letter-spacing:.01em;
+  max-width:380px;
+  border-left:2px solid rgba(109,140,166,.22);
+  padding-left:16px;
+}
+.s8-route-block {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+}
+.s8-route-header {
+  font-family:'DINPro',monospace;
+  font-size:7.5px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--g1);
+  opacity:.45;
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.s8-route-header::before {
+  content:'';
+  width:20px; height:1px;
+  background:var(--g1);
+  opacity:.4;
+  flex-shrink:0;
+}
+.s8-route-list { display:flex; flex-direction:column; gap:0; }
+.s8-route-item {
+  display:grid;
+  grid-template-columns:16px 38px 1fr auto;
+  align-items:center;
+  gap:0 10px;
+  padding:12px 4px 12px 0;
+  border-top:1px solid rgba(200,208,216,.07);
+  cursor:pointer;
+  transition:background .2s ease;
+}
+.s8-route-item:last-child { border-bottom:1px solid rgba(200,208,216,.07); }
+.s8-route-item:hover, .s8-route-item.active { background:rgba(109,140,166,.07); }
+.s8-ri-dot {
+  width:6px; height:6px;
+  border-radius:50%;
+  border:1px solid rgba(109,140,166,.3);
+  background:transparent;
+  justify-self:center;
+  transition:border-color .2s, box-shadow .2s, background .2s;
+}
+.s8-route-item.active .s8-ri-dot {
+  border-color:var(--g1);
+  background:rgba(109,140,166,.2);
+  box-shadow:0 0 6px rgba(109,140,166,.45);
+}
+.s8-ri-num {
+  font-family:'DINPro',monospace;
+  font-size:8px;
+  letter-spacing:.2em;
+  color:rgba(109,140,166,.38);
+  transition:color .2s;
+}
+.s8-route-item.active .s8-ri-num { color:var(--g1); }
+.s8-ri-name {
+  font-family:'DINPro',monospace;
+  font-size:11.5px;
+  font-weight:500;
+  color:rgba(109,140,166,.6);
+  letter-spacing:.015em;
+  transition:color .2s;
+}
+.s8-route-item:hover .s8-ri-name, .s8-route-item.active .s8-ri-name { color:var(--g2); }
+.s8-ri-ok {
+  font-family:'DINPro',monospace;
+  font-size:7.5px;
+  letter-spacing:.15em;
+  color:rgba(109,140,166,.28);
+  transition:color .2s;
+}
+.s8-route-item.active .s8-ri-ok { color:var(--g1); }
+/* RIGHT col */
+.s8-right {
+  padding:72px 56px 80px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  position:relative;
+}
+.s8-passport-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+.s8-passport-label {
+  font-family:'DINPro',monospace;
+  font-size:7.5px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--g1);
+  opacity:.45;
+}
+.s8-passport-sys {
+  font-family:'DINPro',monospace;
+  font-size:7px;
+  letter-spacing:.18em;
+  color:var(--g1);
+  opacity:.3;
+}
+/* Passport card */
+.s8-passport {
+  position:relative;
+  border:1px solid rgba(109,140,166,.28);
+  background:rgba(30,61,92,.35);
+  overflow:hidden;
+}
+.s8-bracket {
+  position:absolute;
+  width:16px; height:16px;
+  border-color:rgba(109,140,166,.55);
+  border-style:solid;
+  z-index:2;
+  pointer-events:none;
+}
+.s8-bracket.tl { top:-1px; left:-1px; border-width:2px 0 0 2px; }
+.s8-bracket.tr { top:-1px; right:-1px; border-width:2px 2px 0 0; }
+.s8-bracket.bl { bottom:-1px; left:-1px; border-width:0 0 2px 2px; }
+.s8-bracket.br { bottom:-1px; right:-1px; border-width:0 2px 2px 0; }
+.s8-scanline {
+  position:absolute;
+  left:0; right:0;
+  height:56px;
+  background:linear-gradient(to bottom, transparent 0%, rgba(109,140,166,.05) 50%, transparent 100%);
+  top:-56px;
+  animation:s8scan 6s ease-in-out infinite;
+  z-index:1;
+  pointer-events:none;
+}
+@keyframes s8scan { 0%{top:-56px} 100%{top:calc(100% + 56px)} }
+.s8-pp-head {
+  position:relative;
+  z-index:2;
+  padding:20px 28px;
+  background:rgba(30,61,92,.8);
+  border-bottom:1px solid rgba(109,140,166,.18);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.s8-pp-product {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:700;
+  font-size:20px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--bg);
+}
+.s8-pp-id {
+  font-family:'DINPro',monospace;
+  font-size:8px;
+  letter-spacing:.2em;
+  color:var(--g1);
+  opacity:.65;
+  border:1px solid rgba(109,140,166,.25);
+  padding:4px 10px;
+  white-space:nowrap;
+}
+.s8-pp-body { position:relative; z-index:2; }
+.s8-pp-row {
+  display:grid;
+  grid-template-columns:140px 1fr 24px;
+  align-items:center;
+  padding:14px 28px;
+  border-bottom:1px solid rgba(200,208,216,.055);
+  border-left:2px solid transparent;
+  transition:background .22s ease, border-left-color .22s ease;
+}
+.s8-pp-row:last-child { border-bottom:none; }
+.s8-pp-row.highlighted {
+  background:rgba(109,140,166,.09);
+  border-left-color:var(--g1);
+}
+.s8-pp-row.highlighted .s8-pp-key { color:var(--g2); opacity:1; }
+.s8-pp-row.highlighted .s8-pp-val { color:var(--bg); }
+.s8-pp-row.highlighted .s8-pp-chk { opacity:1; color:var(--g1); }
+.s8-pp-key {
+  font-family:'DINPro',monospace;
+  font-size:8px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:rgba(109,140,166,.5);
+  transition:color .22s, opacity .22s;
+}
+.s8-pp-val {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  color:var(--g2);
+  letter-spacing:.03em;
+  transition:color .22s;
+}
+.s8-pp-chk {
+  font-family:'DINPro',monospace;
+  font-size:10px;
+  color:rgba(109,140,166,.3);
+  text-align:right;
+  transition:color .22s, opacity .22s;
+}
+.s8-pp-footer {
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 28px;
+  background:rgba(30,61,92,.7);
+  border-top:1px solid rgba(109,140,166,.18);
+  gap:16px;
+}
+.s8-pp-status-bar {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-shrink:0;
+}
+.s8-pulse {
+  width:7px; height:7px;
+  border-radius:50%;
+  background:var(--g1);
+  flex-shrink:0;
+  animation:blink 1.8s step-end infinite;
+}
+.s8-pp-accepted {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  color:var(--bg);
+}
+.s8-pp-meta {
+  font-family:'DINPro',monospace;
+  font-size:7.5px;
+  letter-spacing:.14em;
+  color:rgba(109,140,166,.45);
+  text-align:right;
+  line-height:1.6;
+}
+.s8-annotations {
+  margin-top:20px;
+  display:flex;
+  gap:36px;
+  flex-wrap:wrap;
+}
+.s8-ann-item { display:flex; flex-direction:column; gap:3px; }
+.s8-ann-key {
+  font-family:'DINPro',monospace;
+  font-size:7px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:rgba(109,140,166,.38);
+}
+.s8-ann-val {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:700;
+  font-size:14px;
+  color:rgba(109,140,166,.65);
+  letter-spacing:.04em;
+}
+@media(max-width:1100px) {
+  .s8-inner { grid-template-columns:1fr; }
+  .s8-left { border-right:none; border-bottom:1px solid rgba(200,208,216,.1); padding:60px 40px; }
+  .s8-right { padding:60px 40px; }
+  .s8-pp-row { grid-template-columns:110px 1fr 24px; }
+}
+@media(max-width:640px) {
+  .s8-left { padding:32px 20px; }
+  .s8-right { padding:24px 20px; }
+  /* .s8-hud-tl (the long lat/long line) was already hidden, but .s8-hud-tr
+     stayed, leaving the 34px bar rendering with just one short line of
+     decorative flavor text in it — drop the whole bar on phones and
+     reclaim the top padding .s8-inner reserved for it. */
+  .s8-hud-top { display: none; }
+  .s8-inner { padding-top: 0; }
+  /* 8 route-list rows at the desktop 12px top+bottom padding is ~190px of
+     padding alone before content — this is a checklist, not a hero, so it
+     doesn't need that much air per row on a phone. */
+  .s8-route-item { padding: 8px 4px 8px 0; }
+  .s8-pp-row { grid-template-columns:90px 1fr 20px; padding:12px 16px; }
+  .s8-pp-head { padding:16px 16px; }
+  .s8-pp-footer { flex-direction:column; align-items:flex-start; gap:8px; padding:14px 16px; }
+  .s8-annotations { gap:20px; }
+  .s8-head-block { margin-bottom: 28px; }
+  .s8-eyebrow { margin-bottom: 20px; }
+}
+/* ── S9: НОРМАТИВНАЯ БАЗА ────────────────────────────────────── */
+.s9 {
+  position:relative;
+  z-index:1;
+  padding-left:var(--rail-w);
+  border-top:1px solid var(--ln2);
+}
+.s9-head {
+  padding:72px var(--head-x) 48px;
+  border-bottom:1px solid var(--ln2);
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:40px;
+  flex-wrap:wrap;
+}
+.s9-title-block { flex:1; }
+.s9-eyebrow {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:24px;
+}
+.s9-eye-num {
+  font-family:'DINPro',monospace;
+  font-size:10px;
+  letter-spacing:.2em;
+  color:var(--g1);
+  border:1px solid var(--g1);
+  padding:3px 8px;
+  line-height:1;
+}
+.s9-eye-label {
+  font-family:'DINPro',monospace;
+  font-size:9px;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--g1);
+  opacity:.6;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.s9-eye-label::before { content:''; width:28px; height:1px; background:var(--g1); flex-shrink:0; }
+.s9-h2 {
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:900;
+  font-size:clamp(34px,4vw,64px);
+  line-height:.88;
+  letter-spacing:-.015em;
+  text-transform:uppercase;
+  color:var(--dark);
+}
+/* Radio-фильтр */
+.s9-filter {
+  display:flex;
+  gap:0;
+  flex-shrink:0;
+  border:1px solid var(--ln2);
+  align-self:flex-end;
+}
+.s9-filter-btn {
+  padding:9px 18px;
+  font-family:'DINPro',monospace;
+  font-size:9px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--g1);
+  cursor:pointer;
+  background:transparent;
+  border:none;
+  border-left:1px solid var(--ln2);
+  transition:background .15s, color .15s;
+  user-select:none;
+}
+.s9-filter-btn:first-child { border-left:none; }
+.s9-filter-btn.active { background:var(--dark); color:var(--white); }
+.s9-filter-btn:hover:not(.active) { background:var(--bg2); color:var(--dark); }
+/* ── S9 CARD GRID ─────────────────────────────────────────────── */
+/* 2-column tile grid — each card is its own surface,
+   physically covering body::before engineering grid lines */
+.s9-grid {
+  padding:40px 56px 72px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1px;
+  background:var(--bg2);
+}
+.s9-card {
+  background:var(--bg);
+  padding:32px 32px 28px 36px;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  overflow:hidden;
+  transition:background .15s;
+}
+/* Left accent strip — colour-coded by category */
+.s9-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0;
+  width:3px; height:100%;
+}
+.s9-card[data-cat="cert"]::before  { background:var(--dark); }
+.s9-card[data-cat="smk"]::before   { background:var(--blue); }
+.s9-card[data-cat="decl"]::before  { background:var(--g1); }
+.s9-card[data-cat="tu"]::before    { background:var(--g2); }
+.s9-card:hover { background:#fff; }
+
+/* Card top row: type badge + optional meta */
+.s9-card-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px;
+}
+/* .s9-status переносится сюда скриптом → прижат к правому краю, по центру с бейджом типа */
+.s9-card-top > .s9-status { margin-left:auto; }
+.s9-type {
+  font-family:'DINPro',monospace;
+  font-size:8px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--white);
+  background:var(--g1);
+  padding:3px 8px;
+  display:inline-block;
+  line-height:1.5;
+}
+.s9-card[data-cat="cert"] .s9-type  { background:var(--dark); }
+.s9-card[data-cat="smk"]  .s9-type  { background:var(--blue); }
+/* Document name — largest element in card */
+.s9-card-name {
+  font-family:'DINPro',sans-serif;
+  font-size:14px;
+  font-weight:500;
+  color:var(--dark);
+  line-height:1.5;
+  flex:1;
+  margin-bottom:24px;
+}
+/* Card footer: scope · status · action */
+.s9-card-foot {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding-top:16px;
+  border-top:1px solid var(--ln);
+  margin-top:auto;
+  flex-wrap:wrap;
+}
+.s9-scope {
+  font-family:'DINPro',monospace;
+  font-size:9px;
+  letter-spacing:.1em;
+  color:var(--g1);
+  flex:1;
+  min-width:0;
+}
+.s9-status {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-family:'DINPro',monospace;
+  font-size:8px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--g1);
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.s9-status-dot {
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--g1); /* accent — document is valid */
+  flex-shrink:0;
+}
+.s9-link {
+  font-family:'DINPro',monospace;
+  font-size:8.5px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--dark);
+  border:1px solid var(--ln2);
+  padding:5px 14px;
+  text-decoration:none;
+  white-space:nowrap;
+  flex-shrink:0;
+  transition:background .15s, color .15s, border-color .15s;
+}
+.s9-link:hover { background:var(--dark); color:var(--bg); border-color:var(--dark); }
+@media(max-width:1100px) {
+  .s9-head { padding:56px 32px 40px; }
+  .s9-grid { padding:32px 32px 56px; }
+}
+@media(max-width:640px) {
+  .s9-head { padding:48px 20px 32px; flex-direction:column; align-items:flex-start; }
+  /* "СКАЧАТЬ" was a real download link at ~22px tall (5px padding around
+     8.5px text) — a genuine action, not decoration, needs a real tap target. */
+  .s9-link { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:0 18px; }
+  /* 5 filter buttons (ВСЕ/СЕРТИФИКАТЫ/СМК/ДЕКЛАРАЦИИ/ТУ) don't fit a phone
+     width on one line — instead of wrapping into a ragged grid, make the
+     bar horizontally swipeable, a standard mobile filter-chip pattern. */
+  .s9-filter {
+    align-self:stretch; max-width:100%;
+    overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    border-left:none; border-right:none;
+    /* Last chip was getting hard-clipped by the viewport edge with nothing
+       to say "there's more" — fade it out instead of cutting it off. */
+    mask-image: linear-gradient(to right, black 0%, black 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 0%, black 88%, transparent 100%);
+  }
+  .s9-filter::-webkit-scrollbar { display:none; }
+  .s9-filter-btn { padding:13px 16px; white-space:nowrap; flex-shrink:0; min-height:44px; }
+  .s9-grid { padding:24px 20px 48px; grid-template-columns:1fr; }
+  .s9-card { padding:24px 20px 20px 24px; }
+}
+
+/* ── S10: ФОРМА ЗАПРОСА ──────────────────────────────────────── */
+
+/* Контактный блок — белая панель с border */
+
+/* ── Правая колонка — сплошная поверхность, закрывает сетку body::before ── */
+
+/* ── Сетка полей 2 × N — hairline-зазор как разделитель (аналог S9) ── */
+
+/* Каждое поле — стэкованная ячейка: лейбл сверху, инпут снизу */
+
+/* СРОК — на всю ширину */
+
+/* Строка прикрепления файла — на всю ширину */
+
+/* CTA */
+
+/* Планшет (641–1024) остаётся 2-колоночным и min-height:100vh (как десктоп),
+   чтобы секцию можно было пинить целиком — верх (интро) не уезжает от формы.
+   В 1 колонку сворачиваем только на телефоне. */
+
+/* ── FOOTER ZONE — sticky context для S10 ───────────────────── */
+
+/* S10 внутри footer-zone становится sticky — футер «наезжает» */
+
+/* The "form pins at top, footer rises to cover it" trick needs the sticky
+   element to fit inside one viewport — sticky fixes position, it doesn't add
+   its own scrolling. On desktop .s10-inner is a 2-col min-height:100vh panel
+   so that's naturally true; at ≤1024px it stacks to 1 column and the whole
+   thing (contacts + 7 fields + file row) is 1.5-2 screens tall, too tall to
+   pin as one piece. Fix: don't pin the whole section — let .s10-left
+   (intro + contacts) scroll past normally like any other content, and only
+   pin .s10-right (the form itself, which does fit one viewport).
+
+   Sticky also needs *slack* in its own containing block to have anywhere to
+   stick into — room between its natural position and where that containing
+   block ends. .s10-right's containing block is normally .s10-inner (its
+   grid parent), which is sized exactly to its content (last/only track) —
+   zero slack, so a plain position:sticky on it would just sit static. The
+   desktop version works because .footer-zone (the real containing block
+   there) has slack from .site-footer below it. So: collapse .s10 and
+   .s10-inner to display:contents at this width — their children become
+   effectively direct children of .footer-zone for layout purposes, giving
+   .s10-right that same slack, while their own box (border-top divider,
+   rail-gutter padding) has to be re-homed onto the children below. */
+/* ≤640 (телефон): секция в 1 колонку слишком высока, чтобы пинить целиком —
+   раскладываем на display:contents и пиним только форму. На планшете (641–1024)
+   секция 2-колоночная и влезает в экран, поэтому пиннится целиком базовым
+   правилом .footer-zone .s10{position:sticky} — интро и форма статичны вместе. */
+
+/* ── FOOTER — большой, тёмный, выезжает снизу ───────────────── */
+
+/* Инженерная сетка на тёмном фоне (эхо body::before) */
+
+/* Все зоны поверх сетки */
+
+/* ЗОНА 1 — главный заголовок */
+
+/* ЗОНА 2 — сетка данных */
+
+/* ЗОНА 3 — нижняя полоса */
+
+/* ── SFK: ОТРАСЛЕВЫЕ ЗАДАЧИ (АЭС / ТЭС) ────────────────────── */
+.sfk {
+  position: relative;
+  z-index: 1;
+  padding-left: var(--rail-w);
+  border-top: 1px solid var(--ln2);
+}
+.sfk-head {
+  display: grid;
+  grid-template-columns: var(--split-even);
+  gap: 0;
+  padding: 72px var(--head-x) 56px;
+  border-bottom: 1px solid var(--ln2);
+  align-items: end;
+}
+.sfk-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.sfk-eye-num {
+  font-family: 'DINPro',monospace;
+  font-size: 10px;
+  letter-spacing: .2em;
+  color: var(--g1);
+  border: 1px solid var(--g1);
+  padding: 3px 8px;
+  line-height: 1;
+}
+.sfk-eye-label {
+  font-family: 'DINPro',monospace;
+  font-size: 9px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--g1);
+  opacity: .65;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sfk-eye-label::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--g1);
+  flex-shrink: 0;
+}
+.sfk-h2 {
+  font-family: 'DINProCond','DINPro',sans-serif;
+  font-weight: 900;
+  font-size: clamp(34px,4vw,64px);
+  line-height: .88;
+  letter-spacing: -.015em;
+  text-transform: uppercase;
+  color: var(--dark);
+}
+.sfk-lead {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.72;
+  color: var(--blue);
+  max-width: 420px;
+  align-self: end;
+}
+/* Карточки */
+.sfk-cards {
+  display: grid;
+  grid-template-columns: var(--split-even);
+}
+.sfk-card {
+  border-right: 1px solid var(--ln2);
+  display: flex;
+  flex-direction: column;
+}
+.sfk-card:last-child { border-right: none; }
+/* Тёмная шапка карточки */
+.sfk-card-hd {
+  background: var(--dark);
+  padding: 52px 56px 40px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.sfk-card-hd::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(200,208,216,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,208,216,.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+}
+.sfk-card-hd.visible { opacity: 1; transform: translateY(0); }
+.sfk-sector {
+  font-family: 'DINProCond','DINPro',sans-serif;
+  font-weight: 900;
+  font-size: clamp(88px,11vw,168px);
+  line-height: .78;
+  letter-spacing: -.03em;
+  color: var(--white);
+  position: relative;
+  z-index: 1;
+  margin-bottom: 18px;
+}
+.sfk-sector-full {
+  font-family: 'DINPro',monospace;
+  font-size: 8.5px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--g2);
+  position: relative;
+  z-index: 1;
+}
+/* Светлое тело карточки */
+.sfk-card-bd {
+  padding: 36px 56px 48px;
+  background: var(--bg);
+  flex: 1;
+  border-top: 1px solid var(--ln2);
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .5s ease .12s, transform .5s ease .12s;
+}
+.sfk-card-bd.visible { opacity: 1; transform: translateY(0); }
+.sfk-card-desc {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.72;
+  color: var(--blue);
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--ln);
+}
+/* Параметры */
+.sfk-params { display: flex; flex-direction: column; }
+.sfk-param {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--ln);
+}
+.sfk-param:first-child { border-top: 1px solid var(--ln); }
+.sfk-pk {
+  font-family: 'DINPro',monospace;
+  font-size: 8px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--g1);
+  min-width: 148px;
+  flex-shrink: 0;
+}
+.sfk-pv {
+  font-family: 'DINProCond','DINPro',sans-serif;
+  font-weight: 700;
+  font-size: clamp(14px,1.5vw,18px);
+  color: var(--dark);
+  letter-spacing: -.005em;
+  line-height: 1.25;
+}
+/* Вывод */
+.sfk-conclusion-wrap {
+  padding: 26px 56px;
+  border-top: 1px solid var(--ln2);
+  background: var(--bg2);
+}
+.sfk-conclusion {
+  font-family: 'DINPro',monospace;
+  font-size: 10.5px;
+  letter-spacing: .06em;
+  line-height: 1.75;
+  color: var(--blue);
+}
+
+@media(max-width:1100px) {
+  .sfk-head { grid-template-columns: 1fr; gap: 28px; padding: 56px 32px 40px; }
+  .sfk-lead { max-width: 100%; }
+  /* АЭС и ТЭС used to stack into two sequential full-width blocks here,
+     so reading both meant scrolling past one entirely before the other
+     even appeared. Kept side by side instead (the grid is already a plain
+     1fr 1fr split via --split-even) so both are visible together on one
+     screen — the trade-off is every size inside the card has to come down
+     to fit a half-width column instead of a full-width one. */
+  .sfk-card-hd { padding: 28px 20px 22px; }
+  .sfk-card-bd { padding: 20px 20px 24px; }
+  .sfk-pk { min-width: 120px; }
+  .sfk-conclusion-wrap { padding: 24px 32px; }
+}
+@media(max-width:640px) {
+  .sfk-head { padding: 48px 20px 32px; gap: 24px; }
+  /* .sfk-sector's clamp(88px,11vw,168px) sizes off the full viewport width,
+     not the half-width column it actually renders in — at 375px that still
+     clamps up to the 88px floor, which alone is wider than the column. */
+  .sfk-sector { font-size: clamp(32px, 15vw, 56px); margin-bottom: 10px; }
+  .sfk-sector-full { font-size: 7.5px; letter-spacing: .18em; }
+  .sfk-card-hd { padding: 20px 14px 16px; }
+  .sfk-card-bd { padding: 16px 14px 20px; }
+  .sfk-card-desc { font-size: 11.5px; margin-bottom: 16px; padding-bottom: 16px; }
+  .sfk-param { flex-direction: column; gap: 3px; padding: 9px 0; }
+  .sfk-pk { min-width: auto; }
+  .sfk-pv { font-size: 12.5px; }
+  .sfk-conclusion-wrap { padding: 20px; }
+}
+
+/* ── TRUST STRIP ─────────────────────────────────────────────── */
+.trust-strip {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 32px;
+  padding: 18px 56px 18px 44px;
+  background: var(--dark);
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.ts-label {
+  font-family: 'DINPro', monospace; font-size: 8px;
+  letter-spacing: .22em; color: var(--g1);
+  text-transform: uppercase; flex-shrink: 0; white-space: nowrap;
+}
+.ts-items { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.ts-item {
+  font-family: 'DINProCond', 'DINPro', sans-serif; font-weight: 700;
+  font-size: 13px; letter-spacing: .08em;
+  color: rgba(255,255,255,.7); text-transform: uppercase;
+}
+.ts-sep { color: var(--g1); font-size: 10px; }
+@media(max-width:768px) {
+  .trust-strip { padding: 14px 24px; gap: 14px; }
+  .ts-label { display: none; }
+  .ts-item { font-size: 11px; }
+}
+
+/* ── SIDE NAV ────────────────────────────────────────────────── */
+.sidenav {
+  position: fixed; left: 0; top: 0; bottom: 0; width: 44px;
+  z-index: 200;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: stretch;
+  gap: 20px; pointer-events: none;
+}
+.sidenav-item {
+  position: relative;
+  width: 44px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: all; cursor: pointer;
+  text-decoration: none;
+}
+.sidenav-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--ln2); flex-shrink: 0;
+  transition:
+    background .4s ease,
+    transform .4s cubic-bezier(.34,1.56,.64,1),
+    box-shadow .4s ease;
+}
+.sidenav-item:hover .sidenav-dot {
+  background: var(--g1);
+}
+.sidenav-item.sn-active .sidenav-dot {
+  background: var(--dark);
+  transform: scale(1.6);
+  box-shadow: 0 0 0 3px rgba(15,42,68,.12);
+}
+/* label */
+.sidenav-label {
+  position: absolute;
+  left: 52px;
+  top: 50%; transform: translateY(-50%) translateX(-10px);
+  font-family: 'DINPro', monospace; font-size: 9.5px;
+  letter-spacing: .2em; color: var(--dark);
+  text-transform: uppercase; white-space: nowrap;
+  background: var(--bg); border: 1px solid var(--ln);
+  padding: 4px 10px; line-height: 1.5;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease;
+}
+/* при наведении — любой элемент */
+.sidenav-item:hover .sidenav-label {
+  opacity: 1; transform: translateY(-50%) translateX(0);
+}
+/* при переходе в новую активную секцию — подпись показывается кратко,
+   затем гаснет сама (через JS), чтобы не перекрывать контент надолго */
+.sidenav-item.sn-show-label .sidenav-label {
+  opacity: 1; transform: translateY(-50%) translateX(0);
+}
+@media(max-width:1100px) { .sidenav { display: none; } }
+
+/* ── S10 NOTE ────────────────────────────────────────────────── */
+
+/* ── CHAPTER BAND ────────────────────────────────────────────── */
+.chapter-band {
+  display: flex; align-items: center; gap: 20px;
+  padding: 13px 56px 13px 44px;
+  background: var(--bg2);
+  border-top: 1px solid var(--ln); border-bottom: 1px solid var(--ln);
+}
+.chapter-band-label {
+  font-family: 'DINPro', monospace; font-size: 7.5px;
+  letter-spacing: .3em; color: var(--g1); text-transform: uppercase;
+  white-space: nowrap;
+}
+.chapter-band-line { flex: 1; height: 1px; background: var(--ln); }
+
+/* ── TEXT SCALE — harmonious increase of small text ──────────────
+   Targets: field labels, eyebrows, kickers, badges, body/lead
+   Unchanged: nav chrome, HUD overlays, decorative strip text
+   ──────────────────────────────────────────────────────────────── */
+
+/* 7.5px → 9px: inline field labels */
+.chapter-band-label{ font-size: 9px; }
+
+/* 8–8.5px → 10px: badges, status chips, key-labels, card identifiers */
+.s9-type,.s9-status,.s8-card-label,.s8-card-id,.s8-stage-n,.trust-mark,.s3-fitting-lbl,.s2-status,.s7-pk,.s8-ck,.s8-docs-label,.s9-link,.s8-kicker-line,.s3-tag-inv{ font-size: 10px; }
+
+/* 9–9.5px → 11px: eyebrow text, kickers, filter buttons, row key-labels */
+.s2-kicker,.s3-kicker,.s4-kicker,.s6-kicker,.s5-eye-label,.s7-eye-label,.s8-eye-label,.s9-eye-label,.s9-filter-btn,.s9-scope,.s3-num,.s3-num-inv,.s4-stat-label,.sr-meta,.s3-tag,.s3-btn-alt,.s5-k,.s2-param-k,.s2-part-gost,.s3-hover-bar,.s3-vis-hover{ font-size: 11px; }
+
+/* 10–10.5px → 12px: section number pills, kicker before-nums, ghost links, card subs */
+.ey-num,.s5-eye-num,.s7-eye-num,.s8-eye-num,.s9-eye-num,.s3-sub,.s3-sub-inv,.s3-btn{ font-size: 12px; }
+.s2-kicker::before, .s3-kicker::before, .s4-kicker::before, .s6-kicker::before { font-size: 12px; }
+
+/* 11–11.5px → 12–13px: tagline, action buttons, param-value rows */
+.tagline { font-size: 13px; }
+.btn-fill,.btn-ghost{ font-size: 12px; }
+.s3-desc { font-size: 13px; }
+.s3-desc-sm, .s2-param, .s7-pv.placeholder, .s8-cv.placeholder { font-size: 12px; }
+
+/* 13px → 14px: lead / caption / body text */
+.s2-lead,.s3-lead,.s4-lead,.s6-lead,.s5-caption,.s7-desc,.s3-cta-text,.s8-status-text,.sr-left{ font-size: 14px; }
+
+/* ── FOOTER + SFK + TRUST STRIP — синхронизация со шкалой секций ── */
+.s6-dwg-label{ font-size: 9px; }
+.sfk-pk, .sfk-sector-full, .ts-label { font-size: 10px; }
+.sfk-eye-label{ font-size: 11px; }
+.sfk-eye-num{ font-size: 12px; }
+.sfk-conclusion { font-size: 13px; }
+.sfk-lead,.sfk-card-desc{ font-size: 14px; }
+
+/* Shared rail-padding reset — .strip (left rail) hides at ≤900px site-wide,
+   so every section that reserves --rail-w for it must stop reserving that
+   space too, or mobile/tablet content sits with a dead 44px gap on the left.
+   Placed at the end of the stylesheet on purpose: each base .sX{padding-left:
+   var(--rail-w)} rule below has equal specificity, so when both this and the
+   base rule match (≤900px), source order decides — this has to come after
+   every section's own definition or the base rule silently wins the tie. */
+@media (max-width:900px) {
+  .sfk,.s2,.s3,.s4,.s5,.s6,.s7,.s8,.s9{
+    padding-left: 0;
+  }
+}
+
+/* Tablet-tier axis unification — .s2/.s3/.s4/.sfk-head all converge on 28px
+   at ≤900px, but .s6-head never got a ≤900px rule at all (stayed at the
+   desktop 52-56px the whole way to 640px), and .s7/.s8/.s9/.s10/.sfk each
+   picked their own one-off value (32px, 40px) at their own one-off
+   breakpoint (1024px, 1100px) instead of the shared 28px/900px pair.
+   Same reasoning as the rail-padding reset above for why this sits last:
+   these targets have equal specificity to their own 1024/1100px-tier rules,
+   which stay "in range" all the way down past 900px, so source order is
+   what has to make this win. */
+@media (max-width:1024px) {
+  /* ЕДИНАЯ ОСЬ на всём планшете+мобиле: все шапки секций и левый блок hero
+     на одинаковом отступе 28px (при слим-рельсе 20px → ось 48px). Раньше
+     часть шапок жила на one-off 32/40/56px в полосе 901–1024 — рассинхрон. */
+  .left,
+  .s2-head, .s3-head, .s4-head,
+  .s6-head, .s7-left, .s7-right, .s8-left, .s8-right, .s9-head, .sfk-head {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+}
+@media (max-width:640px) {
+  /* На узких экранах вся ось равномерно тейперится до 20px */
+  .left,
+  .s2-head, .s3-head, .s4-head,
+  .s6-head, .s7-left, .s7-right, .s8-left, .s8-right, .s9-head, .sfk-head {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+/* .sfk-card-hd/-bd used to be in the two axis-unification rules above so
+   they'd share the site-wide 28px/20px left edge with .sfk-head — that
+   made sense when the cards were full-width stacked blocks. Now that
+   АЭС/ТЭС render side by side on mobile (see the sfk-cards media queries),
+   they're half-width columns, not full-width sections, so matching the
+   site's full-width axis would blow their padding budget back out to
+   28px/20px per side and undo the compaction that lets both fit on
+   screen. Their own padding is set directly in the sfk-cards rules. */
+
+/* ═══════════════════════════════════════════════════════════════════
+   АДАПТИВНОЕ ОБОГАЩЕНИЕ — только планшет/мобайл (десктоп ≥1101px нетронут)
+   Все правила ниже перекрывают более ранние мобильные @media по source-
+   order; ни одно не работает выше 1100px. Задача — сохранить «дорогой»
+   характер десктопа (правый прибор hero, левую ось, лиды), а не срезать.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── P0-A · HERO сохраняет правый «render-viewport», а не исчезает ──────
+   Раньше .right{display:none} с 1100px — планшет/мобайл теряли самый
+   насыщенный блок страницы. Возвращаем его компактной приборной панелью
+   под текстом: рамка + угловые метки + cross-hair + pixel-cloud + PE-марка
+   + верхняя HUD-строка. Марка масштабируется контейнерным запросом. */
+@media (max-width:1100px) {
+  .right {
+    display:flex;
+    min-height:0;
+    height:clamp(300px, 44vw, 440px);
+    margin:4px var(--head-x) 44px;   /* left 44(hero pad)+56 = ось 100, как на десктопе */
+    border:1px solid var(--ln2);
+    background:var(--bg2);
+    overflow:hidden;
+    container-type:inline-size;
+  }
+  .right .pe-wrap { width:clamp(180px, 42cqi, 300px); height:auto; aspect-ratio:1; }
+  .right .rf      { inset:20px; }
+  .right .cross-h { left:20px; right:20px; }
+  .right .cross-v { top:20px; bottom:20px; }
+  .hud-coords, .hud-info { display:none; }   /* нижний/правый HUD убираем — тесно в баннере */
+  .hud-render { top:20px; }
+  .hud-scene  { bottom:20px; left:20px; }
+  .left { padding-bottom:20px; }
+}
+@media (max-width:1024px) {
+  .right { margin-left:28px; margin-right:28px; }   /* ось 20(rail)+28 = 48, как у шапок секций */
+}
+@media (max-width:640px) {
+  .right { margin-left:20px; margin-right:20px; height:clamp(240px, 62vw, 340px); }
+}
+
+/* ── P0-B · Левая ось (рельса) возвращается на планшете/крупном телефоне ──
+   Рельса и её отступ отключались с 900px, и вся композиция уходила к краю.
+   На 481–900px возвращаем слим-рельсу 20px (год + пульс) и тот же 20px
+   левый отступ секций — контент снова «крепится» к видимой оси, как на
+   десктопе (там rail 44px). На ≤480 оставляем flush-left: на самых узких
+   экранах рельса съедала бы место, и это осознанный компромисс. */
+@media (min-width:481px) and (max-width:1024px) {
+  
+          /* длинный вертикальный текст не читается в 20px */
+  
+  .hero,.sfk,.s2,.s3,.s4,.s5,.s6,.s7,.s8,.s9{
+    padding-left:20px;                /* единая слим-рельса 20px на всём планшете+мобиле */
+  }
+}
+
+/* ── P1 · Лиды секций S2/S3 больше не удаляются на планшете ──────────────
+   .s2-lead исчезал с 1100px, .s3-lead — с 900px, хотя SFK/S6 свои лиды
+   на планшете сохраняют. Возвращаем ради консистентности: вводный абзац
+   помогает «дороговизне», а место под него есть. */
+@media (max-width:1100px) {
+  /* .s2-head одноколоночная уже с 1100px — лид спокойно уходит на всю ширину */
+  .s2-lead {
+    display:block;
+    grid-column:1 / -1;
+    max-width:100%;
+    align-self:auto;
+    margin-top:20px;
+    padding-bottom:0;
+  }
+}
+@media (max-width:900px) {
+  /* .s3-lead трогаем только с 900px: на 901–1100px шапка ещё 2-колоночная
+     и лид корректно живёт в правой колонке — там его не двигаем. */
+  .s3-lead {
+    display:block;
+    grid-column:1 / -1;
+    max-width:100%;
+    align-self:auto;
+    margin-top:20px;
+    padding-bottom:0;
+  }
+}
+
+/* ── P2 · SFK-нумерал АЭС/ТЭС — плавный clamp вместо скачка на 640px ──────
+   Базовый clamp(88px,11vw,168px) считался от полного вьюпорта, хотя карта
+   рендерится в half-width колонке (в 641–900px мог не влезать), а на 640px
+   резко падал до 56px. Контейнерный клэмп следует за реальной шириной
+   колонки без разрыва на брейкпоинте. */
+@media (max-width:1100px) {
+  .sfk-card   { container-type:inline-size; }
+  .sfk-sector { font-size:clamp(34px, 30cqi, 140px); }
+}
+
+/* ── P2 · 100vh → 100svh на мобильных браузерах ──────────────────────────
+   Полноэкранные блоки не учитывали адресную строку iOS/Android и «прыгали».
+   svh строго ≤ vh, поэтому только безопаснее; десктоп на 100vh не трогаем. */
+@media (max-width:1024px) {
+  .s8-inner   { min-height:100svh; }
+  
+}
+
+/* ── P2 · Тап-зоны вторичных ссылок ≥44px ───────────────────────────────
+   Ссылки-подчёркивания в CTA S3 и «свернуть» в S10 были ниже пальца. */
+@media (max-width:640px) {
+  .s3-btn-alt   { min-height:44px; display:inline-flex; align-items:center; }
+  
+}
+
+/* ── FIX · SFK «АЭС/ТЭС» — на телефоне разворачиваем в одну колонку ───────
+   В двух колонках описательный абзац + 5 пар «ключ–значение» ужимались до
+   ~150px и не читались. На ≤640px карточки идут стопкой во всю ширину (обе
+   раскрыты), текст и параметры получают полную ширину. Сравнение секторов
+   сохраняется вертикальным порядком АЭС → ТЭС. Планшет (2 колонки) не
+   трогаем — там ширины колонки хватает. */
+@media (max-width:640px) {
+  .sfk-cards { grid-template-columns:1fr; }
+  .sfk-card { border-right:none; }
+  .sfk-card + .sfk-card { border-top:1px solid var(--ln2); }
+  /* Возвращаем «воздух» — тесные 14px padding были нужны только для узкой
+     половинной колонки, на всю ширину они читаются как сжатость. */
+  .sfk-card-hd { padding:26px 20px 20px; }
+  .sfk-card-bd { padding:22px 20px 28px; }
+  .sfk-sector-full { font-size:9px; letter-spacing:.22em; }
+  .sfk-card-desc { font-size:14px; margin-bottom:22px; padding-bottom:22px; }
+  /* Параметры — снова строкой (метка слева / значение справа): на полной
+     ширине это читается как аккуратная спецификация, а не колонка обрывков. */
+  .sfk-param { flex-direction:row; align-items:baseline; gap:16px; padding:11px 0; }
+  .sfk-pk { min-width:132px; }
+  .sfk-pv { font-size:14px; }
+}
+
+/* ── FIX · S5 «История завода» — активный год чётче, неактивные приглушены ─
+   На ленте годов активный и будущие годы читались почти одинаково. Активный
+   делаем контрастно-тёмным с усиленным узлом, неактивные гасим по прозрач-
+   ности. Планшет/мобайл (≤1024, весь tap-диапазон) — десктоп-эталон не трогаем. */
+@media (max-width:1024px) {
+  .s5-tl-year {
+    opacity:.38;
+    transition:color .35s, opacity .35s, transform .35s cubic-bezier(.16,1,.3,1);
+  }
+  .s5-tl-item.active .s5-tl-year { color:var(--dark); opacity:1; }
+  .s5-tl-item:not(.active) .s5-tl-cat { opacity:.45; }
+  .s5-tl-item.active .s5-tl-cat { color:var(--blue); opacity:1; }
+  .s5-tl-item.active .s5-tl-node {
+    background:var(--dark); border-color:var(--dark);
+    transform:scale(1.6); box-shadow:0 0 0 3px rgba(15,42,68,.12);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ЭТАП 1 · ЧИТАЕМОСТЬ И ТАЧ-ЦЕЛИ — только ≤640px (десктоп-эталон нетронут)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · Пол шрифта: ничего мельче 10px ─────────────────────────────────
+   Служебные подписи → 10–11px, значимый текст → 13–14px. Ниже перечислены
+   только элементы, которые на ≤640px рендерились 7–9px. */
+@media (max-width:640px) {
+  /* № 08 — аннотации паспорта и маршрута контроля (были 7–8px) */
+  .s8-route-header { font-size:10px; }
+  .s8-ri-num       { font-size:10px; }
+  .s8-ri-ok        { font-size:10px; }
+  .s8-ri-name      { font-size:13px; }   /* значимый текст — названия этапов */
+  .s8-passport-label { font-size:10px; }
+  .s8-passport-sys   { font-size:10px; }
+  .s8-pp-key       { font-size:11px; }
+  .s8-pp-meta      { font-size:10px; line-height:1.7; }
+  .s8-ann-key      { font-size:10px; }
+
+  /* Форма S10 — метки полей и файла (были 7.5–9.5px) */
+  
+  
+  
+  
+
+  /* Футер — подписи, копирайт, индекс (были 7.5–9px) */
+  
+  
+  
+    /* значимый текст — контакты/реквизиты */
+
+  /* Таймлайн S5 — теги-подписи года (были 8–9.5px) */
+  .s5-tl-cat        { font-size:11px; }
+  .s5-slide-period  { font-size:11px; }
+
+  /* Прочие служебные подписи, рендерившиеся <10px */
+  .s6-dwg-label      { font-size:11px; }
+  .chapter-band-label{ font-size:10px; }
+  .s4-stat-label     { font-size:10px; }
+  .s4-ml-badge       { font-size:10px; }
+  .data-row          { font-size:10px; }
+  .rule::after       { font-size:10px; }
+  .hud-render, .hud-scene { font-size:10px; }
+  
+}
+
+/* ── 2 · Тач-цели ≥44px по высоте (наращиваем padding/бокс, не кегль) ────
+   Ссылки-контакты, навигация футера и ссылка политики были 14–29px. */
+
+/* ── Чекбокс согласия на обработку ПДн (форма S10) ───────────────────────
+   Новый обязательный элемент (152-ФЗ). База — сдержанный индустриальный
+   стиль; на ≤640px тап-зона доводится до 44px. */
+
+/* ═══════════════════════════════════════════════════════════════════
+   ЭТАП 2 · ПЕРЕКОМПОНОВКА СЕКЦИЙ — только ≤640px (десктоп нетронут)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── #1 · S6 чертёж: не ужимаем графику, а даём внутренний гор.скролл с
+   «зумом» — SVG рендерится крупно (460px), панель прокручивается вбок,
+   выноски и title-block снова читаются вместо микроскопических 5px. */
+@media (max-width:640px) {
+  .s6-drawing-panel {
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    padding:24px 0 20px;
+  }
+  .s6-drawing { max-width:none; width:460px; }
+  .s6-dwg-label { padding-left:16px; padding-right:16px; }
+}
+
+/* ── #2 · S5 паспорт: разносим слипающиеся табы годов + крупнее статистика */
+@media (max-width:640px) {
+  .s5-tl-item { min-width:132px; padding-right:28px; }
+  .s5-tl-year { letter-spacing:-.02em; }
+  .s5-fact-v  { font-size:clamp(24px,7.5vw,34px); }
+}
+
+/* ── #3 · S4 география: воздух в списке, теги не наезжают, «показать все».
+   ≤900px — список городов показывается с этой границы (карта→список), поэтому
+   и стили кнопки, и логика сворочивания должны жить здесь, а не в ≤640: иначе
+   на планшете кнопка рендерится браузерным дефолтом и не работает. */
+@media (max-width:900px) {
+  .s4-ml-card  { padding:18px 20px; gap:8px; }
+  .s4-ml-head  { gap:14px; align-items:center; }
+  .s4-ml-title { line-height:1.2; }
+  .s4-ml-facts { gap:8px; }
+  .s4-ml-fact  { gap:16px; }
+  .s4-ml-cta   { gap:16px 24px; margin-top:6px; }
+  /* свёрнутый список — видно 3 карточки, остальные под кнопкой */
+  .s4-mobile-list.collapsed .s4-ml-card:nth-child(n+4) { display:none; }
+  .s4-mobile-list.collapsed .s4-ml-card:nth-child(3)   { border-bottom:1px solid var(--ln2); }
+  .s4-showall {
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    width:100%; min-height:48px; margin:14px 0 34px;
+    border:1px solid var(--ln2); background:var(--bg);
+    font-family:'DINPro',monospace; font-size:11px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--blue); cursor:pointer;
+    -webkit-tap-highlight-color:transparent; transition:background .15s;
+  }
+  .s4-showall::after { content:'↓'; font-size:12px; color:var(--g1); }
+  .s4-mobile-list:not(.collapsed) .s4-showall::after { content:'↑'; }
+  .s4-showall:active { background:var(--bg2); }
+}
+
+/* ── #5 · Навигация: боковые точки скрыты ≤1100px → индикатор прогресса
+   скролла тонкой полосой под шапкой. */
+.scroll-progress {
+  position:fixed; top:var(--nav-h); left:0;
+  height:2px; width:0;
+  background:var(--dark);
+  z-index:199;
+  display:none;
+  transition:width .1s linear;
+  pointer-events:none;
+}
+@media (max-width:1100px) {
+  .scroll-progress { display:block; }
+}
+
+/* ── #4 · S9 документы: «показать все» (видно 4 карточки) ─────────────────
+   Кнопка учитывает активный radio-фильтр (пересчёт в JS). */
+.s9-showall {
+  display:none;
+  width:calc(100% - 40px); margin:0 20px 40px;
+  align-items:center; justify-content:center; gap:10px;
+  min-height:48px; border:1px solid var(--ln2); background:var(--bg);
+  font-family:'DINPro',monospace; font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--blue); cursor:pointer;
+  -webkit-tap-highlight-color:transparent; transition:background .15s;
+}
+.s9-showall::after { content:'↓'; font-size:12px; color:var(--g1); }
+.s9-showall.open::after { content:'↑'; }
+.s9-showall:active { background:var(--bg2); }
+@media (max-width:640px) {
+  .s9-showall { display:flex; }
+  .s9-showall.hide { display:none; }
+  .s9-grid .s9-card.s9-extra { display:none !important; }
+}
+
+/* ── #4 · S8 контроль качества: два аккордеона (Маршрут / Паспорт) ────────
+   Тап по заголовку сворачивает/разворачивает блок. Маршрут (8 шагов) свёрнут
+   по умолчанию, цифровой паспорт открыт (это визуальный центр секции).
+   ≤1024px — телефон + планшет (по выбору: на планшете тоже аккордеоны). */
+@media (max-width:1024px) {
+  /* .s8-left — flex-колонка со space-between; при свёрнутом маршруте
+     flex:1 растянул бы блок и оставил пустой разрыв — выключаем. */
+  .s8-left { justify-content:flex-start; }
+  .s8-route-block { flex:none; }
+  .s8-route-header, .s8-passport-header {
+    cursor:pointer; position:relative; padding-right:28px;
+    min-height:44px; align-items:center;
+  }
+  .s8-route-header { display:flex; }
+  .s8-passport-sys { display:none; }   /* освобождаем правый угол под индикатор */
+  .s8-route-header::after, .s8-passport-header::after {
+    content:'+'; position:absolute; right:2px; top:50%; transform:translateY(-50%);
+    font-family:'DINPro',monospace; font-size:17px; line-height:1; color:var(--g1);
+  }
+  .s8-route-block.open .s8-route-header::after,
+  .s8-right.open .s8-passport-header::after { content:'\2212'; }  /* − */
+  .s8-route-list { display:none; }
+  .s8-route-block.open .s8-route-list { display:flex; }
+  .s8-passport, .s8-annotations { display:none; }
+  .s8-right.open .s8-passport { display:block; }
+  .s8-right.open .s8-annotations { display:flex; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ПРАВКИ ПО СКРИНШОТАМ (только ≤640px, десктоп нетронут)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 1 + 4 · На телефоне скрываем hero-рендер и SVG-чертёж S6 — только текст */
+@media (max-width:640px) {
+  .right { display:none !important; }
+  .s6-drawing-panel { display:none !important; }
+}
+
+/* 2 · SFK АЭС/ТЭС — синие плашки-аккордеоны. Подсказка — реальный элемент
+   .sfk-hint внизу плашки (базовый ::after у .sfk-card-hd занят сеткой-
+   оверлеем с inset:0, поэтому псевдоэлемент прилипал к верху). */
+.sfk-hint { display:none; }
+@media (max-width:640px) {
+  .sfk-card-hd { cursor:pointer; }
+  .sfk-hint {
+    display:block; margin-top:24px; position:relative; z-index:1;
+    font-family:'DINPro',monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--g2); opacity:.85;
+  }
+  .sfk-card-bd { display:none; }
+  .sfk-card.open .sfk-card-bd { display:block; }
+}
+
+/* 3 · S5 — узлы-квадратики больше не наезжают на подписи годов;
+   кнопка «показать все» S4 не липнет к следующей секции */
+@media (max-width:640px) {
+  .s5-tl-node { display:none; }
+  .s4-showall { margin-bottom:34px; }
+}
+
+/* 5 · S8 — аккордеоны: grid с min-height:100vh растягивал строки и оставлял
+   провал, а .s8-right центрировал заголовок в пустоте. Убираем grid (блочная
+   раскладка) и оформляем заголовки как аккуратные строки-разделители.
+   ≤1024px — телефон + планшет. HUD-полоса скрыта (иначе при padding-top:0
+   абсолютный .s8-hud-top наезжал бы на шапку). */
+@media (max-width:1024px) {
+  .s8-hud-top { display:none; }
+  .s8-inner  { min-height:0 !important; display:block; padding-top:0; }
+  /* горизонталь оставляем унификации оси (28/20), задаём только вертикаль */
+  .s8-left   { padding-top:28px; padding-bottom:4px; border-bottom:none; }
+  .s8-right  { padding-top:4px; padding-bottom:28px; justify-content:flex-start; }
+  .s8-route-header, .s8-passport-header {
+    border-top:1px solid rgba(200,208,216,.16);
+    padding-top:20px; padding-bottom:20px; margin:0; opacity:1;
+  }
+  .s8-route-header   { color:var(--g2); }
+  .s8-route-header::before { display:none; }   /* убираем двойной акцент с border-top */
+  .s8-passport-label { opacity:1; color:var(--g2); }
+  /* раскрытому блоку — тонкая нижняя граница, чтобы контент читался как продолжение */
+  .s8-route-block.open .s8-route-header,
+  .s8-right.open .s8-passport-header { border-bottom:1px solid rgba(200,208,216,.10); }
+}
+
+/* 6 · S9 — кнопка «показать все» не должна прилипать к секции запроса */
+@media (max-width:640px) {
+  .s9-showall { margin:8px 20px 48px; }
+}
+
+/* ── S5 · крупный слайдер годов + статистика в 3 колонки ─────────────────
+   Активный год большим кеглем от левого края до центра; следующий год тем
+   же кеглем выглядывает за правый край — подсказка «свайпни влево». Трек
+   сдвигается переменной --s5x (перебивает базовый transform:none!important
+   ≤860, который держал ленту статичной). */
+@media (max-width:1024px) {
+  .s5-tl-node { display:none; }   /* узлы-квадратики не наезжают на подписи (весь tap-диапазон) */
+  .s5-tl-track {
+    transform:translateX(var(--s5x,0px)) !important;
+    transition:transform .45s cubic-bezier(.16,1,.3,1);
+  }
+  .s5-tl-item { min-width:0; padding-right:20vw; padding-bottom:14px; }
+  .s5-tl-year { font-size:clamp(66px,23vw,104px); line-height:.92; }
+  .s5-tl-cat  { font-size:10px; margin-top:6px; letter-spacing:.12em; }
+
+  /* статистика этапа — 3 колонки в один ряд (2017 · ТЭС · ГОСТ) */
+  .s5-slide-facts { flex-wrap:nowrap; gap:0; margin-top:18px; padding-top:16px; }
+  .s5-fact {
+    flex:1 1 0; min-width:0; padding:0 12px; margin:0;
+    border-right:1px solid var(--ln2); border-bottom:none;
+  }
+  .s5-fact:first-child { padding-left:0; }
+  .s5-fact:last-child  { padding-right:0; border-right:none; }
+  .s5-fact-v { font-size:clamp(15px,4.6vw,24px); line-height:1.05; margin-bottom:5px; }
+  .s5-fact-k { font-size:10px; letter-spacing:.05em; line-height:1.3; }
+}
+
+/* ── Футер · «наезд» на форму S10: sticky-top формы выставляется скриптом
+   (setStickyTop) так, чтобы низ формы с кнопкой «Отправить» встал у нижнего
+   края экрана. Форма пиннится top-ом (наезд работает), но в точке, где кнопка
+   уже полностью видна. Базовый top:var(--nav-h) из правила выше — фолбэк до
+   выполнения JS. bottom:0 не использовать — он ломал сам наезд. */
+
+/* ── Футер · мобильная раскладка (≤640). Доп-блоки Параметры/Специализация
+   скрываем (как и было на мобиле), остаются Контакты + Навигация в колонку,
+   навигацию (6 страниц) — в 2 колонки. Планшет (641–1200) держит 2×2. */
+
+/* ── Футер · провал над заголовком (планшет+мобайл). На десктопе .ft-statement
+   имеет flex:1 + justify-content:flex-end — заголовок прижат к низу зоны, а
+   сверху драматическая пустота (на весь экран). На высоком планшетном вьюпорте
+   она превращается в огромный провал. Прижимаем контент к ВЕРХУ (было flex-end),
+   при этом .ft-statement сохраняет flex:1 и растёт — свободное место уходит
+   ОТСТУПОМ ПОСЛЕ кнопки «Отправить запрос», а не провалом над заголовком.
+   Футер снова на весь экран (100svh). Только планшет (641–1024). */
+
+/* ── Сетка body::before и контент аккордеонов (≤1024px — телефон + планшет).
+   Логика: закрытый таб — прозрачный, сетка видна как текстура; при раскрытии
+   таб заливается СПЛОШНЫМ фоном, сетка скрыта, плотный контент читается чисто.
+   (Полупрозрачная подложка на всю строку не годилась — в раскрытом виде её
+   большая площадь всё равно пропускала сетку.) */
+@media (max-width:1024px) {
+  /* закрытые табы — прозрачные (текстура сетки видна) */
+  .s2-row, .s6-row { background: transparent; }
+  /* раскрытый таб — сплошной фон поверх сетки */
+  .s2-row.active, .s6-row.active { background: var(--bg); }
+  /* S7 — таблица параметров всегда раскрыта → сплошной фон */
+  .s7-left, .s7-right { background: var(--bg); }
+}
+
+/* S10 — акцент-плашка «Ответ в течение 1 рабочего дня»: вынесена из абзаца и
+   мелкой нижней заметки на видное место, с пульс-точкой (keyframe blink). */
+
+/* ── ЕДИНАЯ ОСЬ · поздние переопределения ────────────────────────────────
+   Секции со своими горизонтальными отступами на поздних брейкпоинтах
+   (S5-таймлайн, футер, S10 с display:contents) сажаем на ту же ось, что и
+   шапки остальных секций: rail(20) + 28 = 48px на планшете, 20+20=40 на
+   узких, flush на ≤480. Блок последний в стилях → перебивает их one-off. */
+@media (max-width:1024px) {
+  .s5-eyebrow, .s5-tl-viewport, .s5-tl-head, .s5-slide { padding-left:28px; }
+  .s5-eyebrow { padding-right:28px; }
+  
+  
+  /* S10 на планшете — обычный бокс (.s10 несёт rail-отступ 20px), колонкам
+     нужна только ось 28px (было 48px под display:contents). На ≤640 (ниже)
+     секция display:contents и колонки несут rail+ось = 40px. */
+  
+}
+@media (max-width:640px) {
+  .s5-eyebrow, .s5-tl-viewport, .s5-tl-head, .s5-slide { padding-left:20px; }
+  .s5-eyebrow { padding-right:20px; }
+  
+  
+  
+}
+

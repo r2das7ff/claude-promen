@@ -1,0 +1,45 @@
+PROM-EN WordPress handoff package
+=================================
+Built: 2026-07-23
+Git branch: catalog-variativity-dedup
+Git HEAD: 1f0ea7b (at dump time; archive may include later commits if rebuilt)
+Theme PROMEN_VERSION: 0.20.10
+WordPress: 7.0.1
+WooCommerce: 10.9.4
+Local URL in dump: http://localhost:8080
+
+Contents of this handoff/ folder
+--------------------------------
+HANDOFF.md              Full developer instructions (start here)
+README.md               Short pointer
+wordpress-db.sql.gz     MariaDB dump (database: wordpress)
+MANIFEST.txt            This file
+promen-wp-handoff-*.tar.gz   Full project archive (if present)
+
+Archive includes (typical)
+--------------------------
+site/docker-compose.yml
+site/wp-content/themes/promen/
+site/wp-content/mu-plugins/
+site/design-reference/
+site/products-csv/
+site/scripts/
+site/content/
+site/tests/
+site/*.md (briefs, audits, playbooks)
+site/handoff/ (this folder)
+site/.git/ (history)
+
+Archive EXCLUDES
+----------------
+site/.docker/   (runtime DB / WP core / Meili data — restore from dump instead)
+*.tar.gz nested copies
+
+Sibling not in archive
+----------------------
+../normatives/  — PDF GOST + source data pipeline (obtain separately if needed)
+
+Catalog snapshot (approx.)
+--------------------------
+published products ~15372
+catalog_rows ~15371
