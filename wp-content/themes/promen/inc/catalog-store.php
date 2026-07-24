@@ -47,8 +47,13 @@ function promen_catalog_maybe_install(): void {
 	}
 }
 
-/** Upsert одной строки канона. */
-function promen_catalog_upsert( int $product_id ): bool {
+/**
+ * Upsert одной строки канона (+ синхронный push в поисковый индекс).
+ *
+ * @param bool $sync_search false — только канон-таблица: массовые прогоны
+ *                          (rebuild) индексируют потом батчами через reindex_all.
+ */
+function promen_catalog_upsert( int $product_id, bool $sync_search = true ): bool {
 	if ( function_exists( 'promen_sync_product_industries' ) ) {
 		promen_sync_product_industries( $product_id );
 	}
@@ -80,14 +85,18 @@ function promen_catalog_upsert( int $product_id ): bool {
 		[ '%d', '%s', '%s', '%s', '%f', '%f', '%f', '%f', '%s', '%s', '%s', '%s' ]
 	);
 
+	if ( $sync_search && function_exists( 'promen_catalog_search_push' ) ) {
+		promen_catalog_search_push( $doc );
+	}
+
 	return true;
 }
 
 function promen_catalog_delete( int $product_id ): bool {
 	global $wpdb;
 	$wpdb->delete( promen_catalog_table_name(), [ 'product_id' => $product_id ], [ '%d' ] );
-	if ( function_exists( 'promen_catalog_search_engine' ) ) {
-		promen_catalog_search_engine()->delete( $product_id );
+	if ( function_exists( 'promen_catalog_search_delete' ) ) {
+		promen_catalog_search_delete( $product_id );
 	}
 	return true;
 }
@@ -106,7 +115,7 @@ function promen_catalog_rebuild( ?callable $progress = null ): int {
 	$n = 0;
 	foreach ( $ids as $pid ) {
 		promen_sync_variable_parent_steels( (int) $pid );
-		promen_catalog_upsert( (int) $pid );
+		promen_catalog_upsert( (int) $pid, false );
 		$n++;
 		if ( $progress ) {
 			$progress( $n, count( $ids ) );

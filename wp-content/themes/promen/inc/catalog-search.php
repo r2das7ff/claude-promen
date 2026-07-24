@@ -193,10 +193,10 @@ function promen_meili_index(): string {
 }
 
 /** HTTP к Meilisearch. */
-function promen_meili_request( string $method, string $path, ?array $body = null ): array {
+function promen_meili_request( string $method, string $path, ?array $body = null, int $timeout = 30 ): array {
 	$args = [
 		'method'  => $method,
-		'timeout' => 30,
+		'timeout' => $timeout,
 		'headers' => [
 			'Authorization' => 'Bearer ' . promen_meili_key(),
 			'Content-Type'  => 'application/json',
@@ -222,8 +222,11 @@ function promen_meili_request( string $method, string $path, ?array $body = null
 
 class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
 
+	/** ensure_index достаточно раза на процесс — не дёргаем 2 HTTP на каждый upsert. */
+	private static bool $index_ensured = false;
+
 	public function health(): bool {
-		$r = promen_meili_request( 'GET', '/health' );
+		$r = promen_meili_request( 'GET', '/health', null, 5 );
 		return $r['ok'];
 	}
 
@@ -232,6 +235,9 @@ class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
 	}
 
 	public function ensure_index(): void {
+		if ( self::$index_ensured ) {
+			return;
+		}
 		promen_meili_request( 'POST', '/indexes', [
 			'uid'        => promen_meili_index(),
 			'primaryKey' => 'product_id',
@@ -244,6 +250,13 @@ class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
 			// фильтрации крупных категорий (отводы ~1900). Поднимаем потолок.
 			'pagination'           => [ 'maxTotalHits' => 100000 ],
 		] );
+		self::$index_ensured = true;
+	}
+
+	/** Удалить индекс целиком (пересборка с нуля при дрейфе — см. cron reconcile). */
+	public function drop_index(): void {
+		promen_meili_request( 'DELETE', '/indexes/' . promen_meili_index() );
+		self::$index_ensured = false;
 	}
 
 	public function search( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result {
@@ -266,7 +279,8 @@ class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
 			$body['sort'] = [ $sort_field . ':' . ( $query->sort_dir === 'desc' ? 'desc' : 'asc' ) ];
 		}
 
-		$r = promen_meili_request( 'POST', '/indexes/' . promen_meili_index() . '/search', $body );
+		// Фронтовый путь: таймаут короткий, зависший Meili не держит страницу.
+		$r = promen_meili_request( 'POST', '/indexes/' . promen_meili_index() . '/search', $body, 5 );
 		if ( ! $r['ok'] ) {
 			throw new RuntimeException( 'Meilisearch search failed: ' . ( $r['error'] ?? 'unknown' ) );
 		}
@@ -533,19 +547,71 @@ function promen_sql_compute_facets( Promen_Catalog_Query $query, string $where_s
 	return $facets;
 }
 
-function promen_catalog_search_engine(): Promen_Catalog_Search_Engine {
-	$meili = new Promen_Meili_Engine();
-	if ( $meili->health() ) {
-		return $meili;
+/**
+ * Meili помечен недоступным? (negative-cache 60с после реального сбоя).
+ * Раньше на каждый поиск летел HTTP /health — лишний round-trip: сбой и так
+ * ловится try/catch в promen_catalog_search.
+ */
+function promen_meili_marked_down( ?bool $set = null ): bool {
+	static $down = null;
+	if ( null !== $set ) {
+		$down = $set;
+		if ( $set ) {
+			set_transient( 'promen_meili_down', 1, MINUTE_IN_SECONDS );
+		} else {
+			delete_transient( 'promen_meili_down' );
+		}
 	}
-	return new Promen_Sql_Fallback_Engine();
+	if ( null === $down ) {
+		$down = (bool) get_transient( 'promen_meili_down' );
+	}
+	return $down;
+}
+
+function promen_catalog_search_engine(): Promen_Catalog_Search_Engine {
+	if ( promen_meili_marked_down() ) {
+		return new Promen_Sql_Fallback_Engine();
+	}
+	return new Promen_Meili_Engine();
 }
 
 function promen_catalog_search( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result {
 	try {
 		return promen_catalog_search_engine()->search( $query );
 	} catch ( Throwable $e ) {
+		promen_meili_marked_down( true );
 		return ( new Promen_Sql_Fallback_Engine() )->search( $query );
+	}
+}
+
+/**
+ * Push документа в поисковый индекс при сохранении товара.
+ * При недоступном Meili — тихо false: дрейф закроет ночной reconcile.
+ */
+function promen_catalog_search_push( array $doc ): bool {
+	if ( promen_meili_marked_down() ) {
+		return false;
+	}
+	try {
+		$engine = new Promen_Meili_Engine();
+		$engine->ensure_index();
+		return $engine->upsert( $doc );
+	} catch ( Throwable $e ) {
+		promen_meili_marked_down( true );
+		return false;
+	}
+}
+
+/** Удаление из поискового индекса (не через селектор — SQL-движок его «съел» бы noop'ом). */
+function promen_catalog_search_delete( int $product_id ): bool {
+	if ( promen_meili_marked_down() ) {
+		return false;
+	}
+	try {
+		return ( new Promen_Meili_Engine() )->delete( $product_id );
+	} catch ( Throwable $e ) {
+		promen_meili_marked_down( true );
+		return false;
 	}
 }
 

@@ -727,7 +727,18 @@ class Promen_Catalog_Command {
 				WP_CLI::log( "… {$done}/{$total}" );
 			}
 		} );
-		WP_CLI::success( "Канон пересобран: {$n} строк." );
+		WP_CLI::log( "Канон пересобран: {$n} строк. Переиндексация Meilisearch…" );
+
+		// Rebuild пишет канон без синхронного пуша (иначе 15k одиночных HTTP) —
+		// замыкаем цикл батч-переиндексацией здесь же, чтобы не было дрейфа.
+		$meili = new Promen_Meili_Engine();
+		if ( $meili->health() ) {
+			$m = $meili->reindex_all();
+			WP_CLI::success( "Канон {$n} строк, Meilisearch {$m} документов." );
+		} else {
+			WP_CLI::warning( 'Meilisearch недоступен — прогоните `wp promen search-reindex` позже.' );
+			WP_CLI::success( "Канон пересобран: {$n} строк." );
+		}
 	}
 
 	/** Привязать отрасли (promen_industry) ко всем товарам и обновить канон. */
@@ -747,12 +758,18 @@ class Promen_Catalog_Command {
 		foreach ( $ids as $pid ) {
 			promen_sync_product_industries( (int) $pid );
 			if ( function_exists( 'promen_catalog_upsert' ) ) {
-				promen_catalog_upsert( (int) $pid );
+				promen_catalog_upsert( (int) $pid, false );
 			}
 			$n++;
 			if ( $n % 500 === 0 ) {
 				WP_CLI::log( "… {$n}/" . count( $ids ) );
 			}
+		}
+		$meili = new Promen_Meili_Engine();
+		if ( $meili->health() ) {
+			$meili->reindex_all();
+		} else {
+			WP_CLI::warning( 'Meilisearch недоступен — прогоните `wp promen search-reindex` позже.' );
 		}
 		WP_CLI::success( "Отрасли синхронизированы для {$n} товаров." );
 	}
