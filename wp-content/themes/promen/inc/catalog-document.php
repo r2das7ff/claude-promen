@@ -24,7 +24,7 @@ function promen_catalog_float( $value ): ?float {
  */
 function promen_catalog_field_max( string $field ): float {
 	$max = [
-		'pn' => 2000,   // Ру в кгс/см² встречается до ~1200
+		'pn' => 160,    // МПа (максимум в данных — 100 МПа у ГОСТ 22815/22822)
 		's'  => 100,    // стенка, мм (максимум в данных ~92 у труб)
 		's2' => 100,
 		'dn' => 2600,
@@ -122,6 +122,15 @@ function promen_catalog_document_from_fields( array $input ): array {
 	return $doc;
 }
 
+/**
+ * Нормативы, где PN в данных — номинал по стандарту (кгс/см², «PN250»):
+ * в названии и паспорте номинал сохраняется, а в канон/фильтры/реестр
+ * давление идёт в МПа (номинал/10 — стандартное соответствие ГОСТ 33259).
+ */
+function promen_pn_nominal_norms(): array {
+	return [ 'gost-33259-2015', 'gost-12820-1980', 'gost-12821-1980', 'gost-28759-2-2022' ];
+}
+
 /** Построить канон-документ из опубликованного товара WC. */
 function promen_build_catalog_document( int $product_id ): ?array {
 	$product = wc_get_product( $product_id );
@@ -135,6 +144,15 @@ function promen_build_catalog_document( int $product_id ): ?array {
 	$dims  = promen_get_dims( $product_id );
 	$term  = promen_deepest_cat( $product_id );
 	$group = $term ? $term->slug : '';
+
+	// PN-номинал фланцевых норм → МПа для канона и ячеек реестра
+	// (dims/название/карточка сохраняют номинал «PN250»).
+	$pre_norm_terms = wp_get_post_terms( $product_id, 'norm', [ 'fields' => 'slugs' ] );
+	$pre_norm_slug  = ( ! is_wp_error( $pre_norm_terms ) && $pre_norm_terms ) ? (string) $pre_norm_terms[0] : '';
+	if ( isset( $dims['pn'] ) && is_numeric( $dims['pn'] ) && in_array( $pre_norm_slug, promen_pn_nominal_norms(), true ) ) {
+		$mpa        = (float) $dims['pn'] / 10;
+		$dims['pn'] = (float) rtrim( rtrim( number_format( $mpa, 3, '.', '' ), '0' ), '.' );
+	}
 
 	$steels = function_exists( 'promen_product_steel_slugs' )
 		? promen_product_steel_slugs( $product_id )
