@@ -1,0 +1,44 @@
+== PROM-EN perf audit: baseline ==
+date: 2026-07-24T12:26:16+05:00
+
+--- backend (wp eval-file, каждый компонент — холодный процесс) ---
+component                 queries         ms
+search_only                     2       11.3
+registry_embed                165       88.9
+rest_catalog                  103       86.6
+s01_series                      5       70.4
+s04_norms                       4       55.4
+sidebar                       321      535.7
+category_page                 180      199.9
+
+--- HTTP TTFB (медиана из 3, dev-стек) ---
+/catalog/                                     7.857747s
+/catalog/sdt/otvody/                          8.686051s
+/contacts/                                    7.619055s
+/wp-json/promen/v1/catalog?group=otvody       5.305272s
+
+--- страница категории: HTML и ассеты ---
+HTML: 245374 bytes raw, 36816 bytes gzip
+JS на странице:
+      4350  /wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.min.js
+      2439  /wp-content/plugins/woocommerce/assets/js/frontend/order-attribution.min.js
+      4270  /wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js
+      9636  /wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js
+      1720  /wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js
+     15315  /wp-content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.min.js
+     24261  /wp-content/themes/promen/assets/js/catalog.js
+      4188  /wp-content/themes/promen/assets/js/category-sdt.js
+      3538  /wp-content/themes/promen/assets/js/chrome.js
+     23089  /wp-content/themes/promen/assets/js/request-modal.js
+     13577  /wp-includes/js/jquery/jquery-migrate.min.js
+     87553  /wp-includes/js/jquery/jquery.min.js
+JS итого: 193936 bytes, 12 файлов
+Шрифты (файлы, на которые ссылается base.css):
+    191905  fonts/DINPro-Black.otf
+    198065  fonts/DINPro-Bold.otf
+    188293  fonts/DINPro-CondBlack.otf
+    191497  fonts/DINPro-CondBold.otf
+    187373  fonts/DINPro-Light.otf
+    195145  fonts/DINPro-Medium.otf
+    193509  fonts/DINPro.otf
+Шрифты итого: 1345787 bytes
