@@ -80,6 +80,15 @@ function promen_steel_reference(): array {
  * @return string[]
  */
 function promen_group_steel_list( string $group ): array {
+	// Скан steels_json всей группы (до ~7k строк у крепежа) — только по кэш-промаху.
+	$ckey   = function_exists( 'promen_filters_cache_key' )
+		? promen_filters_cache_key( 'group_steel_list', [ $group ] )
+		: 'promen_group_steels_' . md5( $group );
+	$cached = get_transient( $ckey );
+	if ( is_array( $cached ) ) {
+		return $cached;
+	}
+
 	global $wpdb;
 	$table = function_exists( 'promen_catalog_table_name' ) ? promen_catalog_table_name() : $wpdb->prefix . 'promen_catalog_rows';
 	$slugs = function_exists( 'promen_catalog_group_slugs' ) ? promen_catalog_group_slugs( $group ) : [ $group ];
@@ -88,16 +97,19 @@ function promen_group_steel_list( string $group ): array {
 	}
 	$ph   = implode( ',', array_fill( 0, count( $slugs ), '%s' ) );
 	// phpcs:ignore WordPress.DB.PreparedSQL
-	$rows = $wpdb->get_col( $wpdb->prepare( "SELECT steels_json FROM {$table} WHERE category IN ({$ph}) AND steels_json IS NOT NULL", $slugs ) );
+	$rows = $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT steels_json FROM {$table} WHERE category IN ({$ph}) AND steels_json IS NOT NULL", $slugs ) );
 	$seen = [];
 	foreach ( $rows as $json ) {
 		foreach ( (array) json_decode( (string) $json, true ) as $slug ) {
-			$t = get_term_by( 'slug', $slug, 'pa_steel' );
-			$name = ( $t && ! is_wp_error( $t ) ) ? $t->name : (string) $slug;
+			$name = function_exists( 'promen_term_label' )
+				? promen_term_label( 'pa_steel', (string) $slug )
+				: (string) $slug;
 			$seen[ promen_steel_key( $name ) ] = true;
 		}
 	}
-	return promen_sort_steels( array_keys( $seen ) );
+	$out = promen_sort_steels( array_keys( $seen ) );
+	set_transient( $ckey, $out, 15 * MINUTE_IN_SECONDS );
+	return $out;
 }
 
 /** Порядок марок: сначала по справочнику (углерод→низколег→теплоуст→нерж), потом прочие. */

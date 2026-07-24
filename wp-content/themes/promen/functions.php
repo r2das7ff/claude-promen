@@ -14,6 +14,7 @@ add_action( 'after_setup_theme', function () {
 } );
 
 require_once __DIR__ . '/inc/product-data.php';
+require_once __DIR__ . '/inc/catalog-terms.php';
 require_once __DIR__ . '/inc/catalog-schema.php';
 require_once __DIR__ . '/inc/catalog-document.php';
 require_once __DIR__ . '/inc/catalog-store.php';
@@ -271,12 +272,9 @@ function promen_footer_nav_items(): array {
 			'url'   => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' ),
 		],
 	];
-	$sdt = get_term_by( 'slug', 'sdt', 'product_cat' );
-	if ( $sdt && ! is_wp_error( $sdt ) ) {
-		$link = get_term_link( $sdt );
-		if ( ! is_wp_error( $link ) ) {
-			$items[] = [ 'label' => 'Соединительные детали', 'url' => $link ];
-		}
+	$sdt_url = function_exists( 'promen_product_cat_link' ) ? promen_product_cat_link( 'sdt' ) : '';
+	if ( $sdt_url !== '' ) {
+		$items[] = [ 'label' => 'Соединительные детали', 'url' => $sdt_url ];
 	}
 	foreach ( [
 		'production'        => 'Производство',

@@ -30,7 +30,6 @@ $sort_dir   = ( ( $sort_raw[1] ?? '' ) === 'desc' ) ? 'desc' : ( ( ( $sort_raw[1
 
 $group_views = promen_catalog_group_views();
 $view        = $group_views[ $group ] ?? $group_views[''];
-$cat_term    = $view['term'];
 
 $catalog_total_n = 0;
 foreach ( promen_catalog_nav_roots() as $root_slug ) {

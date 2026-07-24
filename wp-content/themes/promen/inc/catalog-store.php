@@ -202,30 +202,57 @@ function promen_catalog_count(): int {
 }
 
 /**
+ * Счётчики всех групп каталога из канона: [ slug => n ] + '' => всего.
+ * Один SQL GROUP BY + свёртка по дереву категорий; в transient.
+ * (Раньше каждая группа держала свой transient: сайдбар на 33 группах
+ * платил ~100 SQL только за чтение кэшей.)
+ *
+ * @return array<string, int>
+ */
+function promen_catalog_group_counts(): array {
+	static $counts = null;
+	if ( null !== $counts ) {
+		return $counts;
+	}
+
+	$ckey   = function_exists( 'promen_filters_cache_key' )
+		? promen_filters_cache_key( 'group_counts' )
+		: 'promen_group_counts';
+	$cached = get_transient( $ckey );
+	if ( is_array( $cached ) ) {
+		return $counts = $cached;
+	}
+
+	global $wpdb;
+	$by_cat = [];
+	$rows   = $wpdb->get_results( 'SELECT category, COUNT(*) AS cnt FROM ' . promen_catalog_table_name() . ' GROUP BY category', ARRAY_A );
+	foreach ( $rows ?: [] as $r ) {
+		$by_cat[ (string) $r['category'] ] = (int) $r['cnt'];
+	}
+
+	$counts = [ '' => array_sum( $by_cat ) ];
+	foreach ( array_keys( promen_term_map( 'product_cat' ) ) as $slug ) {
+		$n = 0;
+		foreach ( promen_catalog_group_slugs( $slug ) as $s ) {
+			$n += $by_cat[ $s ] ?? 0;
+		}
+		$counts[ $slug ] = $n;
+	}
+	set_transient( $ckey, $counts, 15 * MINUTE_IN_SECONDS );
+	return $counts;
+}
+
+/**
  * Каноническое число товаров группы/категории (единый источник counts).
  * Считает по канон-таблице с учётом потомков → согласуется с реестром и REST.
  */
 function promen_catalog_group_count( string $group ): int {
-	global $wpdb;
-	$table = promen_catalog_table_name();
-	$slugs = $group !== '' ? promen_catalog_group_slugs( $group ) : [];
-	$ckey  = 'promen_grpcount_' . md5( $group . '|' . ( function_exists( 'promen_filters_cache_version' ) ? promen_filters_cache_version() : '' ) );
-	$cached = get_transient( $ckey );
-	if ( $cached !== false ) {
-		return (int) $cached;
-	}
-	if ( ! $slugs ) {
-		$n = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
-	} else {
-		$ph = implode( ',', array_fill( 0, count( $slugs ), '%s' ) );
-		$n  = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE category IN ({$ph})", $slugs ) );
-	}
-	set_transient( $ckey, $n, 15 * MINUTE_IN_SECONDS );
-	return $n;
+	return promen_catalog_group_counts()[ $group ] ?? 0;
 }
 
 /**
- * Категории-потомки для фильтра group (включая саму категорию).
+ * Категории-потомки для фильтра group (включая саму категорию) — из карты
+ * терминов, без get_term_children (тот дёргал get_term на каждого потомка).
  *
  * @return string[]
  */
@@ -233,15 +260,19 @@ function promen_catalog_group_slugs( string $group ): array {
 	if ( $group === '' ) {
 		return [];
 	}
-	$term = get_term_by( 'slug', $group, 'product_cat' );
-	if ( ! $term || is_wp_error( $term ) ) {
+	$map = promen_term_map( 'product_cat' );
+	if ( ! isset( $map[ $group ] ) ) {
 		return [ $group ];
 	}
 	$slugs = [ $group ];
-	foreach ( get_term_children( $term->term_id, 'product_cat' ) as $child_id ) {
-		$t = get_term( $child_id, 'product_cat' );
-		if ( $t && ! is_wp_error( $t ) ) {
-			$slugs[] = $t->slug;
+	$queue = [ $map[ $group ]['id'] ];
+	while ( $queue ) {
+		$pid = array_shift( $queue );
+		foreach ( $map as $slug => $d ) {
+			if ( $d['parent'] === $pid ) {
+				$slugs[] = $slug;
+				$queue[] = $d['id'];
+			}
 		}
 	}
 	return array_values( array_unique( $slugs ) );

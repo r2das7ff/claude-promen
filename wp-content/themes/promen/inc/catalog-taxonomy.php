@@ -366,7 +366,7 @@ function promen_render_catalog_sidebar( string $active_group ): void {
 			continue;
 		}
 		$count = promen_catalog_nav_count( $root );
-		if ( $count <= 0 && ! get_term_by( 'slug', $root, 'product_cat' ) ) {
+		if ( $count <= 0 && ! isset( promen_term_map( 'product_cat' )[ $root ] ) ) {
 			continue;
 		}
 		$children = $def['children'] ?? [];
@@ -415,7 +415,7 @@ function promen_render_catalog_sidebar( string $active_group ): void {
 					continue;
 				}
 				$ccount = promen_catalog_nav_count( $child );
-				if ( $ccount <= 0 && ! get_term_by( 'slug', $child, 'product_cat' ) ) {
+				if ( $ccount <= 0 && ! isset( promen_term_map( 'product_cat' )[ $child ] ) ) {
 					continue;
 				}
 				if ( $ccount <= 0 ) {
@@ -534,8 +534,7 @@ function promen_catalog_group_norm_stats( string $group, int $limit = 0, bool $m
 		$steels = trim( (string) ( $row['steels'] ?? '' ) );
 		$name   = trim( (string) ( $row['name'] ?? '' ) );
 		if ( $name === '' ) {
-			$term = get_term_by( 'slug', $slug, 'norm' );
-			$name = ( $term && ! is_wp_error( $term ) ) ? $term->name : $slug;
+			$name = promen_term_label( 'norm', $slug );
 		}
 		$cnt = (int) $row['cnt'];
 
@@ -784,8 +783,7 @@ function promen_render_category_norms_section( string $group_slug ): void {
 	$label = $def['label'] ?? ( $def['title'] ?? $group_slug );
 	$meta  = strtoupper( preg_replace( '/[^a-z0-9]+/i', '-', $group_slug ) ?: $group_slug );
 	$norms = promen_catalog_group_norm_stats( $group_slug, 0, true );
-	$term  = get_term_by( 'slug', $group_slug, 'product_cat' );
-	$base  = ( $term && ! is_wp_error( get_term_link( $term ) ) ) ? get_term_link( $term ) : ( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' ) );
+	$base  = promen_product_cat_link( $group_slug ) ?: ( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' ) );
 	$visible = 6;
 	$hidden  = max( 0, count( $norms ) - $visible );
 	?>
@@ -857,8 +855,7 @@ function promen_render_category_series_registry( string $group_slug ): void {
 	// Без merge: тот же набор slug, что и фасет ГОСТ в живом реестре.
 	$norms  = promen_catalog_group_norm_stats( $group_slug, 0, false );
 	$groups = promen_catalog_bucket_series_norms( $group_slug, $norms );
-	$term   = get_term_by( 'slug', $group_slug, 'product_cat' );
-	$base   = ( $term && ! is_wp_error( get_term_link( $term ) ) ) ? get_term_link( $term ) : ( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' ) );
+	$base   = promen_product_cat_link( $group_slug ) ?: ( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' ) );
 	$n_ser  = count( $norms );
 	$n_grp  = count( $groups );
 	$prefix = function_exists( 'promen_series_code_prefix' ) ? promen_series_code_prefix( $group_slug ) : mb_substr( $code, 0, 3 );

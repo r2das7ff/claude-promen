@@ -40,9 +40,6 @@ if ( ! isset( $group_views ) ) {
 if ( ! isset( $view ) ) {
 	$view = $group_views[ $group ] ?? $group_views[''];
 }
-if ( ! isset( $cat_term ) ) {
-	$cat_term = $view['term'];
-}
 
 $show_cat_link = $promen_registry_show_cat_link ?? ! is_tax( 'product_cat' );
 $with_pdp      = $promen_registry_with_pdp ?? true;
@@ -55,8 +52,8 @@ $with_pdp      = $promen_registry_with_pdp ?? true;
             <div class="mh-title-row">
               <div class="mh-title" id="mainTitle"><?php echo esc_html( $view['title'] ); ?></div>
               <?php if ( $show_cat_link ) :
-				$cat_link  = ( $cat_term && ! is_wp_error( get_term_link( $cat_term ) ) ) ? get_term_link( $cat_term ) : '';
-				$cat_title = $cat_term ? ( 'Открыть страницу категории «' . $cat_term->name . '»' ) : '';
+				$cat_link  = (string) ( $view['term_url'] ?? '' );
+				$cat_title = $view['term_name'] !== '' ? ( 'Открыть страницу категории «' . $view['term_name'] . '»' ) : '';
 				?>
               <a id="pathCatLink" class="mh-cat-link" href="<?php echo $cat_link ? esc_url( $cat_link ) : '#'; ?>" title="<?php echo esc_attr( $cat_title ); ?>"<?php echo $cat_link ? '' : ' hidden'; ?>>Страница категории<span class="gr-go-arr" aria-hidden="true">→</span></a>
               <?php else : ?>

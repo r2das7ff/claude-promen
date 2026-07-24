@@ -322,11 +322,11 @@ add_filter( 'posts_where', function ( string $where, WP_Query $q ): string {
 
 	$json_parts = [];
 	foreach ( $steel as $slug ) {
-		$term = get_term_by( 'slug', $slug, 'pa_steel' );
-		if ( ! $term ) {
+		$label = promen_term_label( 'pa_steel', $slug );
+		if ( $label === $slug && ! isset( promen_term_map( 'pa_steel' )[ $slug ] ) ) {
 			continue;
 		}
-		$name = esc_sql( $term->name );
+		$name = esc_sql( $label );
 		$json_parts[] = "pm.meta_value LIKE '%\"material_grade\":\"{$name}\"%'";
 		$json_parts[] = "pm.meta_value LIKE '%\"material\":\"{$name}\"%'";
 	}
@@ -378,9 +378,9 @@ function promen_scope_cat_id(): int {
 	if ( is_shop() || is_post_type_archive( 'product' ) ) {
 		$group = promen_active_group();
 		if ( $group !== '' ) {
-			$t = get_term_by( 'slug', $group, 'product_cat' );
-			if ( $t ) {
-				return (int) $t->term_id;
+			$map = promen_term_map( 'product_cat' );
+			if ( isset( $map[ $group ] ) ) {
+				return $map[ $group ]['id'];
 			}
 		}
 	}
@@ -644,8 +644,9 @@ function promen_build_filter_url( array $args ): string {
 
 /**
  * Заголовки и хлебные крошки групп каталога (сайдбар + шапка таблицы).
+ * term_url/term_name — из карт терминов (никаких get_term_by на группу).
  *
- * @return array<string, array{title: string, path: string, term: WP_Term|null}>
+ * @return array<string, array{title: string, path: string, term_url: string, term_name: string}>
  */
 function promen_catalog_group_views(): array {
 	static $views = null;
@@ -653,15 +654,17 @@ function promen_catalog_group_views(): array {
 		return $views;
 	}
 	$views = [
-		'' => [ 'title' => 'РЕЕСТР ИЗДЕЛИЙ', 'path' => '/ Весь реестр', 'term' => null ],
+		'' => [ 'title' => 'РЕЕСТР ИЗДЕЛИЙ', 'path' => '/ Весь реестр', 'term_url' => '', 'term_name' => '' ],
 	];
 	if ( function_exists( 'promen_catalog_taxonomy_defs' ) ) {
+		$map   = promen_term_map( 'product_cat' );
+		$links = promen_product_cat_links();
 		foreach ( promen_catalog_taxonomy_defs() as $slug => $def ) {
-			$term = get_term_by( 'slug', $slug, 'product_cat' );
 			$views[ $slug ] = [
-				'title' => $def['title'],
-				'path'  => $def['path'],
-				'term'  => $term instanceof WP_Term ? $term : null,
+				'title'     => $def['title'],
+				'path'      => $def['path'],
+				'term_url'  => $links[ $slug ] ?? '',
+				'term_name' => $map[ $slug ]['name'] ?? '',
 			];
 		}
 	}
@@ -672,18 +675,11 @@ function promen_catalog_group_views(): array {
 function promen_catalog_group_views_js(): array {
 	$out = [];
 	foreach ( promen_catalog_group_views() as $slug => $view ) {
-		$term_url = '';
-		if ( $view['term'] ) {
-			$link = get_term_link( $view['term'] );
-			if ( ! is_wp_error( $link ) ) {
-				$term_url = $link;
-			}
-		}
 		$out[ $slug ] = [
 			'title'    => $view['title'],
 			'path'     => $view['path'],
-			'termUrl'  => $term_url,
-			'termName' => $view['term'] ? $view['term']->name : '',
+			'termUrl'  => $view['term_url'],
+			'termName' => $view['term_name'],
 		];
 	}
 	return $out;
@@ -717,8 +713,7 @@ function promen_active_summary(): array {
 				$out[] = [ 'label' => $labels[ $p ], 'value' => $val, 'clear_url' => promen_multi_toggle_url( $p, $slug ) ];
 				continue;
 			}
-			$t = get_term_by( 'slug', $slug, promen_multi_taxonomies()[ $p ] );
-			$out[] = [ 'label' => $labels[ $p ], 'value' => $t ? $t->name : $slug, 'clear_url' => promen_multi_toggle_url( $p, $slug ) ];
+			$out[] = [ 'label' => $labels[ $p ], 'value' => promen_term_label( promen_multi_taxonomies()[ $p ], $slug ), 'clear_url' => promen_multi_toggle_url( $p, $slug ) ];
 		}
 	}
 	return $out;
@@ -734,8 +729,7 @@ add_action( 'wp_head', function () {
 	}
 	if ( is_post_type_archive( 'product' ) || is_shop() ) {
 		// Групповой вид (?group=otvody) каноникалим на страницу категории, а не на голый /catalog/.
-		$term = $group !== '' ? get_term_by( 'slug', $group, 'product_cat' ) : null;
-		$url  = ( $term && ! is_wp_error( $term ) ) ? get_term_link( $term ) : get_post_type_archive_link( 'product' );
+		$url = ( $group !== '' ? promen_product_cat_link( $group ) : '' ) ?: get_post_type_archive_link( 'product' );
 	} elseif ( is_tax( 'product_cat' ) || is_tax( 'norm' ) ) {
 		$url = get_term_link( get_queried_object() );
 	} else {

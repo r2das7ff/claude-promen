@@ -99,12 +99,10 @@ function promen_catalog_facet_label( string $param, string $slug ): string {
 		return $labels[ $slug ] ?? strtoupper( $slug );
 	}
 	if ( $param === 'steel' ) {
-		$t = get_term_by( 'slug', $slug, 'pa_steel' );
-		return $t ? $t->name : $slug;
+		return promen_term_label( 'pa_steel', $slug );
 	}
 	if ( $param === 'gost' ) {
-		$t = get_term_by( 'slug', $slug, 'norm' );
-		return $t ? $t->name : $slug;
+		return promen_term_label( 'norm', $slug );
 	}
 	return $slug;
 }

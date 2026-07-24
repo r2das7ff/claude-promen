@@ -45,8 +45,7 @@ function promen_rest_catalog( WP_REST_Request $request ): WP_REST_Response {
 			$slugs = array_values( array_intersect( (array) ( $hit['steels'] ?? [] ), $query->steel ) );
 			$labels = [];
 			foreach ( $slugs as $slug ) {
-				$t = get_term_by( 'slug', $slug, 'pa_steel' );
-				$labels[] = $t ? $t->name : $slug;
+				$labels[] = promen_term_label( 'pa_steel', (string) $slug );
 			}
 			if ( $labels ) {
 				$hits[ $i ]['steel_display'] = implode( ', ', $labels );
@@ -160,12 +159,10 @@ function promen_rest_build_facet_options( array $raw, array $allowed ): array {
 
 function promen_rest_facet_label( string $param, string $slug ): string {
 	if ( $param === 'steel' ) {
-		$t = get_term_by( 'slug', $slug, 'pa_steel' );
-		return $t ? $t->name : $slug;
+		return promen_term_label( 'pa_steel', $slug );
 	}
 	if ( $param === 'gost' ) {
-		$t = get_term_by( 'slug', $slug, 'norm' );
-		return $t ? $t->name : $slug;
+		return promen_term_label( 'norm', $slug );
 	}
 	if ( $param === 'industry' ) {
 		$labels = promen_industry_tag_labels();
