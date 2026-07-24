@@ -21,7 +21,10 @@ services:
       retries: 10
 
   meilisearch:
-    image: getmeili/meilisearch:v1.11
+    # 1.11 снята с поддержки (CVE-2026-57823/57824 закрыты в 1.47.1/1.48.2);
+    # поддерживается только последний релиз. При апгрейде мажора данные
+    # пересоздаются: wp promen search-reindex (данные-истина — канон-таблица).
+    image: getmeili/meilisearch:v1.48
     restart: unless-stopped
     environment:
       MEILI_MASTER_KEY: promen_dev_key
