@@ -1,6 +1,12 @@
+volumes:
+  # WP-ядро и плагины: named volume (ext4 внутри VM) вместо bind-mount NTFS —
+  # иначе opcache stat'ит сотни PHP-файлов через NTFS-прослойку (~4с TTFB).
+  # Тема и mu-plugins остаются bind-mount ниже — live-правки работают как раньше.
+  wpcore:
+
 services:
   db:
-    image: mariadb:11
+    image: mariadb:11.8
     restart: unless-stopped
     environment:
       MARIADB_DATABASE: wordpress
@@ -46,7 +52,7 @@ services:
         define('WP_MEMORY_LIMIT', '512M');
         define('WP_ENVIRONMENT_TYPE', 'local');
     volumes:
-      - ./.docker/wp:/var/www/html
+      - wpcore:/var/www/html
       - ./wp-content/themes/promen:/var/www/html/wp-content/themes/promen
       - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins
       # CSV и PDF пайплайна доступны изнутри контейнера для импорта:
@@ -69,7 +75,7 @@ services:
       PROMEN_MEILI_URL: http://meilisearch:7700
       PROMEN_MEILI_KEY: promen_dev_key
     volumes:
-      - ./.docker/wp:/var/www/html
+      - wpcore:/var/www/html
       - ./wp-content/themes/promen:/var/www/html/wp-content/themes/promen
       - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins
       - ./scripts:/scripts

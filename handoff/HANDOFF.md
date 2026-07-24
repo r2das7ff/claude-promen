@@ -51,8 +51,9 @@ docker compose up -d
 # сервисы: db (MariaDB 11), wordpress (:8080), meilisearch (:7700), wpcli
 ```
 
-Первый запуск WordPress создаст файлы в `.docker/wp/`. Тема и mu-plugins
-примонтированы поверх:
+WP-ядро живёт в named volume `wpcore` (не в `.docker/wp/` — bind-mount ядра на
+Windows/NTFS давал ~4с TTFB из-за stat'ов opcache). Тема и mu-plugins
+примонтированы поверх bind-mount'ом:
 
 | Хост | Контейнер |
 |------|-----------|
