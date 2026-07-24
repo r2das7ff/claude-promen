@@ -23,6 +23,7 @@ require_once __DIR__ . '/inc/catalog-render.php';
 require_once __DIR__ . '/inc/catalog-taxonomy.php';
 require_once __DIR__ . '/inc/steel-reference.php';
 require_once __DIR__ . '/inc/catalog-filters.php';
+require_once __DIR__ . '/inc/category-page.php';
 require_once __DIR__ . '/inc/catalog-api.php';
 require_once __DIR__ . '/inc/seo.php';
 require_once __DIR__ . '/inc/pilot-otvody.php';
