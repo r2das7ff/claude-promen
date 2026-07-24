@@ -18,6 +18,33 @@ function promen_catalog_float( $value ): ?float {
 }
 
 /**
+ * Физические потолки числовых полей канона: значения выше — «склейки» импорта
+ * (PN 273325 = склеенные диаметры 273+325, PN 1020100 = 10+20+100 и т.п.).
+ * Мусор не попадает в канон/фильтры; товар остаётся с «—» по этому полю.
+ */
+function promen_catalog_field_max( string $field ): float {
+	$max = [
+		'pn' => 2000,   // Ру в кгс/см² встречается до ~1200
+		's'  => 100,    // стенка, мм (максимум в данных ~92 у труб)
+		's2' => 100,
+		'dn' => 2600,
+		'dn2'=> 2600,
+		'd'  => 3200,   // наружный диаметр, мм
+		'd2' => 3200,
+	];
+	return $max[ $field ] ?? INF;
+}
+
+/** Float с валидацией физического потолка поля. */
+function promen_catalog_float_field( string $field, $value ): ?float {
+	$f = promen_catalog_float( $value );
+	if ( null === $f ) {
+		return null;
+	}
+	return $f <= promen_catalog_field_max( $field ) ? $f : null;
+}
+
+/**
  * Собрать search_text из частей (для unit-тестов без WP).
  *
  * @param array<string, mixed> $parts
@@ -59,13 +86,13 @@ function promen_catalog_document_from_fields( array $input ): array {
 		'family'       => (string) ( $input['family'] ?? '' ),
 		'norm'         => (string) ( $input['norm'] ?? '' ),
 		'norm_slug'    => $norm_slug,
-		'dn'           => promen_catalog_float( $input['dn'] ?? null ),
-		'dn2'          => promen_catalog_float( $input['dn2'] ?? null ),
-		'pn'           => promen_catalog_float( $input['pn'] ?? null ),
-		'd'            => promen_catalog_float( $input['d'] ?? null ),
-		's'            => promen_catalog_float( $input['s'] ?? null ),
-		'd2'           => promen_catalog_float( $input['d2'] ?? null ),
-		's2'           => promen_catalog_float( $input['s2'] ?? null ),
+		'dn'           => promen_catalog_float_field( 'dn', $input['dn'] ?? null ),
+		'dn2'          => promen_catalog_float_field( 'dn2', $input['dn2'] ?? null ),
+		'pn'           => promen_catalog_float_field( 'pn', $input['pn'] ?? null ),
+		'd'            => promen_catalog_float_field( 'd', $input['d'] ?? null ),
+		's'            => promen_catalog_float_field( 's', $input['s'] ?? null ),
+		'd2'           => promen_catalog_float_field( 'd2', $input['d2'] ?? null ),
+		's2'           => promen_catalog_float_field( 's2', $input['s2'] ?? null ),
 		'angle'        => promen_catalog_float( $input['angle'] ?? null ),
 		'mass'         => promen_catalog_float( $input['mass'] ?? null ),
 		'steels'       => $steels,

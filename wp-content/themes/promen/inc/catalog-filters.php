@@ -94,6 +94,9 @@ function promen_numeric_terms( string $tax ): array {
 	if ( isset( $cache[ $tax ] ) ) {
 		return $cache[ $tax ];
 	}
+	// Потолки значений: выше — «склейки» импорта (pa_pn «1020100» = 10+20+100).
+	$max_val = [ 'pa_dn' => 2600, 'pa_pn' => 2000 ];
+
 	$out = [];
 	foreach ( get_terms( [ 'taxonomy' => $tax, 'hide_empty' => true, 'number' => 0 ] ) as $t ) {
 		if ( is_wp_error( $t ) || ! promen_is_valid_numeric_name( $t->name ) ) {
@@ -102,6 +105,9 @@ function promen_numeric_terms( string $tax ): array {
 		$val = (float) $t->name;
 		// DN — только целые ≥ 1 (0.63/0.81/… — ошибочно попавший наружный диаметр).
 		if ( $tax === 'pa_dn' && ( $val < 1 || floor( $val ) !== $val ) ) {
+			continue;
+		}
+		if ( $val > ( $max_val[ $tax ] ?? INF ) ) {
 			continue;
 		}
 		$out[] = [ 'val' => $val, 'name' => $t->name, 'slug' => $t->slug, 'count' => (int) $t->count ];
@@ -447,51 +453,51 @@ function promen_scoped_counts( string $tax, int $cat_id ): array {
  *                           нужно передавать явно, иначе ряд будет глобальным).
  */
 function promen_range_options( string $param, ?string $group = null ): array {
-	if ( 's' === $param ) {
-		return promen_wall_range_options( $group ?? '' );
-	}
 	if ( null === $group ) {
-		$cat_id = promen_scope_cat_id();
-	} else {
-		$cat_id = $group === '' ? 0 : (int) ( promen_term_map( 'product_cat' )[ $group ]['id'] ?? 0 );
-	}
-	$tax    = promen_range_taxonomies()[ $param ] ?? '';
-	$counts = promen_scoped_counts( $tax, $cat_id );
-	$opts   = [];
-	foreach ( promen_numeric_terms( $tax ) as $t ) {
-		if ( isset( $counts[ $t['slug'] ] ) ) {
-			$opts[] = [ 'val' => $t['val'], 'name' => $t['name'] ];
+		if ( is_tax( 'product_cat' ) ) {
+			$qo    = get_queried_object();
+			$group = $qo instanceof WP_Term ? $qo->slug : '';
+		} else {
+			$group = promen_active_group();
 		}
 	}
-	return $opts; // уже по возрастанию
+	return promen_canon_range_options( $param, $group );
 }
 
 /**
- * Ряд толщин стенки группы — из канона (у стенки нет таксономии-атрибута).
- * Transient с версией фильтров, как у остальных кэшей.
+ * Ряд значений диапазона — из КАНОНА (DISTINCT по группе), не из терминов
+ * атрибутов: в pa_pn импорт нанёс склейки и годы стандартов (1979, 2456,
+ * 1020100…), а канон-колонки валидируются потолками promen_catalog_field_max.
+ * Transient с версией фильтров.
  *
  * @return array<int, array{val: float, name: string}>
  */
-function promen_wall_range_options( string $group ): array {
-	static $cache = [];
-	if ( isset( $cache[ $group ] ) ) {
-		return $cache[ $group ];
+function promen_canon_range_options( string $param, string $group ): array {
+	if ( ! in_array( $param, promen_range_params(), true ) ) {
+		return [];
 	}
-	$ckey   = promen_filters_cache_key( 'wall_range', [ $group ] );
+	static $cache = [];
+	$mkey = $param . '|' . $group;
+	if ( isset( $cache[ $mkey ] ) ) {
+		return $cache[ $mkey ];
+	}
+	$ckey   = promen_filters_cache_key( 'canon_range', [ $param, $group ] );
 	$cached = get_transient( $ckey );
 	if ( is_array( $cached ) ) {
-		return $cache[ $group ] = $cached;
+		return $cache[ $mkey ] = $cached;
 	}
 
 	global $wpdb;
 	$table = promen_catalog_table_name();
+	$col   = $param; // dn|pn|s — колонки канона
 	$slugs = $group !== '' ? promen_catalog_group_slugs( $group ) : [];
 	if ( $slugs ) {
 		$ph   = implode( ',', array_fill( 0, count( $slugs ), '%s' ) );
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-		$vals = $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT s FROM {$table} WHERE s IS NOT NULL AND s > 0 AND category IN ({$ph}) ORDER BY s ASC", $slugs ) );
+		$vals = $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT {$col} FROM {$table} WHERE {$col} IS NOT NULL AND {$col} > 0 AND category IN ({$ph}) ORDER BY {$col} ASC", $slugs ) );
 	} else {
-		$vals = $wpdb->get_col( "SELECT DISTINCT s FROM {$table} WHERE s IS NOT NULL AND s > 0 ORDER BY s ASC" );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$vals = $wpdb->get_col( "SELECT DISTINCT {$col} FROM {$table} WHERE {$col} IS NOT NULL AND {$col} > 0 ORDER BY {$col} ASC" );
 	}
 
 	$opts = [];
@@ -505,7 +511,7 @@ function promen_wall_range_options( string $group ): array {
 	if ( $opts ) {
 		set_transient( $ckey, $opts, 15 * MINUTE_IN_SECONDS );
 	}
-	return $cache[ $group ] = $opts;
+	return $cache[ $mkey ] = $opts;
 }
 
 /**

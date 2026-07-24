@@ -43,8 +43,33 @@ function promen_term_map( string $tax ): array {
 
 /** Человекочитаемое имя термина по слагу (фолбэк — сам слаг). */
 function promen_term_label( string $tax, string $slug ): string {
-	$map = promen_term_map( $tax );
-	return $map[ $slug ]['name'] ?? $slug;
+	$map  = promen_term_map( $tax );
+	$name = $map[ $slug ]['name'] ?? $slug;
+	// Нормативы всегда по-русски: термин без названия/со слагом вместо имени
+	// («sto-95-127») превращаем в «СТО 95-127».
+	if ( 'norm' === $tax && ! preg_match( '/[А-Яа-яЁё]/u', $name ) ) {
+		return promen_norm_label_from_slug( $name );
+	}
+	return $name;
+}
+
+/** «gost-17375-2001» → «ГОСТ 17375-2001», «sto-95-127» → «СТО 95-127». */
+function promen_norm_label_from_slug( string $slug ): string {
+	$prefixes = [
+		'gost-r-' => 'ГОСТ Р ',
+		'gost-'   => 'ГОСТ ',
+		'ost-'    => 'ОСТ ',
+		'sto-'    => 'СТО ',
+		'tu-'     => 'ТУ ',
+		'seriya-' => 'Серия ',
+		'np-'     => 'НП ',
+	];
+	foreach ( $prefixes as $p => $label ) {
+		if ( str_starts_with( $slug, $p ) ) {
+			return $label . substr( $slug, strlen( $p ) ); // дефисы номера сохраняются
+		}
+	}
+	return $slug;
 }
 
 /**
