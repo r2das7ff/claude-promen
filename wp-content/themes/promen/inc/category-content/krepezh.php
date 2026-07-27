@@ -60,7 +60,7 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(5,1fr);">
         <a class="mg" data-type="b" href="<?php echo esc_url( promen_product_cat_link( 'bolty' ) ); ?>">
-          <div class="mg-hd"><div class="mg-code">Б</div><div class="mg-cnt">10 467 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">Б</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'bolty' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Болты</div>
           <div class="mg-items">
             <div class="mg-item">Фундаментные<span class="mg-norm">ГОСТ 22032 / 22043</span></div>
@@ -70,7 +70,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">M × L</span><span class="mg-ftag">Страница семейства →</span></div>
         </a>
         <a class="mg" data-type="shp" href="<?php echo esc_url( promen_product_cat_link( 'shpilki' ) ); ?>">
-          <div class="mg-hd"><div class="mg-code">ШП</div><div class="mg-cnt">3 012 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ШП</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'shpilki' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Шпильки</div>
           <div class="mg-items">
             <div class="mg-item">Общепромышленные<span class="mg-norm">ГОСТ 15590</span></div>
@@ -80,7 +80,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">ШП</span><span class="mg-ftag">Страница семейства →</span></div>
         </a>
         <a class="mg" data-type="g" href="<?php echo esc_url( promen_product_cat_link( 'gayki' ) ); ?>">
-          <div class="mg-hd"><div class="mg-code">Г</div><div class="mg-cnt">168 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">Г</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'gayki' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Гайки</div>
           <div class="mg-items">
             <div class="mg-item">Фланцевые<span class="mg-norm">ГОСТ 9064</span></div>
@@ -90,7 +90,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">Г</span><span class="mg-ftag">Страница семейства →</span></div>
         </a>
         <a class="mg" data-type="sh" href="<?php echo esc_url( promen_product_cat_link( 'shayby' ) ); ?>">
-          <div class="mg-hd"><div class="mg-code">Ш</div><div class="mg-cnt">98 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">Ш</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'shayby' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Шайбы</div>
           <div class="mg-items">
             <div class="mg-item">Пружинные / плоские<span class="mg-norm">ГОСТ 6402</span></div>
@@ -99,7 +99,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">Ш</span><span class="mg-ftag">Страница семейства →</span></div>
         </a>
         <a class="mg" data-type="v" href="<?php echo esc_url( promen_product_cat_link( 'vinty' ) ); ?>">
-          <div class="mg-hd"><div class="mg-code">В</div><div class="mg-cnt">1 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">В</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'vinty' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Винты</div>
           <div class="mg-items">
             <div class="mg-item">По ГОСТ 6958<span class="mg-norm">ГОСТ 6958-1978</span></div>
@@ -167,7 +167,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Болты фундаментные ГОСТ 22032 / 22043</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 22032</span><span class="sg-tag">3 889 поз. семейства</span>
+              <span class="sg-tag hi">ГОСТ 22032</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'krepezh', 'gost-22032-1976' ) + promen_category_norm_count( 'krepezh', 'gost-22043-1976' ) ) ); ?> поз. семейства</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22032-1976', $ctx['url'] ) ); ?>">К фундаментным в реестре →</a>
           </div>
@@ -185,7 +185,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Шпильки ОСТ 26-2040-96</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ОСТ 26-2040</span><span class="sg-tag">398 поз.</span>
+              <span class="sg-tag hi">ОСТ 26-2040</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'krepezh', 'ost-26-2040-96' ) ) ); ?> поз.</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-26-2040-96', $ctx['url'] ) ); ?>">К шпилькам ОСТ в реестре →</a>
           </div>

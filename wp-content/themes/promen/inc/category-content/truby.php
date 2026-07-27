@@ -57,14 +57,14 @@ return [
     <div class="map-body">
       <div class="map-root"><div class="map-root-label">Трубы — типоисполнения семейства</div></div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(3,1fr);">
-        <div class="mg"><div class="mg-hd"><div class="mg-code">БШ</div><div class="mg-cnt">700 поз.</div></div><div class="mg-name">Бесшовные</div>
+        <div class="mg"><div class="mg-hd"><div class="mg-code">БШ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'bs' ) ) ); ?> поз.</div></div><div class="mg-name">Бесшовные</div>
           <div class="mg-items"><div class="mg-item">Гор. деформ.<span class="mg-norm">ГОСТ 8732</span></div><div class="mg-item">Хол. деформ.<span class="mg-norm">ГОСТ 8734</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">БШ</span></div></div>
-        <div class="mg"><div class="mg-hd"><div class="mg-code">ЭС</div><div class="mg-cnt">733 поз.</div></div><div class="mg-name">Электросварные</div>
+        <div class="mg"><div class="mg-hd"><div class="mg-code">ЭС</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'es' ) ) ); ?> поз.</div></div><div class="mg-name">Электросварные</div>
           <div class="mg-items"><div class="mg-item">Сортамент<span class="mg-norm">ГОСТ 10704</span></div><div class="mg-item">ТУ<span class="mg-norm">ГОСТ 10705</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">ЭС</span></div></div>
-        <div class="mg"><div class="mg-hd"><div class="mg-code">ВГП</div><div class="mg-cnt">70 поз.</div></div><div class="mg-name">Водогазопроводные</div>
-          <div class="mg-items"><div class="mg-item">ГОСТ 3262<span class="mg-norm">70 поз.</span></div></div>
+        <div class="mg"><div class="mg-hd"><div class="mg-code">ВГП</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'vgp' ) ) ); ?> поз.</div></div><div class="mg-name">Водогазопроводные</div>
+          <div class="mg-items"><div class="mg-item">ГОСТ 3262<span class="mg-norm"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'truby', 'gost-3262-1975' ) ) ); ?> поз.</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">ВГП</span></div></div>
       </div>
     </div>
@@ -84,14 +84,14 @@ return [
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 01</div><div class="sg-task-h">Бесшовная труба под давление / пар</div></div>
           <div class="sg-product"><div class="sg-prod-name">Трубы БШ ГОСТ 8732 / 8734</div>
-            <div class="sg-tags"><span class="sg-tag hi">БШ</span><span class="sg-tag">700 поз.</span></div>
+            <div class="sg-tags"><span class="sg-tag hi">БШ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'bs' ) ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-8732-1978', $ctx['url'] ) ); ?>">К бесшовным →</a></div>
           <div class="sg-params"><div class="sg-param-list"><div class="sg-param">D×s или DN</div><div class="sg-param">Марка стали</div><div class="sg-param">Длина / партия</div></div></div>
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 02</div><div class="sg-task-h">Электросварная труба / теплосеть</div></div>
           <div class="sg-product"><div class="sg-prod-name">Трубы ЭС ГОСТ 10704 / 10705</div>
-            <div class="sg-tags"><span class="sg-tag hi">ЭС</span><span class="sg-tag">733 поз.</span></div>
+            <div class="sg-tags"><span class="sg-tag hi">ЭС</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'es' ) ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-10704-1991', $ctx['url'] ) ); ?>">К электросварным →</a></div>
           <div class="sg-params"><div class="sg-param-list"><div class="sg-param">D×s</div><div class="sg-param">Сталь</div><div class="sg-param">Количество</div></div></div>
         </div>
@@ -105,7 +105,7 @@ return [
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 04</div><div class="sg-task-h">Водогазопроводная труба</div></div>
           <div class="sg-product"><div class="sg-prod-name">Трубы ВГП ГОСТ 3262-1975</div>
-            <div class="sg-tags"><span class="sg-tag hi">ВГП</span><span class="sg-tag">70 поз.</span></div>
+            <div class="sg-tags"><span class="sg-tag hi">ВГП</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'vgp' ) ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-3262-1975', $ctx['url'] ) ); ?>">К ВГП →</a></div>
           <div class="sg-params"><div class="sg-param-list"><div class="sg-param">Условный проход</div><div class="sg-param">Лёгкая/обычная/усиленная</div><div class="sg-param">Количество</div></div></div>
         </div>

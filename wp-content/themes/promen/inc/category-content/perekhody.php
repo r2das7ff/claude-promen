@@ -70,7 +70,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">DN 32–600</span><span class="mg-ftag">Основной тип</span></div>
         </div>
         <div class="mg" data-type="p100">
-          <div class="mg-hd"><div class="mg-code">П-100</div><div class="mg-cnt">68 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">П-100</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</div></div>
           <div class="mg-name">На Ру до 100 МПа</div>
           <div class="mg-items">
             <div class="mg-item">Высокое давление<span class="mg-norm">ГОСТ 22826-83</span></div>
@@ -161,7 +161,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Переходы на Ру до 100 МПа — ГОСТ 22826-83</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 22826-83</span><span class="sg-tag">DN 25–200</span><span class="sg-tag">68 позиций</span>
+              <span class="sg-tag hi">ГОСТ 22826-83</span><span class="sg-tag">DN 25–200</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22826-1983', $ctx['url'] ) ); ?>">К переходам Ру 100 в реестре →</a>
           </div>

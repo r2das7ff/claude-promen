@@ -60,7 +60,7 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(3,1fr);">
         <div class="mg" data-type="ds">
-          <div class="mg-hd"><div class="mg-code">ДЭ-С</div><div class="mg-cnt">142 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ДЭ-С</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_dn_range_count( 'dnishcha', null, 600 ) ) ); ?> поз.</div></div>
           <div class="mg-name">Стандартный DN</div>
           <div class="mg-items">
             <div class="mg-item">Эллиптические отбортованные<span class="mg-norm">ГОСТ 6533-78</span></div>
@@ -70,7 +70,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">DN 100–600</span><span class="mg-ftag">Основной ряд</span></div>
         </div>
         <div class="mg" data-type="dm">
-          <div class="mg-hd"><div class="mg-code">ДЭ-М</div><div class="mg-cnt">37 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ДЭ-М</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_dn_range_count( 'dnishcha', 600, 1400 ) ) ); ?> поз.</div></div>
           <div class="mg-name">Средний DN</div>
           <div class="mg-items">
             <div class="mg-item">Эллиптические отбортованные<span class="mg-norm">ГОСТ 6533-78</span></div>
@@ -80,7 +80,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">DN 600–1400</span><span class="mg-ftag">Сосуды</span></div>
         </div>
         <div class="mg" data-type="dk">
-          <div class="mg-hd"><div class="mg-code">ДЭ-К</div><div class="mg-cnt">71 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">ДЭ-К</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_dn_range_count( 'dnishcha', 1400, null ) ) ); ?> поз.</div></div>
           <div class="mg-name">Крупный DN</div>
           <div class="mg-items">
             <div class="mg-item">Крупногабаритные днища<span class="mg-norm">ГОСТ 6533-78</span></div>

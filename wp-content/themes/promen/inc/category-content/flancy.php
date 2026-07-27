@@ -60,7 +60,7 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(4,1fr);">
         <div class="mg" data-type="t11">
-          <div class="mg-hd"><div class="mg-code">11</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'flancy', 't11' ) ) ); ?> поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">11</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'flancy-11' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Воротниковые тип 11</div>
           <div class="mg-items">
             <div class="mg-item">Приварные встык<span class="mg-norm">ГОСТ 33259-2015</span></div>
@@ -70,7 +70,7 @@ return [
           <div class="mg-footer"><span class="mg-ftag">DN 10–2400</span><span class="mg-ftag">Основной тип</span></div>
         </div>
         <div class="mg" data-type="t01">
-          <div class="mg-hd"><div class="mg-code">01</div><div class="mg-cnt">139 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">01</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'flancy-01' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Плоские тип 01</div>
           <div class="mg-items">
             <div class="mg-item">Плоские по ГОСТ 33259<span class="mg-norm">ГОСТ 33259-2015</span></div>

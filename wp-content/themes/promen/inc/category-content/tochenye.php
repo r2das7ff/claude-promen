@@ -60,23 +60,23 @@ return [
       </div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(2,1fr);">
         <div class="mg" data-type="g22826">
-          <div class="mg-hd"><div class="mg-code">22826</div><div class="mg-cnt">89 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">22826</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</div></div>
           <div class="mg-name">ГОСТ 22826-1983</div>
           <div class="mg-items">
             <div class="mg-item">Переходы точеные детали<span class="mg-norm">тип ПТ</span></div>
             <div class="mg-item">Исполнения 1–5<span class="mg-norm">по таблице ГОСТ</span></div>
             <div class="mg-item">DN 10–200<span class="mg-norm">основной ряд</span></div>
           </div>
-          <div class="mg-footer"><span class="mg-ftag">ПТ</span><span class="mg-ftag">89 поз.</span></div>
+          <div class="mg-footer"><span class="mg-ftag">ПТ</span><span class="mg-ftag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</span></div>
         </div>
         <div class="mg" data-type="ost664">
-          <div class="mg-hd"><div class="mg-code">664</div><div class="mg-cnt">10 поз.</div></div>
+          <div class="mg-hd"><div class="mg-code">664</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'ost-34-42-664-84' ) ) ); ?> поз.</div></div>
           <div class="mg-name">ОСТ 34-42-664-84</div>
           <div class="mg-items">
             <div class="mg-item">Переходы точеные детали<span class="mg-norm">энергетика</span></div>
-            <div class="mg-item">По ряду ОСТ<span class="mg-norm">10 позиций</span></div>
+            <div class="mg-item">По ряду ОСТ<span class="mg-norm"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'ost-34-42-664-84' ) ) ); ?> позиций</span></div>
           </div>
-          <div class="mg-footer"><span class="mg-ftag">ОСТ</span><span class="mg-ftag">10 поз.</span></div>
+          <div class="mg-footer"><span class="mg-ftag">ОСТ</span><span class="mg-ftag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'ost-34-42-664-84' ) ) ); ?> поз.</span></div>
         </div>
       </div>
     </div>
@@ -103,7 +103,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Переход точёный ПТ · ГОСТ 22826-1983</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 22826</span><span class="sg-tag">ПТ</span><span class="sg-tag">89 поз.</span>
+              <span class="sg-tag hi">ГОСТ 22826</span><span class="sg-tag">ПТ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22826-1983', $ctx['url'] ) ); ?>">К ГОСТ 22826 в реестре →</a>
           </div>
@@ -121,7 +121,7 @@ return [
           <div class="sg-product">
             <div class="sg-prod-name">Переход точёный · ОСТ 34-42-664-84</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ОСТ 34-42-664</span><span class="sg-tag">10 поз.</span>
+              <span class="sg-tag hi">ОСТ 34-42-664</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'ost-34-42-664-84' ) ) ); ?> поз.</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-34-42-664-84', $ctx['url'] ) ); ?>">К ОСТ 664 в реестре →</a>
           </div>

@@ -590,6 +590,55 @@ function promen_category_norm_count( string $group, string $norm_slug ): int {
 }
 
 /**
+ * Живой счётчик позиций группы по подстроке отображаемого имени
+ * (для карт s02, где подтип виден только в названии: «тип 01», «Труба» и т.п.).
+ */
+function promen_catalog_title_count( string $group, string $like ): int {
+	static $cache = [];
+	$key = $group . '|' . $like;
+	if ( isset( $cache[ $key ] ) ) {
+		return $cache[ $key ];
+	}
+	global $wpdb;
+	$t     = promen_catalog_table_name();
+	$slugs = promen_catalog_group_slugs( $group );
+	$ph    = implode( ',', array_fill( 0, count( $slugs ), '%s' ) );
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	$sql = $wpdb->prepare(
+		"SELECT COUNT(*) FROM {$t} WHERE category IN ({$ph}) AND JSON_UNQUOTE(JSON_EXTRACT(payload, '$.title')) LIKE %s",
+		array_merge( $slugs, [ $like ] )
+	);
+	return $cache[ $key ] = (int) $wpdb->get_var( $sql );
+}
+
+/**
+ * Живой счётчик позиций группы в диапазоне DN (карты s02 днищ: «DN 100–600»).
+ */
+function promen_catalog_dn_range_count( string $group, ?float $min, ?float $max ): int {
+	static $cache = [];
+	$key = $group . '|' . $min . '|' . $max;
+	if ( isset( $cache[ $key ] ) ) {
+		return $cache[ $key ];
+	}
+	global $wpdb;
+	$t     = promen_catalog_table_name();
+	$slugs = promen_catalog_group_slugs( $group );
+	$ph    = implode( ',', array_fill( 0, count( $slugs ), '%s' ) );
+	$where = "category IN ({$ph}) AND dn IS NOT NULL";
+	$args  = $slugs;
+	if ( null !== $min ) {
+		$where .= ' AND dn > %f';
+		$args[] = $min;
+	}
+	if ( null !== $max ) {
+		$where .= ' AND dn <= %f';
+		$args[] = $max;
+	}
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	return $cache[ $key ] = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$t} WHERE {$where}", $args ) );
+}
+
+/**
  * Живые счётчики типов раздела «Изоляция и покрытия» по отображаемым именам
  * канона: трубы в ППУ / тройники ППУ-ПЭ / тройники ППУ-ОЦ.
  *
