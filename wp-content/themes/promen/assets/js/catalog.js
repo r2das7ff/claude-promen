@@ -414,6 +414,7 @@
     sbnFlancy: ['flancy'],
     sbnKrepezh: ['krepezh'],
     sbnTruby: ['truby'],
+    sbnIzolyatsiya: ['izolyatsiya'],
     sbnOpory: ['opory'],
     sbnArmatura: ['armatura']
   };
@@ -422,6 +423,7 @@
     sbnFlancy: ['flancy', 'flancy-plosk', 'flancy-vorot', 'flancy-01', 'flancy-11'],
     sbnKrepezh: ['krepezh', 'bolty', 'gayki', 'shpilki', 'shayby', 'vinty'],
     sbnTruby: ['truby', 'truby-bsh', 'truby-es', 'truby-vgp'],
+    sbnIzolyatsiya: ['izolyatsiya', 'izolyatsiya-truby', 'izolyatsiya-troyniki'],
     sbnOpory: ['opory', 'opory-nepodv', 'opory-skolz', 'opory-pruzh'],
     sbnArmatura: ['armatura', 'armatura-zadvizhki', 'armatura-klapany', 'armatura-krany']
   };

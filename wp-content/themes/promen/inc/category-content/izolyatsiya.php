@@ -89,7 +89,7 @@ return [
           <div class="sg-task"><div class="sg-task-code">Задача 01</div><div class="sg-task-h">Труба в ППУ (прямые участки)</div></div>
           <div class="sg-product"><div class="sg-prod-name">Труба ППУ ГОСТ 30732-2020</div>
             <div class="sg-tags"><span class="sg-tag hi">ТР</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( $izl3['truby'] ) ); ?> поз.</span></div>
-            <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'q', 'труба', $ctx['url'] ) ); ?>">К трубам →</a></div>
+            <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'group', 'izolyatsiya-truby', $ctx['shop_url'] ) ); ?>">К трубам →</a></div>
           <div class="sg-params"><div class="sg-param-list"><div class="sg-param">D×s трубы</div><div class="sg-param">Оболочка</div><div class="sg-param">Длина плети</div></div></div>
         </div>
         <div class="sg-row">

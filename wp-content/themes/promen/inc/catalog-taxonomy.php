@@ -224,9 +224,26 @@ function promen_catalog_taxonomy_defs(): array {
 			'path'        => '/ Изоляция и покрытия',
 			'code'        => 'ИЗ',
 			'nav_name'    => 'Изоляция и покрытия',
-			'meta_suffix' => 'трубы и тройники ППУ',
+			'meta_suffix' => '2 типа',
 			'has_page'    => true,
 			'nav'         => true,
+			'children'    => [ 'izolyatsiya-truby', 'izolyatsiya-troyniki' ],
+		],
+		'izolyatsiya-truby' => [
+			'label'    => 'Трубы в ППУ',
+			'title'    => 'ТРУБЫ В ППУ',
+			'path'     => '/ Изоляция / Трубы в ППУ',
+			'has_page' => false,
+			'nav'      => true,
+			'parent'   => 'izolyatsiya',
+		],
+		'izolyatsiya-troyniki' => [
+			'label'    => 'Тройники ППУ',
+			'title'    => 'ТРОЙНИКИ ППУ',
+			'path'     => '/ Изоляция / Тройники ППУ',
+			'has_page' => false,
+			'nav'      => true,
+			'parent'   => 'izolyatsiya',
 		],
 		'opory' => [
 			'label'       => 'Опоры',
@@ -649,13 +666,16 @@ function promen_izol_type_counts(): array {
 	if ( null !== $out ) {
 		return $out;
 	}
-	global $wpdb;
-	$t   = promen_catalog_table_name();
 	$out = [
-		'truby' => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t} WHERE category = 'izolyatsiya' AND JSON_UNQUOTE(JSON_EXTRACT(payload, '$.title')) LIKE 'Труба%'" ),
-		'pe'    => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t} WHERE category = 'izolyatsiya' AND JSON_UNQUOTE(JSON_EXTRACT(payload, '$.title')) LIKE '%ППУ-ПЭ%'" ),
-		'oc'    => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t} WHERE category = 'izolyatsiya' AND JSON_UNQUOTE(JSON_EXTRACT(payload, '$.title')) LIKE '%ППУ-ОЦ%'" ),
+		'truby' => promen_catalog_group_count( 'izolyatsiya-truby' ),
+		'pe'    => promen_catalog_title_count( 'izolyatsiya', '%ППУ-ПЭ%' ),
+		'oc'    => promen_catalog_title_count( 'izolyatsiya', '%ППУ-ОЦ%' ),
 	];
+	// До разнесения по подкатегориям (или при пустом дочернем терме)
+	// трубы считаем по имени, как тройники.
+	if ( 0 === $out['truby'] ) {
+		$out['truby'] = promen_catalog_title_count( 'izolyatsiya', 'Труба%' );
+	}
 	return $out;
 }
 

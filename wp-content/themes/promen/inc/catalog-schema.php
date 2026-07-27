@@ -64,6 +64,14 @@ function promen_catalog_group_schema( string $group ): array {
 			'sort'    => [ 'field' => 'dn', 'dir' => 'asc' ],
 		];
 	}
+	if ( str_starts_with( $g, 'izolyatsiya' ) ) {
+		return [
+			'columns' => [ 'dn', 'd', 's' ],
+			'facets'  => [ 'industry', 'steel', 'gost' ],
+			'ranges'  => [ 'dn', 's' ],
+			'sort'    => [ 'field' => 'dn', 'dir' => 'asc' ],
+		];
+	}
 	if ( str_starts_with( $g, 'opory' ) ) {
 		return [
 			'columns' => [ 'dn', 'mass' ],
@@ -99,12 +107,6 @@ function promen_catalog_group_schema( string $group ): array {
 			'facets'  => [ 'industry', 'steel', 'gost' ],
 			'ranges'  => [ 'dn', 'pn', 's' ],
 			'sort'    => [ 'field' => 'd', 'dir' => 'asc' ],
-		],
-		'izolyatsiya' => [
-			'columns' => [ 'dn', 'd', 's' ],
-			'facets'  => [ 'industry', 'steel', 'gost' ],
-			'ranges'  => [ 'dn', 's' ],
-			'sort'    => [ 'field' => 'dn', 'dir' => 'asc' ],
 		],
 		'troyniki', 'perekhody', 'tochenye' => [
 			'columns' => [ 'dn', 'd', 's', 'dn2', 'd2', 's2', 'mass' ],
