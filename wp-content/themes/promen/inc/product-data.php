@@ -1249,6 +1249,20 @@ function promen_product_display_title( int $product_id ): string {
 }
 
 /**
+ * Тип изделия из названия товара: «Тройник ППУ ОЦ 530х10 — …» → «Тройник ППУ-ОЦ»,
+ * «Задвижка клиновая стальная DN50 PN…» → «Задвижка клиновая стальная».
+ * Текст до первой цифры, без хвостов DN/PN/Ду/Ру, оболочка ППУ через дефис.
+ */
+function promen_kind_from_title( string $title ): string {
+	$kind = html_entity_decode( $title, ENT_QUOTES, 'UTF-8' );
+	$kind = trim( (string) preg_replace( '/[\d].*$/u', '', $kind ) );
+	$kind = trim( (string) preg_replace( '/\s+(DN|PN|Dн|Ду|Ру|M|М)\s*$/u', '', $kind ) );
+	$kind = trim( (string) preg_replace( '/\s+/u', ' ', $kind ) );
+	$kind = str_replace( [ 'ППУ ОЦ', 'ППУ ПЭ' ], [ 'ППУ-ОЦ', 'ППУ-ПЭ' ], $kind );
+	return $kind;
+}
+
+/**
  * Размерный ряд: товары того же семейства и норматива (+ угла, если есть).
  * Это и таблица типоразмеров, и DN-кнопки конфигуратора.
  * Кэш — в транзиенте на серию.
@@ -1657,12 +1671,14 @@ function promen_series_type_name( string $norm_key, string $family = '' ): strin
 		'ГОСТ 8734-1975'  => 'Труба бесшовная х/д',
 		'ГОСТ 10704-1991' => 'Труба электросварная',
 		'ГОСТ 10705-1980' => 'Труба электросварная',
-		'ГОСТ 30732-2020' => 'Труба в ППУ',
+		// ГОСТ 30732 покрывает трубы/тройники/отводы в ППУ — тип из названия
+		// товара (promen_ppu_kind_from_title); это нейтральный фолбэк серии.
+		'ГОСТ 30732-2020' => 'Изделие в ППУ',
 		'ГОСТ 3262-1975'  => 'Труба ВГП',
 		// Опоры
 		'ОСТ 36-17-85'    => 'Опора трубопровода',
-		// Арматура
-		'ГОСТ 33257-2015' => 'Арматура трубопроводная',
+		// Арматура: типов много (задвижка/клапан/кран) — имя из названия
+		// товара через promen_kind_from_title, в карте не фиксируем.
 		// Днища и заглушки
 
 		'ГОСТ 6533-1978'   => 'Днище эллиптическое отбортованное',
@@ -1830,8 +1846,18 @@ function promen_series_meta( WC_Product $product ): array {
 	$code = $prefix . '-' . $norm_short . ( $angle !== '' ? '-' . $angle : '' );
 	$slug = promen_translit( $norm_key ) . ( $angle !== '' ? '-' . $angle : '' );
 
+	// Карта «норматив → тип» промахнулась или дала generic (изоляция ГОСТ 30732,
+	// арматура, трубы ВГП со slug-нормой) — тип изделия из названия товара.
+	$name = promen_series_type_name( $norm_key, $family );
+	if ( $name === $family || 'Изделие' === $name || 'Изделие в ППУ' === $name ) {
+		$kind = promen_kind_from_title( (string) $product->get_name() );
+		if ( $kind !== '' ) {
+			$name = $kind;
+		}
+	}
+
 	return [
-		'name'    => promen_series_type_name( $norm_key, $family ),
+		'name'    => $name,
 		'angle'   => $angle,
 		'code'    => $code,
 		'slug'    => $slug,
