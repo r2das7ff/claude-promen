@@ -189,10 +189,10 @@ function promen_catalog_taxonomy_defs(): array {
 			'path'        => '/ Трубы',
 			'code'        => 'ТР',
 			'nav_name'    => 'Стальные трубы',
-			'meta_suffix' => '4 типа',
+			'meta_suffix' => '3 типа',
 			'has_page'    => true,
 			'nav'         => true,
-			'children'    => [ 'truby-bsh', 'truby-es', 'truby-ppu', 'truby-vgp' ],
+			'children'    => [ 'truby-bsh', 'truby-es', 'truby-vgp' ],
 		],
 		'truby-bsh' => [
 			'label'    => 'Бесшовные',
@@ -206,14 +206,6 @@ function promen_catalog_taxonomy_defs(): array {
 			'label'    => 'Электросварные',
 			'title'    => 'ЭЛЕКТРОСВАРНЫЕ',
 			'path'     => '/ Трубы / Электросварные',
-			'has_page' => false,
-			'nav'      => true,
-			'parent'   => 'truby',
-		],
-		'truby-ppu' => [
-			'label'    => 'В ППУ',
-			'title'    => 'ППУ',
-			'path'     => '/ Трубы / ППУ',
 			'has_page' => false,
 			'nav'      => true,
 			'parent'   => 'truby',
@@ -232,7 +224,7 @@ function promen_catalog_taxonomy_defs(): array {
 			'path'        => '/ Изоляция и покрытия',
 			'code'        => 'ИЗ',
 			'nav_name'    => 'Изоляция и покрытия',
-			'meta_suffix' => 'тройники ППУ',
+			'meta_suffix' => 'трубы и тройники ППУ',
 			'has_page'    => true,
 			'nav'         => true,
 		],
@@ -598,6 +590,27 @@ function promen_category_norm_count( string $group, string $norm_slug ): int {
 }
 
 /**
+ * Живые счётчики типов раздела «Изоляция и покрытия» по отображаемым именам
+ * канона: трубы в ППУ / тройники ППУ-ПЭ / тройники ППУ-ОЦ.
+ *
+ * @return array{truby:int, pe:int, oc:int}
+ */
+function promen_izol_type_counts(): array {
+	static $out = null;
+	if ( null !== $out ) {
+		return $out;
+	}
+	global $wpdb;
+	$t   = promen_catalog_table_name();
+	$out = [
+		'truby' => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t} WHERE category = 'izolyatsiya' AND JSON_UNQUOTE(JSON_EXTRACT(payload, '$.title')) LIKE 'Труба%'" ),
+		'pe'    => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t} WHERE category = 'izolyatsiya' AND JSON_UNQUOTE(JSON_EXTRACT(payload, '$.title')) LIKE '%ППУ-ПЭ%'" ),
+		'oc'    => (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$t} WHERE category = 'izolyatsiya' AND JSON_UNQUOTE(JSON_EXTRACT(payload, '$.title')) LIKE '%ППУ-ОЦ%'" ),
+	];
+	return $out;
+}
+
+/**
  * Живой счётчик группы типоисполнений (bucket из promen_catalog_series_groups)
  * — для карты s02 вместо захардкоженных цифр.
  */
@@ -664,7 +677,6 @@ function promen_catalog_series_groups( string $group ): array {
 		'truby' => [
 			[ 'key' => 'bs', 'code' => 'БШ', 'name' => 'Бесшовные', 'small' => 'горячедеформированные / холоднодеформированные', 'match' => [ 'gost-8732', 'gost-8734' ] ],
 			[ 'key' => 'es', 'code' => 'ЭС', 'name' => 'Электросварные', 'small' => 'прямошовные', 'match' => [ 'gost-10704', 'gost-10705' ] ],
-			[ 'key' => 'ppu', 'code' => 'ППУ', 'name' => 'В ППУ-изоляции', 'small' => 'тепловые сети', 'match' => [ 'gost-30732' ] ],
 			[ 'key' => 'vgp', 'code' => 'ВГП', 'name' => 'Водогазопроводные', 'small' => 'ГОСТ 3262', 'match' => [ 'gost-3262' ] ],
 		],
 		'krepezh' => [
@@ -699,7 +711,7 @@ function promen_catalog_series_groups( string $group ): array {
 			[ 'key' => 'main', 'code' => 'ЗРА', 'name' => 'Арматура', 'small' => 'задвижки · клапаны · краны', 'match' => [ '' ] ],
 		],
 		'izolyatsiya' => [
-			[ 'key' => 'main', 'code' => 'ИЗЛ', 'name' => 'Изоляция', 'small' => 'оболочки ППУ', 'match' => [ '' ] ],
+			[ 'key' => 'main', 'code' => 'ИЗЛ', 'name' => 'Изделия в ППУ', 'small' => 'трубы-плети и тройники · оболочки ПЭ / ОЦ', 'match' => [ '' ] ],
 		],
 		'sdt' => [
 			[ 'key' => 'otv', 'code' => 'ОТВ', 'name' => 'Отводы', 'small' => 'крутоизогнутые · гнутые · секторные', 'match' => [ 'gost-17375', 'gost-30753', 'gost-22793', 'gost-22818', 'sto-321', 'ost-36-21', 'ost-24-125' ] ],

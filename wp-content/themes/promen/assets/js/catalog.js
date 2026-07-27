@@ -421,7 +421,7 @@
   var sidebarOpenGroups = {
     sbnFlancy: ['flancy', 'flancy-plosk', 'flancy-vorot', 'flancy-01', 'flancy-11'],
     sbnKrepezh: ['krepezh', 'bolty', 'gayki', 'shpilki', 'shayby', 'vinty'],
-    sbnTruby: ['truby', 'truby-bsh', 'truby-es', 'truby-ppu', 'truby-vgp'],
+    sbnTruby: ['truby', 'truby-bsh', 'truby-es', 'truby-vgp'],
     sbnOpory: ['opory', 'opory-nepodv', 'opory-skolz', 'opory-pruzh'],
     sbnArmatura: ['armatura', 'armatura-zadvizhki', 'armatura-klapany', 'armatura-krany']
   };

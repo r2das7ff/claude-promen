@@ -7,7 +7,7 @@
 defined( 'ABSPATH' ) || exit;
 
 return [
-	's08_weld' => 'Трубы БШ и ЭС, предизолированные плети ППУ, ВГП для внутренних сетей. ГОСТ 8732 / 10704 / 30732 / 3262.',
+	's08_weld' => 'Трубы БШ и ЭС, ВГП для внутренних сетей. ГОСТ 8732 / 10704 / 3262; плети в ППУ — раздел «Изоляция и покрытия».',
 	'hero' => static function ( array $ctx ): void { ?>
 <div class="sdt-hero" id="hero">
     <div class="hero-left">
@@ -20,11 +20,11 @@ return [
       </nav>
       <div class="hero-eyebrow">ТР · Семейство изделий — поставка под заказ</div>
       <h1 class="hero-h1">Трубы<br><em>стальные</em><br>бесшовные и сварные</h1>
-      <p class="hero-desc">Бесшовные (БШ), электросварные (ЭС), водогазопроводные (ВГП) и в ППУ-изоляции: ГОСТ 8732 / 8734, ГОСТ 10704 / 10705, ГОСТ 3262, ГОСТ 30732. Четыре типа, DN от 15. Полный пакет документации.</p>
+      <p class="hero-desc">Бесшовные (БШ), электросварные (ЭС) и водогазопроводные (ВГП): ГОСТ 8732 / 8734, ГОСТ 10704 / 10705, ГОСТ 3262. Три типа, DN от 15; трубы в ППУ-изоляции — в разделе «Изоляция и покрытия». Полный пакет документации.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">DN 15–1400</span><span class="hp-k">Диапазон</span></div>
-        <div class="hp"><span class="hp-v">4 типа</span><span class="hp-k">ЭС · БШ · ППУ · ВГП</span></div>
+        <div class="hp"><span class="hp-v">3 типа</span><span class="hp-k">ЭС · БШ · ВГП</span></div>
       </div>
       <div class="hero-cta-row">
         <button class="nav-cta hero-order-btn" type="button" id="orderOpen">Оформить заявку →</button>
@@ -34,15 +34,14 @@ return [
       <div class="hud-block">
         <div class="hud-label">Технические диапазоны / TRUBY SPECS</div>
         <div class="hud-row"><span class="hud-rk">DN / D, мм</span><span class="hud-rv">15 — 1400</span></div>
-        <div class="hud-row"><span class="hud-rk">Типы</span><span class="hud-rv">ЭС · БШ · ППУ · ВГП</span></div>
+        <div class="hud-row"><span class="hud-rk">Типы</span><span class="hud-rv">ЭС · БШ · ВГП</span></div>
         <div class="hud-row"><span class="hud-rk">Нормативы</span><span class="hud-rv">6 серий</span></div>
-        <div class="hud-row"><span class="hud-rk">Изоляция</span><span class="hud-rv">ППУ по ГОСТ 30732</span></div>
+        <div class="hud-row"><span class="hud-rk">Плети в ППУ</span><span class="hud-rv">раздел «Изоляция»</span></div>
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 8732-1978</span><span class="hud-rv live">БШ · 595</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 10704-1991</span><span class="hud-rv live">ЭС · 522</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 30732-2020</span><span class="hud-rv live">ППУ · 441</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
@@ -57,16 +56,13 @@ return [
     </div>
     <div class="map-body">
       <div class="map-root"><div class="map-root-label">Трубы — типоисполнения семейства</div></div>
-      <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(4,1fr);">
+      <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(3,1fr);">
         <div class="mg"><div class="mg-hd"><div class="mg-code">БШ</div><div class="mg-cnt">700 поз.</div></div><div class="mg-name">Бесшовные</div>
           <div class="mg-items"><div class="mg-item">Гор. деформ.<span class="mg-norm">ГОСТ 8732</span></div><div class="mg-item">Хол. деформ.<span class="mg-norm">ГОСТ 8734</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">БШ</span></div></div>
         <div class="mg"><div class="mg-hd"><div class="mg-code">ЭС</div><div class="mg-cnt">733 поз.</div></div><div class="mg-name">Электросварные</div>
           <div class="mg-items"><div class="mg-item">Сортамент<span class="mg-norm">ГОСТ 10704</span></div><div class="mg-item">ТУ<span class="mg-norm">ГОСТ 10705</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">ЭС</span></div></div>
-        <div class="mg"><div class="mg-hd"><div class="mg-code">ППУ</div><div class="mg-cnt">441 поз.</div></div><div class="mg-name">В ППУ-изоляции</div>
-          <div class="mg-items"><div class="mg-item">Тепловые сети<span class="mg-norm">ГОСТ 30732</span></div></div>
-          <div class="mg-footer"><span class="mg-ftag">ППУ</span></div></div>
         <div class="mg"><div class="mg-hd"><div class="mg-code">ВГП</div><div class="mg-cnt">70 поз.</div></div><div class="mg-name">Водогазопроводные</div>
           <div class="mg-items"><div class="mg-item">ГОСТ 3262<span class="mg-norm">70 поз.</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">ВГП</span></div></div>
@@ -101,9 +97,9 @@ return [
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 03</div><div class="sg-task-h">Труба в ППУ для тепловых сетей</div></div>
-          <div class="sg-product"><div class="sg-prod-name">Трубы ППУ ГОСТ 30732-2020</div>
-            <div class="sg-tags"><span class="sg-tag hi">ППУ</span><span class="sg-tag">441 поз.</span></div>
-            <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-30732-2020', $ctx['url'] ) ); ?>">К ППУ →</a></div>
+          <div class="sg-product"><div class="sg-prod-name">Раздел «Изоляция и покрытия»</div>
+            <div class="sg-tags"><span class="sg-tag hi">ППУ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_izol_type_counts()['truby'] ) ); ?> поз.</span></div>
+            <a class="sg-link" href="<?php echo esc_url( promen_product_cat_link( 'izolyatsiya' ) ?: $ctx['shop_url'] ); ?>">К трубам в ППУ →</a></div>
           <div class="sg-params"><div class="sg-param-list"><div class="sg-param">D×s трубы</div><div class="sg-param">Оболочка ПЭ/ОЦ</div><div class="sg-param">Длина плети</div></div></div>
         </div>
         <div class="sg-row">

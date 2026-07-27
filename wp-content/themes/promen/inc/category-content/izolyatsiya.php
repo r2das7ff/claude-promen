@@ -7,7 +7,7 @@
 defined( 'ABSPATH' ) || exit;
 
 return [
-	's08_weld' => 'Фасонные изделия в ППУ: тройники с оболочкой ПЭ или ОЦ по ГОСТ 30732. ГОСТ 30732-2020 · тепловые сети.',
+	's08_weld' => 'Изделия в ППУ по ГОСТ 30732: трубы-плети и тройники с оболочкой ПЭ или ОЦ. ГОСТ 30732-2020 · тепловые сети.',
 	'hero' => static function ( array $ctx ): void { ?>
 <div class="sdt-hero" id="hero">
     <div class="hero-left">
@@ -19,11 +19,12 @@ return [
         <?php endforeach; ?>
       </nav>
       <div class="hero-eyebrow">ИЗ · Семейство изделий — поставка под заказ</div>
-      <h1 class="hero-h1">Изоляция<br><em>и покрытия</em><br>фасонные в ППУ</h1>
-      <p class="hero-desc">Тройники в пенополиуретановой изоляции по ГОСТ 30732-2020: оболочка полиэтиленовая (ПЭ) или оцинкованная (ОЦ). Для тепловых сетей. Полный пакет документации.</p>
+      <h1 class="hero-h1">Изоляция<br><em>и покрытия</em><br>трубы и фасонина в ППУ</h1>
+      <p class="hero-desc">Трубы-плети и тройники в пенополиуретановой изоляции по ГОСТ 30732-2020: оболочка полиэтиленовая (ПЭ) или оцинкованная (ОЦ). Для тепловых сетей. Полный пакет документации.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
-        <div class="hp"><span class="hp-v">D 530–1020</span><span class="hp-k">Диапазон</span></div>
+        <?php $izl_dn = promen_canon_range_options( 'dn', 'izolyatsiya' ); ?>
+        <div class="hp"><span class="hp-v">DN <?php echo esc_html( $izl_dn ? $izl_dn[0]['name'] . '–' . end( $izl_dn )['name'] : '—' ); ?></span><span class="hp-k">Диапазон</span></div>
         <div class="hp"><span class="hp-v">ПЭ · ОЦ</span><span class="hp-k">Оболочка</span></div>
       </div>
       <div class="hero-cta-row">
@@ -33,8 +34,8 @@ return [
     <div class="hero-right">
       <div class="hud-block">
         <div class="hud-label">Технические диапазоны / IZOLYATSIYA SPECS</div>
-        <div class="hud-row"><span class="hud-rk">D основной, мм</span><span class="hud-rv">530 — 1020</span></div>
-        <div class="hud-row"><span class="hud-rk">Тип</span><span class="hud-rv">Тройники ППУ</span></div>
+        <div class="hud-row"><span class="hud-rk">DN, мм</span><span class="hud-rv"><?php $izl_dn2 = promen_canon_range_options( 'dn', 'izolyatsiya' ); echo esc_html( $izl_dn2 ? $izl_dn2[0]['name'] . ' — ' . end( $izl_dn2 )['name'] : '—' ); ?></span></div>
+        <div class="hud-row"><span class="hud-rk">Типы</span><span class="hud-rv">Трубы · Тройники ППУ</span></div>
         <div class="hud-row"><span class="hud-rk">Оболочка</span><span class="hud-rv">ПЭ · ОЦ</span></div>
         <div class="hud-row"><span class="hud-rk">Норматив</span><span class="hud-rv">ГОСТ 30732-2020</span></div>
       </div>
@@ -57,11 +58,15 @@ return [
     </div>
     <div class="map-body">
       <div class="map-root"><div class="map-root-label">Изоляция — типоисполнения семейства</div></div>
-      <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(2,1fr);">
-        <div class="mg"><div class="mg-hd"><div class="mg-code">ПЭ</div><div class="mg-cnt">37 поз.</div></div><div class="mg-name">Оболочка полиэтиленовая</div>
+      <?php $izl = promen_izol_type_counts(); ?>
+      <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(3,1fr);">
+        <div class="mg"><div class="mg-hd"><div class="mg-code">ТР</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( $izl['truby'] ) ); ?> поз.</div></div><div class="mg-name">Трубы в ППУ</div>
+          <div class="mg-items"><div class="mg-item">Плети для теплосетей<span class="mg-norm">ГОСТ 30732</span></div></div>
+          <div class="mg-footer"><span class="mg-ftag">ТР</span></div></div>
+        <div class="mg"><div class="mg-hd"><div class="mg-code">ПЭ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( $izl['pe'] ) ); ?> поз.</div></div><div class="mg-name">Тройники · оболочка ПЭ</div>
           <div class="mg-items"><div class="mg-item">Тройники ППУ<span class="mg-norm">бесканальная</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">ГОСТ 30732</span></div></div>
-        <div class="mg"><div class="mg-hd"><div class="mg-code">ОЦ</div><div class="mg-cnt">35 поз.</div></div><div class="mg-name">Оболочка оцинкованная</div>
+        <div class="mg"><div class="mg-hd"><div class="mg-code">ОЦ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( $izl['oc'] ) ); ?> поз.</div></div><div class="mg-name">Тройники · оболочка ОЦ</div>
           <div class="mg-items"><div class="mg-item">Тройники ППУ<span class="mg-norm">канальная / надзем</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">ГОСТ 30732</span></div></div>
       </div>
@@ -79,26 +84,27 @@ return [
         <div class="sg-thead">
           <div class="sg-th">Задача</div><div class="sg-th">Нужное исполнение</div><div class="sg-th">Что передать</div>
         </div>
+        <?php $izl3 = promen_izol_type_counts(); ?>
         <div class="sg-row">
-          <div class="sg-task"><div class="sg-task-code">Задача 01</div><div class="sg-task-h">Тройник ППУ для бесканальной теплосети</div></div>
+          <div class="sg-task"><div class="sg-task-code">Задача 01</div><div class="sg-task-h">Труба в ППУ (прямые участки)</div></div>
+          <div class="sg-product"><div class="sg-prod-name">Труба ППУ ГОСТ 30732-2020</div>
+            <div class="sg-tags"><span class="sg-tag hi">ТР</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( $izl3['truby'] ) ); ?> поз.</span></div>
+            <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'q', 'труба', $ctx['url'] ) ); ?>">К трубам →</a></div>
+          <div class="sg-params"><div class="sg-param-list"><div class="sg-param">D×s трубы</div><div class="sg-param">Оболочка</div><div class="sg-param">Длина плети</div></div></div>
+        </div>
+        <div class="sg-row">
+          <div class="sg-task"><div class="sg-task-code">Задача 02</div><div class="sg-task-h">Тройник ППУ для бесканальной теплосети</div></div>
           <div class="sg-product"><div class="sg-prod-name">Тройник ППУ ПЭ ГОСТ 30732</div>
-            <div class="sg-tags"><span class="sg-tag hi">ПЭ</span><span class="sg-tag">37 поз.</span></div>
-            <a class="sg-link" href="<?php echo esc_url( $ctx['url'] ); ?>">К реестру →</a></div>
+            <div class="sg-tags"><span class="sg-tag hi">ПЭ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( $izl3['pe'] ) ); ?> поз.</span></div>
+            <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'q', 'ППУ-ПЭ', $ctx['url'] ) ); ?>">К реестру →</a></div>
           <div class="sg-params"><div class="sg-param-list"><div class="sg-param">D×s / d×s</div><div class="sg-param">Оболочка ПЭ</div><div class="sg-param">Количество</div></div></div>
         </div>
         <div class="sg-row">
-          <div class="sg-task"><div class="sg-task-code">Задача 02</div><div class="sg-task-h">Тройник ППУ канальная / надземная прокладка</div></div>
+          <div class="sg-task"><div class="sg-task-code">Задача 03</div><div class="sg-task-h">Тройник ППУ канальная / надземная прокладка</div></div>
           <div class="sg-product"><div class="sg-prod-name">Тройник ППУ ОЦ ГОСТ 30732</div>
-            <div class="sg-tags"><span class="sg-tag hi">ОЦ</span><span class="sg-tag">35 поз.</span></div>
-            <a class="sg-link" href="<?php echo esc_url( $ctx['url'] ); ?>">К реестру →</a></div>
+            <div class="sg-tags"><span class="sg-tag hi">ОЦ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( $izl3['oc'] ) ); ?> поз.</span></div>
+            <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'q', 'ППУ-ОЦ', $ctx['url'] ) ); ?>">К реестру →</a></div>
           <div class="sg-params"><div class="sg-param-list"><div class="sg-param">D×s / d×s</div><div class="sg-param">Оболочка ОЦ</div><div class="sg-param">Количество</div></div></div>
-        </div>
-        <div class="sg-row">
-          <div class="sg-task"><div class="sg-task-code">Задача 03</div><div class="sg-task-h">Труба в ППУ (прямые участки)</div></div>
-          <div class="sg-product"><div class="sg-prod-name">См. раздел «Трубы» · тип ППУ</div>
-            <div class="sg-tags"><span class="sg-tag">ТР</span><span class="sg-tag">441 поз.</span></div>
-            <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'group', 'truby', $ctx['shop_url'] ) ); ?>">К трубам ППУ →</a></div>
-          <div class="sg-params"><div class="sg-param-list"><div class="sg-param">D×s трубы</div><div class="sg-param">Оболочка</div><div class="sg-param">Длина плети</div></div></div>
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 04</div><div class="sg-task-h">Нестандарт / по спецификации</div></div>
