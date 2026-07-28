@@ -26,7 +26,7 @@ img{display:block;max-width:100%;}
 .sidenav-item.sn-show-label .sidenav-label{opacity:1;transform:translateY(-50%) translateX(0);}
 @media(max-width:1100px){.sidenav{display:none;}}
 
-.pg{position:relative;padding-top:var(--nav-h);padding-left:var(--rail-w);}
+/* .pg — геометрия и адаптив в base.css (44px → 20px ≤1024 → 0 ≤480) */
 
 /* ══════════════════════════════════════════════
    СЦЕНА 1 — ТОЧНОСТЬ
@@ -589,160 +589,6 @@ img{display:block;max-width:100%;}
 }
 
 /* ══════════════════════════════════════════════
-   §03 ИСТОРИЯ ИЗДЕЛИЯ
-══════════════════════════════════════════════ */
-#map{
-  position:relative;background:#060E18;
-  min-height:100vh;display:flex;flex-direction:column;overflow:hidden;
-}
-#map::before{
-  content:'';position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(109,140,166,.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(109,140,166,.04) 1px,transparent 1px);
-  background-size:40px 40px;pointer-events:none;
-}
-#map::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:140px;
-  background:linear-gradient(to bottom, transparent, rgba(2,8,15,.65));
-  pointer-events:none;z-index:1;
-}
-.map-hd{
-  position:relative;z-index:1;
-  padding:26px 32px 22px 56px;
-  border-bottom:1px solid rgba(109,140,166,.1);flex-shrink:0;
-}
-.map-hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.map-subtitle{
-  font-size:15px;font-weight:300;color:rgba(169,183,198,.78);
-  line-height:1.6;max-width:620px;
-}
-.map-tag{
-  font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;
-  color:rgba(109,140,166,.65);display:flex;align-items:center;gap:10px;
-}
-.map-tag::before{content:'';width:12px;height:1px;background:rgba(109,140,166,.50);}
-.map-spec{
-  font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:16px;letter-spacing:.06em;text-transform:uppercase;
-  color:rgba(169,183,198,.82);
-}
-/* Stages */
-.map-stages{
-  position:relative;z-index:1;
-  flex:1;display:flex;min-height:0;
-}
-.ms{
-  flex:1;border-right:1px solid rgba(109,140,166,.08);
-  display:flex;flex-direction:column;
-  cursor:default;position:relative;overflow:hidden;
-  transition:background .22s;
-  opacity:0;transform:translateY(18px);
-}
-.ms:last-child{border-right:none;}
-.ms.ms-vis{
-  opacity:1;transform:translateY(0);
-  transition:opacity .72s ease,transform .72s cubic-bezier(.16,1,.3,1),background .22s;
-}
-.ms:hover{background:rgba(109,140,166,.07);}
-.ms:nth-child(3){flex:1.65;}
-.ms:nth-child(6){flex:1.45;}
-/* Stage step pill */
-.ms-step{
-  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;
-  color:rgba(109,140,166,.40);padding:12px 14px 0;flex-shrink:0;
-}
-/* Ghost number */
-.ms-num{
-  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
-  font-size:clamp(46px,7vw,96px);letter-spacing:-.04em;line-height:1;
-  color:rgba(255,255,255,.055);
-  position:absolute;bottom:-2px;right:4px;
-  pointer-events:none;user-select:none;transition:color .3s;
-}
-.ms:hover .ms-num{color:rgba(255,255,255,.10);}
-/* SVG drawing area */
-.ms-svg-wrap{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  padding:16px 14px 4px;
-}
-.ms-svg-wrap svg{display:block;width:100%;max-width:120px;}
-/* Stage label */
-.ms-label{
-  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
-  font-size:clamp(13px,1.4vw,18px);letter-spacing:.04em;text-transform:uppercase;
-  color:rgba(169,183,198,.80);line-height:1.2;
-  padding:0 14px 8px;flex-shrink:0;transition:color .3s;
-}
-.ms:hover .ms-label{color:#fff;}
-/* Connector arrow */
-.ms-arrow{
-  position:absolute;top:50%;right:-8px;transform:translateY(-50%);
-  font-size:11px;color:rgba(109,140,166,.30);z-index:3;pointer-events:none;
-}
-.ms:last-child .ms-arrow{display:none;}
-/* Technical annotations */
-.ms-anns{padding:0 14px 16px;display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
-.ms-ann{
-  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.03em;line-height:1.5;
-  color:rgba(109,140,166,.75);display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;
-}
-.ms-ann span{
-  font-family:'DINProCond','DINPro',sans-serif;font-weight:700;
-  font-size:14px;letter-spacing:-.01em;
-  color:rgba(169,183,198,.92);white-space:nowrap;
-}
-/* Progress track — CSS step bar */
-.map-progress{
-  position:relative;z-index:1;
-  padding:14px 56px 16px;
-  border-top:1px solid rgba(109,140,166,.1);
-  flex-shrink:0;
-}
-.mp-steps{
-  display:flex;align-items:flex-start;justify-content:space-between;
-  position:relative;
-}
-.mp-steps::before{
-  content:'';position:absolute;top:5px;left:5%;right:5%;height:1px;
-  background:rgba(109,140,166,.18);z-index:0;
-}
-.mp-step{
-  flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;
-  position:relative;z-index:1;
-}
-.mp-dot{
-  width:10px;height:10px;border-radius:50%;
-  background:#060E18;border:1.5px solid rgba(109,140,166,.35);
-  transition:background .35s,border-color .35s,box-shadow .35s;
-}
-.mp-step.lit .mp-dot{
-  background:rgba(109,140,166,.75);border-color:rgba(169,183,198,.85);
-  box-shadow:0 0 0 3px rgba(109,140,166,.12);
-}
-.mp-lbl{
-  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.12em;
-  text-transform:uppercase;color:rgba(109,140,166,.55);text-align:center;
-  transition:color .35s;
-}
-.mp-step.lit .mp-lbl{color:rgba(169,183,198,.82);}
-/* Footer */
-.map-foot{
-  position:relative;z-index:1;
-  display:flex;align-items:center;flex-wrap:wrap;
-  min-height:48px;padding:8px 32px 8px 56px;
-  border-top:1px solid rgba(109,140,166,.1);flex-shrink:0;
-}
-.map-foot-kv{
-  display:flex;align-items:center;gap:6px;
-  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.10em;text-transform:uppercase;
-  color:rgba(109,140,166,.45);
-  padding:4px 18px;border-right:1px solid rgba(109,140,166,.09);
-}
-.map-foot-kv:first-child{padding-left:0;}
-.map-foot-kv:last-child{border-right:none;}
-.map-foot-kv strong{color:rgba(169,183,198,.72);font-weight:700;}
-
-/* ══════════════════════════════════════════════
    §03 THERMAL
 ══════════════════════════════════════════════ */
 #thermal{
@@ -812,20 +658,6 @@ img{display:block;max-width:100%;}
 .therm-ph:hover{background:rgba(30,61,92,.45);}
 .therm-ph-r{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.03em;color:rgba(109,140,166,.60);margin-bottom:7px;}
 .therm-ph-n{font-family:'DINPro',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(169,183,198,.72);line-height:1.35;}
-/* Map scan perpetual animation */
-.map-scan{
-  position:absolute;top:0;bottom:0;width:1px;left:0;
-  background:linear-gradient(to bottom,transparent 0%,rgba(109,140,166,.0) 10%,rgba(109,140,166,.22) 40%,rgba(109,140,166,.35) 50%,rgba(109,140,166,.22) 60%,rgba(109,140,166,.0) 90%,transparent 100%);
-  animation:mapScanMove 28s linear infinite;
-  pointer-events:none;z-index:2;
-}
-@keyframes mapScanMove{
-  0%{left:-1px;opacity:0;}
-  3%{opacity:1;}
-  97%{opacity:1;}
-  100%{left:100%;opacity:0;}
-}
-
 /* ══════════════════════════════════════════════
    §04 GRADES
 ══════════════════════════════════════════════ */
@@ -1183,7 +1015,7 @@ img{display:block;max-width:100%;}
 /* ══════════════════════════════════════════════
    FOOTER ZONE — sticky CTA + footer slides over
 ══════════════════════════════════════════════ */
-.s10{position:relative;z-index:1;padding-left:var(--rail-w);border-top:1px solid var(--ln2);background:#fff;}
+.s10{background:#fff;} /* геометрия и адаптив — base.css */
 .s10-inner{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
 
 .s10-h2{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(34px,4vw,64px);line-height:.88;letter-spacing:-.015em;text-transform:uppercase;color:var(--dark);margin-bottom:28px;}
@@ -1223,10 +1055,6 @@ img{display:block;max-width:100%;}
 
 /* RESPONSIVE */
 @media(max-width:1200px){
-  .map-stages{flex-wrap:wrap;}
-  .ms,.ms:nth-child(3),.ms:nth-child(6){flex:0 0 33.33% !important;min-height:280px;}
-  .map-progress{padding:12px 24px 14px;}
-  .mp-lbl{font-size:9px;letter-spacing:.08em;}
   .jrn-layout{grid-template-columns:1fr;}.jrn-side{display:none;}
   .therm-phases{grid-template-columns:repeat(4,1fr);}
   .grades-grid{grid-template-columns:repeat(3,1fr);}
@@ -1270,7 +1098,7 @@ img{display:block;max-width:100%;}
   .s1-left,.s2-top,.s2-foot{padding-left:24px;padding-right:24px;}
   .cap-row{padding-left:24px;padding-right:24px;}
   .pdoc{padding-left:24px;padding-right:24px;}
-  .fl-matrix{grid-template-columns:1fr 1fr;}
+  .fl-matrix{grid-template-columns:repeat(2,minmax(0,1fr));} /* minmax(0,·): длинные названия станков не распирают колонки за экран */
   .fl-group:nth-child(2n){border-left:1px solid rgba(109,140,166,.08);}
   .fl-group:nth-child(3){border-bottom:1px solid rgba(109,140,166,.08);}
   .fl-group:nth-child(5){border-bottom:none;}
@@ -1278,9 +1106,6 @@ img{display:block;max-width:100%;}
   .fl-hd,.shm-hd{padding-left:24px;padding-right:24px;}
   .shm-body{padding:20px 24px 36px;}
   .oc-inner{padding:56px 24px;}
-  .map-progress{padding:0 24px;}
-  .map-foot{padding:8px 24px;}
-  .map-hd{padding:22px 24px 18px;}
   .gi-stats{flex-wrap:wrap;}
 }
 
@@ -1328,7 +1153,6 @@ img{display:block;max-width:100%;}
   
   
   
-  .s10-field-label, .s10-file-label-txt, .s10-file-btn, .s10-note, .s10-form-label{ font-size:11px; }
   a.s10-contact-v{ display:inline-flex; align-items:center; min-height:44px; }
   
   .s10-field input, .s10-field select{ font-size:16px; }
@@ -1348,19 +1172,11 @@ img{display:block;max-width:100%;}
 .shm-list{ display:none; }
 .gal-arrows{ display:none; }
 
-/* ── §2 Единая ось: слим-рельса 20px на 481–1024, контент 48/40/20 ── */
+/* ── §2 Единая ось: слим-рельса 20px на 481–1024, контент 48/40/20.
+      Рельса (.strip/.pg/.s10/.site-footer) — base.css, здесь не трогаем. ── */
 @media (max-width:1024px){
-  
-  
-  
-  
-  /* footer-zone (s10 + футер) вне .pg — рельсу компенсирует сама зона,
-     чтобы ось работала и при display:contents у .s10 на ≤640 */
-  
-  .s10{ padding-left:0; }
-  
   /* ось 28px (rail 20 + 28 = 48) — общий список шапок/колонок/лент */
-  .s1-top,.s1-left,.s2-top,.s2-foot,.grades-hd,.grades-intro,.jrn-hd,.jrn-context,.jrn-doc,.jrn-layout .jrn-doc,.map-hd,.map-progress,.map-foot,.shm-hd,.therm-hd,.cap-hd,.cap-anchor,.cap-row,.fl-hd,.fl-anchor,.gal-hd,.gal-intro,.gal-stage,.gal-footer,.portal-hd,.pdoc,.oc-inner{ padding-left:28px; padding-right:28px; }
+  .s1-top,.s1-left,.s2-top,.s2-foot,.grades-hd,.grades-intro,.jrn-hd,.jrn-context,.jrn-doc,.jrn-layout .jrn-doc,.shm-hd,.therm-hd,.cap-hd,.cap-anchor,.cap-row,.fl-hd,.fl-anchor,.gal-hd,.gal-intro,.gal-stage,.gal-footer,.portal-hd,.pdoc,.oc-inner{ padding-left:28px; padding-right:28px; }
   .shm-body{ padding-left:28px; padding-right:28px; }
   .therm-body{ padding-left:28px; padding-right:28px; }
   .s10-left,.s10-right{ padding-left:28px; padding-right:28px; }
@@ -1368,7 +1184,7 @@ img{display:block;max-width:100%;}
   .prf-ib-top{ padding-left:28px; padding-right:28px; }
 }
 @media (max-width:640px){
-  .s1-top,.s1-left,.s2-top,.s2-foot,.grades-hd,.grades-intro,.jrn-hd,.jrn-context,.jrn-doc,.jrn-layout .jrn-doc,.map-hd,.map-progress,.map-foot,.shm-hd,.therm-hd,.cap-hd,.cap-anchor,.cap-row,.fl-hd,.fl-anchor,.gal-hd,.gal-intro,.gal-stage,.gal-footer,.portal-hd,.pdoc,.oc-inner{ padding-left:20px; padding-right:20px; }
+  .s1-top,.s1-left,.s2-top,.s2-foot,.grades-hd,.grades-intro,.jrn-hd,.jrn-context,.jrn-doc,.jrn-layout .jrn-doc,.shm-hd,.therm-hd,.cap-hd,.cap-anchor,.cap-row,.fl-hd,.fl-anchor,.gal-hd,.gal-intro,.gal-stage,.gal-footer,.portal-hd,.pdoc,.oc-inner{ padding-left:20px; padding-right:20px; }
   .shm-body{ padding-left:20px; padding-right:20px; }
   .therm-body{ padding-left:20px; padding-right:20px; }
   .s10-left,.s10-right{ padding-left:20px; padding-right:20px; }
@@ -1378,7 +1194,7 @@ img{display:block;max-width:100%;}
 
 /* ── §3 Пол шрифта: служебные подписи ≥10px на ≤1024 ── */
 @media (max-width:1024px){
-  .prf-ib-label-l,.prf-ib-label-r,.prf-ib-sk,.prf-kicker,.prf-pk,.prf-pv,.prf-rec,.prf-status-r,.prf-status-sep,.s2-industry-full,.s2-continue,.gi-stat-l,.ge-idx,.ge-pk,.map-tag,.ms-step,.mp-lbl,.shm-num-k,.shm-popup-name,.shm-leg,.therm-stat-l,.therm-tk-u,.jc-step-l,.cap-anchor-kicker,.cap-row-label,.fl-anchor-kicker,.fl-astat-k,.fl-group-cat,.fl-item-spec,.gal-num,.gal-zone,.gal-info-detail,.gal-hint,.pdoc-badge{ font-size:10px; }
+  .prf-ib-label-l,.prf-ib-label-r,.prf-ib-sk,.prf-kicker,.prf-pk,.prf-pv,.prf-rec,.prf-status-r,.prf-status-sep,.s2-industry-full,.s2-continue,.gi-stat-l,.ge-idx,.ge-pk,.shm-num-k,.shm-popup-name,.shm-leg,.therm-stat-l,.therm-tk-u,.jc-step-l,.cap-anchor-kicker,.cap-row-label,.fl-anchor-kicker,.fl-astat-k,.fl-group-cat,.fl-item-spec,.gal-num,.gal-zone,.gal-info-detail,.gal-hint,.pdoc-badge,.s10-contact-k,.s10-form-label,.s10-field-label,.s10-file-label-txt,.s10-note,.strip-yr{ font-size:10px; }
   .jrn-layout .jd-stamp{ font-size:10px; }
   .s1-top,.s1-foot-l,.s1-foot-r,.prf-ib-cue,.s2-top-r,.cap-anchor-badge{ font-size:10px; }
   .s10-file-btn{ font-size:10px; }
@@ -1387,6 +1203,9 @@ img{display:block;max-width:100%;}
 /* декоративный ::after у cap-anchor вылезает за экран на телефоне — прячем */
 @media (max-width:640px){
   .cap-anchor::after{ display:none; }
+  /* интро галереи: подпись + абзац в строку не влезают — в столбец,
+     иначе абзац уезжал за правый край экрана */
+  .gal-intro{ flex-direction:column; align-items:flex-start; gap:14px; }
 }
 
 /* ── S1 hero ≤900: возвращаем спецификации сеткой 2×2, убираем пустоту ── */
@@ -1395,7 +1214,7 @@ img{display:block;max-width:100%;}
   .s1-body{ grid-template-rows:auto 1fr; }
   .s1-left{ grid-template-rows:auto auto auto; row-gap:18px; border-right:none; }
   .s1-right{ display:flex; align-items:center; padding:0 28px 24px; }
-  .s1-anns{ display:grid; grid-template-columns:1fr 1fr; gap:0 28px; }
+  .s1-anns{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 28px; }
   .s1-ann{ padding:14px 0; gap:12px; }
   .s1-ann::before{ display:none; }
   .s1-ann:nth-child(2){ border-top:1px solid rgba(109,140,166,.09); }
@@ -1403,7 +1222,27 @@ img{display:block;max-width:100%;}
   .ann-key{ font-size:10px; }
 }
 @media (max-width:640px){
-  #s1{ min-height:100svh; }
+  /* герой ровно в один экран: секция начинается под фикс-шапкой (64px),
+     поэтому 100svh давало вылет низа со стрелкой скролла за экран */
+  #s1{ min-height:calc(100svh - var(--nav-h)); }
+  /* верхняя плашка: рядом название не помещается (3 рваные строки впритык
+     к координатам) — название и координаты в столбец, разрядка уже,
+     межстрочный воздух; название к левому краю, координаты — к правому */
+  .s1-top{ flex-direction:column; align-items:flex-start; justify-content:center;
+    gap:3px; padding-top:9px; padding-bottom:9px;
+    letter-spacing:.18em; line-height:1.6; }
+  .s1-top span:last-child{ color:rgba(109,140,166,.3); align-self:flex-end; text-align:right; }
+  /* метки-уголки симметрично к краям экрана (на десктопе левые стоят
+     на оси head-x 56px — на телефоне это выглядело случайным) */
+  .s1-reg.tl,.s1-reg.bl{ left:12px; }
+  .s1-reg.tr,.s1-reg.br{ right:12px; }
+  /* «0.01 мм» во всю ось 20…355: число к левому краю, единица к правому —
+     заполняет пустоту после подписи ГОСТ; svh-предохранитель для ландшафта */
+  .s1-left{ row-gap:12px; padding-top:14px; padding-bottom:10px; }
+  .s1-eyebrow{ font-size:13px; }
+  .s1-num-group{ justify-content:space-between; gap:0; margin-top:4px; }
+  .s1-num{ font-size:clamp(96px, min(51vw, 44svh), 320px); }
+  .s1-unit{ font-size:clamp(26px, min(13.5vw, 12svh), 84px); }
   .s1-right{ padding:0 20px 20px; }
   .s1-anns{ gap:0 20px; }
 }
@@ -1426,14 +1265,32 @@ img{display:block;max-width:100%;}
 @media (max-width:640px){
   .prf-ib-left{ left:20px; }
   .prf-ib-right{ right:20px; }
+  /* статус-бар: грид 2×2, вписанный в метки-уголки рамки (20×20 на 14px):
+     слева «запись» и под ней «ЧПУ КАРУСЕЛЬНЫЙ», справа по правому краю
+     «850 ОБ/МИН» и лайв-часы; отступ сверху уводит красную точку из уголка */
+  .prf-status{ height:auto; display:grid; grid-template-columns:1fr auto;
+    align-items:baseline; gap:5px 12px; padding:24px 20px 10px; }
+  .prf-rec{ grid-row:1; grid-column:1; letter-spacing:.14em; }
+  .prf-status-r{ display:contents; }
+  .prf-status-sep{ display:none; }
+  .prf-status-r span{ white-space:nowrap; letter-spacing:.12em; }
+  .prf-status-r span:nth-child(1){ grid-row:2; grid-column:1; justify-self:start; padding-left:14px; }
+  .prf-status-r span:nth-child(3){ grid-row:1; grid-column:2; justify-self:end; }
+  #prfClock{ grid-row:2; grid-column:2; justify-self:end; }
+  /* лента параметров: вместо сжатого переноса по центру — сетка 2×2,
+     ключ слева, значение к правому краю ячейки, разделитель между колонками;
+     нижний отступ поднимает контент над метками-уголками */
+  .prf-params{ height:auto; display:grid; grid-template-columns:1fr 1fr;
+    gap:7px 0; padding:10px 20px 26px; }
+  .prf-param{ padding:0; border-right:none; justify-content:space-between; }
+  .prf-param:nth-child(odd){ border-right:1px solid rgba(109,140,166,.12); padding-right:12px; }
+  .prf-param:nth-child(even){ padding-left:12px; }
+  .prf-main{ bottom:80px; }
 }
 @media (max-width:480px){
   .prf-ib-left{ gap:16px; }
   .prf-ib-right{ gap:16px; }
   .prf-ib-sv{ font-size:15px; }
-  /* нижняя лента параметров: перенос в 2 строки вместо обрезки */
-  .prf-params{ flex-wrap:wrap; justify-content:center; row-gap:2px; padding:6px 8px; }
-  .prf-param{ padding:0 8px; }
 }
 
 /* ── S2 641–1024: сохраняем 3-колоночную композицию отраслей ── */
@@ -1453,17 +1310,113 @@ img{display:block;max-width:100%;}
   .s2-continue{ display:none; }
 }
 
+/* ── S2 ≤640: колонки ТЭС/АЭС/НГО — аккордеоны (паттерн SFK главной).
+   Подсказку .s2-hint кладёт production.js в шапку колонки; контент
+   (ставка + стандарты) прячется до тапа. Десктоп и планшет не затронуты. ── */
+.s2-hint{ display:none; }
+@media (max-width:640px){
+  /* свёрнутые шапки не растягиваются на 100vh секции — высота по контенту */
+  #s2{ min-height:0; }
+  .s2-cols,.s2-col{ flex:0 0 auto; }
+  .s2-col-hd{ cursor:pointer; -webkit-tap-highlight-color:transparent; }
+  .s2-hint{
+    display:block; margin-top:12px;
+    font-family:'DINPro',monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--g2); opacity:.85;
+  }
+  .s2-col[data-ind="aes"] .s2-hint{ color:rgba(169,183,198,.6); }
+  .s2-col .s2-col-stake,
+  .s2-col .s2-cell{ display:none; }
+  .s2-col.open .s2-col-stake{ display:block; }
+  .s2-col.open .s2-cell{ display:flex; }
+}
+
 /* ── GRADES ≤480: 1 колонка вместо зажатых 175px ── */
 @media (max-width:480px){
   .grades-grid{ grid-template-columns:1fr; }
   .ge{ padding:22px 20px; }
 }
 
-/* ── MAP «История изделия» ≤480: 6 шагов в 2 колонки ── */
+/* ── GRADES ≤640: витрина из первых марок + «Показать все 8 марок»
+   (паттерн s9-showall главной). Один общий аккордеон прятал бы секцию
+   целиком — первые карточки остаются видимыми. Кнопку кладёт production.js. ── */
+.grades-showall{
+  display:none;
+  width:calc(100% - 40px); margin:16px 20px 24px;
+  align-items:center; justify-content:center; gap:10px;
+  min-height:48px; border:1px solid var(--ln2); background:var(--bg);
+  font-family:'DINPro',monospace; font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--blue); cursor:pointer;
+  position:relative; z-index:1;
+  -webkit-tap-highlight-color:transparent; transition:background .15s;
+}
+.grades-showall::after{ content:'↓'; font-size:12px; color:var(--g1); }
+.grades-showall.open::after{ content:'↑'; }
+.grades-showall:active{ background:var(--bg2); }
+@media (max-width:640px){
+  .grades-showall{ display:flex; }
+  /* 481–640 грид 2-колоночный — видны 4 (два ряда) */
+  .grades-grid:not(.expanded) .ge:nth-child(n+5){ display:none; }
+}
 @media (max-width:480px){
-  .ms,.ms:nth-child(3),.ms:nth-child(6){ flex:0 0 50% !important; min-height:250px; }
-  .ms-anns{ padding:0 10px 14px; }
-  .ms-svg-wrap svg{ max-width:104px; }
+  /* 1 колонка — видны 3 */
+  .grades-grid:not(.expanded) .ge:nth-child(n+4){ display:none; }
+}
+
+/* ── FLEET ≤640: матрица в одну колонку, группы — аккордеоны.
+   Триггер — шапка группы; счётчик «8 ед.» виден в свёрнутом виде и
+   служит подсказкой объёма. Класс .open вешает production.js.
+   nth-child-дубли перебивают рамки из блоков ≤900 и базы (там выше
+   специфичность), иначе в одной колонке остаются вертикальные линии. ── */
+@media (max-width:640px){
+  .fl-matrix{ grid-template-columns:1fr; }
+  .fl-group,
+  .fl-group:nth-child(2n),
+  .fl-group:nth-child(3n+1){ border-left:none; }
+  .fl-group,
+  .fl-group:nth-child(3),
+  .fl-group:nth-child(5),
+  .fl-group:nth-child(n+4){ border-bottom:1px solid rgba(109,140,166,.08); }
+  .fl-group:last-child{ border-bottom:none; }
+  .fl-group{ padding:0 20px; }
+  .fl-group-hd{
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+    align-items:center; justify-content:flex-start; gap:10px;
+    min-height:54px; margin:0; padding:10px 0; border-bottom:none;
+  }
+  .fl-group-cat{ margin-right:auto; }
+  .fl-group-hd::after{
+    content:'↓'; font-family:'DINPro',monospace; font-size:12px;
+    color:rgba(109,140,166,.5); flex-shrink:0; line-height:1;
+  }
+  .fl-group.open .fl-group-hd::after{ content:'↑'; }
+  .fl-group .fl-item{ display:none; }
+  .fl-group.open .fl-item{ display:flex; }
+  .fl-group.open .fl-group-hd{ border-bottom:1px solid rgba(109,140,166,.07); margin-bottom:12px; }
+  .fl-group.open{ padding-bottom:18px; }
+}
+
+/* ── ТИПОГРАФИКА СЕКЦИЙ ≤640 — сверка с эталоном (главная).
+   Шкала главной на телефоне: эйбрау 11px/.25em в одну строку, лид
+   14px/1.72/300. Здесь эйбрау был 10px и делил строку с английской
+   подписью-дублем (space-between) — русский тег ломался на 2–3 строки
+   впритык к ней. Ставим шапки в столбец: тег владеет своей строкой,
+   как на главной; подпись уходит под него. ── */
+@media (max-width:640px){
+  .grades-hd,.shm-hd,.jrn-hd,.cap-hd,.fl-hd,.gal-hd,.portal-hd{
+    flex-direction:column; align-items:flex-start; gap:6px;
+  }
+  .grades-tag,.shm-tag,.therm-tag,.jrn-tag,.cap-tag,
+  .fl-tag,.gal-tag,.portal-tag{ font-size:11px; letter-spacing:.25em; }
+  /* вторичные подписи — на ступень тише тега, чтобы шапка читалась сверху вниз */
+  .sec-hd-en,.jrn-hd-en{ font-size:9px; letter-spacing:.2em; }
+  /* лиды секций: были 13/14/15px с разбросом интерлиньяжа 1.6–1.75 */
+  .prf-text,.shm-statement,.therm-statement,.cap-anchor-note,
+  .gi-statement,.jc-statement{
+    font-size:14px; line-height:1.72; font-weight:300;
+  }
+  /* единственный секционный заголовок страницы — к 34px главной */
+  .gal-headline{ font-size:34px; line-height:.88; letter-spacing:-.015em; }
 }
 
 /* ── JOURNAL ≤640: документ в стек, статусы под пунктами ── */
@@ -1508,8 +1461,8 @@ img{display:block;max-width:100%;}
 @media (max-width:1024px){
   .s10-field{ min-height:64px; padding-top:12px; padding-bottom:10px; }
   .s10-field input,.s10-field select{ min-height:30px; }
-  
-  
+  .s10-consent{ align-items:center; min-height:44px; }
+  .s10-consent input{ width:22px; height:22px; }
   .s10-consent-txt a{ display:inline-block; padding:12px 0; margin:-12px 0; }
   /* галерея: рабочие тап-стрелки + увеличенная хит-зона точек */
   .gal-hint{ display:none; }
@@ -1528,6 +1481,32 @@ img{display:block;max-width:100%;}
   .gal-dot{ padding:13px; }
   .gal-arrow{ width:40px; height:40px; }
   .gal-arrows{ gap:8px; }
+}
+
+/* ── GALLERY ≤640: карусель с «выглядыванием» следующего кадра.
+   Слайд был привязан к высоте экрана ((100vh−232)·⅔ ≈ 500px) — режем
+   высоту пропорцией 4/5. Кадр идёт от левого края на 70vw, следующий
+   входит в оставшиеся ~27% — видно, что ленту можно листать вправо.
+   Гашение соседей (scale/opacity из production.js) на телефоне отключено,
+   иначе выглядывающий кадр почти не виден. ── */
+@media (max-width:640px){
+  /* без 100vh: после укорочения кадра под точками зияло ~180px пустоты */
+  #gallery{ min-height:0; }
+  .gal-stage{ padding-left:0; padding-right:0; }
+  .gal-track{ gap:12px; }
+  .gal-item{ width:70vw; height:auto; min-height:0; aspect-ratio:4/5; }
+  .gal-meta-top{ top:14px; padding:0 16px; }
+  /* зона стояла встык с номером, оба ломались на 2 строки; что за участок —
+     говорит подпись под кадром, поэтому в шапке остаётся только номер */
+  .gal-zone{ display:none; }
+  .gal-info{ padding:14px 16px 16px; }
+  .gal-crn{ width:12px; height:12px; }
+  .gal-crn.tl,.gal-crn.tr{ top:10px; }
+  .gal-crn.bl,.gal-crn.br{ bottom:10px; }
+  .gal-crn.tl,.gal-crn.bl{ left:10px; }
+  .gal-crn.tr,.gal-crn.br{ right:10px; }
+  /* шапка/подвал остаются на оси 20px — контраст с полем «в край» */
+  .gal-footer{ padding-left:20px; padding-right:20px; }
 }
 
 /* ── CAPACITY ≤480: ряды параметров в стек, без слипания подписей ── */

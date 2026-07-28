@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════════════════════════
-   PROM-EN production.js — «Производство»: reveal-сцены (s2, map,
-   journal, capacity, proof, fleet), галерея drag+inertia, sidenav,
+   PROM-EN production.js — «Производство»: reveal-сцены (s2, journal,
+   capacity, proof, fleet), галерея drag+inertia, sidenav,
    карта цеха (спарк + видео-попапы). Источник — инлайн-скрипт
    html/production.html (2026-07-22); часы/бургер — chrome.js,
    форма s10 — серверная (footer.php).
@@ -19,24 +19,42 @@
   obs.observe(document.getElementById('s2'));
 })();
 
-/* ── История изделия: stage reveal + progress track ── */
+/* ── S2 нормирование: колонки ТЭС/АЭС/НГО — аккордеоны на телефоне
+   (паттерн SFK главной, front.js). Подсказка — реальный span в шапке;
+   CSS показывает её и прячет контент только на ≤640. ── */
 (function(){
-  var stages=document.querySelectorAll('.ms');
-  var mapObs=new IntersectionObserver(function(entries){
-    if(entries[0].isIntersecting){
-      stages.forEach(function(el,i){
-        setTimeout(function(){el.classList.add('ms-vis');},i*90);
-      });
-      /* progress steps */
-      var steps=document.querySelectorAll('.mp-step');
-      steps.forEach(function(el,i){
-        setTimeout(function(){el.classList.add('lit');},300+i*280);
-      });
-      mapObs.disconnect();
-    }
-  },{threshold:0.12});
-  var mapEl=document.getElementById('map');
-  if(mapEl)mapObs.observe(mapEl);
+  [].forEach.call(document.querySelectorAll('.s2-col'), function(col){
+    var hd = col.querySelector('.s2-col-hd');
+    if(!hd) return;
+    var hint = document.createElement('span');
+    hint.className = 's2-hint';
+    hint.textContent = 'Нажмите, чтобы раскрыть ↓';
+    hd.appendChild(hint);
+    hd.addEventListener('click', function(){
+      var open = col.classList.toggle('open');
+      hint.textContent = open ? 'Свернуть ↑' : 'Нажмите, чтобы раскрыть ↓';
+    });
+  });
+})();
+
+/* ── Библиотека материалов: на телефоне видны первые марки, остальные —
+   по кнопке «Показать все 8 марок» (паттерн s9-showall главной).
+   Кнопка живёт на всех ширинах, CSS показывает её только на ≤640. ── */
+(function(){
+  var grid = document.querySelector('.grades-grid');
+  if(!grid) return;
+  var total = grid.querySelectorAll('.ge').length;
+  if(!total) return;
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'grades-showall';
+  btn.textContent = 'Показать все ' + total + ' марок';
+  grid.parentNode.insertBefore(btn, grid.nextSibling);
+  btn.addEventListener('click', function(){
+    var open = grid.classList.toggle('expanded');
+    btn.classList.toggle('open', open);
+    btn.textContent = open ? 'Свернуть' : ('Показать все ' + total + ' марок');
+  });
 })();
 
 /* ── Журнал: reveal checks sequentially, then stamp ── */
@@ -181,6 +199,17 @@
   if(flEl)flObs.observe(flEl);
 })();
 
+/* ── Fleet: группы оборудования — аккордеоны на телефоне. Шапка группы
+   (название + счётчик единиц) служит триггером; стрелку ↓/↑ и скрытие
+   списка даёт CSS только на ≤640. ── */
+(function(){
+  [].forEach.call(document.querySelectorAll('.fl-group'), function(group){
+    var hd = group.querySelector('.fl-group-hd');
+    if(!hd) return;
+    hd.addEventListener('click', function(){ group.classList.toggle('open'); });
+  });
+})();
+
 /* ── Gallery: drag + inertia ── */
 (function(){
   var stage=document.getElementById('galStage');
@@ -203,6 +232,10 @@
     activeIdx=idx;
     dots.forEach(function(d,i){d.classList.toggle('gal-act',i===idx);});
   }
+  /* Телефон: соседний кадр специально выглядывает из-за правого края как
+     подсказка «листается» — гашение до 0.42/scale .88 делало его невидимым.
+     Кадры равновесные, активный отмечается точками под лентой. */
+  var galMob=window.matchMedia('(max-width:640px)');
   function updateScales(){
     /* item.offsetLeft is relative to stage (offsetParent=stage, which has padding).
        cx anchors at the left-edge slot center so item 0 at x=0 gets scale=1.0,
@@ -211,12 +244,14 @@
     var iw=itemW();
     var sw=stage.offsetWidth;
     var cx=padL+iw/2;
+    var mob=galMob.matches;
     var closestD=Infinity,closestI=0;
     items.forEach(function(item,i){
       var left=item.offsetLeft+x;
       var center=left+item.offsetWidth/2;
       var dist=Math.abs(center-cx);
       if(dist<closestD){closestD=dist;closestI=i;}
+      if(mob){item.style.transform='none';item.style.opacity='1';return;}
       var t=Math.max(0,1-dist/(sw*0.55));
       item.style.transform='scale('+(0.88+0.12*t).toFixed(3)+')';
       item.style.opacity=(0.42+0.58*t).toFixed(3);
@@ -300,11 +335,20 @@
   var galNext=document.getElementById('galNext');
   if(galPrev)galPrev.addEventListener('click',function(){goStep(-1);});
   if(galNext)galNext.addEventListener('click',function(){goStep(1);});
+  /* Ширина кадра зависит от вьюпорта (70vw на телефоне, аспект от высоты
+     на десктопе) — при повороте экрана пересобираем позицию активного
+     кадра и режим гашения соседей, иначе лента остаётся на старом сдвиге. */
+  window.addEventListener('resize',function(){
+    velX=0;targetX=null;
+    x=clamp(-activeIdx*itemW(),maxX(),0);
+    track.style.transform='translateX('+x.toFixed(2)+'px)';
+    updateScales();
+  },{passive:true});
   requestAnimationFrame(function(){updateScales();});
 })();
 
 /* ── Sidenav ── */
-const allSections=document.querySelectorAll('#s1,#proof,#s2,#grades,#map,#shopmap,#thermal,#journal,#capacity,#fleet,#gallery,#portal,#order-cta');
+const allSections=document.querySelectorAll('#s1,#proof,#s2,#grades,#shopmap,#thermal,#journal,#capacity,#fleet,#gallery,#portal,#order-cta');
 const navItems=document.querySelectorAll('.sidenav-item');
 let snLabelTimer=null;
 let snCurrentActive=null;
