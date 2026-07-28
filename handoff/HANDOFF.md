@@ -68,7 +68,7 @@ Windows/NTFS давал ~4с TTFB из-за stat'ов opcache). Тема и mu-p
 # дождаться healthy у db
 docker compose exec -T db mariadb -uroot -proot -e "DROP DATABASE IF EXISTS wordpress; CREATE DATABASE wordpress CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; GRANT ALL ON wordpress.* TO 'wp'@'%'; FLUSH PRIVILEGES;"
 
-gunzip -c handoff/wordpress-db.sql.gz | docker compose exec -T db mariadb -uroot -proot
+gunzip -c handoff/wordpress-db.sql.gz | docker compose exec -T db mariadb -uroot -proot wordpress
 
 # URL в дампе = http://localhost:8080 — если порт/хост другой:
 docker compose run --rm wpcli search-replace 'http://localhost:8080' 'http://YOUR:PORT' --all-tables --precise
