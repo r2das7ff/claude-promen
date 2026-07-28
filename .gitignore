@@ -11,6 +11,11 @@
 # Docker volumes
 .docker/
 
+# Прайсы поставщика «az» (140 MB): сырьё уже импортированного каталога,
+# ни один скрипт репозитория их не читает, на чистом WP не нужны.
+# Лежат локально; для кросс-филла по DATA-QUALITY-FIX брать с рабочей машины.
+products-csv/new_products_from_az/az/
+
 # Composer (регенерируется composer install)
 vendor/
 
