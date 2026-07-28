@@ -21,6 +21,9 @@
 
 ## Первый запуск на новой машине
 
+Пошаговый вариант с проверками — [DEPLOY-HOME.md](DEPLOY-HOME.md).
+Коротко:
+
 ```bash
 git lfs install
 git clone <URL> "promen site/site"
