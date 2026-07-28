@@ -1,0 +1,25 @@
+# Единые переводы строк независимо от core.autocrlf на конкретной машине —
+# иначе при работе с двух устройств diff показывает «изменён весь файл».
+* text=auto eol=lf
+
+# Данные каталога: гигабайты CSV, нормализовать нечего и незачем —
+# перезапись 250 MB на каждом checkout ничего не даёт.
+*.csv -text
+*.csv.bak_* -text
+
+# Бинарники — без конверсии и без попыток diff'а
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.webm binary
+*.pdf binary
+*.otf binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+*.gz binary
+*.tar binary
+
+# Дамп БД — через Git LFS (см. handoff/HANDOFF.md, раздел restore)
+handoff/wordpress-db.sql.gz filter=lfs diff=lfs merge=lfs -text
