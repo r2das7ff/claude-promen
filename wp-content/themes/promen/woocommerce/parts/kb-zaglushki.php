@@ -120,6 +120,15 @@ defined( 'ABSPATH' ) || exit;
             </div>
           </div>
           <div class="kb-norm-group">
+            <div class="kb-norm-group-hd">ОСТ и СТО — энергетика</div>
+            <div class="kb-norm-items">
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-25-77</span><span class="kb-norm-desc">Детали трубопроводов Dy 500–1400 мм сварные из углеродистой стали на Ру ≤ 2,5 МПа. Заглушки</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.755-97 ÷ 10.760-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС на Рраб &lt; 2,2 МПа, t ≤ 425 °C. Часть II</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-508-90 ÷ 513-90</span><span class="kb-norm-desc">Детали трубопроводов из коррозионностойкой стали на Рраб ≤ 2,2 МПа, T ≤ 300 °C для АС. Часть 2</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО 95 133-2013</span><span class="kb-norm-desc">Заглушки плоские приварные для трубопроводов пара, горячей воды и технологических трубопроводов атомных станций из сталей перлитного класса до 2,2 МПа</span></div>
+            </div>
+          </div>
+          <div class="kb-norm-group">
             <div class="kb-norm-group-hd">ТР ТС / ТУ / надзор</div>
             <div class="kb-norm-items">
               <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">О безопасности оборудования под избыточным давлением. Обязателен при PN &gt; 0.05 МПа. Декл. RU С-RU.АБ53.В.08323/23</span></div>
@@ -140,7 +149,7 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">Связанные документы серии СДТ</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17375–17380</span><span class="kb-norm-desc">Серия стандартов на СДТ: отводы, тройники, переходы, заглушки эллиптические. DN 15–500 (базовый ряд)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17375–17380</span><span class="kb-norm-desc">Серия стандартов на СДТ: 17375 и 30753 — отводы, 17376 — тройники, 17378 — переходы, 17379 — заглушки эллиптические, 17380 — общие технические условия</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">НП-045-18</span><span class="kb-norm-desc">Правила контроля сварных соединений оборудования и трубопроводов АЭУ — для объектов АЭС</span></div>
             </div>
           </div>

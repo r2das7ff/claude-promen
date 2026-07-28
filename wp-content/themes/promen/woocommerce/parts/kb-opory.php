@@ -20,25 +20,25 @@ defined( 'ABSPATH' ) || exit;
   </div>
   <div class="kb-panels">
     <div class="kb-panel kp-active" id="kp-types">
-      <div class="kb-lead"><div class="kb-lead-h">Опоры и подвески трубопроводов</div><p class="kb-lead-p">В каталоге — <strong>три типа</strong> опор по ОСТ 36-17-85: неподвижные хомутовые, скользящие и пружинные. Подбор по DN трубы, типу крепления и расчётной нагрузке.</p></div>
+      <div class="kb-lead"><div class="kb-lead-h">Опоры и подвески трубопроводов</div><p class="kb-lead-p">В каталоге — <strong>три типа</strong> опор: неподвижные, скользящие и пружинные с подвесками. Для трубопроводов ТЭС и АЭС конструкции нормирует серия <strong>ОСТ 24.125.151–159-01</strong>, для технологических трубопроводов промышленных предприятий — <strong>ОСТ 36-146-88</strong>, <strong>ОСТ 36-94-83</strong> и <strong>ГОСТ 16127-70</strong>. Подбор по DN трубы, типу крепления и расчётной нагрузке.</p></div>
       <div class="kb-cards">
           <div class="kb-card">
             <div class="kb-card-badge">НП</div>
-            <div class="kb-card-title">Неподвижные хомутовые</div>
-            <p class="kb-card-body">Фиксация участка трассы. Хомутовое крепление к трубе. DN 50–1000.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ОСТ 36-17-85</span><span class="kb-tag">НП</span></div>
+            <div class="kb-card-title">Неподвижные</div>
+            <p class="kb-card-body">Фиксация участка трассы: хомутовые и приварные исполнения. DN 50–1000.</p>
+            <div class="kb-card-tags"><span class="kb-tag">ОСТ 24.125.151-01</span><span class="kb-tag">ОСТ 24.125.153-01</span><span class="kb-tag">НП</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">СК</div>
-            <div class="kb-card-title">Скользящие</div>
-            <p class="kb-card-body">Компенсация температурных перемещений. Антифрикционный слой по проекту.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ОСТ 36-17-85</span><span class="kb-tag">СК</span></div>
+            <div class="kb-card-title">Скользящие и катковые</div>
+            <p class="kb-card-body">Компенсация температурных перемещений: скользящие, направляющие хомутовые, катковые.</p>
+            <div class="kb-card-tags"><span class="kb-tag">ОСТ 24.125.154-01</span><span class="kb-tag">ОСТ 24.125.156-01</span><span class="kb-tag">ОСТ 24.125.159-01</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ПР</div>
-            <div class="kb-card-title">Пружинные</div>
-            <p class="kb-card-body">Вертикальные нагрузки и подвески. Подбор по нагрузке и ходу пружины.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ОСТ 36-17-85</span><span class="kb-tag">ПР</span></div>
+            <div class="kb-card-title">Пружинные и подвески</div>
+            <p class="kb-card-body">Вертикальные нагрузки и подвески с тягами. Подбор по нагрузке и ходу пружины.</p>
+            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 16127-70</span><span class="kb-tag">ОСТ 34-10-739-93</span><span class="kb-tag">ПР</span></div>
           </div>
       </div>
     </div>
@@ -49,7 +49,45 @@ defined( 'ABSPATH' ) || exit;
       </div>
     </div>
     <div class="kb-panel" id="kp-norms">
-      <div class="kb-norm-grid"><div class="kb-norm-group"><div class="kb-norm-group-hd">Основной стандарт</div><div class="kb-norm-items"><div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-17-85</span><span class="kb-norm-desc">Опоры и подвески трубопроводов промышленных предприятий</span></div></div></div><div class="kb-norm-group"><div class="kb-norm-group-hd">Общие</div><div class="kb-norm-items"><div class="kb-norm-item"><span class="kb-norm-code">ТУ 24.20.40-001-13842829-2023</span><span class="kb-norm-desc">ТУ предприятия</span></div><div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">К трубопроводу объекта</span></div></div></div></div>
+      <p class="kb-intro-p">Опоры и подвески нормируются двумя ветками стандартов: <strong>ОСТ 24.125</strong> и <strong>ОСТ 34</strong> — для станционных трубопроводов ТЭС и АЭС, <strong>ОСТ 36</strong> и <strong>ГОСТ 16127</strong> — для технологических трубопроводов промышленных предприятий. Тип объекта определяет, какая ветка применяется.</p>
+      <div class="kb-norm-grid">
+        <div class="kb-norm-group">
+          <div class="kb-norm-group-hd">ОСТ 24.125 — трубопроводы ТЭС и АЭС</div>
+          <div class="kb-norm-items">
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 24.125.151-01</span><span class="kb-norm-desc">Опоры неподвижные трубопроводов ТЭС и АЭС. Конструкция и размеры</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 24.125.153-01</span><span class="kb-norm-desc">Опоры неподвижные и скользящие приварные трубопроводов ТЭС и АЭС</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 24.125.154-01</span><span class="kb-norm-desc">Опоры скользящие трубопроводов ТЭС и АЭС</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 24.125.156-01</span><span class="kb-norm-desc">Опоры скользящие направляющие хомутовые трубопроводов ТЭС и АЭС</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 24.125.159-01</span><span class="kb-norm-desc">Опоры катковые трубопроводов ТЭС и АЭС</span></div>
+          </div>
+        </div>
+        <div class="kb-norm-group">
+          <div class="kb-norm-group-hd">ОСТ 34 — станционные трубопроводы</div>
+          <div class="kb-norm-items">
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34.256-75 — ОСТ 34.279-75</span><span class="kb-norm-desc">Опоры и подвески станционных трубопроводов низкого давления Ру ≤ 4 МПа. Часть 1: опоры подвижные и неподвижные</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-42-610-84 ÷ 34-42-628-84</span><span class="kb-norm-desc">Опоры и подвески станционных трубопроводов ТЭС, АЭС и пылегазовоздухопроводов ТЭС из унифицированных деталей: Рраб ≤ 2,2 МПа, t ≤ 425 °C</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-739-93</span><span class="kb-norm-desc">Тяги резьбовые с муфтой для подвесок станционных трубопроводов. Конструкция и размеры</span></div>
+          </div>
+        </div>
+        <div class="kb-norm-group">
+          <div class="kb-norm-group-hd">ГОСТ и ОСТ 36 — технологические трубопроводы</div>
+          <div class="kb-norm-items">
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 16127-70</span><span class="kb-norm-desc">Детали стальных трубопроводов. Подвески. Типы и основные размеры</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-94-83</span><span class="kb-norm-desc">Детали стальных трубопроводов. Опоры подвижные. Типы и основные размеры</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-146-88</span><span class="kb-norm-desc">Опоры стальных технологических трубопроводов на Ру до 10 МПа. Технические условия. Не распространяется на трубопроводы электростанций</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-17-85</span><span class="kb-norm-desc">Опоры и подвески технологических пластмассовых трубопроводов Ø до 630 мм. Типы и основные размеры</span></div>
+          </div>
+        </div>
+        <div class="kb-norm-group">
+          <div class="kb-norm-group-hd">Общие и обязательные</div>
+          <div class="kb-norm-items">
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 380-2005 · ГОСТ 1050-2013</span><span class="kb-norm-desc">Марки Ст3сп и Ст20 — основной металл опор и подвесок</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ ISO 10474-2016</span><span class="kb-norm-desc">Документы о контроле металлопродукции. Паспорт качества 3.1</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ТУ 24.20.40-001-13842829-2023</span><span class="kb-norm-desc">ТУ предприятия — при изготовлении по КД заказчика</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">Применяется к трубопроводу объекта, а не к опоре как таковой</span></div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="kb-panel" id="kp-materials">
       <div class="kb-mat-grid"><div class="kb-mat"><div class="kb-mat-grade">Ст3сп</div><div class="kb-mat-std">ГОСТ 380</div><div class="kb-mat-range">Основная марка</div><div class="kb-mat-apps">Неподвижные и скользящие</div></div><div class="kb-mat"><div class="kb-mat-grade">Ст20</div><div class="kb-mat-std">ГОСТ 1050</div><div class="kb-mat-range">Пружинные / ответственные</div><div class="kb-mat-apps">По проекту</div></div></div>

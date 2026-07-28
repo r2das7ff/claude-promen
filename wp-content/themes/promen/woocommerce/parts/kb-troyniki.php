@@ -102,15 +102,19 @@ defined( 'ABSPATH' ) || exit;
       <div class="kb-panel" id="kp-norms">
         <div class="kb-lead">
           <div class="kb-lead-h">Нормативная база тройников</div>
-          <p class="kb-lead-p">Выбор норматива определяет конструкцию, допуски и объём контроля. Все восемь серий каталога — действующие документы.</p>
+          <p class="kb-lead-p">Выбор норматива определяет конструкцию, допуски и объём контроля. Все серии каталога — действующие документы: базовый ГОСТ на бесшовные приварные тройники, ГОСТ на исполнения высокого давления, отраслевые ОСТ для ТЭС и АС и стандарты ЦКТИ для паропроводов.</p>
         </div>
         <div class="kb-norm-list">
-          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17376-2001</span><span class="kb-norm-desc">Тройники бесшовные приварные из углеродистой и низколегированной стали (ИСО 3419-81). Равнопроходные и переходные. Основной стандарт</span></div>
-          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22801-1983</span><span class="kb-norm-desc">Тройники на Ру свыше 10 до 100 МПа. Детали трубопроводов высокого давления</span></div>
-          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22822-1983</span><span class="kb-norm-desc">Тройники с опорой на Ру свыше 10 до 100 МПа — восприятие весовых нагрузок трубопровода</span></div>
-          <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-762…765-97</span><span class="kb-norm-desc">Сварные тройники для трубопроводов ТЭС: равнопроходные, переходные, специальные исполнения. DN 65–1600</span></div>
-          <div class="kb-norm-item"><span class="kb-norm-code">СЕРИЯ 4.903-10</span><span class="kb-norm-desc">Изделия и детали трубопроводов тепловых сетей — типовая серия для ЖКХ</span></div>
-          <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">Оборудование под избыточным давлением — поднадзорные исполнения с расширенным контролем</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17376-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные из углеродистой и низколегированной стали. Тройники. Конструкция (ИСО 3419-81). Равнопроходные и переходные — основной стандарт</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17380-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные. Общие технические условия — материалы, приёмка, маркировка для всей серии</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22801-1983</span><span class="kb-norm-desc">Тройники переходные и проходные с фланцами на Ру св. 10 до 100 МПа. Конструкция и размеры. Dy 6×6…200×200, t −50…+510 °C</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22822-1983</span><span class="kb-norm-desc">Тройники переходные на Ру св. 10 до 100 МПа. Конструкция и размеры. Dy 6×6…200×200</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.761-97 ÷ 10.766-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС из углеродистой и низколегированной сталей на Рраб &lt; 2,2 МПа, t ≤ 425 °C. Часть III — тройники, штуцеры, ответвления</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-23-77 / 36-24-77</span><span class="kb-norm-desc">Детали трубопроводов Dy 500–1400 мм сварные из углеродистой стали на Ру ≤ 2,5 МПа. Тройники сварные и сварные с усилением</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-416-90 ÷ 513-90</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов из коррозионностойкой стали на Рраб ≤ 2,2 МПа, T ≤ 300 °C для АС. Конструкция и размеры</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 720.01–720.24-2009</span><span class="kb-norm-desc">Тройники равнопроходные и переходные (штампованные, сварные, кованые) для трубопроводов и паропроводов тепловых станций. Ресурс 200 000 часов</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">Серия 4.903-10</span><span class="kb-norm-desc">Изделия и детали трубопроводов тепловых сетей — типовая серия для ЖКХ</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">О безопасности оборудования под избыточным давлением — поднадзорные исполнения с расширенным контролем. Декл. RU С-RU.АБ53.В.08323/23</span></div>
         </div>
       </div>
 

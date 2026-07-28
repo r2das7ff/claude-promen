@@ -124,7 +124,17 @@ defined( 'ABSPATH' ) || exit;
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 33259-2015</span><span class="kb-norm-desc">Фланцы арматуры, соединительных частей и трубопроводов на номинальное давление до PN 250. Типы 01 и 11. В каталоге — 412 позиций, DN 10–2400</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 12820-1980</span><span class="kb-norm-desc">Фланцы стальные плоские приварные на Ру от 0,1 до 2,5 МПа. 111 позиций, DN 10–1200</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 12821-1980</span><span class="kb-norm-desc">Фланцы стальные приварные встык на Ру от 0,1 до 20 МПа. 32 позиции, DN 10–350</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28759.2-2022</span><span class="kb-norm-desc">Фланцы сосудов и аппаратов стальные плоские приварные. 100 позиций, DN 400–4000</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28759.2-2022</span><span class="kb-norm-desc">Фланцы сосудов и аппаратов стальные плоские приварные. Конструкция и размеры. 100 позиций, DN 400–4000</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28759.3-1990</span><span class="kb-norm-desc">Фланцы сосудов и аппаратов стальные приварные встык. D 400–4000 мм, PN 0,6–6,3 МПа, t −70…+540 °C. 12 исполнений уплотнительной поверхности</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ Р 54432-2011</span><span class="kb-norm-desc">Фланцы арматуры, соединительных частей и трубопроводов на номинальное давление от PN 1 до PN 200 (ISO 7005, NEQ)</span></div>
+            </div>
+          </div>
+          <div class="kb-norm-group">
+            <div class="kb-norm-group-hd">Специальные исполнения</div>
+            <div class="kb-norm-items">
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28919-1991</span><span class="kb-norm-desc">Фланцевые соединения устьевого оборудования. Типы, основные параметры и размеры. Рабочее давление 14–140 МПа, DN 50–680</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 25660-1983</span><span class="kb-norm-desc">Фланцы изолирующие для подводных трубопроводов на Ру 10,0 МПа. Конструкция и размеры</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.747-97 ÷ 10.754-97</span><span class="kb-norm-desc">Фланцы в составе деталей и сборочных единиц трубопроводов ТЭС на Рраб &lt; 2,2 МПа, t ≤ 425 °C. Часть I</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
@@ -148,7 +158,11 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">Связанные документы</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 15180-86</span><span class="kb-norm-desc">Прокладки плоские эластичные — согласование с исполнением уплотнительной поверхности фланца</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 15180-86</span><span class="kb-norm-desc">Прокладки плоские эластичные. Основные параметры и размеры — согласование с исполнением уплотнительной поверхности фланца</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 34655-2020</span><span class="kb-norm-desc">Прокладки овального, восьмиугольного сечения и линзовые стальные для фланцев арматуры. Действующая замена ОСТ 26.260.461-99</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 26.260.454-99</span><span class="kb-norm-desc">Прокладки спирально-навитые (СНП). Типы и размеры — для уплотнений «выступ-впадина» и «шип-паз»</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10493-81</span><span class="kb-norm-desc">Линзы уплотнительные жёсткие и компенсирующие на Ру 20–100 МПа. Технические условия</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 20700-75 · ОСТ 26-2043-91</span><span class="kb-norm-desc">Крепёж фланцевых соединений: болты, шпильки, гайки и шайбы с температурой среды от 0 до 650 °С</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">НП-045-18</span><span class="kb-norm-desc">Правила контроля сварных соединений оборудования и трубопроводов АЭУ — для объектов АЭС</span></div>
             </div>
           </div>

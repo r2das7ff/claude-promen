@@ -124,17 +124,19 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">ГОСТ — бесшовные и высокое давление</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17378-2001</span><span class="kb-norm-desc">Переходы бесшовные приварные (ИСО 3419-81). Концентрические и эксцентрические. Основной стандарт. В каталоге — 278 позиций, DN 32–600</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22826-1983</span><span class="kb-norm-desc">Переходы на Ру свыше 10 до 100 МПа. Детали трубопроводов высокого давления. 68 позиций, DN 25–200</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17378-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные. Переходы. Конструкция (ИСО 3419-81). Концентрические и эксцентрические — 278 позиций, DN 32–600</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17380-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные из углеродистой и низколегированной стали. Общие технические условия — головной документ серии</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22826-1983</span><span class="kb-norm-desc">Сборочные единицы и детали трубопроводов. Переходы на Ру св. 10 до 100 МПа. Конструкция и размеры. Точёные, Dy 10×6…200×150, t −50…+510 °C. 68 позиций</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">ОСТ / СТО — сварные и точеные детали</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-22-77</span><span class="kb-norm-desc">Переходы сварные Dy 500–1400, Ру ≤ 2,5 МПа. 33 позиции</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-753-97</span><span class="kb-norm-desc">Переходы сварные листовые для ТЭС (Рраб &lt; 2,2 МПа). 24 позиции</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34.10.754-97</span><span class="kb-norm-desc">Переходы сварные ТЭС — мелкий DN 15–40. 9 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">СТО 318.01-2009</span><span class="kb-norm-desc">Переходы точеные детали ЦКТИ, исполнения 01–03. 13 позиций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-22-77</span><span class="kb-norm-desc">Детали трубопроводов Dy 500–1400 мм сварные из углеродистой стали на Ру ≤ 2,5 МПа. Переходы сварные. 33 позиции</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.700-97</span><span class="kb-norm-desc">Детали трубопроводов стальные бесшовные приварные на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций. Переходы. Конструкция и размеры</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.753-97</span><span class="kb-norm-desc">Сводный том ОСТ 34 10.747-97 ÷ 10.754-97, часть I: детали и сборочные единицы трубопроводов ТЭС, Рраб &lt; 2,2 МПа, t ≤ 425 °C. 24 позиции</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.754-97</span><span class="kb-norm-desc">Тот же сводный том, часть I — переходы малых DN 15–40. 9 позиций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 318.01–318.06-2009</span><span class="kb-norm-desc">Переходы точёные, обжатые и штампованные для трубопроводов и паропроводов тепловых станций. Ресурс 200 000 часов. 13 позиций</span></div>
             </div>
           </div>
           <div class="kb-norm-group">

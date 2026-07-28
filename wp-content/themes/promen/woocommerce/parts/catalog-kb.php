@@ -151,43 +151,50 @@ defined( 'ABSPATH' ) || exit;
 
     <!-- TAB 3: НОРМАТИВНАЯ БАЗА -->
     <div class="kb-panel" id="kp-norms">
-      <p class="kb-intro-p">Продукция каталога охвачена четырьмя уровнями нормативных документов: государственные <strong>ГОСТ</strong>, отраслевые <strong>ОСТ</strong>, корпоративные <strong>СТО ЦКТИ</strong> для ТЭС, атомные <strong>НП</strong> и технические условия предприятия <strong>ТУ</strong>. Каждый уровень определяет свой объём требований к геометрии, материалу и контролю.</p>
+      <p class="kb-intro-p">Продукция каталога охвачена четырьмя уровнями нормативных документов: государственные и межгосударственные <strong>ГОСТ</strong>, отраслевые <strong>ОСТ</strong> (Минэнерго, Минмонтажспецстрой, Минхиммаш), стандарты организаций <strong>СТО ЦКТИ</strong> и <strong>СТО СРО</strong> для ТЭС и АЭС, федеральные нормы <strong>НП</strong> и технические условия предприятия <strong>ТУ</strong>. Полный реестр с фильтрами — на странице <a href="<?php echo esc_url( ( $p = promen_page( 'normativnaya-baza' ) ) ? get_permalink( $p ) : home_url( '/normativnaya-baza/' ) ); ?>">«Нормативная база»</a>.</p>
       <div class="kb-norm-grid">
         <div class="kb-norm-group">
-          <div class="kb-norm-group-hd">ГОСТ — государственные стандарты</div>
+          <div class="kb-norm-group-hd">ГОСТ — соединительные детали и фланцы</div>
           <div class="kb-norm-items">
-            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17375–17380</span><span class="kb-norm-desc">Серия стандартов на СДТ: отводы, тройники, переходы, заглушки, днища. DN 15–500</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30753-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные. Общие технические условия</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 33259-2015</span><span class="kb-norm-desc">Фланцы арматуры и трубопроводов. DN 10–4000, PN 1–250</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 33257-2015</span><span class="kb-norm-desc">Арматура трубопроводная. Общие технические условия</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 8731–8734</span><span class="kb-norm-desc">Трубы стальные бесшовные горячедеформированные и холоднодеформированные</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17380-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные из углеродистой и низколегированной стали. Общие технические условия — головной документ серии</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17375 / 30753</span><span class="kb-norm-desc">Отводы крутоизогнутые типа 3D (R ≈ 1,5DN) и типа 2D (R ≈ DN). Конструкция</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17376 / 17378 / 17379</span><span class="kb-norm-desc">Тройники, переходы, заглушки эллиптические. Конструкция</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6533-1978</span><span class="kb-norm-desc">Днища эллиптические отбортованные стальные для сосудов, аппаратов и котлов. D 133–4500 мм</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 33259-2015</span><span class="kb-norm-desc">Фланцы арматуры, соединительных частей и трубопроводов на номинальное давление до PN 250</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 12820 / 12821</span><span class="kb-norm-desc">Фланцы стальные плоские приварные (Ру 0,1–2,5 МПа) и приварные встык (Ру 0,1–20,0 МПа)</span></div>
           </div>
         </div>
         <div class="kb-norm-group">
-          <div class="kb-norm-group-hd">ОСТ — отраслевые стандарты Минэнерго</div>
+          <div class="kb-norm-group-hd">ОСТ — энергетика, монтаж, высокое давление</div>
           <div class="kb-norm-items">
-            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-20-77</span><span class="kb-norm-desc">Отводы штампосварные. DN 25–400 для ТЭС и нефтехима</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-21-77</span><span class="kb-norm-desc">Отводы секторные/сварные. DN 100–1400 для ТЭС/ГРЭС</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-22-77</span><span class="kb-norm-desc">Тройники сварные. DN 100–1400</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34.10.752-97</span><span class="kb-norm-desc">Отводы для трубопроводов тепловых электростанций</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-17-85</span><span class="kb-norm-desc">Опоры и подвески трубопроводов промышленных предприятий</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.699-97 / 10.700-97</span><span class="kb-norm-desc">Отводы крутоизогнутые и переходы на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.747-97 ÷ 10.766-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС на Рраб &lt; 2,2 МПа, t ≤ 425 °C. Части I–III</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-416-90 ÷ 513-90</span><span class="kb-norm-desc">Детали трубопроводов из коррозионностойкой стали на Рраб ≤ 2,2 МПа, T ≤ 300 °C для АС</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-20-77 ÷ 36-25-77</span><span class="kb-norm-desc">Детали трубопроводов Dy 500–1400 мм сварные из углеродистой стали на Ру ≤ 2,5 МПа: отводы, тройники, переходы, заглушки</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-41-81 — 36-49-81</span><span class="kb-norm-desc">Детали трубопроводов из углеродистой стали сварные и гнутые Dy до 500 мм на Ру до 10 МПа</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 24.125.01-89 — 24.125.26-89</span><span class="kb-norm-desc">Детали и сборочные единицы из сталей аустенитного класса для трубопроводов АЭС Dy 14–325 мм</span></div>
           </div>
         </div>
         <div class="kb-norm-group">
-          <div class="kb-norm-group-hd">СТО ЦКТИ — для объектов тепловой энергетики</div>
+          <div class="kb-norm-group-hd">СТО — тепловая и атомная энергетика</div>
           <div class="kb-norm-items">
-            <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.01–.06</span><span class="kb-norm-desc">Отводы гнутые для трубопроводов ТЭС. 6 типоисполнений</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 720.01–.29</span><span class="kb-norm-desc">Тройники и переходы для ТЭС. 29 типоисполнений</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 101.18-2015</span><span class="kb-norm-desc">Фланцы трубопроводные специального исполнения для ТЭС</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.01–.08-2009</span><span class="kb-norm-desc">Отводы гнутые, крутоизогнутые, штампованные и штампосварные для трубопроводов и паропроводов ТЭС</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 720.01–.24-2009</span><span class="kb-norm-desc">Тройники равнопроходные и переходные для трубопроводов и паропроводов ТЭС</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 318.01–.06-2009</span><span class="kb-norm-desc">Переходы точёные, обжатые и штампованные для трубопроводов и паропроводов ТЭС</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 462 / 504 / 530 / 313</span><span class="kb-norm-desc">Штуцера и патрубки, донышки приварные, бобышки, соединения штуцерные. Ресурс 200 000 часов</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">СТО 95 133-2013</span><span class="kb-norm-desc">Заглушки плоские приварные для трубопроводов атомных станций из сталей перлитного класса до 2,2 МПа</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">СТО СРО-П 60542948 00010–2013</span><span class="kb-norm-desc">Детали и элементы трубопроводов групп В и С атомных станций. Соединения сварные. Типы и размеры</span></div>
           </div>
         </div>
         <div class="kb-norm-group">
-          <div class="kb-norm-group-hd">НП — нормы безопасности АЭС</div>
+          <div class="kb-norm-group-hd">Опоры, крепёж, уплотнения, обязательные нормы</div>
           <div class="kb-norm-items">
-            <div class="kb-norm-item"><span class="kb-norm-code">НП-045-18</span><span class="kb-norm-desc">Правила контроля сварных соединений оборудования и трубопроводов АЭУ</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">НП-068-05</span><span class="kb-norm-desc">Требования к арматуре для атомных станций</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">НП-089-15</span><span class="kb-norm-desc">Общие требования к оборудованию и трубопроводам АЭУ. Категории трубопроводов</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">О безопасности оборудования под давлением. Обязателен при PN &gt; 0.05 МПа</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 24.125.151 / .153 / .154 / .156 / .159-01</span><span class="kb-norm-desc">Опоры неподвижные, скользящие, хомутовые направляющие и катковые трубопроводов ТЭС и АЭС</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 16127-70 · ОСТ 36-94-83 · ОСТ 36-146-88</span><span class="kb-norm-desc">Подвески, опоры подвижные, опоры стальных технологических трубопроводов на Ру до 10 МПа</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 20700-75 · ОСТ 26-2043-91</span><span class="kb-norm-desc">Болты, шпильки, гайки и шайбы для фланцевых соединений с температурой среды от 0 до 650 °С</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 34655-2020 · ОСТ 26.260.454-99</span><span class="kb-norm-desc">Прокладки овального, восьмиугольного сечения, линзовые и спирально-навитые для фланцев арматуры</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">НП-089-15 · НП-045-18 · НП-068-05</span><span class="kb-norm-desc">Федеральные нормы и правила для оборудования, трубопроводов и арматуры АЭУ: категории и объём контроля</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">О безопасности оборудования под избыточным давлением. Обязателен при PN &gt; 0,05 МПа. Декл. RU С-RU.АБ53.В.08323/23</span></div>
           </div>
         </div>
       </div>

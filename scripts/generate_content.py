@@ -197,7 +197,9 @@ slug: {slug}
 <h2>Как заказать</h2>
 <p>Выберите типоразмер в реестре (фильтры DN, PN, сталь, ГОСТ — над списком), в карточке укажите марку стали и поднадзорность и нажмите «Запросить КП». Нестандартные параметры — по чертежу заказчика через ту же форму.</p>
 """
-    path.write_text(body.strip() + "\n", encoding="utf-8")
+    # newline="\n" обязателен: на Windows write_text иначе пишет CRLF, а
+    # `wp promen content` парсит frontmatter регуляркой с \n и молча пропускает файл.
+    path.write_text(body.strip() + "\n", encoding="utf-8", newline="\n")
     print(f"wrote {path.relative_to(ROOT)}")
 
 
@@ -251,7 +253,9 @@ slug: {slug}
 <h2>Как заказать</h2>
 <p>Откройте нужную позицию в реестре и отправьте «Запросить КП» с указанием количества и срока. Для комплекта фланцевого соединения укажите DN/PN фланца — подберём согласованный крепёж.</p>
 """
-    path.write_text(body.strip() + "\n", encoding="utf-8")
+    # newline="\n" обязателен: на Windows write_text иначе пишет CRLF, а
+    # `wp promen content` парсит frontmatter регуляркой с \n и молча пропускает файл.
+    path.write_text(body.strip() + "\n", encoding="utf-8", newline="\n")
     print(f"wrote {path.relative_to(ROOT)}")
 
 
@@ -354,7 +358,9 @@ name: {key}
 <h2>Как выбрать позицию</h2>
 <p>Откройте нужный типоразмер в списке ниже или перейдите в семейство, отфильтруйте по DN/стали и отправьте «Запросить КП». При заказе укажите обозначение {key}, марку стали и признак поднадзорности.</p>
 """
-    path.write_text(body.strip() + "\n", encoding="utf-8")
+    # newline="\n" обязателен: на Windows write_text иначе пишет CRLF, а
+    # `wp promen content` парсит frontmatter регуляркой с \n и молча пропускает файл.
+    path.write_text(body.strip() + "\n", encoding="utf-8", newline="\n")
     print(f"wrote {path.relative_to(ROOT)}")
 
 

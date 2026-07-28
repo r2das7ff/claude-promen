@@ -119,7 +119,10 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">ГОСТ — геометрия днищ</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6533-1978</span><span class="kb-norm-desc">Днища эллиптические отбортованные стальные для сосудов, аппаратов и котлов. Основные размеры. Действующий. В каталоге — 250 типоразмеров, DN 100–3800, s 4–90 мм</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6533-1978</span><span class="kb-norm-desc">Днища эллиптические отбортованные стальные для сосудов, аппаратов и котлов. Основные размеры. Действует, взамен ГОСТ 6533-68. Область стандарта — D 133–4500 мм, s 4–120 мм; в каталоге — 250 типоразмеров, DN 100–3800, s 4–90 мм</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28759.3-1990</span><span class="kb-norm-desc">Фланцы сосудов и аппаратов стальные приварные встык — ответная часть к днищам и обечайкам, D 400–4000 мм, PN 0,6–6,3 МПа</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 26-2008-83</span><span class="kb-norm-desc">Крышки плоские люков стальных сварных сосудов и аппаратов. Конструкция — для люков и лазов в днищах</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 504.01/504.02-2009</span><span class="kb-norm-desc">Донышки приварные для трубопроводов и паропроводов тепловых станций. Конструкция и размеры</span></div>
             </div>
           </div>
           <div class="kb-norm-group">

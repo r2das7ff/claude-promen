@@ -41,14 +41,14 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-type">
             <div class="kb-type-badge">ОСТ 36-21-77</div>
             <div class="kb-type-title">Секторные сварные · DN 100–1400</div>
-            <p class="kb-type-body">Сварные отводы из сегментов (секторов). <strong>DN 100–1400</strong>, R = 1.5DN. Применяются при больших диаметрах, когда штамповка нецелесообразна. Широко используются в паровых трактах ТЭС и ГРЭС. Изготавливаются по ОСТ 36-21-77 и ОСТ 34.10.752-97 для энергетики.</p>
+            <p class="kb-type-body">Сварные отводы из сегментов (секторов). <strong>DN 100–1400</strong>, R = 1.5DN. Применяются при больших диаметрах, когда штамповка нецелесообразна. Широко используются в паровых трактах ТЭС и ГРЭС. Изготавливаются по ОСТ 36-21-77, для энергетики — по сводному тому ОСТ 34 10.747-97 ÷ 10.754-97.</p>
             <div class="kb-type-tags"><span class="kb-tag">ОСТ 36-21-77</span><span class="kb-tag">DN 100–1400</span><span class="kb-tag">Сварные секторные</span><span class="kb-tag">ТЭС / ГРЭС</span></div>
           </div>
           <div class="kb-type">
             <div class="kb-type-badge">СТО ЦКТИ 321</div>
             <div class="kb-type-title">Гнутые трубные · R = 3.5–5DN</div>
-            <p class="kb-type-body">Гнутые из трубной заготовки на специальном оборудовании. <strong>R = 3.5–5DN</strong> — большой радиус изгиба снижает гидравлическое сопротивление и напряжения. Применяются в главных паропроводах ТЭС, где важно снизить эрозионный износ. Нормируются серией СТО ЦКТИ 321.01–321.06 (2009 г.).</p>
-            <div class="kb-type-tags"><span class="kb-tag">СТО ЦКТИ 321.01–.06</span><span class="kb-tag">R = 3.5–5DN</span><span class="kb-tag">Гнутые</span><span class="kb-tag">Главные паропроводы</span></div>
+            <p class="kb-type-body">Гнутые из трубной заготовки на специальном оборудовании. <strong>R = 3.5–5DN</strong> — большой радиус изгиба снижает гидравлическое сопротивление и напряжения. Применяются в главных паропроводах ТЭС, где важно снизить эрозионный износ. Нормируются серией СТО ЦКТИ 321.01–321.08 (2009 г.): исполнения .01–.04 — для трубопроводов питательной воды, пара и горячей воды, .05–.08 — для паропроводов из хромомолибденованадиевых сталей.</p>
+            <div class="kb-type-tags"><span class="kb-tag">СТО ЦКТИ 321.01–.08</span><span class="kb-tag">R = 3.5–5DN</span><span class="kb-tag">Гнутые</span><span class="kb-tag">Главные паропроводы</span></div>
           </div>
           <div class="kb-type">
             <div class="kb-type-badge">ОСТ 36-20-77</div>
@@ -85,7 +85,7 @@ defined( 'ABSPATH' ) || exit;
               <div class="kb-param"><div class="kb-param-key">PN · Давление условное</div><div class="kb-param-val">От <strong>PN 0.6 до PN 20 МПа</strong>. Толщина стенки определяется из расчёта прочности по нормативному документу. При температурах выше 100°С допустимое давление снижается — уточняйте по таблицам норматива.</div></div>
               <div class="kb-param"><div class="kb-param-key">Радиус изгиба R</div><div class="kb-param-val"><strong>R = 1.5DN</strong> — крутоизогнутые (ГОСТ 17375, ОСТ 36-20, ОСТ 36-21). <strong>R = 3.5–5DN</strong> — гнутые (СТО ЦКТИ 321). Больший R снижает гидравлическое сопротивление и эрозию потоком.</div></div>
               <div class="kb-param"><div class="kb-param-key">Толщина стенки S</div><div class="kb-param-val">Определяется по нормативному документу из условия прочности при заданных DN, PN и t°С. Для ответственных объектов — дополнительный запас по прибавке на коррозию.</div></div>
-              <div class="kb-param"><div class="kb-param-key">Нормативный документ</div><div class="kb-param-val"><strong>ГОСТ 17375</strong> — DN 15–500, общепром. <strong>ОСТ 36-21-77</strong> — DN 100–1400, ТЭС. <strong>СТО ЦКТИ 321</strong> — гнутые для ТЭС. <strong>НП-045-18</strong> — для АЭС (расширенный НК). Норматив определяет допуски, объём контроля и документацию.</div></div>
+              <div class="kb-param"><div class="kb-param-key">Нормативный документ</div><div class="kb-param-val"><strong>ГОСТ 17375</strong> — DN 15–500, общепром. <strong>ОСТ 36-21-77</strong> — Dy 500–1400, ТЭС. <strong>СТО ЦКТИ 321.01–.08</strong> — гнутые и штампованные для ТЭС. <strong>НП-045-18</strong> — для АЭС (расширенный НК). Норматив определяет допуски, объём контроля и документацию.</div></div>
               <div class="kb-param"><div class="kb-param-key">Марка стали</div><div class="kb-param-val"><strong>Ст20</strong> — общепром., до +425°С. <strong>09Г2С</strong> — низкие температуры, НГК. <strong>12Х1МФ</strong> — паропроводы ТЭС до +570°С. <strong>15Х1М1Ф</strong> — сверхкритика +580°С. <strong>12Х18Н10Т</strong> — АЭС, агрессивные среды.</div></div>
               <div class="kb-param"><div class="kb-param-key">Объём НК</div><div class="kb-param-val">Базово: <strong>100% ВИК</strong>. По требованию заказчика: +<strong>УЗК</strong> (ГОСТ Р 55724-2013) / +<strong>РК</strong> / +<strong>МПД</strong> / +<strong>ПВК</strong>. Полный объём для АЭС — согласно НП-045-18 и программе контроля объекта.</div></div>
             </div>
@@ -107,30 +107,34 @@ defined( 'ABSPATH' ) || exit;
         <p class="kb-intro-p">Выбор нормативного документа для отвода<?php echo esc_html( $angle_sp ); ?> определяет конструктивное исполнение, допуски на геометрию, требования к металлу и полный объём контроля. Большинство позиций каталога охвачено одновременно базовым ГОСТ и дополнительным отраслевым стандартом для конкретного типа объектов.</p>
         <div class="kb-norm-grid">
           <div class="kb-norm-group">
-            <div class="kb-norm-group-hd">ГОСТ — базовый стандарт</div>
+            <div class="kb-norm-group-hd">ГОСТ — базовые стандарты</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17375-2001</span><span class="kb-norm-desc">Отводы крутоизогнутые бесшовные приварные. DN 15–500, R = 1.5DN, углы 45°/90°/180°. Основной стандарт</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30753-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные из угл. стали. Общие технические условия</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ ISO 10474-2016</span><span class="kb-norm-desc">Документы о контроле металлопродукции. Паспорт качества 3.1 с плавочными данными</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17375-2001</span><span class="kb-norm-desc">Отводы крутоизогнутые типа 3D (R ≈ 1,5DN). Конструкция. Углы 45°/60°/90°/180° — основной стандарт каталога</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30753-2001</span><span class="kb-norm-desc">Отводы крутоизогнутые типа 2D (R ≈ DN). Конструкция — исполнение малого радиуса той же серии</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17380-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные из углеродистой и низколегированной стали. Общие технические условия — головной документ серии</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22793-83 / 22818-83</span><span class="kb-norm-desc">Отводы гнутые и колена 90° с опорой на Ру св. 10 до 100 МПа. DN 6–200, t −50…+510 °C — нефтехимия</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 24950-81</span><span class="kb-norm-desc">Отводы гнутые и вставки кривые на поворотах линейной части стальных магистральных трубопроводов. ТУ</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ Р 55724-2013</span><span class="kb-norm-desc">НК. Ультразвуковой контроль сварных соединений. Методы и оценка результатов</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
-            <div class="kb-norm-group-hd">ОСТ — для тепловой энергетики и нефтехима</div>
+            <div class="kb-norm-group-hd">ОСТ — тепловая и атомная энергетика</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-20-77</span><span class="kb-norm-desc">Отводы штампосварные. DN 25–400, R = 1.5DN для ТЭС и нефтехима</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-21-77</span><span class="kb-norm-desc">Отводы секторные/сварные. DN 100–1400, паровые и водяные тракты ТЭС/ГРЭС</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34.10.752-97</span><span class="kb-norm-desc">Отводы для трубопроводов тепловых электростанций. Специфические требования ТЭС</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-41-81</span><span class="kb-norm-desc">Детали трубопроводов сварные. Технические условия на изготовление</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.699-97</span><span class="kb-norm-desc">Отводы крутоизогнутые на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций. Конструкция и размеры</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.747-97 ÷ 10.754-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС из углеродистой и низколегированной сталей, Рраб &lt; 2,2 МПа, t ≤ 425 °C. Часть I</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-416-90 ÷ 433-90</span><span class="kb-norm-desc">Детали трубопроводов из коррозионностойкой стали на Рраб ≤ 2,2 МПа, T ≤ 300 °C для АС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-20-77</span><span class="kb-norm-desc">Отводы штампосварные Dy 500–1400 мм из углеродистой стали на Ру ≤ 2,5 МПа</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-21-77</span><span class="kb-norm-desc">Отводы сварные секторные Dy 500–1400 мм — паровые и водяные тракты ТЭС/ГРЭС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-41-81 — 36-49-81</span><span class="kb-norm-desc">Детали трубопроводов из углеродистой стали сварные и гнутые Dy до 500 мм на Ру до 10 МПа</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
-            <div class="kb-norm-group-hd">СТО ЦКТИ — гнутые отводы для ТЭС</div>
+            <div class="kb-norm-group-hd">СТО ЦКТИ — отводы для ТЭС, ресурс 200 000 ч</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.01-2009</span><span class="kb-norm-desc">Отводы гнутые тип 01. R = 3.5DN для главных паропроводов ТЭС</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.02-2009</span><span class="kb-norm-desc">Отводы гнутые тип 02. Специсполнение для ТЭС</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.03–.06</span><span class="kb-norm-desc">Типы 03–06 серии гнутых отводов для различных паровых трактов ТЭС</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">СТО 79814898-111-2009</span><span class="kb-norm-desc">Стандарт организации для энергетических систем</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.01-2009</span><span class="kb-norm-desc">Отводы гнутые для трубопроводов питательной воды тепловых станций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.02-2009</span><span class="kb-norm-desc">Отводы гнутые для трубопроводов пара и горячей воды тепловых станций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.03 / 321.04-2009</span><span class="kb-norm-desc">Отводы крутоизогнутые и штампованные для трубопроводов пара и горячей воды ТЭС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 321.05–321.08-2009</span><span class="kb-norm-desc">Отводы гнутые, крутоизогнутые, штампованные и штампосварные для паропроводов ТЭС — хромомолибденованадиевые стали, p ≥ 4,0 МПа</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
@@ -214,8 +218,8 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-col-title">Частые ошибки при заказе</div>
             <div class="kb-errors">
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Указать Dнар вместо DN</div><div class="kb-err-note">DN 50 ≠ 50 мм. Наружный диаметр трубы по ГОСТ 8732 для DN 50 = 57 мм. Всегда уточняйте стандарт трубы.</div></div></div>
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Не указать R/DN для гнутых</div><div class="kb-err-note">Для СТО ЦКТИ 321 существует 6 типов с разными R. Если R не указан — уточняется по номеру типа или рабочим условиям.</div></div></div>
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Заказ ГОСТ 17375 для DN 600+</div><div class="kb-err-note">ГОСТ 17375 распространяется до DN 500. Для DN 600+ необходим ОСТ 36-21-77 (секторные) или специсполнение по ТУ.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Не указать R/DN для гнутых</div><div class="kb-err-note">Серия СТО ЦКТИ 321 содержит 8 исполнений с разными R и назначением тракта. Если R не указан — уточняется по номеру типа или рабочим условиям.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Заказ ГОСТ 17375 для DN 600+</div><div class="kb-err-note">ГОСТ 17375 распространяется до DN 500. Для Dy 500–1400 необходим ОСТ 36-21-77 (секторные) или специсполнение по ТУ предприятия.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Не учесть категорию (АЭС)</div><div class="kb-err-note">Категория I–IV по НП-089-15 определяет весь объём НК и документации. Ошибка в категории = несоответствие программе контроля.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путаница PN и рабочего давления</div><div class="kb-err-note">При t &gt; 100°С допустимое давление снижается. PN подбирается с учётом рабочей температуры по таблицам норматива.</div></div></div>
             </div>

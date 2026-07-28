@@ -616,15 +616,30 @@ class Promen_Import_Command {
 	 *
 	 * Файл: frontmatter (taxonomy, slug, name?) + HTML-тело → описание термина.
 	 */
+	/** Рекурсивный список *.md через scandir (см. комментарий в content()). */
+	private static function scan_md( string $dir ): array {
+		$out = [];
+		foreach ( array_diff( scandir( $dir ) ?: [], [ '.', '..' ] ) as $entry ) {
+			$path = $dir . '/' . $entry;
+			if ( is_dir( $path ) ) {
+				$out = array_merge( $out, self::scan_md( $path ) );
+			} elseif ( str_ends_with( $entry, '.md' ) ) {
+				$out[] = $path;
+			}
+		}
+		return $out;
+	}
+
 	public function content( array $args, array $assoc ): void {
 		$dir = rtrim( $assoc['dir'] ?? '/data/content', '/' );
 		if ( ! is_dir( $dir ) ) {
 			WP_CLI::error( "Каталог не найден: {$dir}" );
 		}
-		$files = new RegexIterator(
-			new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $dir ) ),
-			'/\.md$/'
-		);
+		// Обход через scandir, а не RecursiveDirectoryIterator: на bind-mount
+		// Docker Desktop итератор обрывает readdir и доходит лишь до части
+		// файлов (из 65 .md находил 15) — обновлялась только часть терминов.
+		$files = self::scan_md( $dir );
+		sort( $files );
 		$done = 0;
 		foreach ( $files as $file ) {
 			$raw = file_get_contents( (string) $file );

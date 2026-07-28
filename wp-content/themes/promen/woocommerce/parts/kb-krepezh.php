@@ -116,47 +116,48 @@ defined( 'ABSPATH' ) || exit;
       </div>
 
       <div class="kb-panel" id="kp-norms">
-        <p class="kb-intro-p">Выбор норматива определяет конструкцию крепежа, ряд M×L, допуски и требования к материалу. В каталоге — <strong>23 норматива</strong>; ниже — основные серии по объёму позиций.</p>
+        <p class="kb-intro-p">Крепёж для энергетики нормируется на двух уровнях: <strong>ГОСТ 20700-75</strong> и <strong>ОСТ 26-2043-91</strong> задают технические требования к материалу, термообработке и контролю для фланцевых соединений с температурой среды до 650 °С, а конструкцию и размерный ряд определяют отдельные ГОСТ на болты, шпильки, гайки и шайбы. В каталоге — <strong>23 норматива</strong>; в скобках — число позиций реестра.</p>
         <div class="kb-norm-grid">
           <div class="kb-norm-group">
-            <div class="kb-norm-group-hd">Болты — основной ряд</div>
+            <div class="kb-norm-group-hd">Технические требования — головные документы</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22032-1976</span><span class="kb-norm-desc">Болты фундаментные. 2 301 позиция — крупнейшая серия каталога</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 7805-1970</span><span class="kb-norm-desc">Болты с уменьшенной головкой. 1 936 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22043-1976</span><span class="kb-norm-desc">Болты фундаментные. 1 588 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 7798-1970</span><span class="kb-norm-desc">Болты с шестигранной головкой. 1 512 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 7795-1970</span><span class="kb-norm-desc">Болты с шестигранной головкой. 1 080 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 7796 / 7808-1970</span><span class="kb-norm-desc">Продолжение ряда шестигранных / уменьшенной головки — по 904 позиции</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10602-1994</span><span class="kb-norm-desc">Болты высокопрочные. 242 позиции</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 20700-75</span><span class="kb-norm-desc">Болты, шпильки, гайки и шайбы для фланцевых и анкерных соединений, пробки и хомуты с температурой среды от 0 до 650 °С. Технические условия</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 26-2043-91</span><span class="kb-norm-desc">Болты, шпильки, гайки и шайбы для фланцевых соединений. Технические требования. Ру 0–16 МПа, t −70…+600 °C</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ ISO 10474-2016</span><span class="kb-norm-desc">Документы о контроле металлопродукции. Паспорт качества 3.1 с плавочными данными</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">О безопасности оборудования под избыточным давлением — при поставке в составе поднадзорных узлов. Декл. RU С-RU.АБ53.В.08323/23</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ТУ 24.20.40-001-13842829-2023</span><span class="kb-norm-desc">ТУ предприятия — нестандартные M×L, покрытия и классы прочности по КД заказчика</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
-            <div class="kb-norm-group-hd">Шпильки</div>
+            <div class="kb-norm-group-hd">Болты — конструкция и размеры</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 15590-1970</span><span class="kb-norm-desc">Шпильки. 1 505 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 9066-1970</span><span class="kb-norm-desc">Шпильки для фланцевых соединений. 662 позиции</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 26-2040-96</span><span class="kb-norm-desc">Шпильки для сосудов и аппаратов. 398 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 15591-1970</span><span class="kb-norm-desc">Шпильки. 240 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10494-1980</span><span class="kb-norm-desc">Шпильки Ст20. 207 позиций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 7798-70</span><span class="kb-norm-desc">Болты с шестигранной головкой класса точности B (1 512 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 7805-70</span><span class="kb-norm-desc">Болты с шестигранной головкой класса точности A (1 936 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 7796-70 / 7808-70</span><span class="kb-norm-desc">Болты с шестигранной уменьшенной головкой, классы точности B и A (по 904 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 7795-70</span><span class="kb-norm-desc">Болты с шестигранной уменьшенной головкой и направляющим подголовком, класс точности B, M6–M48 (1 080 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 15590-70 / 15591-70</span><span class="kb-norm-desc">Болты с шестигранной уменьшенной головкой класса точности C — с направляющим подголовком и без него (1 505 + 240 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10602-94</span><span class="kb-norm-desc">Болты с шестигранной головкой класса точности B с диаметром резьбы свыше 48 мм, M52–M150 (242 поз.)</span></div>
+            </div>
+          </div>
+          <div class="kb-norm-group">
+            <div class="kb-norm-group-hd">Шпильки — конструкция и размеры</div>
+            <div class="kb-norm-items">
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 9066-75</span><span class="kb-norm-desc">Шпильки для фланцевых соединений с температурой среды от 0 до 650 °С. Типы и основные размеры (662 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10494-80</span><span class="kb-norm-desc">Шпильки для фланцевых соединений арматуры и трубопроводов на Ру св. 10 до 100 МПа (207 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 26-2040-96</span><span class="kb-norm-desc">Шпильки для фланцевых соединений сосудов, аппаратов и трубопроводов. Конструкция и размеры (398 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22032-76</span><span class="kb-norm-desc">Шпильки с ввинчиваемым концом длиной 1d, класс точности B (2 301 поз. — крупнейшая серия каталога)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22043-76</span><span class="kb-norm-desc">Шпильки для деталей с гладкими отверстиями, класс точности A (1 588 поз.)</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">Гайки и шайбы</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 9064-1970</span><span class="kb-norm-desc">Гайки для фланцевых соединений. 26 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 5915 / 10605</span><span class="kb-norm-desc">Гайки шестигранные. 22 + 24 позиции</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6402-1970</span><span class="kb-norm-desc">Шайбы. 80 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 11371-1978</span><span class="kb-norm-desc">Шайбы усиленные. 18 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6958-1978</span><span class="kb-norm-desc">Винты. 1 позиция</span></div>
-            </div>
-          </div>
-          <div class="kb-norm-group">
-            <div class="kb-norm-group-hd">ТР ТС / ТУ / контроль</div>
-            <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">О безопасности оборудования под избыточным давлением — при поставке в составе поднадзорных узлов. Декл. RU С-RU.АБ53.В.08323/23</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ТУ 24.20.40-001-13842829-2023</span><span class="kb-norm-desc">ТУ предприятия — при изготовлении по КД заказчика</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ ISO 10474-2016</span><span class="kb-norm-desc">Документы о контроле металлопродукции. Паспорт качества 3.1</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">КД заказчика</span><span class="kb-norm-desc">Нестандартные M×L, покрытия, классы прочности — согласование до запуска</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 9064-75</span><span class="kb-norm-desc">Гайки для фланцевых соединений с температурой среды от 0 до 650 °С. Типы и основные размеры (26 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 5915-70 / 5927-70</span><span class="kb-norm-desc">Гайки шестигранные классов точности B и A (22 + 24 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 5916-70 / 5929-70</span><span class="kb-norm-desc">Гайки шестигранные низкие классов точности B и A, M1–M48 (24 + 24 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10605-94 / 10607-94</span><span class="kb-norm-desc">Гайки шестигранные и низкие с диаметром резьбы свыше 48 мм, класс точности B, M52–M150 (24 + 24 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 11371-78 / 6958-78</span><span class="kb-norm-desc">Шайбы нормального ряда и шайбы увеличенные, классы точности A и C, M1–M48 (18 + 1 поз.)</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6402-70</span><span class="kb-norm-desc">Шайбы пружинные. Технические условия (80 поз.)</span></div>
             </div>
           </div>
         </div>

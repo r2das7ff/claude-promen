@@ -49,7 +49,36 @@ defined( 'ABSPATH' ) || exit;
       </div>
     </div>
     <div class="kb-panel" id="kp-norms">
-      <div class="kb-norm-grid"><div class="kb-norm-group"><div class="kb-norm-group-hd">Основной стандарт</div><div class="kb-norm-items"><div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 33257-2015</span><span class="kb-norm-desc">Методы контроля и испытаний арматуры</span></div><div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 9544</span><span class="kb-norm-desc">Нормы герметичности затворов</span></div></div></div><div class="kb-norm-group"><div class="kb-norm-group-hd">Общие</div><div class="kb-norm-items"><div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">При PN > 0,05 МПа</span></div><div class="kb-norm-item"><span class="kb-norm-code">ТУ 24.20.40-001-13842829-2023</span><span class="kb-norm-desc">ТУ предприятия</span></div></div></div></div>
+      <p class="kb-intro-p">Помимо стандартов на конструкцию и испытания арматуры, в спецификациях объектов почти всегда фигурируют два блока общетехнических требований: <strong>климатическое исполнение</strong> по ГОСТ 15150-69 и <strong>сейсмостойкость</strong> по серии ГОСТ 30546. Их указывают в заявке вместе с DN, PN и средой.</p>
+      <div class="kb-norm-grid">
+        <div class="kb-norm-group">
+          <div class="kb-norm-group-hd">Конструкция и испытания</div>
+          <div class="kb-norm-items">
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 33257-2015</span><span class="kb-norm-desc">Арматура трубопроводная. Методы контроля и испытаний</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 9544-2015</span><span class="kb-norm-desc">Арматура трубопроводная. Нормы герметичности затворов</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 33259-2015</span><span class="kb-norm-desc">Фланцы арматуры, соединительных частей и трубопроводов на номинальное давление до PN 250</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 34655-2020</span><span class="kb-norm-desc">Прокладки овального, восьмиугольного сечения и линзовые стальные для фланцев арматуры</span></div>
+          </div>
+        </div>
+        <div class="kb-norm-group">
+          <div class="kb-norm-group-hd">Условия эксплуатации и сейсмостойкость</div>
+          <div class="kb-norm-items">
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 15150-69</span><span class="kb-norm-desc">Исполнения для различных климатических районов. Категории, условия эксплуатации, хранения и транспортирования — исполнения У, УХЛ, Т, О и категории размещения 1–5</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30546.1-98</span><span class="kb-norm-desc">Общие требования к техническим изделиям и методы расчёта их сложных конструкций в части сейсмостойкости</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30546.2-98</span><span class="kb-norm-desc">Испытания на сейсмостойкость машин, приборов и других технических изделий. Общие положения и методы испытаний</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30546.3-98</span><span class="kb-norm-desc">Методы определения сейсмостойкости изделий, установленных на месте эксплуатации, при аттестации или сертификации на сейсмическую безопасность</span></div>
+          </div>
+        </div>
+        <div class="kb-norm-group">
+          <div class="kb-norm-group-hd">АЭС и обязательные нормы</div>
+          <div class="kb-norm-items">
+            <div class="kb-norm-item"><span class="kb-norm-code">НП-068-05</span><span class="kb-norm-desc">Трубопроводная арматура для атомных станций. Общие технические требования</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">НП-089-15</span><span class="kb-norm-desc">Общие требования к оборудованию и трубопроводам АЭУ. Категории трубопроводов I–IV</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">О безопасности оборудования под избыточным давлением. Обязателен при PN &gt; 0,05 МПа. Декл. RU С-RU.АБ53.В.08323/23</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ТУ 24.20.40-001-13842829-2023</span><span class="kb-norm-desc">ТУ предприятия — комплектность поставки и объём контроля</span></div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="kb-panel" id="kp-materials">
       <div class="kb-mat-grid"><div class="kb-mat"><div class="kb-mat-grade">Ст20</div><div class="kb-mat-std">ГОСТ 1050</div><div class="kb-mat-range">Основная марка</div><div class="kb-mat-apps">Корпус и крышка</div></div><div class="kb-mat"><div class="kb-mat-grade">09Г2С</div><div class="kb-mat-std">ГОСТ 19281</div><div class="kb-mat-range">Хладостойкость</div><div class="kb-mat-apps">По проекту</div></div><div class="kb-mat"><div class="kb-mat-grade">12Х18Н10Т</div><div class="kb-mat-std">ГОСТ 5632</div><div class="kb-mat-range">Коррозия</div><div class="kb-mat-apps">Агрессивные среды</div></div></div>

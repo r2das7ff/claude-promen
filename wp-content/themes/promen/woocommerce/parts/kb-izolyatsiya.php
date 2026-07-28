@@ -96,7 +96,8 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">Основной стандарт</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30732-2020</span><span class="kb-norm-desc">Трубы и фасонные изделия в ППУ. 72 позиции тройников в каталоге</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30732-2020</span><span class="kb-norm-desc">Трубы и фасонные изделия стальные с тепловой изоляцией из пенополиуретана с защитной оболочкой. Технические условия (EN 253:2015 / EN 448:2016, NEQ). Взамен ГОСТ 30732-2006</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30732-2020, разд. 5</span><span class="kb-norm-desc">Защитная оболочка: полиэтиленовая (ПЭ) для подземной бесканальной прокладки, оцинкованная (ОЦ) для надземной — указывается в обозначении изделия</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
