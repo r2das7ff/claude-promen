@@ -88,7 +88,7 @@ get_header();
       <div class="nb-panel-sec-lbl">Параметры документа</div>
       <div class="nb-panel-row"><span class="nb-panel-k">Категория</span><span class="nb-panel-v" id="pCat">—</span></div>
       <div class="nb-panel-row" id="pSubRow" style="display:none"><span class="nb-panel-k">Тип детали</span><span class="nb-panel-v" id="pSub">—</span></div>
-      <div class="nb-panel-row"><span class="nb-panel-k">Статус</span><span class="nb-panel-v">● Действует</span></div>
+      <div class="nb-panel-row"><span class="nb-panel-k">Статус</span><span class="nb-panel-v" id="pStatus">● Действует</span></div>
       <div class="nb-panel-row"><span class="nb-panel-k">Тип</span><span class="nb-panel-v" id="pTypeFull">—</span></div>
     </div>
     <div class="nb-panel-sec" id="pSuperSec" style="display:none">

@@ -5,7 +5,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PROMEN_VERSION', '0.35.0' );
+define( 'PROMEN_VERSION', '0.35.7' );
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );
@@ -169,12 +169,14 @@ add_action( 'wp_enqueue_scripts', function () {
 			'catalogUrl' => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' ),
 			// Макетные короткие категории реестра → группы каталога.
 			'groups'     => [
-				'sdt' => 'sdt',
-				'op'  => 'opory',
-				'zra' => 'armatura',
-				'tr'  => 'truby',
-				'iz'  => 'izolyatsiya',
-				'td'  => 'tochenye',
+				'sdt'  => 'sdt',
+				'fl'   => 'flancy',
+				'krep' => 'krepezh',
+				'op'   => 'opory',
+				'zra'  => 'armatura',
+				'tr'   => 'truby',
+				'iz'   => 'izolyatsiya',
+				'td'   => 'tochenye',
 			],
 		] );
 	}

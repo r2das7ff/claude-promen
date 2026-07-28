@@ -6,6 +6,8 @@
  * стили — assets/css/front.css. Подключение — functions.php (is_front_page()).
  */
 $promen_catalog_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' );
+// S9 «Нормативная база» — карточки стандартов ведут в полный реестр документов.
+$promen_nb_url      = ( $p = promen_page( 'normativnaya-baza' ) ) ? get_permalink( $p ) : home_url( '/normativnaya-baza/' );
 
 add_filter( 'promen_footer_idx', fn () => 'ПЭ-00.FTR / REV.1' );
 add_filter( 'promen_s10_eyebrow_num', fn () => '10' );
@@ -1489,6 +1491,7 @@ get_header();
     </div>
     <div class="s9-filter" role="group" aria-label="Фильтр документов">
       <button class="s9-filter-btn active" data-cat="all">ВСЕ</button>
+      <button class="s9-filter-btn" data-cat="std">СТАНДАРТЫ</button>
       <button class="s9-filter-btn" data-cat="cert">СЕРТИФИКАТЫ</button>
       <button class="s9-filter-btn" data-cat="smk">СМК</button>
       <button class="s9-filter-btn" data-cat="decl">ДЕКЛАРАЦИИ</button>
@@ -1497,13 +1500,61 @@ get_header();
   </div>
   <div class="s9-grid">
 
+    <div class="s9-card" data-cat="std">
+      <div class="s9-card-top">
+        <span class="s9-type">ГОСТ</span>
+      </div>
+      <p class="s9-card-name">ГОСТ 17375–17380-2001 · соединительные детали</p>
+      <div class="s9-card-foot">
+        <span class="s9-scope">Отводы, тройники, переходы, заглушки. DN 15–800</span>
+        <span class="s9-status"><span class="s9-status-dot"></span>Действует</span>
+        <a class="s9-link" href="<?php echo esc_url( $promen_nb_url ); ?>">В РЕЕСТР</a>
+      </div>
+    </div>
+
+    <div class="s9-card" data-cat="std">
+      <div class="s9-card-top">
+        <span class="s9-type">ГОСТ</span>
+      </div>
+      <p class="s9-card-name">ГОСТ 33259-2015 · фланцы трубопроводов и арматуры</p>
+      <div class="s9-card-foot">
+        <span class="s9-scope">DN 10–2400, до PN 250</span>
+        <span class="s9-status"><span class="s9-status-dot"></span>Действует</span>
+        <a class="s9-link" href="<?php echo esc_url( $promen_nb_url ); ?>">В РЕЕСТР</a>
+      </div>
+    </div>
+
+    <div class="s9-card" data-cat="std">
+      <div class="s9-card-top">
+        <span class="s9-type">ОСТ</span>
+      </div>
+      <p class="s9-card-name">ОСТ 34 и ОСТ 36 · детали трубопроводов ТЭС и АС</p>
+      <div class="s9-card-foot">
+        <span class="s9-scope">Рраб &lt; 2,2 МПа, t ≤ 425 °C; Dy до 1400</span>
+        <span class="s9-status"><span class="s9-status-dot"></span>Действует</span>
+        <a class="s9-link" href="<?php echo esc_url( $promen_nb_url ); ?>">В РЕЕСТР</a>
+      </div>
+    </div>
+
+    <div class="s9-card" data-cat="std">
+      <div class="s9-card-top">
+        <span class="s9-type">СТО</span>
+      </div>
+      <p class="s9-card-name">СТО ЦКТИ 2009 · детали трубопроводов тепловых станций</p>
+      <div class="s9-card-foot">
+        <span class="s9-scope">p ≥ 4,0 МПа, ресурс 200 000 часов</span>
+        <span class="s9-status"><span class="s9-status-dot"></span>Действует</span>
+        <a class="s9-link" href="<?php echo esc_url( $promen_nb_url ); ?>">В РЕЕСТР</a>
+      </div>
+    </div>
+
     <div class="s9-card" data-cat="cert">
       <div class="s9-card-top">
         <span class="s9-type">СЕРТ.</span>
       </div>
       <p class="s9-card-name">Сертификат соответствия ГОСТ 17375-2001</p>
       <div class="s9-card-foot">
-        <span class="s9-scope">Отводы DN 15–1400</span>
+        <span class="s9-scope">Отводы крутоизогнутые. DN 15–800</span>
         <span class="s9-status"><span class="s9-status-dot"></span>Действует</span>
         <a class="s9-link" href="#" onclick="openRequestModal('docs',{name:'Сертификат соответствия ГОСТ 17375-2001'});return false;">СКАЧАТЬ</a>
       </div>
@@ -1515,7 +1566,7 @@ get_header();
       </div>
       <p class="s9-card-name">Сертификат соответствия ГОСТ 17376-2001</p>
       <div class="s9-card-foot">
-        <span class="s9-scope">Тройники DN 15–1400</span>
+        <span class="s9-scope">Тройники. DN 15–600</span>
         <span class="s9-status"><span class="s9-status-dot"></span>Действует</span>
         <a class="s9-link" href="#" onclick="openRequestModal('docs',{name:'Сертификат соответствия ГОСТ 17376-2001'});return false;">СКАЧАТЬ</a>
       </div>
@@ -1561,15 +1612,16 @@ get_header();
       <div class="s9-card-top">
         <span class="s9-type">ТУ</span>
       </div>
-      <p class="s9-card-name">ТУ 3742-001-XXXXXXXXX Детали трубопроводов</p>
+      <p class="s9-card-name">ТУ 24.20.40-001-13842829-2023 Детали трубопроводов</p>
       <div class="s9-card-foot">
-        <span class="s9-scope">Специсполнение АЭС/ТЭС</span>
+        <span class="s9-scope">Изготовление по КД заказчика и вне сортамента ГОСТ</span>
         <span class="s9-status"><span class="s9-status-dot"></span>Действует</span>
-        <a class="s9-link" href="#" onclick="openRequestModal('docs',{name:'ТУ 3742-001-XXXXXXXXX Детали трубопроводов'});return false;">ЗАПРОСИТЬ</a>
+        <a class="s9-link" href="#" onclick="openRequestModal('docs',{name:'ТУ 24.20.40-001-13842829-2023 Детали трубопроводов'});return false;">ЗАПРОСИТЬ</a>
       </div>
     </div>
 
   </div>
+  <p class="s9-note">Полный реестр действующих ГОСТ, ОСТ, СТО и ТУ с фильтрами по типу детали и виду документа — на странице <a href="<?php echo esc_url( $promen_nb_url ); ?>">«Нормативная база»</a>.</p>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════════════
