@@ -898,47 +898,202 @@ img{display:block;max-width:100%;}
 
 /* ══════════════════════════════════════════════
    §SHOPMAP — КАРТА ЦЕХА
+   Слева — светлый чертёжный лист (SVG-обводка + HTML-подписи
+   зон в %: подписи должны быть настоящей типографикой, в SVG
+   они получались 5–6px и не читались). Справа — лента из 8
+   участков поверх непрерывного кадра цеха: раскрытая строка
+   не перекрывает видео, свёрнутые — приглушают его.
+   Высота обеих колонок выводится из --shm-rowh/--shm-winh,
+   поэтому при переключении зоны секция не «дышит».
 ══════════════════════════════════════════════ */
-#shopmap{position:relative;background:#060E18;overflow:hidden;display:flex;flex-direction:column;}
-#shopmap::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(109,140,166,.038) 1px,transparent 1px),linear-gradient(90deg,rgba(109,140,166,.038) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
-.shm-hd{position:relative;z-index:1;padding:22px 56px;border-bottom:1px solid rgba(109,140,166,.1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.shm-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:rgba(109,140,166,.65);display:flex;align-items:center;gap:10px;}
-.shm-tag::before{content:'';width:14px;height:1px;background:rgba(109,140,166,.45);}
-.shm-body{position:relative;z-index:1;padding:28px 56px 36px;}
-.shm-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:48px;margin-bottom:24px;}
-.shm-statement{font-size:13px;font-weight:300;line-height:1.75;color:rgba(109,140,166,.68);max-width:460px;}
-.shm-nums{display:flex;gap:0;flex-shrink:0;align-items:flex-start;}
-.shm-num{display:flex;flex-direction:column;gap:4px;padding:0 28px;border-right:1px solid rgba(109,140,166,.1);}
-.shm-num:first-child{padding-left:0;}
-.shm-num:last-child{border-right:none;padding-right:0;}
-.shm-num-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:26px;letter-spacing:-.02em;color:rgba(169,183,198,.9);line-height:1;}
-.shm-num-k{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(109,140,166,.5);}
-.shm-plan{
-  position:relative;
-  border:1px solid rgba(109,140,166,.12);
-  overflow:hidden;
-  min-height:min(46vh, 420px);
-  padding:12px 0;
-  display:flex;
-  align-items:center;
+#shopmap{
+  --shm-rowh:42px;                                       /* свёрнутая строка */
+  --shm-winh:184px;                                      /* окно видео у раскрытой */
+  --shm-h:calc(var(--shm-rowh) * 8 + var(--shm-winh));   /* 8 строк + окно = 520 */
+  position:relative;background:#fff;overflow:hidden;
+  display:flex;flex-direction:column;
 }
-.shm-plan-svg{display:block;width:100%;height:100%;min-height:360px;}
-.shm-legend{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:16px;}
-.shm-leg{display:flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(109,140,166,.5);}
+#shopmap::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(109,140,166,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(109,140,166,.05) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.shm-hd{position:relative;z-index:1;padding:22px 56px;border-bottom:1px solid var(--ln);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.shm-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:10px;}
+.shm-tag::before{content:'';width:14px;height:1px;background:var(--ln2);}
+.shm-body{position:relative;z-index:1;padding:28px 56px 40px;}
+
+.shm-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:56px;margin-bottom:22px;}
+.shm-statement{font-size:13px;font-weight:300;line-height:1.75;color:var(--blue);max-width:520px;}
+.shm-legend{display:grid;grid-template-columns:auto auto;gap:9px 26px;flex-shrink:0;}
+.shm-leg{display:flex;align-items:center;gap:9px;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1);}
 .shm-leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.shm-leg-dot--base{background:var(--g1);}
+.shm-leg-dot--heat{background:#C4460E;}
+.shm-leg-dot--qc{background:#2E7D32;}
+.shm-leg-dot--route{width:15px;height:0;border-radius:0;border-top:1px dashed var(--dark);}
+
+.shm-split{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:24px;align-items:start;}
+
+/* ── Чертёжный лист ──
+   +2px к --shm-h: у обеих колонок рамка 1px, а --shm-h описывает
+   содержимое (8 строк ленты) — иначе последняя строка режется. */
+.shm-sheet{height:calc(var(--shm-h) + 2px);display:flex;flex-direction:column;background:#fff;border:1px solid var(--ln);}
+.shm-sheet-hd{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;
+  padding:11px 16px;border-bottom:1px solid var(--ln);background:var(--bg);
+  font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+}
+.shm-sheet-t{color:var(--blue);}
+.shm-sheet-c{color:var(--g1);opacity:.8;}
+.shm-plan{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:13px;padding:16px 18px;}
+
+/* Размерная линия: засечки только по краям — как на выносном размере чертежа */
+.shm-dim{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.shm-dim-l{position:relative;flex:1;height:1px;background:rgba(109,140,166,.4);}
+.shm-dim-l::before,.shm-dim-l::after{content:'';position:absolute;top:-3px;width:1px;height:7px;background:rgba(109,140,166,.6);display:none;}
+.shm-dim-l::before{left:0;}
+.shm-dim-l::after{right:0;}
+.shm-dim-l:first-child::before{display:block;}
+.shm-dim-l:last-child::after{display:block;}
+.shm-dim-v{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.14em;color:var(--g1);}
+
+.shm-frame{position:relative;width:100%;aspect-ratio:860/460;flex-shrink:0;}
+.shm-plan-svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
+.shm-zones{position:absolute;inset:0;}
+.shm-node{transition:fill .3s,stroke .3s;}
+.shm-node.is-on{fill:var(--dark);stroke:var(--dark);}
 .shm-spark-halo{filter:url(#shm-spark-glow);transform-box:fill-box;transform-origin:center;animation:shmSparkPulse 1.6s ease-in-out infinite;}
 .shm-spark-core{filter:url(#shm-spark-glow);}
-@keyframes shmSparkPulse{0%,100%{transform:scale(1);opacity:.4;}50%{transform:scale(1.4);opacity:.65;}}
-.shm-popup{position:absolute;z-index:5;width:min(420px,88vw);left:0;top:0;opacity:0;pointer-events:none;background:#0B1926;border:1px solid rgba(169,183,198,.26);box-shadow:0 24px 60px rgba(0,0,0,.6);transition:opacity .35s cubic-bezier(.16,1,.3,1),transform .35s cubic-bezier(.16,1,.3,1);transform:translate(-50%,calc(-100% - 20px)) scale(.92);}
-.shm-popup::after{content:'';position:absolute;left:50%;bottom:-6px;width:10px;height:10px;transform:translateX(-50%) rotate(45deg);background:#0B1926;border-right:1px solid rgba(169,183,198,.26);border-bottom:1px solid rgba(169,183,198,.26);}
-.shm-popup.shm-pop-visible{opacity:1;transform:translate(-50%,calc(-100% - 20px)) scale(1);pointer-events:auto;}
-.shm-popup--below{transform:translate(-50%,20px) scale(.92);}
-.shm-popup--below::after{bottom:auto;top:-6px;transform:translateX(-50%) rotate(225deg);}
-.shm-popup--below.shm-pop-visible{transform:translate(-50%,20px) scale(1);}
-.shm-popup-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid rgba(109,140,166,.16);}
-.shm-popup-num{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:18px;color:rgba(255,178,110,.92);line-height:1;}
-.shm-popup-name{font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.14em;color:rgba(169,183,198,.75);}
-.shm-popup video{display:block;width:100%;aspect-ratio:16/9;height:auto;object-fit:cover;background:#000;}
+@keyframes shmSparkPulse{0%,100%{transform:scale(1);opacity:.45;}50%{transform:scale(1.35);opacity:.75;}}
+
+.shm-zone{
+  position:absolute;left:var(--zx);top:var(--zy);width:var(--zw);height:var(--zh);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:0 6px 12px;border:0;background:rgba(109,140,166,.075);
+  font:inherit;color:inherit;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background .35s cubic-bezier(.16,1,.3,1),box-shadow .35s cubic-bezier(.16,1,.3,1);
+}
+/* Термоучасток — узкий пролёт во всю глубину корпуса: «Термообработка»
+   в 82px не встаёт, а переносить одно слово через мягкий дефис некрасиво.
+   Ставим подпись вертикально (снизу вверх, как на планах) и прижимаем
+   влево — по центру зоны проходит маршрут. */
+.shm-zone--tall{justify-content:center;align-items:flex-start;padding:30px 0 12px 9px;}
+.shm-zone--tall .shm-z-lbl{writing-mode:vertical-rl;transform:rotate(180deg);gap:5px;text-align:left;}
+.shm-z-num{
+  position:absolute;top:6px;left:0;right:0;
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:24px;line-height:1;
+  letter-spacing:-.03em;color:rgba(15,42,68,.17);transition:color .35s;
+}
+.shm-z-lbl{display:flex;flex-direction:column;gap:3px;}
+.shm-z-name{font-family:'DINPro',sans-serif;font-weight:700;font-size:11px;line-height:1.25;letter-spacing:.03em;color:var(--blue);}
+.shm-z-area{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.12em;color:var(--g1);}
+.shm-zone:hover{background:rgba(109,140,166,.13);}
+.shm-zone.is-on{background:rgba(109,140,166,.19);box-shadow:inset 0 0 0 1px rgba(15,42,68,.34);}
+.shm-zone.is-on .shm-z-num{color:rgba(15,42,68,.3);}
+.shm-zone.is-on .shm-z-name{color:var(--dark);}
+.shm-zone--heat{background:rgba(196,74,14,.07);}
+.shm-zone--heat .shm-z-name{color:#8C3608;}
+.shm-zone--heat:hover{background:rgba(196,74,14,.13);}
+.shm-zone--heat.is-on{background:rgba(196,74,14,.17);box-shadow:inset 0 0 0 1px rgba(196,74,14,.46);}
+.shm-zone--heat.is-on .shm-z-num{color:rgba(196,74,14,.36);}
+.shm-zone--qc{background:rgba(46,125,50,.06);}
+.shm-zone--qc .shm-z-name{color:#1E5B22;}
+.shm-zone--qc:hover{background:rgba(46,125,50,.11);}
+.shm-zone--qc.is-on{background:rgba(46,125,50,.16);box-shadow:inset 0 0 0 1px rgba(46,125,50,.42);}
+.shm-zone--qc.is-on .shm-z-num{color:rgba(46,125,50,.34);}
+.shm-zone:focus-visible{outline:2px solid var(--blue);outline-offset:-2px;}
+
+.shm-flow{display:flex;align-items:center;gap:10px;flex-shrink:0;font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;}
+.shm-flow-e{color:var(--g1);flex-shrink:0;}
+.shm-flow-t{color:rgba(109,140,166,.72);flex-shrink:0;}
+.shm-flow-l{flex:1;min-width:12px;height:1px;background:rgba(109,140,166,.28);}
+
+.shm-stamp{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ln);flex-shrink:0;}
+.shm-st{display:flex;flex-direction:column;gap:4px;padding:12px 16px;border-right:1px solid var(--ln);}
+.shm-st:last-child{border-right:none;}
+.shm-st-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:24px;line-height:1;letter-spacing:-.02em;color:var(--dark);}
+.shm-st-k{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);}
+
+/* ── Лента участков поверх кадра цеха ── */
+.shm-reel{position:relative;height:calc(var(--shm-h) + 2px);overflow:hidden;background:#060E18;border:1px solid rgba(15,42,68,.55);}
+.shm-reel-amb,.shm-reel-focus{position:absolute;left:0;width:100%;display:block;object-fit:cover;background:#060E18;}
+.shm-reel-amb{top:0;height:100%;z-index:0;}
+/* Одна размывающая подложка вместо backdrop-filter на каждой из 8 строк:
+   восемь backdrop-проходов поверх играющего видео роняют кадр на слабых GPU. */
+.shm-reel-scrim{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(rgba(109,140,166,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(109,140,166,.05) 1px,transparent 1px),
+    linear-gradient(180deg,rgba(4,10,18,.42),rgba(4,10,18,.19) 17%,rgba(4,10,18,.19) 80%,rgba(4,10,18,.5));
+  background-size:40px 40px,40px 40px,auto;
+  -webkit-backdrop-filter:blur(9px) saturate(.55);
+  backdrop-filter:blur(9px) saturate(.55);
+}
+/* Окно раскрытой строки детерминировано: строки до неё свёрнуты по --shm-rowh,
+   поэтому позиция считается из индекса и едет ровно в такт с аккордеоном. */
+.shm-reel-focus{
+  z-index:2;
+  top:calc(var(--shm-i,0) * var(--shm-rowh) + var(--shm-rowh));
+  height:var(--shm-winh);
+  transition:top .46s cubic-bezier(.16,1,.3,1);
+}
+.shm-rows{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;}
+.shm-row{
+  --shm-acc:#A9B7C6;
+  display:flex;flex-direction:column;flex:none;
+  height:var(--shm-rowh);overflow:hidden;
+  border:0;background:none;font:inherit;color:inherit;text-align:left;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:height .46s cubic-bezier(.16,1,.3,1);
+}
+.shm-row--heat{--shm-acc:#FF9E5C;}
+.shm-row--qc{--shm-acc:#6FBF77;}
+.shm-row.is-open{height:calc(var(--shm-rowh) + var(--shm-winh));}
+.shm-row-hd{
+  position:relative;flex:none;height:var(--shm-rowh);
+  display:flex;align-items:center;gap:12px;padding:0 16px;
+  background:rgba(7,15,26,.5);border-top:1px solid rgba(169,183,198,.16);
+  transition:background .35s;
+}
+.shm-row:first-child .shm-row-hd{border-top:0;}
+.shm-row:hover .shm-row-hd{background:rgba(7,15,26,.32);}
+.shm-row.is-open .shm-row-hd{background:rgba(4,10,18,.8);}
+.shm-row-hd::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--shm-acc);
+  transform:scaleY(0);transition:transform .35s cubic-bezier(.16,1,.3,1);
+}
+.shm-row.is-open .shm-row-hd::before{transform:scaleY(1);}
+.shm-row-num{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:17px;line-height:1;letter-spacing:-.02em;color:rgba(169,183,198,.52);flex-shrink:0;min-width:22px;transition:color .35s;}
+.shm-row.is-open .shm-row-num{color:var(--shm-acc);}
+.shm-row-name{font-family:'DINPro',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.02em;color:rgba(233,240,246,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .35s;}
+.shm-row.is-open .shm-row-name{color:rgba(240,246,251,.98);}
+/* Ключевой показатель участка держит правый край строки: в свёрнутом виде
+   лента иначе пустует на две трети ширины. Оборудование, а не площадь —
+   площади уходят в раскрытую строку, рядом с итогом по корпусу. */
+.shm-row-key{margin-left:auto;font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(169,183,198,.4);white-space:nowrap;flex-shrink:0;transition:opacity .3s,color .35s;}
+/* У раскрытой строки показатель дублируется в подписи под кадром — убираем,
+   правый край забирает акцентная засечка. */
+.shm-row.is-open .shm-row-key{opacity:0;}
+.shm-row-tick{width:14px;height:1px;background:rgba(169,183,198,.28);flex-shrink:0;transition:width .35s,background .35s;}
+.shm-row.is-open .shm-row-tick{width:26px;background:var(--shm-acc);}
+.shm-row-body{position:relative;flex:none;height:var(--shm-winh);display:flex;align-items:flex-end;opacity:0;transition:opacity .3s ease .12s;}
+.shm-row.is-open .shm-row-body{opacity:1;}
+.shm-row-cap{
+  width:100%;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
+  padding:26px 16px 12px;background:linear-gradient(180deg,transparent,rgba(3,9,17,.88));
+}
+.shm-row-spec{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(203,216,228,.88);line-height:1.5;}
+.shm-row-area{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:16px;line-height:1;letter-spacing:-.01em;color:var(--shm-acc);flex-shrink:0;}
+.shm-row:focus-visible{outline:2px solid rgba(169,183,198,.7);outline-offset:-2px;}
+
+@media (prefers-reduced-motion:reduce){
+  .shm-zone,.shm-row,.shm-row-hd,.shm-row-hd::before,.shm-row-body,.shm-row-tick,.shm-reel-focus,.shm-node{transition-duration:.01ms;}
+  .shm-spark-halo{animation:none;}
+}
 
 /* ══════════════════════════════════════════════
    §FLEET — МАШИННЫЙ ПАРК
@@ -1169,7 +1324,6 @@ img{display:block;max-width:100%;}
    ═══════════════════════════════════════════════════════════════════ */
 
 /* Новые элементы адаптива — на десктопе скрыты (база до медиа-правил) */
-.shm-list{ display:none; }
 .gal-arrows{ display:none; }
 
 /* ── §2 Единая ось: слим-рельса 20px на 481–1024, контент 48/40/20.
@@ -1194,7 +1348,7 @@ img{display:block;max-width:100%;}
 
 /* ── §3 Пол шрифта: служебные подписи ≥10px на ≤1024 ── */
 @media (max-width:1024px){
-  .prf-ib-label-l,.prf-ib-label-r,.prf-ib-sk,.prf-kicker,.prf-pk,.prf-pv,.prf-rec,.prf-status-r,.prf-status-sep,.s2-industry-full,.s2-continue,.gi-stat-l,.ge-idx,.ge-pk,.shm-num-k,.shm-popup-name,.shm-leg,.therm-stat-l,.therm-tk-u,.jc-step-l,.cap-anchor-kicker,.cap-row-label,.fl-anchor-kicker,.fl-astat-k,.fl-group-cat,.fl-item-spec,.gal-num,.gal-zone,.gal-info-detail,.gal-hint,.pdoc-badge,.s10-contact-k,.s10-form-label,.s10-field-label,.s10-file-label-txt,.s10-note,.strip-yr{ font-size:10px; }
+  .prf-ib-label-l,.prf-ib-label-r,.prf-ib-sk,.prf-kicker,.prf-pk,.prf-pv,.prf-rec,.prf-status-r,.prf-status-sep,.s2-industry-full,.s2-continue,.gi-stat-l,.ge-idx,.ge-pk,.shm-st-k,.shm-z-area,.shm-leg,.therm-stat-l,.therm-tk-u,.jc-step-l,.cap-anchor-kicker,.cap-row-label,.fl-anchor-kicker,.fl-astat-k,.fl-group-cat,.fl-item-spec,.gal-num,.gal-zone,.gal-info-detail,.gal-hint,.pdoc-badge,.s10-contact-k,.s10-form-label,.s10-field-label,.s10-file-label-txt,.s10-note,.strip-yr{ font-size:10px; }
   .jrn-layout .jd-stamp{ font-size:10px; }
   .s1-top,.s1-foot-l,.s1-foot-r,.prf-ib-cue,.s2-top-r,.cap-anchor-badge{ font-size:10px; }
   .s10-file-btn{ font-size:10px; }
@@ -1438,23 +1592,39 @@ img{display:block;max-width:100%;}
   .pdoc > div:nth-child(2){ grid-row:2; grid-column:1 / -1; }
 }
 
-/* ── SHOPMAP ≤1024: SVG-план как мини-карта, данные зон — списком ── */
+/* ── SHOPMAP ≤1024: колонки в стек, окно видео — от ширины экрана.
+      Ширина контента = 100vw − рельса − паддинги .shm-body (28/28 → 20/20,
+      рельса 20px до ≤480 и 0 ниже), окно держим примерно 2:1. ── */
 @media (max-width:1024px){
-  .shm-popup{ display:none !important; }
-  .shm-plan-svg text{ display:none; }
-  .shm-plan{ min-height:0; padding:6px 0; }
-  .shm-plan-svg{ min-height:0; height:auto; aspect-ratio:860/460; }
-  .shm-list{ display:grid; grid-template-columns:1fr 1fr; gap:1px;
-    background:rgba(109,140,166,.14); border:1px solid rgba(109,140,166,.14); margin-top:14px; }
-  .shm-li{ display:flex; gap:12px; align-items:flex-start; padding:12px 14px; background:#060E18; }
-  .shm-li-num{ font-family:'DINProCond','DINPro',sans-serif; font-weight:900; font-size:18px;
-    line-height:1.1; color:rgba(169,183,198,.85); flex-shrink:0; min-width:26px; }
-  .shm-li--heat .shm-li-num{ color:rgba(255,150,70,.85); }
-  .shm-li--qc .shm-li-num{ color:rgba(96,175,100,.85); }
-  .shm-li-name{ font-family:'DINPro',sans-serif; font-weight:700; font-size:12.5px;
-    color:rgba(233,240,246,.92); line-height:1.3; margin-bottom:3px; }
-  .shm-li-meta{ font-family:'DINPro',monospace; font-size:10px; letter-spacing:.06em;
-    text-transform:uppercase; color:rgba(109,140,166,.62); line-height:1.45; }
+  #shopmap{ --shm-rowh:46px; --shm-winh:calc((100vw - 76px) * .48); }
+  .shm-split{ grid-template-columns:1fr; gap:18px; }
+  .shm-sheet{ height:auto; }
+  .shm-plan{ padding:14px 14px 12px; gap:11px; }
+  .shm-legend{ grid-template-columns:auto auto; }
+}
+/* ≤900: зоны на плане сжимаются до ~70px — подписи снимаем, план работает
+   ключом к ленте участков под ним, номера остаются кликабельными. */
+@media (max-width:900px){
+  .shm-z-lbl{ display:none; }
+  .shm-zone,.shm-zone--tall{ justify-content:center; align-items:center; padding:0; }
+  .shm-z-num{ position:static; font-size:19px; color:rgba(15,42,68,.32); }
+  .shm-zone.is-on .shm-z-num,
+  .shm-zone--heat.is-on .shm-z-num,
+  .shm-zone--qc.is-on .shm-z-num{ color:var(--dark); }
+  .shm-sheet-hd{ font-size:9px; letter-spacing:.12em; }
+  .shm-st-v{ font-size:20px; }
+  .shm-st{ padding:10px 12px; }
+}
+@media (max-width:640px){
+  #shopmap{ --shm-rowh:46px; --shm-winh:calc((100vw - 60px) * .5); }
+  .shm-flow-t{ display:none; }
+  .shm-dim{ display:none; }
+}
+@media (max-width:480px){
+  #shopmap{ --shm-winh:calc((100vw - 40px) * .5); }
+  .shm-stamp{ grid-template-columns:1fr 1fr; }
+  .shm-st:nth-child(2){ border-right:none; }
+  .shm-st:nth-child(3){ border-top:1px solid var(--ln); }
 }
 
 /* ── Тач-цели ≥44px (≤1024) ── */

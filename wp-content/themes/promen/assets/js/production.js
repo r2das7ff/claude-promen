@@ -379,112 +379,140 @@ const sio=new IntersectionObserver(entries=>{
 },{threshold:0.38});
 allSections.forEach(s=>sio.observe(s));
 
-/* ── Карта цеха: спарк вдоль маршрута + видео-попапы на 01/03/05/07 ── */
+/* ── Карта цеха: автотур по участкам; план и лента — два вида одного
+      состояния, видео идёт непрерывно и не перезапускается при смене зоны ── */
 (function(){
-  var plan=document.querySelector('.shm-plan');
-  var svg=document.querySelector('.shm-plan-svg');
-  var routePath=document.getElementById('shm-route');
-  var sparkWrap=document.getElementById('shm-spark-wrap');
-  if(!plan||!svg||!routePath||!sparkWrap)return;
+  var section=document.getElementById('shopmap');
+  var split=document.querySelector('.shm-split');
+  var reel=document.querySelector('.shm-reel');
+  if(!section||!split||!reel)return;
 
-  var LOOP_MS=42000;      // полный обход маршрута — в 1.5 раза медленнее прежней версии (28s)
-  var HIDE_LEAD_MS=500;   // окно сворачивается за 0.5с до следующей остановки
+  var rows=Array.prototype.slice.call(reel.querySelectorAll('.shm-row'));
+  var zones=Array.prototype.slice.call(split.querySelectorAll('.shm-zone'));
+  var nodes=Array.prototype.slice.call(split.querySelectorAll('.shm-node'));
+  var route=document.getElementById('shm-route');
+  var spark=document.getElementById('shm-spark-wrap');
+  var vids=Array.prototype.slice.call(reel.querySelectorAll('video'));
+  if(!rows.length||!route||!spark)return;
 
-  var stops=[
-    {id:'01',x:87, y:118},
-    {id:'03',x:440,y:118},
-    {id:'05',x:793,y:118},
-    {id:'07',x:440,y:348}
-  ];
+  var DWELL=4200;   // стоянка на участке — столько показывается его кадр
+  var TRAVEL=800;   // перегон между участками
+  var SEG=DWELL+TRAVEL;
+  var LOOP=SEG*rows.length+TRAVEL;   // +выезд к отгрузке в конце круга
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  var total=routePath.getTotalLength();
+  /* Остановки в координатах viewBox плана (860×460), по одной на участок.
+     05 стоит на середине вертикального прогона — термоучасток занимает
+     всю высоту корпуса, и метка должна попадать в его центр. */
+  var STOPS=[[87,118],[255,118],[440,118],[635,118],[793,233],[635,348],[440,348],[169,348]];
+  var total=route.getTotalLength();
 
   function fractionAt(x,y){
-    var samples=4000,best=0,bestD=Infinity;
+    var samples=1400,best=0,bestD=Infinity;
     for(var i=0;i<=samples;i++){
-      var len=total*i/samples;
-      var p=routePath.getPointAtLength(len);
-      var dx=p.x-x,dy=p.y-y;
-      var d=dx*dx+dy*dy;
+      var p=route.getPointAtLength(total*i/samples);
+      var dx=p.x-x,dy=p.y-y,d=dx*dx+dy*dy;
       if(d<bestD){bestD=d;best=i/samples;}
     }
     return best;
   }
-  stops.forEach(function(s){s.frac=fractionAt(s.x,s.y);});
+  var fracs=STOPS.map(function(s){return fractionAt(s[0],s[1]);});
 
-  var popups={};
-  stops.forEach(function(s){
-    popups[s.id]=plan.querySelector('.shm-popup[data-video="'+s.id+'"]');
+  var active=-1;
+  function setActive(i){
+    if(i===active)return;
+    active=i;
+    reel.style.setProperty('--shm-i',i);
+    reel.setAttribute('data-active',i);
+    rows.forEach(function(el,n){el.classList.toggle('is-open',n===i);});
+    zones.forEach(function(el,n){el.classList.toggle('is-on',n===i);});
+    nodes.forEach(function(el,n){el.classList.toggle('is-on',n===i);});
+  }
+
+  function moveSpark(f){
+    var p=route.getPointAtLength(f*total);
+    spark.setAttribute('transform','translate('+p.x.toFixed(2)+','+p.y.toFixed(2)+')');
+  }
+  function ease(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
+
+  var raf=0,t0=null,visible=false,hold=false,resumeTimer=0;
+
+  function tick(ts){
+    raf=requestAnimationFrame(tick);
+    /* Точка входа в таймлайн — начало стоянки текущего участка: после
+       перехвата курсором тур продолжается с той зоны, где его оставили. */
+    if(t0===null)t0=ts-(Math.max(active,0)*SEG+TRAVEL);
+    var t=(ts-t0)%LOOP;
+    if(t<0)t+=LOOP;
+    var i=Math.floor(t/SEG);
+    if(i>=rows.length){                       // выезд: докатываем метку к отгрузке
+      var le=Math.min((t-rows.length*SEG)/TRAVEL,1);
+      moveSpark(fracs[rows.length-1]+(1-fracs[rows.length-1])*ease(le));
+      return;
+    }
+    var local=t-i*SEG;
+    var from=i===0?0:fracs[i-1];
+    moveSpark(local<TRAVEL?from+(fracs[i]-from)*ease(local/TRAVEL):fracs[i]);
+    setActive(i);
+  }
+
+  function start(){if(raf||reduce.matches)return;t0=null;raf=requestAnimationFrame(tick);}
+  function stop(){if(raf){cancelAnimationFrame(raf);raf=0;}t0=null;}
+
+  function pick(i){setActive(i);moveSpark(fracs[i]);}
+  function takeOver(i,sticky){
+    hold=true;stop();pick(i);
+    if(resumeTimer){clearTimeout(resumeTimer);resumeTimer=0;}
+    if(sticky)resumeTimer=setTimeout(release,9000);
+  }
+  function release(){
+    if(resumeTimer){clearTimeout(resumeTimer);resumeTimer=0;}
+    hold=false;
+    if(visible)start();
+  }
+
+  function bind(el,i){
+    el.addEventListener('pointerenter',function(e){
+      if(e.pointerType==='touch')return;      // тапу отвечает click — со своим удержанием
+      takeOver(i,false);
+    });
+    el.addEventListener('click',function(){takeOver(i,true);});
+    el.addEventListener('focus',function(){takeOver(i,false);});
+  }
+  rows.forEach(bind);
+  zones.forEach(bind);
+  split.addEventListener('pointerleave',function(e){
+    if(e.pointerType==='touch')return;
+    release();
+  });
+  split.addEventListener('focusout',function(e){
+    if(!split.contains(e.relatedTarget))release();
   });
 
-  var activeId=null;
+  function playAll(){vids.forEach(function(v){var p=v.play();if(p&&p.catch)p.catch(function(){});});}
+  function pauseAll(){vids.forEach(function(v){v.pause();});}
 
-  function positionPopup(el,x,y){
-    var pt=svg.createSVGPoint();
-    pt.x=x;pt.y=y;
-    var screenPt=pt.matrixTransform(svg.getScreenCTM());
-    var hostRect=plan.getBoundingClientRect();
-    var w=el.offsetWidth||420;
-    var pad=8;
-    var left=screenPt.x-hostRect.left;
-    var minL=w/2+pad,maxL=hostRect.width-w/2-pad;
-    if(left<minL)left=minL;
-    if(left>maxL)left=maxL;
-    el.style.left=left+'px';
-    el.style.top=(screenPt.y-hostRect.top)+'px';
-    el.classList.toggle('shm-popup--below',y<230);
-  }
+  /* Два <video> крутятся постоянно — вне экрана их надо глушить, иначе
+     секция жжёт декодер на всей остальной странице. */
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      visible=e.isIntersecting;
+      if(visible){playAll();if(!hold)start();}
+      else{pauseAll();stop();}
+    });
+  },{threshold:.06});
+  io.observe(section);
 
-  function openPopup(s){
-    var el=popups[s.id];
-    if(!el)return;
-    positionPopup(el,s.x,s.y);
-    el.classList.add('shm-pop-visible');
-    var vid=el.querySelector('video');
-    if(vid){try{vid.currentTime=0;vid.play();}catch(e){}}
-    activeId=s.id;
-  }
+  /* Возврат на вкладку: браузер сам глушит видео в фоне и не поднимает его
+     обратно — IntersectionObserver тут не сработает, секция не двигалась.
+     Таймлайн сбрасываем, иначе метка прыгает на случайный участок. */
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden){pauseAll();stop();return;}
+    if(!visible)return;
+    playAll();
+    if(!hold){stop();start();}
+  });
 
-  function closePopup(id){
-    var el=popups[id];
-    if(!el)return;
-    el.classList.remove('shm-pop-visible');
-    var vid=el.querySelector('video');
-    if(vid)vid.pause();
-    if(activeId===id)activeId=null;
-  }
-
-  var startTs=null,lastFrac=0;
-
-  function frame(ts){
-    if(startTs===null)startTs=ts;
-    var elapsed=(ts-startTs)%LOOP_MS;
-    var frac=elapsed/LOOP_MS;
-
-    var p=routePath.getPointAtLength(frac*total);
-    sparkWrap.setAttribute('transform','translate('+p.x+','+p.y+')');
-
-    var idx=-1;
-    for(var i=0;i<stops.length;i++){
-      if(frac>=stops[i].frac)idx=i; else break;
-    }
-    var current=idx>=0?stops[idx]:null;
-    var nextFrac=(idx+1<stops.length)?stops[idx+1].frac:1;
-
-    if(current&&activeId!==current.id){
-      if(activeId)closePopup(activeId);
-      openPopup(current);
-    }
-    if(activeId&&(nextFrac-frac)<=(HIDE_LEAD_MS/LOOP_MS)){
-      closePopup(activeId);
-    }
-    if(frac<lastFrac&&activeId){
-      closePopup(activeId);
-    }
-    if(activeId&&idx>=0)positionPopup(popups[activeId],stops[idx].x,stops[idx].y);
-
-    lastFrac=frac;
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
+  setActive(0);
+  moveSpark(fracs[0]);
 })();

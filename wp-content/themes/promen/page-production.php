@@ -341,6 +341,7 @@ get_header();
 </section>
 
 <!-- ═══════════════════════ §SHOPMAP — КАРТА ЦЕХА ═══════════════════════ -->
+<?php $shm_video = get_theme_file_uri( 'assets/media/tochnost_do_1mm-2.webm' ); ?>
 <section id="shopmap">
   <div class="shm-hd">
     <div class="shm-tag">КАРТА ЦЕХА</div>
@@ -349,168 +350,259 @@ get_header();
   <div class="shm-body">
     <div class="shm-intro">
       <p class="shm-statement">Производственные участки организованы по принципу единого потока — заготовка проходит через все зоны без возврата. Маршрут изготовления определяет планировку цеха площадью 4 200 м².</p>
-      <div class="shm-nums">
-        <div class="shm-num"><div class="shm-num-v">8</div><div class="shm-num-k">Участков</div></div>
-        <div class="shm-num"><div class="shm-num-v">4 200 м²</div><div class="shm-num-k">Площадь</div></div>
-        <div class="shm-num"><div class="shm-num-v">43</div><div class="shm-num-k">Ед. оборудования</div></div>
+      <div class="shm-legend">
+        <div class="shm-leg"><span class="shm-leg-dot shm-leg-dot--base"></span>Заготовка и обработка</div>
+        <div class="shm-leg"><span class="shm-leg-dot shm-leg-dot--heat"></span>Термический участок</div>
+        <div class="shm-leg"><span class="shm-leg-dot shm-leg-dot--qc"></span>Контроль качества</div>
+        <div class="shm-leg"><span class="shm-leg-dot shm-leg-dot--route"></span>Маршрут изготовления</div>
       </div>
     </div>
-    <div class="shm-plan">
-      <svg class="shm-plan-svg" viewBox="0 0 860 460" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <marker id="shm-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-            <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(169,183,198,.65)"/>
-          </marker>
-          <filter id="shm-spark-glow" x="-300%" y="-300%" width="700%" height="700%">
-            <feGaussianBlur stdDeviation="3.2"/>
-          </filter>
-        </defs>
 
-        <!-- Building outline -->
-        <rect x="1" y="1" width="858" height="458" fill="none" stroke="rgba(109,140,166,.22)" stroke-width="1.5"/>
+    <div class="shm-split">
 
-        <!-- Zone fills -->
-        <rect x="1" y="1" width="171" height="229" fill="rgba(109,140,166,.045)"/>
-        <rect x="172" y="1" width="166" height="229" fill="rgba(109,140,166,.03)"/>
-        <rect x="338" y="1" width="205" height="229" fill="rgba(109,140,166,.06)"/>
-        <rect x="543" y="1" width="185" height="229" fill="rgba(109,140,166,.03)"/>
-        <rect x="728" y="1" width="131" height="458" fill="rgba(160,70,15,.07)"/>
-        <rect x="543" y="230" width="185" height="229" fill="rgba(46,125,50,.05)"/>
-        <rect x="338" y="230" width="205" height="229" fill="rgba(46,125,50,.035)"/>
-        <rect x="1" y="230" width="337" height="229" fill="rgba(109,140,166,.035)"/>
+      <!-- ── ЛЕВО: чертёжный лист ── -->
+      <div class="shm-sheet">
+        <div class="shm-sheet-hd">
+          <span class="shm-sheet-t">План производственного корпуса</span>
+          <span class="shm-sheet-c">ПЭ-02.ПЛ / РЕВ.3</span>
+        </div>
 
-        <!-- Zone dividers -->
-        <line x1="172" y1="1" x2="172" y2="230" stroke="rgba(109,140,166,.12)" stroke-width="1"/>
-        <line x1="338" y1="1" x2="338" y2="459" stroke="rgba(109,140,166,.12)" stroke-width="1"/>
-        <line x1="543" y1="1" x2="543" y2="459" stroke="rgba(109,140,166,.12)" stroke-width="1"/>
-        <line x1="728" y1="1" x2="728" y2="459" stroke="rgba(109,140,166,.18)" stroke-width="1"/>
-        <line x1="1" y1="230" x2="727" y2="230" stroke="rgba(109,140,166,.14)" stroke-width="1"/>
+        <div class="shm-plan">
+          <div class="shm-dim">
+            <span class="shm-dim-l"></span><span class="shm-dim-v">84 000</span><span class="shm-dim-l"></span>
+          </div>
 
-        <!-- Zone A: СКЛАД МЕТАЛЛА -->
-        <text x="87" y="48" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(109,140,166,.09)" letter-spacing="-1">01</text>
-        <text x="87" y="152" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.75)">СКЛАД</text>
-        <text x="87" y="166" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.75)">МЕТАЛЛА</text>
-        <text x="87" y="184" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.4)">ПРИЁМКА ПРОКАТА</text>
-        <text x="87" y="200" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.3)">680 М²</text>
+          <div class="shm-frame">
+            <svg class="shm-plan-svg" viewBox="0 0 860 460" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              <defs>
+                <marker id="shm-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(15,42,68,.5)"/>
+                </marker>
+                <filter id="shm-spark-glow" x="-300%" y="-300%" width="700%" height="700%">
+                  <feGaussianBlur stdDeviation="3.4"/>
+                </filter>
+              </defs>
 
-        <!-- Zone B: УЧАСТОК РЕЗКИ -->
-        <text x="255" y="48" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(109,140,166,.07)" letter-spacing="-1">02</text>
-        <text x="255" y="152" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.72)">УЧАСТОК</text>
-        <text x="255" y="166" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.72)">РЕЗКИ</text>
-        <text x="255" y="184" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.4)">ГАЗ · ПЛАЗМА · ПИЛА</text>
-        <text x="255" y="200" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.3)">8 МАШИН · 520 М²</text>
+              <!-- Контур корпуса -->
+              <rect x=".75" y=".75" width="858.5" height="458.5" fill="none"
+                    stroke="rgba(15,42,68,.44)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
 
-        <!-- Zone C: МЕХАНООБРАБОТКА -->
-        <text x="440" y="48" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(109,140,166,.1)" letter-spacing="-1">03</text>
-        <text x="440" y="152" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(169,183,198,.72)">МЕХАНО-</text>
-        <text x="440" y="166" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(169,183,198,.72)">ОБРАБОТКА</text>
-        <text x="440" y="184" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.4)">ТОКАРНЫЙ · ФРЕЗЕРНЫЙ</text>
-        <text x="440" y="200" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.3)">18 СТ. ЧПУ · 840 М²</text>
+              <!-- Разбивочные оси участков -->
+              <line x1="172" y1="0" x2="172" y2="230" stroke="rgba(109,140,166,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+              <line x1="338" y1="0" x2="338" y2="460" stroke="rgba(109,140,166,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+              <line x1="543" y1="0" x2="543" y2="460" stroke="rgba(109,140,166,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+              <line x1="728" y1="0" x2="728" y2="460" stroke="rgba(15,42,68,.4)"     stroke-width="1" vector-effect="non-scaling-stroke"/>
+              <line x1="0"   y1="230" x2="728" y2="230" stroke="rgba(109,140,166,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+              <line x1="728" y1="230" x2="860" y2="230" stroke="rgba(196,74,14,.28)" stroke-width="1" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>
 
-        <!-- Zone D: СВАРОЧНЫЙ ЦЕХ -->
-        <text x="635" y="48" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(109,140,166,.07)" letter-spacing="-1">04</text>
-        <text x="635" y="152" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(109,140,166,.72)">СВАРОЧНЫЙ</text>
-        <text x="635" y="166" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(109,140,166,.72)">ЦЕХ</text>
-        <text x="635" y="184" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.4)">АВТОМАТ · ОРБИТ. · РУЧНАЯ</text>
-        <text x="635" y="200" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.3)">12 ПОСТОВ · 680 М²</text>
+              <!-- Камерные печи (05) -->
+              <rect x="754" y="286" width="22" height="26" rx="1.5" fill="none" stroke="rgba(196,74,14,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+              <rect x="782" y="286" width="22" height="26" rx="1.5" fill="none" stroke="rgba(196,74,14,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+              <rect x="754" y="320" width="22" height="26" rx="1.5" fill="none" stroke="rgba(196,74,14,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+              <rect x="782" y="320" width="22" height="26" rx="1.5" fill="none" stroke="rgba(196,74,14,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
 
-        <!-- Zone E: ТЕРМООБРАБОТКА -->
-        <line x1="728" y1="230" x2="859" y2="230" stroke="rgba(109,140,166,.07)" stroke-width=".6" stroke-dasharray="4 3"/>
-        <text x="793" y="40" text-anchor="middle" font-family="'DINPro',monospace" font-size="22" font-weight="900" fill="rgba(160,70,15,.15)" letter-spacing="-1">05</text>
-        <text x="793" y="58" text-anchor="middle" font-family="'DINPro',monospace" font-size="7.5" letter-spacing="2" fill="rgba(180,100,50,.78)">ТЕРМО-</text>
-        <text x="793" y="72" text-anchor="middle" font-family="'DINPro',monospace" font-size="7.5" letter-spacing="2" fill="rgba(180,100,50,.78)">ОБРАБОТКА</text>
-        <text x="793" y="86" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(160,80,30,.55)">4 ПЕЧИ · ДО 900°C</text>
-        <text x="793" y="100" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(160,80,30,.38)">480 М²</text>
-        <rect x="754" y="268" width="22" height="26" rx="2" fill="none" stroke="rgba(160,70,15,.2)" stroke-width=".8"/>
-        <rect x="782" y="268" width="22" height="26" rx="2" fill="none" stroke="rgba(160,70,15,.2)" stroke-width=".8"/>
-        <rect x="754" y="302" width="22" height="26" rx="2" fill="none" stroke="rgba(160,70,15,.2)" stroke-width=".8"/>
-        <rect x="782" y="302" width="22" height="26" rx="2" fill="none" stroke="rgba(160,70,15,.2)" stroke-width=".8"/>
-        <text x="793" y="368" text-anchor="middle" font-family="'DINPro',monospace" font-size="6" letter-spacing="1" fill="rgba(160,80,30,.3)">КАМЕРНЫЕ ПЕЧИ</text>
+              <!-- Вход / выход -->
+              <line x1="0" y1="118" x2="40" y2="118" stroke="rgba(15,42,68,.5)" stroke-width="1.2" marker-end="url(#shm-arr)" vector-effect="non-scaling-stroke"/>
+              <line x1="40" y1="348" x2="0" y2="348" stroke="rgba(15,42,68,.5)" stroke-width="1.2" marker-end="url(#shm-arr)" vector-effect="non-scaling-stroke"/>
 
-        <!-- Zone F: КОНТРОЛЬ НК -->
-        <text x="635" y="278" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(46,125,50,.1)" letter-spacing="-1">06</text>
-        <text x="635" y="382" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(46,125,50,.72)">КОНТРОЛЬ НК</text>
-        <text x="635" y="398" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(46,125,50,.5)">УЗК · РК · МК · ПВК</text>
-        <text x="635" y="414" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(46,125,50,.35)">6 МЕТОДОВ · 540 М²</text>
+              <!-- Маршрут: пунктирная нитка + невидимый двойник как источник геометрии -->
+              <path d="M 0,118 L 793,118 L 793,348 L 0,348" fill="none"
+                    stroke="rgba(15,42,68,.38)" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>
+              <path id="shm-route" d="M 0,118 L 793,118 L 793,348 L 0,348" fill="none" stroke="none"/>
 
-        <!-- Zone G: ОТК -->
-        <text x="440" y="278" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(46,125,50,.08)" letter-spacing="-1">07</text>
-        <text x="440" y="382" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(46,125,50,.68)">ОТДЕЛ</text>
-        <text x="440" y="396" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2" fill="rgba(46,125,50,.68)">КОНТРОЛЯ</text>
-        <text x="440" y="412" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(46,125,50,.45)">ОТК · ПАСПОРТИЗАЦИЯ</text>
-        <text x="440" y="428" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(46,125,50,.3)">520 М²</text>
+              <!-- Узлы маршрута -->
+              <circle class="shm-node" data-node="01" cx="87"  cy="118" r="3.6" fill="#fff" stroke="rgba(109,140,166,.95)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+              <circle class="shm-node" data-node="02" cx="255" cy="118" r="3.6" fill="#fff" stroke="rgba(109,140,166,.95)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+              <circle class="shm-node" data-node="03" cx="440" cy="118" r="3.6" fill="#fff" stroke="rgba(109,140,166,.95)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+              <circle class="shm-node" data-node="04" cx="635" cy="118" r="3.6" fill="#fff" stroke="rgba(109,140,166,.95)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+              <circle class="shm-node" data-node="05" cx="793" cy="233" r="3.6" fill="#fff" stroke="rgba(196,74,14,.9)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+              <circle class="shm-node" data-node="06" cx="635" cy="348" r="3.6" fill="#fff" stroke="rgba(46,125,50,.85)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+              <circle class="shm-node" data-node="07" cx="440" cy="348" r="3.6" fill="#fff" stroke="rgba(46,125,50,.85)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+              <circle class="shm-node" data-node="08" cx="169" cy="348" r="3.6" fill="#fff" stroke="rgba(109,140,166,.95)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
 
-        <!-- Zone H: СКЛАД ГП / ОТГРУЗКА -->
-        <text x="169" y="278" text-anchor="middle" font-family="'DINPro',monospace" font-size="26" font-weight="900" fill="rgba(109,140,166,.08)" letter-spacing="-1">08</text>
-        <text x="169" y="382" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.68)">СКЛАД ГП</text>
-        <text x="169" y="396" text-anchor="middle" font-family="'DINPro',monospace" font-size="8" letter-spacing="2.5" fill="rgba(109,140,166,.68)">ОТГРУЗКА</text>
-        <text x="169" y="412" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.4)">ПАСПОРТ · СЕРТИФИКАТ</text>
-        <text x="169" y="428" text-anchor="middle" font-family="'DINPro',monospace" font-size="6.5" letter-spacing="1.5" fill="rgba(109,140,166,.3)">960 М²</text>
+              <!-- Метка потока: позиционируется из JS вдоль #shm-route -->
+              <g id="shm-spark-wrap" transform="translate(0,118)">
+                <circle class="shm-spark-halo" r="9" fill="rgba(196,74,14,.5)"/>
+                <circle class="shm-spark-core" r="3.2" fill="#C4460E"/>
+              </g>
+            </svg>
 
-        <!-- Entry arrow -->
-        <line x1="1" y1="118" x2="38" y2="118" stroke="rgba(169,183,198,.55)" stroke-width="1.2" marker-end="url(#shm-arr)"/>
-        <text x="3" y="108" font-family="'DINPro',monospace" font-size="6" letter-spacing="1.5" fill="rgba(109,140,166,.5)">ВХОД</text>
-        <!-- Exit arrow -->
-        <line x1="38" y1="348" x2="1" y2="348" stroke="rgba(169,183,198,.55)" stroke-width="1.2" marker-end="url(#shm-arr)"/>
-        <text x="3" y="338" font-family="'DINPro',monospace" font-size="6" letter-spacing="1.5" fill="rgba(109,140,166,.5)">ВЫХОД</text>
+            <div class="shm-zones">
+              <button type="button" class="shm-zone" data-z="01" style="--zx:0;--zy:0;--zw:20.0000%;--zh:50%">
+                <span class="shm-z-num">01</span>
+                <span class="shm-z-lbl"><span class="shm-z-name">Склад металла</span><span class="shm-z-area">680 м²</span></span>
+              </button>
+              <button type="button" class="shm-zone" data-z="02" style="--zx:20.0000%;--zy:0;--zw:19.3023%;--zh:50%">
+                <span class="shm-z-num">02</span>
+                <span class="shm-z-lbl"><span class="shm-z-name">Участок резки</span><span class="shm-z-area">520 м²</span></span>
+              </button>
+              <button type="button" class="shm-zone" data-z="03" style="--zx:39.3023%;--zy:0;--zw:23.8372%;--zh:50%">
+                <span class="shm-z-num">03</span>
+                <span class="shm-z-lbl"><span class="shm-z-name">Механообработка</span><span class="shm-z-area">840 м²</span></span>
+              </button>
+              <button type="button" class="shm-zone" data-z="04" style="--zx:63.1395%;--zy:0;--zw:21.5116%;--zh:50%">
+                <span class="shm-z-num">04</span>
+                <span class="shm-z-lbl"><span class="shm-z-name">Сварочный цех</span><span class="shm-z-area">680 м²</span></span>
+              </button>
+              <button type="button" class="shm-zone shm-zone--heat shm-zone--tall" data-z="05" style="--zx:84.6512%;--zy:0;--zw:15.3488%;--zh:100%">
+                <span class="shm-z-num">05</span>
+                <span class="shm-z-lbl"><span class="shm-z-name">Термообработка</span><span class="shm-z-area">480 м²</span></span>
+              </button>
+              <button type="button" class="shm-zone shm-zone--qc" data-z="06" style="--zx:63.1395%;--zy:50%;--zw:21.5116%;--zh:50%">
+                <span class="shm-z-num">06</span>
+                <span class="shm-z-lbl"><span class="shm-z-name">Контроль НК</span><span class="shm-z-area">540 м²</span></span>
+              </button>
+              <button type="button" class="shm-zone shm-zone--qc" data-z="07" style="--zx:39.3023%;--zy:50%;--zw:23.8372%;--zh:50%">
+                <span class="shm-z-num">07</span>
+                <span class="shm-z-lbl"><span class="shm-z-name">Отдел контроля</span><span class="shm-z-area">520 м²</span></span>
+              </button>
+              <button type="button" class="shm-zone" data-z="08" style="--zx:0;--zy:50%;--zw:39.3023%;--zh:50%">
+                <span class="shm-z-num">08</span>
+                <span class="shm-z-lbl"><span class="shm-z-name">Склад ГП · отгрузка</span><span class="shm-z-area">960 м²</span></span>
+              </button>
+            </div>
+          </div>
 
-        <!-- Route: static dashed track -->
-        <path d="M 1,118 L 87,118 L 255,118 L 440,118 L 635,118 L 793,118 L 793,348 L 635,348 L 440,348 L 169,348 L 1,348" fill="none" stroke="rgba(109,140,166,.2)" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <div class="shm-flow">
+            <span class="shm-flow-e">Вход · прокат</span>
+            <span class="shm-flow-l"></span>
+            <span class="shm-flow-t">Единый поток · без возврата</span>
+            <span class="shm-flow-l"></span>
+            <span class="shm-flow-e">Отгрузка</span>
+          </div>
+        </div>
 
-        <!-- Route: invisible path — geometry source for the spark -->
-        <path id="shm-route" d="M 1,118 L 87,118 L 255,118 L 440,118 L 635,118 L 793,118 L 793,348 L 635,348 L 440,348 L 169,348 L 1,348" fill="none" stroke="none"/>
-
-        <!-- Waypoint nodes -->
-        <circle cx="87" cy="118" r="3.5" fill="#060E18" stroke="rgba(109,140,166,.5)" stroke-width="1.2"/>
-        <circle cx="255" cy="118" r="3.5" fill="#060E18" stroke="rgba(109,140,166,.5)" stroke-width="1.2"/>
-        <circle cx="440" cy="118" r="3.5" fill="#060E18" stroke="rgba(169,183,198,.55)" stroke-width="1.2"/>
-        <circle cx="635" cy="118" r="3.5" fill="#060E18" stroke="rgba(109,140,166,.5)" stroke-width="1.2"/>
-        <circle cx="793" cy="118" r="3.5" fill="#060E18" stroke="rgba(160,70,15,.55)" stroke-width="1.2"/>
-        <circle cx="793" cy="348" r="3.5" fill="#060E18" stroke="rgba(160,70,15,.55)" stroke-width="1.2"/>
-        <circle cx="635" cy="348" r="3.5" fill="#060E18" stroke="rgba(46,125,50,.55)" stroke-width="1.2"/>
-        <circle cx="440" cy="348" r="3.5" fill="#060E18" stroke="rgba(46,125,50,.55)" stroke-width="1.2"/>
-        <circle cx="169" cy="348" r="3.5" fill="#060E18" stroke="rgba(109,140,166,.5)" stroke-width="1.2"/>
-
-        <!-- Spark: moving marker, positioned via JS along #shm-route -->
-        <g id="shm-spark-wrap" transform="translate(1,118)">
-          <circle class="shm-spark-halo" r="8.5" fill="rgba(255,150,70,.4)"/>
-          <circle class="shm-spark-core" r="3" fill="#FFF3E2"/>
-        </g>
-      </svg>
-      <div class="shm-popup" data-video="01">
-        <div class="shm-popup-hd"><span class="shm-popup-num">01</span><span class="shm-popup-name">СКЛАД МЕТАЛЛА</span></div>
-        <video muted playsinline loop preload="none" src="<?php echo esc_url( get_theme_file_uri( 'assets/media/tochnost_do_1mm-2.webm' ) ); ?>"></video>
+        <div class="shm-stamp">
+          <div class="shm-st"><div class="shm-st-v">8</div><div class="shm-st-k">Участков</div></div>
+          <div class="shm-st"><div class="shm-st-v">4 200 м²</div><div class="shm-st-k">Площадь корпуса</div></div>
+          <div class="shm-st"><div class="shm-st-v">43</div><div class="shm-st-k">Ед. оборудования</div></div>
+        </div>
       </div>
-      <div class="shm-popup" data-video="03">
-        <div class="shm-popup-hd"><span class="shm-popup-num">03</span><span class="shm-popup-name">МЕХАНООБРАБОТКА</span></div>
-        <video muted playsinline loop preload="none" src="<?php echo esc_url( get_theme_file_uri( 'assets/media/tochnost_do_1mm-2.webm' ) ); ?>"></video>
+
+      <!-- ── ПРАВО: лента участков поверх живого кадра цеха ── -->
+      <div class="shm-reel" data-active="0">
+        <video class="shm-reel-amb" muted playsinline loop preload="none" aria-hidden="true"
+               src="<?php echo esc_url( $shm_video ); ?>"></video>
+        <div class="shm-reel-scrim" aria-hidden="true"></div>
+        <video class="shm-reel-focus" muted playsinline loop preload="none" aria-hidden="true"
+               src="<?php echo esc_url( $shm_video ); ?>"></video>
+
+        <div class="shm-rows">
+          <button type="button" class="shm-row is-open" data-z="01">
+            <span class="shm-row-hd">
+              <span class="shm-row-num">01</span>
+              <span class="shm-row-name">Склад металла</span>
+              <span class="shm-row-key">Приёмка</span>
+              <span class="shm-row-tick"></span>
+            </span>
+            <span class="shm-row-body">
+              <span class="shm-row-cap">
+                <span class="shm-row-spec">Приёмка проката · входной контроль плавки</span>
+                <span class="shm-row-area">680 м²</span>
+              </span>
+            </span>
+          </button>
+          <button type="button" class="shm-row" data-z="02">
+            <span class="shm-row-hd">
+              <span class="shm-row-num">02</span>
+              <span class="shm-row-name">Участок резки</span>
+              <span class="shm-row-key">8 машин</span>
+              <span class="shm-row-tick"></span>
+            </span>
+            <span class="shm-row-body">
+              <span class="shm-row-cap">
+                <span class="shm-row-spec">Газ · плазма · ленточная пила · 8 машин</span>
+                <span class="shm-row-area">520 м²</span>
+              </span>
+            </span>
+          </button>
+          <button type="button" class="shm-row" data-z="03">
+            <span class="shm-row-hd">
+              <span class="shm-row-num">03</span>
+              <span class="shm-row-name">Механообработка</span>
+              <span class="shm-row-key">18 ст. ЧПУ</span>
+              <span class="shm-row-tick"></span>
+            </span>
+            <span class="shm-row-body">
+              <span class="shm-row-cap">
+                <span class="shm-row-spec">Токарный · фрезерный · расточной · 18 ст. ЧПУ</span>
+                <span class="shm-row-area">840 м²</span>
+              </span>
+            </span>
+          </button>
+          <button type="button" class="shm-row" data-z="04">
+            <span class="shm-row-hd">
+              <span class="shm-row-num">04</span>
+              <span class="shm-row-name">Сварочный цех</span>
+              <span class="shm-row-key">12 постов</span>
+              <span class="shm-row-tick"></span>
+            </span>
+            <span class="shm-row-body">
+              <span class="shm-row-cap">
+                <span class="shm-row-spec">Автомат · орбитальная · ручная · 12 постов</span>
+                <span class="shm-row-area">680 м²</span>
+              </span>
+            </span>
+          </button>
+          <button type="button" class="shm-row shm-row--heat" data-z="05">
+            <span class="shm-row-hd">
+              <span class="shm-row-num">05</span>
+              <span class="shm-row-name">Термообработка</span>
+              <span class="shm-row-key">4 печи</span>
+              <span class="shm-row-tick"></span>
+            </span>
+            <span class="shm-row-body">
+              <span class="shm-row-cap">
+                <span class="shm-row-spec">Камерные печи · 4 шт. · до 900 °C · ±5 °C</span>
+                <span class="shm-row-area">480 м²</span>
+              </span>
+            </span>
+          </button>
+          <button type="button" class="shm-row shm-row--qc" data-z="06">
+            <span class="shm-row-hd">
+              <span class="shm-row-num">06</span>
+              <span class="shm-row-name">Контроль НК</span>
+              <span class="shm-row-key">6 методов</span>
+              <span class="shm-row-tick"></span>
+            </span>
+            <span class="shm-row-body">
+              <span class="shm-row-cap">
+                <span class="shm-row-spec">УЗК · РК · МК · ПВК · 6 методов</span>
+                <span class="shm-row-area">540 м²</span>
+              </span>
+            </span>
+          </button>
+          <button type="button" class="shm-row shm-row--qc" data-z="07">
+            <span class="shm-row-hd">
+              <span class="shm-row-num">07</span>
+              <span class="shm-row-name">Отдел контроля</span>
+              <span class="shm-row-key">Паспорт</span>
+              <span class="shm-row-tick"></span>
+            </span>
+            <span class="shm-row-body">
+              <span class="shm-row-cap">
+                <span class="shm-row-spec">ОТК · паспортизация · приёмка заказчиком</span>
+                <span class="shm-row-area">520 м²</span>
+              </span>
+            </span>
+          </button>
+          <button type="button" class="shm-row" data-z="08">
+            <span class="shm-row-hd">
+              <span class="shm-row-num">08</span>
+              <span class="shm-row-name">Склад ГП · отгрузка</span>
+              <span class="shm-row-key">Отгрузка</span>
+              <span class="shm-row-tick"></span>
+            </span>
+            <span class="shm-row-body">
+              <span class="shm-row-cap">
+                <span class="shm-row-spec">Паспорт · сертификат · комплектация</span>
+                <span class="shm-row-area">960 м²</span>
+              </span>
+            </span>
+          </button>
+        </div>
       </div>
-      <div class="shm-popup" data-video="05">
-        <div class="shm-popup-hd"><span class="shm-popup-num">05</span><span class="shm-popup-name">ТЕРМООБРАБОТКА</span></div>
-        <video muted playsinline loop preload="none" src="<?php echo esc_url( get_theme_file_uri( 'assets/media/tochnost_do_1mm-2.webm' ) ); ?>"></video>
-      </div>
-      <div class="shm-popup" data-video="07">
-        <div class="shm-popup-hd"><span class="shm-popup-num">07</span><span class="shm-popup-name">ОТДЕЛ КОНТРОЛЯ</span></div>
-        <video muted playsinline loop preload="none" src="<?php echo esc_url( get_theme_file_uri( 'assets/media/tochnost_do_1mm-2.webm' ) ); ?>"></video>
-      </div>
-    </div>
-    <!-- Мобильный/планшетный список зон: SVG-подписи нечитаемы на узких экранах,
-         план остаётся мини-картой, данные зон — в этом списке (≤1024) -->
-    <div class="shm-list" aria-hidden="true">
-      <div class="shm-li"><span class="shm-li-num">01</span><div class="shm-li-body"><div class="shm-li-name">Склад металла</div><div class="shm-li-meta">Приёмка проката · 680 м²</div></div></div>
-      <div class="shm-li"><span class="shm-li-num">02</span><div class="shm-li-body"><div class="shm-li-name">Участок резки</div><div class="shm-li-meta">Газ · плазма · пила · 8 машин · 520 м²</div></div></div>
-      <div class="shm-li"><span class="shm-li-num">03</span><div class="shm-li-body"><div class="shm-li-name">Механообработка</div><div class="shm-li-meta">Токарный · фрезерный · 18 ст. ЧПУ · 840 м²</div></div></div>
-      <div class="shm-li"><span class="shm-li-num">04</span><div class="shm-li-body"><div class="shm-li-name">Сварочный цех</div><div class="shm-li-meta">Автомат · орбит. · ручная · 12 постов · 680 м²</div></div></div>
-      <div class="shm-li shm-li--heat"><span class="shm-li-num">05</span><div class="shm-li-body"><div class="shm-li-name">Термообработка</div><div class="shm-li-meta">4 печи · до 900°C · 480 м²</div></div></div>
-      <div class="shm-li shm-li--qc"><span class="shm-li-num">06</span><div class="shm-li-body"><div class="shm-li-name">Контроль НК</div><div class="shm-li-meta">УЗК · РК · МК · ПВК · 6 методов · 540 м²</div></div></div>
-      <div class="shm-li shm-li--qc"><span class="shm-li-num">07</span><div class="shm-li-body"><div class="shm-li-name">Отдел контроля</div><div class="shm-li-meta">ОТК · паспортизация · 520 м²</div></div></div>
-      <div class="shm-li"><span class="shm-li-num">08</span><div class="shm-li-body"><div class="shm-li-name">Склад ГП / отгрузка</div><div class="shm-li-meta">Паспорт · сертификат · 960 м²</div></div></div>
-    </div>
-    <div class="shm-legend">
-      <div class="shm-leg"><span class="shm-leg-dot" style="background:rgba(109,140,166,.5)"></span>Заготовка и обработка</div>
-      <div class="shm-leg"><span class="shm-leg-dot" style="background:rgba(160,80,30,.65)"></span>Термический участок</div>
-      <div class="shm-leg"><span class="shm-leg-dot" style="background:rgba(46,125,50,.6)"></span>Контроль качества</div>
-      <div class="shm-leg"><span class="shm-leg-dot" style="background:rgba(169,183,198,.75)"></span>Маршрут изготовления</div>
+
     </div>
   </div>
 </section>
