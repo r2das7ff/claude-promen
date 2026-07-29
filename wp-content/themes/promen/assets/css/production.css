@@ -897,19 +897,17 @@ img{display:block;max-width:100%;}
 .oc-cv{color:var(--dark);font-weight:700;}
 
 /* ══════════════════════════════════════════════
-   §SHOPMAP — КАРТА ЦЕХА
-   Слева — светлый чертёжный лист (SVG-обводка + HTML-подписи
-   зон в %: подписи должны быть настоящей типографикой, в SVG
-   они получались 5–6px и не читались). Справа — лента из 8
-   участков поверх непрерывного кадра цеха: раскрытая строка
-   не перекрывает видео, свёрнутые — приглушают его.
-   Высота обеих колонок выводится из --shm-rowh/--shm-winh,
-   поэтому при переключении зоны секция не «дышит».
+   §SHOPMAP — ПРОИЗВОДСТВЕННЫЕ УЧАСТКИ
+   Шапка и лид на белом, сцена — тёмная полоса во всю ширину.
+   Внутри сцены один сквозной кадр цеха и 8 ламелей поверх него:
+   свёрнутые кадр приглушают, раскрытая его не перекрывает.
+   Видео одно на сцену, а не на участок, — поэтому оно нигде
+   не выдаёт себя за съёмку конкретного поста.
 ══════════════════════════════════════════════ */
 #shopmap{
-  --shm-rowh:42px;                                       /* свёрнутая строка */
-  --shm-winh:184px;                                      /* окно видео у раскрытой */
-  --shm-h:calc(var(--shm-rowh) * 8 + var(--shm-winh));   /* 8 строк + окно = 520 */
+  --stg-spine:clamp(54px,5.6vw,92px);   /* корешок свёрнутой ламели */
+  --stg-dwell:5200ms;                    /* стоянка тура на участке */
+  --stg-acc:#C3D0DC;
   position:relative;background:#fff;overflow:hidden;
   display:flex;flex-direction:column;
 }
@@ -923,176 +921,195 @@ img{display:block;max-width:100%;}
 .shm-hd{position:relative;z-index:1;padding:22px 56px;border-bottom:1px solid var(--ln);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .shm-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:10px;}
 .shm-tag::before{content:'';width:14px;height:1px;background:var(--ln2);}
-.shm-body{position:relative;z-index:1;padding:28px 56px 40px;}
 
-.shm-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:56px;margin-bottom:22px;}
-.shm-statement{font-size:13px;font-weight:300;line-height:1.75;color:var(--blue);max-width:520px;}
-.shm-legend{display:grid;grid-template-columns:auto auto;gap:9px 26px;flex-shrink:0;}
-.shm-leg{display:flex;align-items:center;gap:9px;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1);}
-.shm-leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.shm-leg-dot--base{background:var(--g1);}
-.shm-leg-dot--heat{background:#C4460E;}
-.shm-leg-dot--qc{background:#2E7D32;}
-.shm-leg-dot--route{width:15px;height:0;border-radius:0;border-top:1px dashed var(--dark);}
-
-.shm-split{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:24px;align-items:start;}
-
-/* ── Чертёжный лист ──
-   +2px к --shm-h: у обеих колонок рамка 1px, а --shm-h описывает
-   содержимое (8 строк ленты) — иначе последняя строка режется. */
-.shm-sheet{height:calc(var(--shm-h) + 2px);display:flex;flex-direction:column;background:#fff;border:1px solid var(--ln);}
-.shm-sheet-hd{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;
-  padding:11px 16px;border-bottom:1px solid var(--ln);background:var(--bg);
-  font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+.shm-intro{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:56px;align-items:end;padding:38px 56px 32px;}
+.shm-headline{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(30px,3.6vw,54px);line-height:.92;letter-spacing:-.02em;
+  text-transform:uppercase;color:var(--dark);
 }
-.shm-sheet-t{color:var(--blue);}
-.shm-sheet-c{color:var(--g1);opacity:.8;}
-.shm-plan{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:13px;padding:16px 18px;}
+.shm-intro-r{display:flex;flex-direction:column;gap:24px;}
+.shm-statement{font-size:13.5px;font-weight:300;line-height:1.72;color:var(--blue);max-width:62ch;}
+.shm-nums{display:flex;gap:0;}
+.shm-num{display:flex;flex-direction:column;gap:5px;padding:0 26px;border-left:1px solid var(--ln);}
+.shm-num:first-child{padding-left:0;border-left:none;}
+.shm-num-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:26px;line-height:1;letter-spacing:-.02em;color:var(--dark);}
+.shm-num-k{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);}
 
-/* Размерная линия: засечки только по краям — как на выносном размере чертежа */
-.shm-dim{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.shm-dim-l{position:relative;flex:1;height:1px;background:rgba(109,140,166,.4);}
-.shm-dim-l::before,.shm-dim-l::after{content:'';position:absolute;top:-3px;width:1px;height:7px;background:rgba(109,140,166,.6);display:none;}
-.shm-dim-l::before{left:0;}
-.shm-dim-l::after{right:0;}
-.shm-dim-l:first-child::before{display:block;}
-.shm-dim-l:last-child::after{display:block;}
-.shm-dim-v{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.14em;color:var(--g1);}
-
-.shm-frame{position:relative;width:100%;aspect-ratio:860/460;flex-shrink:0;}
-.shm-plan-svg{position:absolute;inset:0;width:100%;height:100%;display:block;}
-.shm-zones{position:absolute;inset:0;}
-.shm-node{transition:fill .3s,stroke .3s;}
-.shm-node.is-on{fill:var(--dark);stroke:var(--dark);}
-.shm-spark-halo{filter:url(#shm-spark-glow);transform-box:fill-box;transform-origin:center;animation:shmSparkPulse 1.6s ease-in-out infinite;}
-.shm-spark-core{filter:url(#shm-spark-glow);}
-@keyframes shmSparkPulse{0%,100%{transform:scale(1);opacity:.45;}50%{transform:scale(1.35);opacity:.75;}}
-
-.shm-zone{
-  position:absolute;left:var(--zx);top:var(--zy);width:var(--zw);height:var(--zh);
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  padding:0 6px 12px;border:0;background:rgba(109,140,166,.075);
-  font:inherit;color:inherit;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;
-  transition:background .35s cubic-bezier(.16,1,.3,1),box-shadow .35s cubic-bezier(.16,1,.3,1);
+/* ── Сцена ── */
+.stg{
+  position:relative;z-index:1;flex-shrink:0;
+  height:clamp(460px,64vh,680px);
+  background:#050C15;overflow:hidden;
+  border-top:1px solid rgba(15,42,68,.6);border-bottom:1px solid rgba(15,42,68,.6);
 }
-/* Термоучасток — узкий пролёт во всю глубину корпуса: «Термообработка»
-   в 82px не встаёт, а переносить одно слово через мягкий дефис некрасиво.
-   Ставим подпись вертикально (снизу вверх, как на планах) и прижимаем
-   влево — по центру зоны проходит маршрут. */
-.shm-zone--tall{justify-content:center;align-items:flex-start;padding:30px 0 12px 9px;}
-.shm-zone--tall .shm-z-lbl{writing-mode:vertical-rl;transform:rotate(180deg);gap:5px;text-align:left;}
-.shm-z-num{
-  position:absolute;top:6px;left:0;right:0;
-  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:24px;line-height:1;
-  letter-spacing:-.03em;color:rgba(15,42,68,.17);transition:color .35s;
+/* Медленный дрейф: клип один и короткий, без него виден стык петли.
+   Стартовый масштаб 1.04 — чтобы сдвиг не открыл край кадра. */
+.stg-bg{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:0;
+  transform-origin:center;animation:stgDrift 38s ease-in-out infinite alternate;
 }
-.shm-z-lbl{display:flex;flex-direction:column;gap:3px;}
-.shm-z-name{font-family:'DINPro',sans-serif;font-weight:700;font-size:11px;line-height:1.25;letter-spacing:.03em;color:var(--blue);}
-.shm-z-area{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.12em;color:var(--g1);}
-.shm-zone:hover{background:rgba(109,140,166,.13);}
-.shm-zone.is-on{background:rgba(109,140,166,.19);box-shadow:inset 0 0 0 1px rgba(15,42,68,.34);}
-.shm-zone.is-on .shm-z-num{color:rgba(15,42,68,.3);}
-.shm-zone.is-on .shm-z-name{color:var(--dark);}
-.shm-zone--heat{background:rgba(196,74,14,.07);}
-.shm-zone--heat .shm-z-name{color:#8C3608;}
-.shm-zone--heat:hover{background:rgba(196,74,14,.13);}
-.shm-zone--heat.is-on{background:rgba(196,74,14,.17);box-shadow:inset 0 0 0 1px rgba(196,74,14,.46);}
-.shm-zone--heat.is-on .shm-z-num{color:rgba(196,74,14,.36);}
-.shm-zone--qc{background:rgba(46,125,50,.06);}
-.shm-zone--qc .shm-z-name{color:#1E5B22;}
-.shm-zone--qc:hover{background:rgba(46,125,50,.11);}
-.shm-zone--qc.is-on{background:rgba(46,125,50,.16);box-shadow:inset 0 0 0 1px rgba(46,125,50,.42);}
-.shm-zone--qc.is-on .shm-z-num{color:rgba(46,125,50,.34);}
-.shm-zone:focus-visible{outline:2px solid var(--blue);outline-offset:-2px;}
-
-.shm-flow{display:flex;align-items:center;gap:10px;flex-shrink:0;font-family:'DINPro',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;}
-.shm-flow-e{color:var(--g1);flex-shrink:0;}
-.shm-flow-t{color:rgba(109,140,166,.72);flex-shrink:0;}
-.shm-flow-l{flex:1;min-width:12px;height:1px;background:rgba(109,140,166,.28);}
-
-.shm-stamp{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ln);flex-shrink:0;}
-.shm-st{display:flex;flex-direction:column;gap:4px;padding:12px 16px;border-right:1px solid var(--ln);}
-.shm-st:last-child{border-right:none;}
-.shm-st-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:24px;line-height:1;letter-spacing:-.02em;color:var(--dark);}
-.shm-st-k{font-family:'DINPro',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);}
-
-/* ── Лента участков поверх кадра цеха ── */
-.shm-reel{position:relative;height:calc(var(--shm-h) + 2px);overflow:hidden;background:#060E18;border:1px solid rgba(15,42,68,.55);}
-.shm-reel-amb,.shm-reel-focus{position:absolute;left:0;width:100%;display:block;object-fit:cover;background:#060E18;}
-.shm-reel-amb{top:0;height:100%;z-index:0;}
-/* Одна размывающая подложка вместо backdrop-filter на каждой из 8 строк:
-   восемь backdrop-проходов поверх играющего видео роняют кадр на слабых GPU. */
-.shm-reel-scrim{
+@keyframes stgDrift{
+  from{transform:scale(1.04) translate3d(-1%,.4%,0);}
+  to  {transform:scale(1.13) translate3d(1.6%,-1%,0);}
+}
+.stg-veil{
   position:absolute;inset:0;z-index:1;pointer-events:none;
   background:
-    linear-gradient(rgba(109,140,166,.05) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(109,140,166,.05) 1px,transparent 1px),
-    linear-gradient(180deg,rgba(4,10,18,.42),rgba(4,10,18,.19) 17%,rgba(4,10,18,.19) 80%,rgba(4,10,18,.5));
-  background-size:40px 40px,40px 40px,auto;
-  -webkit-backdrop-filter:blur(9px) saturate(.55);
-  backdrop-filter:blur(9px) saturate(.55);
+    linear-gradient(rgba(109,140,166,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(109,140,166,.055) 1px,transparent 1px),
+    linear-gradient(180deg,rgba(3,8,15,.5) 0%,rgba(3,8,15,.1) 34%,rgba(3,8,15,.55) 100%);
+  background-size:44px 44px,44px 44px,auto;
 }
-/* Окно раскрытой строки детерминировано: строки до неё свёрнуты по --shm-rowh,
-   поэтому позиция считается из индекса и едет ровно в такт с аккордеоном. */
-.shm-reel-focus{
-  z-index:2;
-  top:calc(var(--shm-i,0) * var(--shm-rowh) + var(--shm-rowh));
-  height:var(--shm-winh);
-  transition:top .46s cubic-bezier(.16,1,.3,1);
+.stg-rail{position:relative;z-index:2;display:flex;height:100%;}
+
+/* Обе ширины — конкретные длины, поэтому flex-basis анимируется.
+   Свёрнутых всегда ровно 7, отсюда ширина раскрытой. */
+.stg-p{
+  position:relative;flex:0 0 var(--stg-spine);
+  overflow:hidden;border:0;padding:0;background:none;
+  font:inherit;color:inherit;text-align:left;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  border-left:1px solid rgba(169,183,198,.16);
+  transition:flex-basis .62s cubic-bezier(.22,1,.36,1);
 }
-.shm-rows{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;}
-.shm-row{
-  --shm-acc:#A9B7C6;
-  display:flex;flex-direction:column;flex:none;
-  height:var(--shm-rowh);overflow:hidden;
-  border:0;background:none;font:inherit;color:inherit;text-align:left;
-  cursor:pointer;-webkit-tap-highlight-color:transparent;
-  transition:height .46s cubic-bezier(.16,1,.3,1);
+.stg-p:first-child{border-left:0;}
+/* shrink:1 у раскрытой — она отдаёт ширину корешку, который подрос под курсором,
+   иначе сумма ламелей превысит сцену и последняя уедет за край. */
+.stg-p.is-open{flex:1 1 calc(100% - 7 * var(--stg-spine));cursor:default;}
+.stg-p:not(.is-open):hover{flex-basis:calc(var(--stg-spine) + 14px);}
+.stg-p--base{--stg-acc:#C3D0DC;}
+.stg-p--heat{--stg-acc:#FF9E5C;}
+.stg-p--qc{--stg-acc:#6FBF77;}
+.stg-p:focus-visible{outline:2px solid var(--stg-acc);outline-offset:-3px;}
+
+.stg-shade{
+  position:absolute;inset:0;pointer-events:none;
+  background:rgba(5,12,21,.85);
+  transition:background .55s cubic-bezier(.22,1,.36,1);
 }
-.shm-row--heat{--shm-acc:#FF9E5C;}
-.shm-row--qc{--shm-acc:#6FBF77;}
-.shm-row.is-open{height:calc(var(--shm-rowh) + var(--shm-winh));}
-.shm-row-hd{
-  position:relative;flex:none;height:var(--shm-rowh);
-  display:flex;align-items:center;gap:12px;padding:0 16px;
-  background:rgba(7,15,26,.5);border-top:1px solid rgba(169,183,198,.16);
-  transition:background .35s;
+.stg-p:hover .stg-shade{background:rgba(5,12,21,.72);}
+.stg-p.is-open .stg-shade{
+  background:linear-gradient(180deg,
+    rgba(4,10,18,.72) 0%, rgba(4,10,18,.2) 24%,
+    rgba(4,10,18,.38) 56%, rgba(2,7,13,.94) 100%);
 }
-.shm-row:first-child .shm-row-hd{border-top:0;}
-.shm-row:hover .shm-row-hd{background:rgba(7,15,26,.32);}
-.shm-row.is-open .shm-row-hd{background:rgba(4,10,18,.8);}
-.shm-row-hd::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--shm-acc);
-  transform:scaleY(0);transition:transform .35s cubic-bezier(.16,1,.3,1);
+/* Цветной торец активной ламели — привязка карточки к её группе участков */
+.stg-shade::after{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--stg-acc);
+  transform:scaleX(0);transform-origin:left;transition:transform .42s cubic-bezier(.22,1,.36,1) .18s;
 }
-.shm-row.is-open .shm-row-hd::before{transform:scaleY(1);}
-.shm-row-num{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:17px;line-height:1;letter-spacing:-.02em;color:rgba(169,183,198,.52);flex-shrink:0;min-width:22px;transition:color .35s;}
-.shm-row.is-open .shm-row-num{color:var(--shm-acc);}
-.shm-row-name{font-family:'DINPro',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.02em;color:rgba(233,240,246,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .35s;}
-.shm-row.is-open .shm-row-name{color:rgba(240,246,251,.98);}
-/* Ключевой показатель участка держит правый край строки: в свёрнутом виде
-   лента иначе пустует на две трети ширины. Оборудование, а не площадь —
-   площади уходят в раскрытую строку, рядом с итогом по корпусу. */
-.shm-row-key{margin-left:auto;font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(169,183,198,.4);white-space:nowrap;flex-shrink:0;transition:opacity .3s,color .35s;}
-/* У раскрытой строки показатель дублируется в подписи под кадром — убираем,
-   правый край забирает акцентная засечка. */
-.shm-row.is-open .shm-row-key{opacity:0;}
-.shm-row-tick{width:14px;height:1px;background:rgba(169,183,198,.28);flex-shrink:0;transition:width .35s,background .35s;}
-.shm-row.is-open .shm-row-tick{width:26px;background:var(--shm-acc);}
-.shm-row-body{position:relative;flex:none;height:var(--shm-winh);display:flex;align-items:flex-end;opacity:0;transition:opacity .3s ease .12s;}
-.shm-row.is-open .shm-row-body{opacity:1;}
-.shm-row-cap{
-  width:100%;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;
-  padding:26px 16px 12px;background:linear-gradient(180deg,transparent,rgba(3,9,17,.88));
+.stg-p.is-open .stg-shade::after{transform:scaleX(1);}
+
+/* ── Корешок ── */
+.stg-spine{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  gap:16px;padding:18px 4px 24px;
+  opacity:1;transition:opacity .3s ease .22s;
 }
-.shm-row-spec{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(203,216,228,.88);line-height:1.5;}
-.shm-row-area{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:16px;line-height:1;letter-spacing:-.01em;color:var(--shm-acc);flex-shrink:0;}
-.shm-row:focus-visible{outline:2px solid rgba(169,183,198,.7);outline-offset:-2px;}
+.stg-p.is-open .stg-spine{opacity:0;transition:opacity .16s ease;pointer-events:none;}
+.stg-spine-n{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(15px,1.5vw,21px);line-height:1;letter-spacing:-.02em;
+  color:rgba(169,183,198,.5);transition:color .3s;flex-shrink:0;
+}
+.stg-p:hover .stg-spine-n{color:var(--stg-acc);}
+.stg-spine-t{
+  writing-mode:vertical-rl;flex:1;min-height:0;
+  font-family:'DINPro',sans-serif;font-weight:700;
+  font-size:clamp(10.5px,1vw,13px);letter-spacing:.09em;text-transform:uppercase;
+  color:rgba(233,240,246,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  transition:color .3s;
+}
+.stg-p:hover .stg-spine-t{color:rgba(240,246,251,.94);}
+.stg-spine::after{
+  content:'';position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
+  width:16px;height:2px;background:var(--stg-acc);opacity:.5;transition:opacity .3s,width .3s;
+}
+.stg-p:hover .stg-spine::after{opacity:1;width:26px;}
+
+/* ── Карточка участка ──
+   Появляется с задержкой: пока ламель разъезжается, текст ещё скрыт,
+   поэтому переливка строк по ширине не видна. */
+.stg-card{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;
+  padding:clamp(22px,2.3vw,40px);
+  opacity:0;pointer-events:none;transition:opacity .2s ease;
+}
+.stg-p.is-open .stg-card{opacity:1;pointer-events:auto;transition:opacity .3s ease .22s;}
+/* Содержимое въезжает ступенями после того, как ламель разъехалась */
+.stg-card-top,.stg-card-mid,.stg-foot{
+  opacity:0;transform:translateY(15px);
+  transition:opacity .4s ease,transform .52s cubic-bezier(.22,1,.36,1);
+}
+.stg-p.is-open .stg-card-top{opacity:1;transform:none;transition-delay:.30s;}
+.stg-p.is-open .stg-card-mid{opacity:1;transform:none;transition-delay:.38s;}
+.stg-p.is-open .stg-foot   {opacity:1;transform:none;transition-delay:.46s;}
+.stg-crn{position:absolute;width:9px;height:9px;border:1px solid rgba(169,183,198,.4);}
+.stg-crn.tl{top:12px;left:12px;border-right:0;border-bottom:0;}
+.stg-crn.tr{top:12px;right:12px;border-left:0;border-bottom:0;}
+.stg-crn.bl{bottom:12px;left:12px;border-right:0;border-top:0;}
+.stg-crn.br{bottom:12px;right:12px;border-left:0;border-top:0;}
+
+.stg-card-top{display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.stg-badge{
+  display:inline-flex;align-items:center;gap:8px;padding:5px 11px;
+  border:1px solid var(--stg-acc);color:var(--stg-acc);
+  font-family:'DINPro',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+}
+.stg-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--stg-acc);}
+.stg-step{font-family:'DINPro',monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(169,183,198,.6);}
+
+.stg-card-mid{position:relative;display:flex;flex-direction:column;gap:14px;padding:26px 0;}
+.stg-num{
+  position:absolute;top:-14px;right:0;pointer-events:none;
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(78px,9vw,168px);line-height:.8;letter-spacing:-.05em;
+  color:rgba(169,183,198,.05);-webkit-text-stroke:1px rgba(169,183,198,.32);
+}
+.stg-name{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(28px,3.3vw,52px);line-height:.94;letter-spacing:-.02em;
+  text-transform:uppercase;color:#fff;
+}
+.stg-lead{font-size:14px;font-weight:300;line-height:1.7;color:rgba(208,220,231,.84);max-width:52ch;}
+
+.stg-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;
+  border-top:1px solid rgba(169,183,198,.2);padding-top:16px;}
+.stg-flow{display:flex;flex:1;min-width:0;}
+.stg-f{position:relative;flex:1;min-width:0;padding:0 20px;border-left:1px solid rgba(169,183,198,.18);}
+.stg-f:first-child{border-left:0;padding-left:0;}
+.stg-f + .stg-f::before{
+  content:'';position:absolute;left:-4px;top:50%;width:6px;height:6px;
+  border-right:1px solid rgba(169,183,198,.55);border-top:1px solid rgba(169,183,198,.55);
+  transform:translateY(-50%) rotate(45deg);
+}
+.stg-f-k{display:block;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(169,183,198,.55);margin-bottom:6px;}
+.stg-f-v{display:block;font-family:'DINPro',sans-serif;font-size:12.5px;line-height:1.45;color:rgba(226,235,243,.9);}
+.stg-f--op .stg-f-v{color:#fff;font-weight:700;}
+.stg-fact{flex-shrink:0;text-align:right;max-width:34%;}
+.stg-fact-v{display:block;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(18px,1.8vw,26px);line-height:1.05;letter-spacing:-.01em;color:var(--stg-acc);}
+.stg-fact-k{display:block;margin-top:5px;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:rgba(169,183,198,.6);}
+
+/* ── Шкала тура ── */
+.stg-bar{position:relative;z-index:1;display:flex;align-items:center;gap:28px;padding:16px 56px 34px;flex-shrink:0;}
+.stg-prog{flex:1;display:flex;gap:4px;}
+.stg-seg{flex:1;height:2px;background:rgba(109,140,166,.2);overflow:hidden;}
+.stg-seg-f{display:block;height:100%;width:100%;background:var(--dark);transform:scaleX(0);transform-origin:left;}
+.stg-seg.is-done .stg-seg-f{transform:scaleX(1);}
+.stg-seg.is-on .stg-seg-f{animation:stgSeg var(--stg-dwell) linear forwards;}
+@keyframes stgSeg{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+#shopmap.is-held .stg-seg.is-on .stg-seg-f{animation-play-state:paused;}
+.stg-hint{display:flex;align-items:center;gap:9px;flex-shrink:0;font-family:'DINPro',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);}
+.stg-hint-dot{width:5px;height:5px;border-radius:50%;background:var(--g1);animation:blink 1.8s step-end infinite;}
+#shopmap.is-held .stg-hint-dot{animation:none;background:var(--dark);}
 
 @media (prefers-reduced-motion:reduce){
-  .shm-zone,.shm-row,.shm-row-hd,.shm-row-hd::before,.shm-row-body,.shm-row-tick,.shm-reel-focus,.shm-node{transition-duration:.01ms;}
-  .shm-spark-halo{animation:none;}
+  .stg-p,.stg-card,.stg-spine,.stg-shade,.stg-shade::after,
+  .stg-card-top,.stg-card-mid,.stg-foot{transition-duration:.01ms;transition-delay:0s;}
+  .stg-bg{animation:none;transform:scale(1.04);}
+  .stg-seg.is-on .stg-seg-f{animation:none;transform:scaleX(1);}
+  .stg-hint-dot{animation:none;}
 }
 
 /* ══════════════════════════════════════════════
@@ -1224,7 +1241,6 @@ img{display:block;max-width:100%;}
   .cap-anchor{border-right:none;border-bottom:1px solid var(--ln2);padding:48px 56px;}
   .fl-body{grid-template-columns:1fr;}
   .fl-anchor{border-right:none;border-bottom:1px solid rgba(109,140,166,.08);padding:40px 40px 32px 56px;}
-  .shm-body{padding:28px 32px 40px;}
   .shm-intro{flex-direction:column;gap:20px;}
   .s10-inner{min-height:auto;}
   .oc-inner{grid-template-columns:1fr;gap:40px;min-height:auto;}
@@ -1258,8 +1274,7 @@ img{display:block;max-width:100%;}
   .fl-group:nth-child(3){border-bottom:1px solid rgba(109,140,166,.08);}
   .fl-group:nth-child(5){border-bottom:none;}
   .fl-anchor{padding-left:24px;padding-right:24px;}
-  .fl-hd,.shm-hd{padding-left:24px;padding-right:24px;}
-  .shm-body{padding:20px 24px 36px;}
+  .fl-hd,.shm-hd,.shm-intro,.stg-bar{padding-left:24px;padding-right:24px;}
   .oc-inner{padding:56px 24px;}
   .gi-stats{flex-wrap:wrap;}
 }
@@ -1330,16 +1345,14 @@ img{display:block;max-width:100%;}
       Рельса (.strip/.pg/.s10/.site-footer) — base.css, здесь не трогаем. ── */
 @media (max-width:1024px){
   /* ось 28px (rail 20 + 28 = 48) — общий список шапок/колонок/лент */
-  .s1-top,.s1-left,.s2-top,.s2-foot,.grades-hd,.grades-intro,.jrn-hd,.jrn-context,.jrn-doc,.jrn-layout .jrn-doc,.shm-hd,.therm-hd,.cap-hd,.cap-anchor,.cap-row,.fl-hd,.fl-anchor,.gal-hd,.gal-intro,.gal-stage,.gal-footer,.portal-hd,.pdoc,.oc-inner{ padding-left:28px; padding-right:28px; }
-  .shm-body{ padding-left:28px; padding-right:28px; }
+  .s1-top,.s1-left,.s2-top,.s2-foot,.grades-hd,.grades-intro,.jrn-hd,.jrn-context,.jrn-doc,.jrn-layout .jrn-doc,.shm-hd,.shm-intro,.stg-bar,.therm-hd,.cap-hd,.cap-anchor,.cap-row,.fl-hd,.fl-anchor,.gal-hd,.gal-intro,.gal-stage,.gal-footer,.portal-hd,.pdoc,.oc-inner{ padding-left:28px; padding-right:28px; }
   .therm-body{ padding-left:28px; padding-right:28px; }
   .s10-left,.s10-right{ padding-left:28px; padding-right:28px; }
   
   .prf-ib-top{ padding-left:28px; padding-right:28px; }
 }
 @media (max-width:640px){
-  .s1-top,.s1-left,.s2-top,.s2-foot,.grades-hd,.grades-intro,.jrn-hd,.jrn-context,.jrn-doc,.jrn-layout .jrn-doc,.shm-hd,.therm-hd,.cap-hd,.cap-anchor,.cap-row,.fl-hd,.fl-anchor,.gal-hd,.gal-intro,.gal-stage,.gal-footer,.portal-hd,.pdoc,.oc-inner{ padding-left:20px; padding-right:20px; }
-  .shm-body{ padding-left:20px; padding-right:20px; }
+  .s1-top,.s1-left,.s2-top,.s2-foot,.grades-hd,.grades-intro,.jrn-hd,.jrn-context,.jrn-doc,.jrn-layout .jrn-doc,.shm-hd,.shm-intro,.stg-bar,.therm-hd,.cap-hd,.cap-anchor,.cap-row,.fl-hd,.fl-anchor,.gal-hd,.gal-intro,.gal-stage,.gal-footer,.portal-hd,.pdoc,.oc-inner{ padding-left:20px; padding-right:20px; }
   .therm-body{ padding-left:20px; padding-right:20px; }
   .s10-left,.s10-right{ padding-left:20px; padding-right:20px; }
   
@@ -1348,7 +1361,7 @@ img{display:block;max-width:100%;}
 
 /* ── §3 Пол шрифта: служебные подписи ≥10px на ≤1024 ── */
 @media (max-width:1024px){
-  .prf-ib-label-l,.prf-ib-label-r,.prf-ib-sk,.prf-kicker,.prf-pk,.prf-pv,.prf-rec,.prf-status-r,.prf-status-sep,.s2-industry-full,.s2-continue,.gi-stat-l,.ge-idx,.ge-pk,.shm-st-k,.shm-z-area,.shm-leg,.therm-stat-l,.therm-tk-u,.jc-step-l,.cap-anchor-kicker,.cap-row-label,.fl-anchor-kicker,.fl-astat-k,.fl-group-cat,.fl-item-spec,.gal-num,.gal-zone,.gal-info-detail,.gal-hint,.pdoc-badge,.s10-contact-k,.s10-form-label,.s10-field-label,.s10-file-label-txt,.s10-note,.strip-yr{ font-size:10px; }
+  .prf-ib-label-l,.prf-ib-label-r,.prf-ib-sk,.prf-kicker,.prf-pk,.prf-pv,.prf-rec,.prf-status-r,.prf-status-sep,.s2-industry-full,.s2-continue,.gi-stat-l,.ge-idx,.ge-pk,.shm-num-k,.stg-f-k,.stg-fact-k,.therm-stat-l,.therm-tk-u,.jc-step-l,.cap-anchor-kicker,.cap-row-label,.fl-anchor-kicker,.fl-astat-k,.fl-group-cat,.fl-item-spec,.gal-num,.gal-zone,.gal-info-detail,.gal-hint,.pdoc-badge,.s10-contact-k,.s10-form-label,.s10-field-label,.s10-file-label-txt,.s10-note,.strip-yr{ font-size:10px; }
   .jrn-layout .jd-stamp{ font-size:10px; }
   .s1-top,.s1-foot-l,.s1-foot-r,.prf-ib-cue,.s2-top-r,.cap-anchor-badge{ font-size:10px; }
   .s10-file-btn{ font-size:10px; }
@@ -1592,39 +1605,60 @@ img{display:block;max-width:100%;}
   .pdoc > div:nth-child(2){ grid-row:2; grid-column:1 / -1; }
 }
 
-/* ── SHOPMAP ≤1024: колонки в стек, окно видео — от ширины экрана.
-      Ширина контента = 100vw − рельса − паддинги .shm-body (28/28 → 20/20,
-      рельса 20px до ≤480 и 0 ниже), окно держим примерно 2:1. ── */
+/* ── УЧАСТКИ ≤1024: конвейер разворачивается из строки в столбец.
+      Формула flex-basis раскрытой ламели не меняется — при column она
+      просто начинает описывать высоту, а не ширину. ── */
 @media (max-width:1024px){
-  #shopmap{ --shm-rowh:46px; --shm-winh:calc((100vw - 76px) * .48); }
-  .shm-split{ grid-template-columns:1fr; gap:18px; }
-  .shm-sheet{ height:auto; }
-  .shm-plan{ padding:14px 14px 12px; gap:11px; }
-  .shm-legend{ grid-template-columns:auto auto; }
-}
-/* ≤900: зоны на плане сжимаются до ~70px — подписи снимаем, план работает
-   ключом к ленте участков под ним, номера остаются кликабельными. */
-@media (max-width:900px){
-  .shm-z-lbl{ display:none; }
-  .shm-zone,.shm-zone--tall{ justify-content:center; align-items:center; padding:0; }
-  .shm-z-num{ position:static; font-size:19px; color:rgba(15,42,68,.32); }
-  .shm-zone.is-on .shm-z-num,
-  .shm-zone--heat.is-on .shm-z-num,
-  .shm-zone--qc.is-on .shm-z-num{ color:var(--dark); }
-  .shm-sheet-hd{ font-size:9px; letter-spacing:.12em; }
-  .shm-st-v{ font-size:20px; }
-  .shm-st{ padding:10px 12px; }
+  #shopmap{ --stg-spine:54px; }
+  .shm-intro{ grid-template-columns:1fr; gap:20px; align-items:start; padding:26px 28px 24px; }
+  .shm-headline{ font-size:clamp(26px,6.4vw,38px); }
+  /* сетка вместо flex-wrap: при переносе flex-элемент уносил с собой
+     левую границу и вторая строка начиналась с висящей черты */
+  .shm-nums{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .shm-num{ padding:0 16px; }
+  .stg{ height:calc(7 * var(--stg-spine) + clamp(330px,74vw,470px)); }
+  .stg-rail{ flex-direction:column; }
+  .stg-p{ border-left:0; border-top:1px solid rgba(169,183,198,.16); }
+  .stg-p:first-child{ border-top:0; }
+  .stg-spine{ flex-direction:row; align-items:center; justify-content:flex-start; gap:14px; padding:0 28px 0 24px; }
+  .stg-spine-t{ writing-mode:horizontal-tb; flex:1; min-height:0; font-size:12.5px; }
+  .stg-spine::after{ left:auto; right:24px; bottom:auto; top:50%; transform:translateY(-50%); width:16px; }
+  .stg-p:hover .stg-spine::after{ width:24px; }
+  .stg-card{ padding:20px 24px 22px; }
+  .stg-num{ display:none; }
+  .stg-card-mid{ padding:18px 0; gap:10px; }
+  /* потолок строк: высота ламели фиксирована, лид не должен её распирать */
+  .stg-lead{ font-size:13px; line-height:1.6; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
+  .stg-foot{ flex-direction:column; align-items:stretch; gap:14px; padding-top:14px; }
+  .stg-flow{ flex-direction:column; }
+  .stg-f{ border-left:0; padding:0; }
+  .stg-f + .stg-f{ margin-top:10px; padding-top:10px; border-top:1px solid rgba(169,183,198,.14); }
+  .stg-f + .stg-f::before{ display:none; }
+  .stg-fact{ text-align:left; max-width:none; display:flex; align-items:baseline; gap:10px; }
+  .stg-fact-k{ margin-top:0; }
+  .stg-bar{ padding:14px 28px 30px; gap:16px; }
+  .stg-hint{ display:none; }
 }
 @media (max-width:640px){
-  #shopmap{ --shm-rowh:46px; --shm-winh:calc((100vw - 60px) * .5); }
-  .shm-flow-t{ display:none; }
-  .shm-dim{ display:none; }
-}
-@media (max-width:480px){
-  #shopmap{ --shm-winh:calc((100vw - 40px) * .5); }
-  .shm-stamp{ grid-template-columns:1fr 1fr; }
-  .shm-st:nth-child(2){ border-right:none; }
-  .shm-st:nth-child(3){ border-top:1px solid var(--ln); }
+  #shopmap{ --stg-spine:50px; }
+  .shm-intro{ padding:22px 20px 20px; }
+  .stg{ height:calc(7 * var(--stg-spine) + clamp(330px,92vw,430px)); }
+  .stg-spine{ padding:0 24px 0 20px; }
+  .stg-spine::after{ right:20px; }
+  .stg-card{ padding:18px 20px 20px; }
+  .stg-name{ font-size:26px; }
+  .stg-lead{ -webkit-line-clamp:3; }
+  /* Вход/операция/выход — в две колонки «ключ · значение»: три блока
+     столбиком по 40px не влезают в фиксированную высоту ламели. */
+  .stg-flow{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px 14px; }
+  .stg-f{ display:contents; }
+  .stg-f + .stg-f{ margin-top:0; padding-top:0; border-top:0; }
+  .stg-f-k{ margin-bottom:0; font-size:8.5px; letter-spacing:.14em; align-self:baseline; }
+  .stg-f-v{ font-size:12px; line-height:1.35; }
+  .stg-bar{ padding:12px 20px 26px; }
+  .shm-nums{ grid-template-columns:repeat(2,minmax(0,1fr)); row-gap:18px; }
+  .shm-num:nth-child(3){ border-left:none; padding-left:0; }
+  .shm-num-v{ font-size:23px; }
 }
 
 /* ── Тач-цели ≥44px (≤1024) ── */

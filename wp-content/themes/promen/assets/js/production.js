@@ -379,140 +379,129 @@ const sio=new IntersectionObserver(entries=>{
 },{threshold:0.38});
 allSections.forEach(s=>sio.observe(s));
 
-/* ── Карта цеха: автотур по участкам; план и лента — два вида одного
-      состояния, видео идёт непрерывно и не перезапускается при смене зоны ── */
+/* ── Производственные участки: автотур по конвейеру.
+      Шкала внизу — CSS-анимация длиной --stg-dwell, таймер тура берёт ту же
+      величину оттуда же: две длительности из одного источника не разъезжаются. ── */
 (function(){
   var section=document.getElementById('shopmap');
-  var split=document.querySelector('.shm-split');
-  var reel=document.querySelector('.shm-reel');
-  if(!section||!split||!reel)return;
+  var stage=section&&section.querySelector('.stg');
+  if(!stage)return;
 
-  var rows=Array.prototype.slice.call(reel.querySelectorAll('.shm-row'));
-  var zones=Array.prototype.slice.call(split.querySelectorAll('.shm-zone'));
-  var nodes=Array.prototype.slice.call(split.querySelectorAll('.shm-node'));
-  var route=document.getElementById('shm-route');
-  var spark=document.getElementById('shm-spark-wrap');
-  var vids=Array.prototype.slice.call(reel.querySelectorAll('video'));
-  if(!rows.length||!route||!spark)return;
+  var panels=Array.prototype.slice.call(stage.querySelectorAll('.stg-p'));
+  var segs=Array.prototype.slice.call(section.querySelectorAll('.stg-seg'));
+  var video=stage.querySelector('.stg-bg');
+  if(!panels.length)return;
 
-  var DWELL=4200;   // стоянка на участке — столько показывается его кадр
-  var TRAVEL=800;   // перегон между участками
-  var SEG=DWELL+TRAVEL;
-  var LOOP=SEG*rows.length+TRAVEL;   // +выезд к отгрузке в конце круга
+  var DWELL=parseInt(getComputedStyle(section).getPropertyValue('--stg-dwell'),10)||5200;
+  var RELEASE=9000;   // после тапа тур сам возвращается к автопрокрутке
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* Остановки в координатах viewBox плана (860×460), по одной на участок.
-     05 стоит на середине вертикального прогона — термоучасток занимает
-     всю высоту корпуса, и метка должна попадать в его центр. */
-  var STOPS=[[87,118],[255,118],[440,118],[635,118],[793,233],[635,348],[440,348],[169,348]];
-  var total=route.getTotalLength();
+  var idx=0,timer=0,relTimer=0,held=false,visible=false;
 
-  function fractionAt(x,y){
-    var samples=1400,best=0,bestD=Infinity;
-    for(var i=0;i<=samples;i++){
-      var p=route.getPointAtLength(total*i/samples);
-      var dx=p.x-x,dy=p.y-y,d=dx*dx+dy*dy;
-      if(d<bestD){bestD=d;best=i/samples;}
-    }
-    return best;
-  }
-  var fracs=STOPS.map(function(s){return fractionAt(s[0],s[1]);});
-
-  var active=-1;
-  function setActive(i){
-    if(i===active)return;
-    active=i;
-    reel.style.setProperty('--shm-i',i);
-    reel.setAttribute('data-active',i);
-    rows.forEach(function(el,n){el.classList.toggle('is-open',n===i);});
-    zones.forEach(function(el,n){el.classList.toggle('is-on',n===i);});
-    nodes.forEach(function(el,n){el.classList.toggle('is-on',n===i);});
+  function restartSeg(n){
+    var seg=segs[n];
+    if(!seg)return;
+    seg.classList.remove('is-on');
+    void seg.offsetWidth;          // сброс CSS-анимации перед повторным запуском
+    seg.classList.add('is-on');
   }
 
-  function moveSpark(f){
-    var p=route.getPointAtLength(f*total);
-    spark.setAttribute('transform','translate('+p.x.toFixed(2)+','+p.y.toFixed(2)+')');
-  }
-  function ease(x){return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;}
-
-  var raf=0,t0=null,visible=false,hold=false,resumeTimer=0;
-
-  function tick(ts){
-    raf=requestAnimationFrame(tick);
-    /* Точка входа в таймлайн — начало стоянки текущего участка: после
-       перехвата курсором тур продолжается с той зоны, где его оставили. */
-    if(t0===null)t0=ts-(Math.max(active,0)*SEG+TRAVEL);
-    var t=(ts-t0)%LOOP;
-    if(t<0)t+=LOOP;
-    var i=Math.floor(t/SEG);
-    if(i>=rows.length){                       // выезд: докатываем метку к отгрузке
-      var le=Math.min((t-rows.length*SEG)/TRAVEL,1);
-      moveSpark(fracs[rows.length-1]+(1-fracs[rows.length-1])*ease(le));
-      return;
-    }
-    var local=t-i*SEG;
-    var from=i===0?0:fracs[i-1];
-    moveSpark(local<TRAVEL?from+(fracs[i]-from)*ease(local/TRAVEL):fracs[i]);
-    setActive(i);
+  function paint(n){
+    idx=n;
+    panels.forEach(function(p,k){
+      var on=k===n;
+      p.classList.toggle('is-open',on);
+      p.setAttribute('aria-selected',on?'true':'false');
+    });
+    segs.forEach(function(s,k){
+      s.classList.remove('is-on');
+      s.classList.toggle('is-done',k<n);
+    });
+    restartSeg(n);
   }
 
-  function start(){if(raf||reduce.matches)return;t0=null;raf=requestAnimationFrame(tick);}
-  function stop(){if(raf){cancelAnimationFrame(raf);raf=0;}t0=null;}
+  function stopTimer(){if(timer){clearTimeout(timer);timer=0;}}
+  function step(){paint((idx+1)%panels.length);arm();}
+  function arm(){
+    stopTimer();
+    if(held||!visible||reduce.matches)return;
+    timer=setTimeout(step,DWELL);
+  }
 
-  function pick(i){setActive(i);moveSpark(fracs[i]);}
-  function takeOver(i,sticky){
-    hold=true;stop();pick(i);
-    if(resumeTimer){clearTimeout(resumeTimer);resumeTimer=0;}
-    if(sticky)resumeTimer=setTimeout(release,9000);
+  function hold(){
+    held=true;stopTimer();
+    section.classList.add('is-held');
   }
   function release(){
-    if(resumeTimer){clearTimeout(resumeTimer);resumeTimer=0;}
-    hold=false;
-    if(visible)start();
+    if(relTimer){clearTimeout(relTimer);relTimer=0;}
+    if(!held)return;
+    held=false;
+    section.classList.remove('is-held');
+    restartSeg(idx);               // шкала стартует заново вместе с таймером
+    arm();
+  }
+  function armRelease(){
+    if(relTimer)clearTimeout(relTimer);
+    relTimer=setTimeout(release,RELEASE);
   }
 
-  function bind(el,i){
-    el.addEventListener('pointerenter',function(e){
-      if(e.pointerType==='touch')return;      // тапу отвечает click — со своим удержанием
-      takeOver(i,false);
-    });
-    el.addEventListener('click',function(){takeOver(i,true);});
-    el.addEventListener('focus',function(){takeOver(i,false);});
+  function take(n){
+    hold();
+    if(n!==idx)paint(n);
   }
-  rows.forEach(bind);
-  zones.forEach(bind);
-  split.addEventListener('pointerleave',function(e){
+
+  panels.forEach(function(p,k){
+    p.addEventListener('pointerenter',function(e){
+      if(e.pointerType==='touch')return;   // тапу отвечает click, со своим удержанием
+      take(k);
+    });
+    p.addEventListener('click',function(){take(k);armRelease();});
+    p.addEventListener('focus',function(){take(k);});
+  });
+
+  stage.addEventListener('pointerleave',function(e){
     if(e.pointerType==='touch')return;
     release();
   });
-  split.addEventListener('focusout',function(e){
-    if(!split.contains(e.relatedTarget))release();
+  stage.addEventListener('focusout',function(e){
+    if(!stage.contains(e.relatedTarget))release();
   });
 
-  function playAll(){vids.forEach(function(v){var p=v.play();if(p&&p.catch)p.catch(function(){});});}
-  function pauseAll(){vids.forEach(function(v){v.pause();});}
+  stage.addEventListener('keydown',function(e){
+    var d=(e.key==='ArrowRight'||e.key==='ArrowDown')?1:
+          (e.key==='ArrowLeft'||e.key==='ArrowUp')?-1:0;
+    if(!d)return;
+    e.preventDefault();
+    var n=(idx+d+panels.length)%panels.length;
+    take(n);
+    panels[n].focus();
+  });
 
-  /* Два <video> крутятся постоянно — вне экрана их надо глушить, иначе
-     секция жжёт декодер на всей остальной странице. */
+  function playVideo(){
+    if(!video)return;
+    var p=video.play();
+    if(p&&p.catch)p.catch(function(){});
+  }
+
+  /* Видео крутится постоянно — вне экрана его надо глушить, иначе секция
+     жжёт декодер на всей остальной странице. */
   var io=new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       visible=e.isIntersecting;
-      if(visible){playAll();if(!hold)start();}
-      else{pauseAll();stop();}
+      if(visible){playVideo();if(!held)restartSeg(idx);arm();}
+      else{if(video)video.pause();stopTimer();}
     });
-  },{threshold:.06});
+  },{threshold:.08});
   io.observe(section);
 
-  /* Возврат на вкладку: браузер сам глушит видео в фоне и не поднимает его
-     обратно — IntersectionObserver тут не сработает, секция не двигалась.
-     Таймлайн сбрасываем, иначе метка прыгает на случайный участок. */
+  /* Возврат на вкладку: браузер глушит фоновое видео и не поднимает его сам,
+     а IntersectionObserver не сработает — секция не двигалась. */
   document.addEventListener('visibilitychange',function(){
-    if(document.hidden){pauseAll();stop();return;}
+    if(document.hidden){if(video)video.pause();stopTimer();return;}
     if(!visible)return;
-    playAll();
-    if(!hold){stop();start();}
+    playVideo();
+    if(!held){restartSeg(idx);arm();}
   });
 
-  setActive(0);
-  moveSpark(fracs[0]);
+  paint(0);
 })();

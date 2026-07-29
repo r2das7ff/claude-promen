@@ -15,7 +15,7 @@ get_header();
   <a class="sidenav-item" href="#proof"><span class="sidenav-dot"></span><span class="sidenav-label">В ЦЕХЕ</span></a>
   <a class="sidenav-item" href="#s2"><span class="sidenav-dot"></span><span class="sidenav-label">НОРМИРОВАНИЕ</span></a>
   <a class="sidenav-item" href="#grades"><span class="sidenav-dot"></span><span class="sidenav-label">МАТЕРИАЛЫ</span></a>
-  <a class="sidenav-item" href="#shopmap"><span class="sidenav-dot"></span><span class="sidenav-label">КАРТА ЦЕХА</span></a>
+  <a class="sidenav-item" href="#shopmap"><span class="sidenav-dot"></span><span class="sidenav-label">УЧАСТКИ</span></a>
   <a class="sidenav-item" href="#thermal"><span class="sidenav-dot"></span><span class="sidenav-label">ТЕРМООБРАБОТКА</span></a>
   <a class="sidenav-item" href="#journal"><span class="sidenav-dot"></span><span class="sidenav-label">ЖУРНАЛ ОТК</span></a>
   <a class="sidenav-item" href="#capacity"><span class="sidenav-dot"></span><span class="sidenav-label">ВОЗМОЖНОСТИ</span></a>
@@ -340,270 +340,166 @@ get_header();
   </div>
 </section>
 
-<!-- ═══════════════════════ §SHOPMAP — КАРТА ЦЕХА ═══════════════════════ -->
-<?php $shm_video = get_theme_file_uri( 'assets/media/tochnost_do_1mm-2.webm' ); ?>
+<!-- ═══════════════════════ §SHOPMAP — ПРОИЗВОДСТВЕННЫЕ УЧАСТКИ ═══════════════════════ -->
+<?php
+$shm_video  = get_theme_file_uri( 'assets/media/tochnost_do_1mm-2.webm' );
+/* Факты по участкам сведены из §FLEET (машинный парк) этой же страницы —
+   отдельного источника по участкам нет, а расходиться с парком нельзя.
+   Площади по участкам намеренно не выводим: их сумма (5 220 м²) спорит
+   с заявленной площадью корпуса 4 200 м², пока цифры не сверены. */
+$shm_stages = [
+	[
+		'n' => '01', 'fam' => 'base', 'badge' => 'Заготовка',
+		'name' => 'Склад металла',
+		'lead' => 'Прокат приходит с сертификатом плавки. Пока номер плавки не сошёлся с документом, металл в работу не уходит — именно этот номер потом доедет до паспорта изделия.',
+		'in'   => 'Прокат от поставщика',
+		'op'   => 'Приёмка · входной контроль · сверка сертификата',
+		'out'  => 'Партия с прослеживаемостью',
+		'fact' => 'ГОСТ 1050 · 19281 · 5632', 'factk' => 'Марки проката',
+	],
+	[
+		'n' => '02', 'fam' => 'base', 'badge' => 'Заготовка',
+		'name' => 'Участок резки',
+		'lead' => 'Раскрой под конкретный чертёж. Газ и плазма берут лист и толстую стенку, ленточная пила идёт туда, где нужен ровный торец под сварку.',
+		'in'   => 'Лист · труба · поковка',
+		'op'   => 'Газовая и плазменная резка · ленточная пила',
+		'out'  => 'Заготовка в размер',
+		'fact' => '8 машин', 'factk' => 'Раскройное оборудование',
+	],
+	[
+		'n' => '03', 'fam' => 'base', 'badge' => 'Заготовка',
+		'name' => 'Механообработка',
+		'lead' => 'Точение, фрезеровка и расточка под размер чертежа. Карусельный станок берёт диаметр до 2500 мм — это верхняя граница нашей номенклатуры.',
+		'in'   => 'Заготовка после резки',
+		'op'   => 'Токарная · фрезерно-расточная группа · пресс',
+		'out'  => 'Деталь в размер чертежа',
+		'fact' => 'Ø 2500 мм', 'factk' => 'Максимальный диаметр',
+	],
+	[
+		'n' => '04', 'fam' => 'base', 'badge' => 'Заготовка',
+		'name' => 'Сварочный цех',
+		'lead' => 'Автомат под флюсом — на длинные швы, орбитальная сварка — на трубы малого диаметра, ручная — там, где автомат не подойдёт. Сварщики аттестованы НАКС.',
+		'in'   => 'Детали под сборку',
+		'op'   => 'Автоматическая · орбитальная · ручная дуговая',
+		'out'  => 'Сварной узел',
+		'fact' => '12 постов', 'factk' => 'НАКС, II уровень',
+	],
+	[
+		'n' => '05', 'fam' => 'heat', 'badge' => 'Термический',
+		'name' => 'Термообработка',
+		'lead' => 'Снимаем напряжения после сварки и правим структуру металла. Режим считается под марку стали и толщину стенки, а не берётся из общей программы.',
+		'in'   => 'Сварной узел',
+		'op'   => 'Отпуск · нормализация · закалка',
+		'out'  => 'Узел со снятыми напряжениями',
+		'fact' => 'до 900 °C · ±5 °C', 'factk' => 'Режим и точность выдержки',
+	],
+	[
+		'n' => '06', 'fam' => 'qc', 'badge' => 'Контроль',
+		'name' => 'Контроль НК',
+		'lead' => 'Неразрушающий контроль каждого шва. Ультразвук и рентген показывают дефект внутри металла, не вскрывая изделие и не портя его.',
+		'in'   => 'Узел после термообработки',
+		'op'   => 'УЗК · РК · МК · ПВК',
+		'out'  => 'Протокол по каждому шву',
+		'fact' => '6 методов', 'factk' => 'Рентген до Ø 400 мм',
+	],
+	[
+		'n' => '07', 'fam' => 'qc', 'badge' => 'Контроль',
+		'name' => 'Отдел контроля',
+		'lead' => 'Геометрия, твёрдость, гидроиспытание. Отсюда изделие выходит с паспортом, в котором стоит тот самый номер плавки с первого участка.',
+		'in'   => 'Изделие с протоколами НК',
+		'op'   => 'Обмер · твёрдость · гидроиспытание',
+		'out'  => 'Паспорт изделия',
+		'fact' => '40 МПа', 'factk' => 'Испытательное давление',
+	],
+	[
+		'n' => '08', 'fam' => 'base', 'badge' => 'Отгрузка',
+		'name' => 'Склад ГП',
+		'lead' => 'Комплектация по позициям заказа, консервация и упаковка. Паспорт и сертификат уезжают вместе с изделием, а не досылаются потом.',
+		'in'   => 'Изделие с паспортом',
+		'op'   => 'Комплектация · консервация · упаковка',
+		'out'  => 'Отгрузка заказчику',
+		'fact' => 'Паспорт + сертификат', 'factk' => 'Комплект документов',
+	],
+];
+?>
 <section id="shopmap">
   <div class="shm-hd">
-    <div class="shm-tag">КАРТА ЦЕХА</div>
-    <span class="sec-hd-en">SHOP FLOOR PLAN</span>
+    <div class="shm-tag">ПРОИЗВОДСТВЕННЫЕ УЧАСТКИ</div>
+    <span class="sec-hd-en">PRODUCTION STAGES</span>
   </div>
-  <div class="shm-body">
-    <div class="shm-intro">
-      <p class="shm-statement">Производственные участки организованы по принципу единого потока — заготовка проходит через все зоны без возврата. Маршрут изготовления определяет планировку цеха площадью 4 200 м².</p>
-      <div class="shm-legend">
-        <div class="shm-leg"><span class="shm-leg-dot shm-leg-dot--base"></span>Заготовка и обработка</div>
-        <div class="shm-leg"><span class="shm-leg-dot shm-leg-dot--heat"></span>Термический участок</div>
-        <div class="shm-leg"><span class="shm-leg-dot shm-leg-dot--qc"></span>Контроль качества</div>
-        <div class="shm-leg"><span class="shm-leg-dot shm-leg-dot--route"></span>Маршрут изготовления</div>
+
+  <div class="shm-intro">
+    <div class="shm-headline">ВОСЕМЬ<br>УЧАСТКОВ —<br>ОДИН ПОТОК</div>
+    <div class="shm-intro-r">
+      <p class="shm-statement">Заготовка проходит цех насквозь и не возвращается назад: каждый следующий участок принимает результат предыдущего. Номер плавки, присвоенный на приёмке, доезжает до паспорта готового изделия.</p>
+      <div class="shm-nums">
+        <div class="shm-num"><span class="shm-num-v">8</span><span class="shm-num-k">Участков</span></div>
+        <div class="shm-num"><span class="shm-num-v">4 200 м²</span><span class="shm-num-k">Площадь цеха</span></div>
+        <div class="shm-num"><span class="shm-num-v">43</span><span class="shm-num-k">Ед. оборудования</span></div>
       </div>
     </div>
+  </div>
 
-    <div class="shm-split">
+  <!-- Сцена: сквозной кадр цеха, поверх — 8 ламелей. Раскрытая ламель кадр
+       не перекрывает, свёрнутые его приглушают. Видео одно на всю сцену и
+       не выдаёт себя за съёмку конкретного участка. -->
+  <div class="stg">
+    <video class="stg-bg" muted playsinline loop preload="none" aria-hidden="true"
+           src="<?php echo esc_url( $shm_video ); ?>"></video>
+    <div class="stg-veil" aria-hidden="true"></div>
 
-      <!-- ── ЛЕВО: чертёжный лист ── -->
-      <div class="shm-sheet">
-        <div class="shm-sheet-hd">
-          <span class="shm-sheet-t">План производственного корпуса</span>
-          <span class="shm-sheet-c">ПЭ-02.ПЛ / РЕВ.3</span>
-        </div>
+    <div class="stg-rail" role="tablist" aria-label="Производственные участки">
+      <?php foreach ( $shm_stages as $i => $s ) : ?>
+      <button type="button" role="tab"
+              class="stg-p<?php echo 0 === $i ? ' is-open' : ''; ?> stg-p--<?php echo esc_attr( $s['fam'] ); ?>"
+              data-i="<?php echo (int) $i; ?>"
+              aria-selected="<?php echo 0 === $i ? 'true' : 'false'; ?>">
+        <span class="stg-shade"></span>
 
-        <div class="shm-plan">
-          <div class="shm-dim">
-            <span class="shm-dim-l"></span><span class="shm-dim-v">84 000</span><span class="shm-dim-l"></span>
-          </div>
+        <span class="stg-spine">
+          <span class="stg-spine-n"><?php echo esc_html( $s['n'] ); ?></span>
+          <span class="stg-spine-t"><?php echo esc_html( $s['name'] ); ?></span>
+        </span>
 
-          <div class="shm-frame">
-            <svg class="shm-plan-svg" viewBox="0 0 860 460" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-              <defs>
-                <marker id="shm-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-                  <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(15,42,68,.5)"/>
-                </marker>
-                <filter id="shm-spark-glow" x="-300%" y="-300%" width="700%" height="700%">
-                  <feGaussianBlur stdDeviation="3.4"/>
-                </filter>
-              </defs>
+        <span class="stg-card">
+          <span class="stg-crn tl"></span><span class="stg-crn tr"></span>
+          <span class="stg-crn bl"></span><span class="stg-crn br"></span>
 
-              <!-- Контур корпуса -->
-              <rect x=".75" y=".75" width="858.5" height="458.5" fill="none"
-                    stroke="rgba(15,42,68,.44)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+          <span class="stg-card-top">
+            <span class="stg-badge"><?php echo esc_html( $s['badge'] ); ?></span>
+            <span class="stg-step">Этап <?php echo esc_html( $s['n'] ); ?> / 08</span>
+          </span>
 
-              <!-- Разбивочные оси участков -->
-              <line x1="172" y1="0" x2="172" y2="230" stroke="rgba(109,140,166,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
-              <line x1="338" y1="0" x2="338" y2="460" stroke="rgba(109,140,166,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
-              <line x1="543" y1="0" x2="543" y2="460" stroke="rgba(109,140,166,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
-              <line x1="728" y1="0" x2="728" y2="460" stroke="rgba(15,42,68,.4)"     stroke-width="1" vector-effect="non-scaling-stroke"/>
-              <line x1="0"   y1="230" x2="728" y2="230" stroke="rgba(109,140,166,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
-              <line x1="728" y1="230" x2="860" y2="230" stroke="rgba(196,74,14,.28)" stroke-width="1" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>
+          <span class="stg-card-mid">
+            <span class="stg-num"><?php echo esc_html( $s['n'] ); ?></span>
+            <span class="stg-name"><?php echo esc_html( $s['name'] ); ?></span>
+            <span class="stg-lead"><?php echo esc_html( $s['lead'] ); ?></span>
+          </span>
 
-              <!-- Камерные печи (05) -->
-              <rect x="754" y="286" width="22" height="26" rx="1.5" fill="none" stroke="rgba(196,74,14,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
-              <rect x="782" y="286" width="22" height="26" rx="1.5" fill="none" stroke="rgba(196,74,14,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
-              <rect x="754" y="320" width="22" height="26" rx="1.5" fill="none" stroke="rgba(196,74,14,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
-              <rect x="782" y="320" width="22" height="26" rx="1.5" fill="none" stroke="rgba(196,74,14,.42)" stroke-width="1" vector-effect="non-scaling-stroke"/>
-
-              <!-- Вход / выход -->
-              <line x1="0" y1="118" x2="40" y2="118" stroke="rgba(15,42,68,.5)" stroke-width="1.2" marker-end="url(#shm-arr)" vector-effect="non-scaling-stroke"/>
-              <line x1="40" y1="348" x2="0" y2="348" stroke="rgba(15,42,68,.5)" stroke-width="1.2" marker-end="url(#shm-arr)" vector-effect="non-scaling-stroke"/>
-
-              <!-- Маршрут: пунктирная нитка + невидимый двойник как источник геометрии -->
-              <path d="M 0,118 L 793,118 L 793,348 L 0,348" fill="none"
-                    stroke="rgba(15,42,68,.38)" stroke-width="1.5" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>
-              <path id="shm-route" d="M 0,118 L 793,118 L 793,348 L 0,348" fill="none" stroke="none"/>
-
-              <!-- Узлы маршрута -->
-              <circle class="shm-node" data-node="01" cx="87"  cy="118" r="3.6" fill="#fff" stroke="rgba(109,140,166,.95)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
-              <circle class="shm-node" data-node="02" cx="255" cy="118" r="3.6" fill="#fff" stroke="rgba(109,140,166,.95)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
-              <circle class="shm-node" data-node="03" cx="440" cy="118" r="3.6" fill="#fff" stroke="rgba(109,140,166,.95)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
-              <circle class="shm-node" data-node="04" cx="635" cy="118" r="3.6" fill="#fff" stroke="rgba(109,140,166,.95)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
-              <circle class="shm-node" data-node="05" cx="793" cy="233" r="3.6" fill="#fff" stroke="rgba(196,74,14,.9)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
-              <circle class="shm-node" data-node="06" cx="635" cy="348" r="3.6" fill="#fff" stroke="rgba(46,125,50,.85)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
-              <circle class="shm-node" data-node="07" cx="440" cy="348" r="3.6" fill="#fff" stroke="rgba(46,125,50,.85)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
-              <circle class="shm-node" data-node="08" cx="169" cy="348" r="3.6" fill="#fff" stroke="rgba(109,140,166,.95)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
-
-              <!-- Метка потока: позиционируется из JS вдоль #shm-route -->
-              <g id="shm-spark-wrap" transform="translate(0,118)">
-                <circle class="shm-spark-halo" r="9" fill="rgba(196,74,14,.5)"/>
-                <circle class="shm-spark-core" r="3.2" fill="#C4460E"/>
-              </g>
-            </svg>
-
-            <div class="shm-zones">
-              <button type="button" class="shm-zone" data-z="01" style="--zx:0;--zy:0;--zw:20.0000%;--zh:50%">
-                <span class="shm-z-num">01</span>
-                <span class="shm-z-lbl"><span class="shm-z-name">Склад металла</span><span class="shm-z-area">680 м²</span></span>
-              </button>
-              <button type="button" class="shm-zone" data-z="02" style="--zx:20.0000%;--zy:0;--zw:19.3023%;--zh:50%">
-                <span class="shm-z-num">02</span>
-                <span class="shm-z-lbl"><span class="shm-z-name">Участок резки</span><span class="shm-z-area">520 м²</span></span>
-              </button>
-              <button type="button" class="shm-zone" data-z="03" style="--zx:39.3023%;--zy:0;--zw:23.8372%;--zh:50%">
-                <span class="shm-z-num">03</span>
-                <span class="shm-z-lbl"><span class="shm-z-name">Механообработка</span><span class="shm-z-area">840 м²</span></span>
-              </button>
-              <button type="button" class="shm-zone" data-z="04" style="--zx:63.1395%;--zy:0;--zw:21.5116%;--zh:50%">
-                <span class="shm-z-num">04</span>
-                <span class="shm-z-lbl"><span class="shm-z-name">Сварочный цех</span><span class="shm-z-area">680 м²</span></span>
-              </button>
-              <button type="button" class="shm-zone shm-zone--heat shm-zone--tall" data-z="05" style="--zx:84.6512%;--zy:0;--zw:15.3488%;--zh:100%">
-                <span class="shm-z-num">05</span>
-                <span class="shm-z-lbl"><span class="shm-z-name">Термообработка</span><span class="shm-z-area">480 м²</span></span>
-              </button>
-              <button type="button" class="shm-zone shm-zone--qc" data-z="06" style="--zx:63.1395%;--zy:50%;--zw:21.5116%;--zh:50%">
-                <span class="shm-z-num">06</span>
-                <span class="shm-z-lbl"><span class="shm-z-name">Контроль НК</span><span class="shm-z-area">540 м²</span></span>
-              </button>
-              <button type="button" class="shm-zone shm-zone--qc" data-z="07" style="--zx:39.3023%;--zy:50%;--zw:23.8372%;--zh:50%">
-                <span class="shm-z-num">07</span>
-                <span class="shm-z-lbl"><span class="shm-z-name">Отдел контроля</span><span class="shm-z-area">520 м²</span></span>
-              </button>
-              <button type="button" class="shm-zone" data-z="08" style="--zx:0;--zy:50%;--zw:39.3023%;--zh:50%">
-                <span class="shm-z-num">08</span>
-                <span class="shm-z-lbl"><span class="shm-z-name">Склад ГП · отгрузка</span><span class="shm-z-area">960 м²</span></span>
-              </button>
-            </div>
-          </div>
-
-          <div class="shm-flow">
-            <span class="shm-flow-e">Вход · прокат</span>
-            <span class="shm-flow-l"></span>
-            <span class="shm-flow-t">Единый поток · без возврата</span>
-            <span class="shm-flow-l"></span>
-            <span class="shm-flow-e">Отгрузка</span>
-          </div>
-        </div>
-
-        <div class="shm-stamp">
-          <div class="shm-st"><div class="shm-st-v">8</div><div class="shm-st-k">Участков</div></div>
-          <div class="shm-st"><div class="shm-st-v">4 200 м²</div><div class="shm-st-k">Площадь корпуса</div></div>
-          <div class="shm-st"><div class="shm-st-v">43</div><div class="shm-st-k">Ед. оборудования</div></div>
-        </div>
-      </div>
-
-      <!-- ── ПРАВО: лента участков поверх живого кадра цеха ── -->
-      <div class="shm-reel" data-active="0">
-        <video class="shm-reel-amb" muted playsinline loop preload="none" aria-hidden="true"
-               src="<?php echo esc_url( $shm_video ); ?>"></video>
-        <div class="shm-reel-scrim" aria-hidden="true"></div>
-        <video class="shm-reel-focus" muted playsinline loop preload="none" aria-hidden="true"
-               src="<?php echo esc_url( $shm_video ); ?>"></video>
-
-        <div class="shm-rows">
-          <button type="button" class="shm-row is-open" data-z="01">
-            <span class="shm-row-hd">
-              <span class="shm-row-num">01</span>
-              <span class="shm-row-name">Склад металла</span>
-              <span class="shm-row-key">Приёмка</span>
-              <span class="shm-row-tick"></span>
+          <span class="stg-foot">
+            <span class="stg-flow">
+              <span class="stg-f"><span class="stg-f-k">Вход</span><span class="stg-f-v"><?php echo esc_html( $s['in'] ); ?></span></span>
+              <span class="stg-f stg-f--op"><span class="stg-f-k">Операция</span><span class="stg-f-v"><?php echo esc_html( $s['op'] ); ?></span></span>
+              <span class="stg-f"><span class="stg-f-k">Выход</span><span class="stg-f-v"><?php echo esc_html( $s['out'] ); ?></span></span>
             </span>
-            <span class="shm-row-body">
-              <span class="shm-row-cap">
-                <span class="shm-row-spec">Приёмка проката · входной контроль плавки</span>
-                <span class="shm-row-area">680 м²</span>
-              </span>
+            <span class="stg-fact">
+              <span class="stg-fact-v"><?php echo esc_html( $s['fact'] ); ?></span>
+              <span class="stg-fact-k"><?php echo esc_html( $s['factk'] ); ?></span>
             </span>
-          </button>
-          <button type="button" class="shm-row" data-z="02">
-            <span class="shm-row-hd">
-              <span class="shm-row-num">02</span>
-              <span class="shm-row-name">Участок резки</span>
-              <span class="shm-row-key">8 машин</span>
-              <span class="shm-row-tick"></span>
-            </span>
-            <span class="shm-row-body">
-              <span class="shm-row-cap">
-                <span class="shm-row-spec">Газ · плазма · ленточная пила · 8 машин</span>
-                <span class="shm-row-area">520 м²</span>
-              </span>
-            </span>
-          </button>
-          <button type="button" class="shm-row" data-z="03">
-            <span class="shm-row-hd">
-              <span class="shm-row-num">03</span>
-              <span class="shm-row-name">Механообработка</span>
-              <span class="shm-row-key">18 ст. ЧПУ</span>
-              <span class="shm-row-tick"></span>
-            </span>
-            <span class="shm-row-body">
-              <span class="shm-row-cap">
-                <span class="shm-row-spec">Токарный · фрезерный · расточной · 18 ст. ЧПУ</span>
-                <span class="shm-row-area">840 м²</span>
-              </span>
-            </span>
-          </button>
-          <button type="button" class="shm-row" data-z="04">
-            <span class="shm-row-hd">
-              <span class="shm-row-num">04</span>
-              <span class="shm-row-name">Сварочный цех</span>
-              <span class="shm-row-key">12 постов</span>
-              <span class="shm-row-tick"></span>
-            </span>
-            <span class="shm-row-body">
-              <span class="shm-row-cap">
-                <span class="shm-row-spec">Автомат · орбитальная · ручная · 12 постов</span>
-                <span class="shm-row-area">680 м²</span>
-              </span>
-            </span>
-          </button>
-          <button type="button" class="shm-row shm-row--heat" data-z="05">
-            <span class="shm-row-hd">
-              <span class="shm-row-num">05</span>
-              <span class="shm-row-name">Термообработка</span>
-              <span class="shm-row-key">4 печи</span>
-              <span class="shm-row-tick"></span>
-            </span>
-            <span class="shm-row-body">
-              <span class="shm-row-cap">
-                <span class="shm-row-spec">Камерные печи · 4 шт. · до 900 °C · ±5 °C</span>
-                <span class="shm-row-area">480 м²</span>
-              </span>
-            </span>
-          </button>
-          <button type="button" class="shm-row shm-row--qc" data-z="06">
-            <span class="shm-row-hd">
-              <span class="shm-row-num">06</span>
-              <span class="shm-row-name">Контроль НК</span>
-              <span class="shm-row-key">6 методов</span>
-              <span class="shm-row-tick"></span>
-            </span>
-            <span class="shm-row-body">
-              <span class="shm-row-cap">
-                <span class="shm-row-spec">УЗК · РК · МК · ПВК · 6 методов</span>
-                <span class="shm-row-area">540 м²</span>
-              </span>
-            </span>
-          </button>
-          <button type="button" class="shm-row shm-row--qc" data-z="07">
-            <span class="shm-row-hd">
-              <span class="shm-row-num">07</span>
-              <span class="shm-row-name">Отдел контроля</span>
-              <span class="shm-row-key">Паспорт</span>
-              <span class="shm-row-tick"></span>
-            </span>
-            <span class="shm-row-body">
-              <span class="shm-row-cap">
-                <span class="shm-row-spec">ОТК · паспортизация · приёмка заказчиком</span>
-                <span class="shm-row-area">520 м²</span>
-              </span>
-            </span>
-          </button>
-          <button type="button" class="shm-row" data-z="08">
-            <span class="shm-row-hd">
-              <span class="shm-row-num">08</span>
-              <span class="shm-row-name">Склад ГП · отгрузка</span>
-              <span class="shm-row-key">Отгрузка</span>
-              <span class="shm-row-tick"></span>
-            </span>
-            <span class="shm-row-body">
-              <span class="shm-row-cap">
-                <span class="shm-row-spec">Паспорт · сертификат · комплектация</span>
-                <span class="shm-row-area">960 м²</span>
-              </span>
-            </span>
-          </button>
-        </div>
-      </div>
-
+          </span>
+        </span>
+      </button>
+      <?php endforeach; ?>
     </div>
+  </div>
+
+  <div class="stg-bar">
+    <div class="stg-prog">
+      <?php foreach ( $shm_stages as $i => $s ) : ?>
+      <span class="stg-seg"><span class="stg-seg-f"></span></span>
+      <?php endforeach; ?>
+    </div>
+    <div class="stg-hint"><span class="stg-hint-dot"></span>Наведите на участок — тур остановится</div>
   </div>
 </section>
 
