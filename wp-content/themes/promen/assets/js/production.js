@@ -398,6 +398,16 @@ allSections.forEach(s=>sio.observe(s));
 
   var idx=0,timer=0,relTimer=0,held=false,visible=false;
 
+  /* На ≤1024 ламель мельче, а трафик дороже — берём облегчённый файл.
+     Выбор делаем до первого play(), пока идёт только preload метаданных. */
+  if(video){
+    var narrowSrc=video.getAttribute('data-src-narrow');
+    if(narrowSrc&&window.matchMedia('(max-width:1024px)').matches&&
+       video.getAttribute('src')!==narrowSrc){
+      video.setAttribute('src',narrowSrc);
+    }
+  }
+
   function restartSeg(n){
     var seg=segs[n];
     if(!seg)return;
@@ -477,10 +487,24 @@ allSections.forEach(s=>sio.observe(s));
     panels[n].focus();
   });
 
+  /* Стартуем только когда клипа хватает на непрерывное проигрывание.
+     С play() по первому же готовому кадру браузер начинал и тут же
+     упирался в добуферизацию — это и был рывок на входе в секцию. */
   function playVideo(){
     if(!video)return;
-    var p=video.play();
-    if(p&&p.catch)p.catch(function(){});
+    if(video.readyState>=4){                 // HAVE_ENOUGH_DATA
+      var p=video.play();
+      if(p&&p.catch)p.catch(function(){});
+      return;
+    }
+    if(video.preload!=='auto')video.preload='auto';
+    video.addEventListener('canplaythrough',function once(){
+      video.removeEventListener('canplaythrough',once);
+      if(!visible||document.hidden)return;    // пока грузилось, секция могла уехать
+      var p=video.play();
+      if(p&&p.catch)p.catch(function(){});
+    });
+    video.load();
   }
 
   /* Видео крутится постоянно — вне экрана его надо глушить, иначе секция

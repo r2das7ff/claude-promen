@@ -145,7 +145,7 @@ get_header();
       <!-- Video background -->
       <div class="prf-video-wrap">
         <video class="prf-video" autoplay muted loop playsinline preload="auto">
-          <source src="<?php echo esc_url( get_theme_file_uri( 'assets/media/tochnost_do_1mm-2.webm' ) ); ?>" type="video/webm">
+          <source src="<?php echo esc_url( get_theme_file_uri( 'assets/media/promen-shop-1920.mp4' ) ); ?>" type="video/mp4">
         </video>
       </div>
 
@@ -342,7 +342,11 @@ get_header();
 
 <!-- ═══════════════════════ §SHOPMAP — ПРОИЗВОДСТВЕННЫЕ УЧАСТКИ ═══════════════════════ -->
 <?php
-$shm_video  = get_theme_file_uri( 'assets/media/tochnost_do_1mm-2.webm' );
+/* H.264 вместо исходного AV1 2560×1440: AV1 декодируется аппаратно только на
+   свежем железе, на остальном уходит в софт и роняет около половины кадров.
+   Узкий вариант — для ≤1024, там панель мельче и трафик дороже. */
+$shm_video        = get_theme_file_uri( 'assets/media/promen-shop-1920.mp4' );
+$shm_video_narrow = get_theme_file_uri( 'assets/media/promen-shop-960.mp4' );
 /* Факты по участкам сведены из §FLEET (машинный парк) этой же страницы —
    отдельного источника по участкам нет, а расходиться с парком нельзя.
    Площади по участкам намеренно не выводим: их сумма (5 220 м²) спорит
@@ -444,8 +448,10 @@ $shm_stages = [
        не перекрывает, свёрнутые его приглушают. Видео одно на всю сцену и
        не выдаёт себя за съёмку конкретного участка. -->
   <div class="stg">
-    <video class="stg-bg" muted playsinline loop preload="none" aria-hidden="true"
-           src="<?php echo esc_url( $shm_video ); ?>"></video>
+    <video class="stg-bg" muted playsinline loop preload="metadata" aria-hidden="true"
+           disablepictureinpicture disableremoteplayback
+           src="<?php echo esc_url( $shm_video ); ?>"
+           data-src-narrow="<?php echo esc_url( $shm_video_narrow ); ?>"></video>
     <div class="stg-veil" aria-hidden="true"></div>
 
     <div class="stg-rail" role="tablist" aria-label="Производственные участки">

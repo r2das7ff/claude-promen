@@ -983,17 +983,26 @@ img{display:block;max-width:100%;}
 .stg-p--qc{--stg-acc:#6FBF77;}
 .stg-p:focus-visible{outline:2px solid var(--stg-acc);outline-offset:-3px;}
 
+/* Два слоя вместо перехода background: цвет и градиент лежат в разных
+   свойствах (background-color / background-image) и между собой не
+   интерполируются — градиент возникал скачком поверх ещё не погасшего
+   цвета, и на открытии ламель сначала темнела. Кросс-фейд по opacity
+   считается композитором и такого провала не даёт. */
 .stg-shade{
   position:absolute;inset:0;pointer-events:none;
-  background:rgba(5,12,21,.85);
-  transition:background .55s cubic-bezier(.22,1,.36,1);
+  background-color:rgba(5,12,21,.85);
+  transition:background-color .5s cubic-bezier(.22,1,.36,1),opacity .5s cubic-bezier(.22,1,.36,1);
 }
-.stg-p:hover .stg-shade{background:rgba(5,12,21,.72);}
-.stg-p.is-open .stg-shade{
+.stg-p:hover .stg-shade{background-color:rgba(5,12,21,.72);}
+.stg-p.is-open .stg-shade{background-color:transparent;}
+.stg-shade::before{
+  content:'';position:absolute;inset:0;opacity:0;
   background:linear-gradient(180deg,
     rgba(4,10,18,.72) 0%, rgba(4,10,18,.2) 24%,
     rgba(4,10,18,.38) 56%, rgba(2,7,13,.94) 100%);
+  transition:opacity .5s cubic-bezier(.22,1,.36,1);
 }
+.stg-p.is-open .stg-shade::before{opacity:1;}
 /* Цветной торец активной ламели — привязка карточки к её группе участков */
 .stg-shade::after{
   content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--stg-acc);
