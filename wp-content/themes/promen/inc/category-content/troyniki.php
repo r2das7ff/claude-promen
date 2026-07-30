@@ -51,7 +51,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -126,14 +126,14 @@ return [
             <div class="sg-task-code">Задача 01</div>
             <div class="sg-task-h">Врезать ответвление равного диаметра (d = D)</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Тройники равнопроходные штампованные — бесшовные приварные</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17376-2001</span><span class="sg-tag">DN 15–600</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'troyniki', 'gost-17376-2001' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'troyniki', 'gost-17376-2001' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-17376-2001', $ctx['url'] ) ); ?>">К штампованным в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN и PN магистрали</div><div class="sg-param">D×s магистрали (напр. 219×8)</div><div class="sg-param">Марка стали и среда</div>
             </div>
@@ -144,14 +144,14 @@ return [
             <div class="sg-task-code">Задача 02</div>
             <div class="sg-task-h">Ответвление меньшего диаметра (d < D)</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Тройники переходные — штампованные по ГОСТ 17376</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17376-2001</span><span class="sg-tag">d &lt; D</span><span class="sg-tag">переходные</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-17376-2001', $ctx['url'] ) ); ?>">К переходным в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">D×s магистрали и d×s ответвления</div><div class="sg-param">PN, марка стали</div><div class="sg-param">Объект: ТЭС / АЭС / нефтехим</div>
             </div>
@@ -162,14 +162,14 @@ return [
             <div class="sg-task-code">Задача 03</div>
             <div class="sg-task-h">Трубопровод высокого давления — свыше 10 до 100 МПа</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Тройники Ру 100 — с опорой (ГОСТ 22822) и без (ГОСТ 22801)</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 22801-83</span><span class="sg-tag hi">ГОСТ 22822-83</span><span class="sg-tag">DN 6–200</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'troyniki', 'gost-22801-1983' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'troyniki', 'gost-22801-1983' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22801-1983', $ctx['url'] ) ); ?>">К тройникам Ру 100 в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Рабочее давление Ру и температура</div><div class="sg-param">Исполнение по стандарту</div><div class="sg-param">Наличие опоры, марка стали</div>
             </div>
@@ -180,14 +180,14 @@ return [
             <div class="sg-task-code">Задача 04</div>
             <div class="sg-task-h">Энергетический трубопровод ТЭС, крупный DN</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Тройники сварные — ОСТ 34-10-762…765-97, DN до 1600</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ОСТ 34-10-762…765</span><span class="sg-tag">DN 65–1600</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'troyniki', 'ost-34-10-764-97' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'troyniki', 'ost-34-10-764-97' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-34-10-764-97', $ctx['url'] ) ); ?>">К сварным в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">D×s магистрали и ответвления</div><div class="sg-param">Объём НК сварных швов (ВИК / УЗК / РК)</div><div class="sg-param">Категория трубопровода</div>
             </div>
@@ -198,14 +198,14 @@ return [
             <div class="sg-task-code">Задача 05</div>
             <div class="sg-task-h">Нестандартная геометрия, сталь или усиление</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Изготовление по КД заказчика — врезки, косые тройники, спецстали</div>
             <div class="sg-tags">
               <span class="sg-tag hi">По чертежу</span><span class="sg-tag">Согласование 1–3 дня</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( '#request' ); ?>">Отправить чертёж — форма запроса →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Чертёж или эскиз с размерами</div><div class="sg-param">Среда, давление, температура</div><div class="sg-param">Количество и срок поставки</div>
             </div>
@@ -559,7 +559,7 @@ return [
           </div>
 
           <div>
-            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:7px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:10px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
             <div class="kb-doclist">
               <div class="kb-doc-item kb-aes">
                 <div class="kb-doc-name">Программа контроля качества</div>

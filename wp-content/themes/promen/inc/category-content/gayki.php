@@ -52,7 +52,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -90,14 +90,14 @@ return [
             <div class="sg-task-code">Задача 01</div>
             <div class="sg-task-h">Гайка для фланцевого соединения</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Гайки ГОСТ 9064</div>
             <div class="sg-tags">
               <span class="sg-tag hi">Г</span><span class="sg-tag">M × L</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-9064-1970', $ctx['url'] ) ); ?>">К позициям в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Резьба M</div><div class="sg-param">DN/PN фланца</div><div class="sg-param">Количество на соединение</div>
             </div>
@@ -108,14 +108,14 @@ return [
             <div class="sg-task-code">Задача 02</div>
             <div class="sg-task-h">Гайка шестигранная</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Гайки ГОСТ 5915 / 10605</div>
             <div class="sg-tags">
               <span class="sg-tag hi">Г</span><span class="sg-tag">M × L</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-5915-1970', $ctx['url'] ) ); ?>">К позициям в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">M</div><div class="sg-param">Класс прочности</div><div class="sg-param">Покрытие</div>
             </div>
@@ -126,14 +126,14 @@ return [
             <div class="sg-task-code">Задача 03</div>
             <div class="sg-task-h">Гайка низкая / колпачковая</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Гайки ГОСТ 5916 / 5929 / 10607</div>
             <div class="sg-tags">
               <span class="sg-tag hi">Г</span><span class="sg-tag">M × L</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-5916-1970', $ctx['url'] ) ); ?>">К позициям в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">M</div><div class="sg-param">Тип исполнения</div><div class="sg-param">Среда</div>
             </div>
@@ -144,14 +144,14 @@ return [
             <div class="sg-task-code">Задача 04</div>
             <div class="sg-task-h">Нестандартная гайка</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Изготовление по КД</div>
             <div class="sg-tags">
               <span class="sg-tag hi">Г</span><span class="sg-tag">M × L</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( '#request' ); ?>">Отправить чертёж — форма запроса →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Чертёж</div><div class="sg-param">Материал</div><div class="sg-param">Количество</div>
             </div>

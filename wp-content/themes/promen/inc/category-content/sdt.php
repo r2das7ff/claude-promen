@@ -81,13 +81,13 @@ return [
             <div class="sg-task-code">Задача 01</div>
             <div class="sg-task-h">Повернуть трубу на 45°, 90° или 180°</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное изделие">
             <div class="sg-prod-name">Отводы — крутоизогнутые, гнутые, секторные, штампосварные</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17375</span><span class="sg-tag hi">СТО ЦКТИ 321.x</span><span class="sg-tag">ОСТ 36-21-77</span><span class="sg-tag">DN 15–1400</span>
             </div>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN и PN трубопровода</div>
               <div class="sg-param">Угол поворота (45° / 90° / 180° / произвольный)</div>
@@ -101,13 +101,13 @@ return [
             <div class="sg-task-code">Задача 02</div>
             <div class="sg-task-h">Врезать ответвление или разветвить поток</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное изделие">
             <div class="sg-prod-name">Тройники — равнопроходные (d=D), переходные (d&lt;D), сварные крупного DN</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17376</span><span class="sg-tag hi">СТО ЦКТИ 720.x</span><span class="sg-tag">ОСТ 36-24-77</span><span class="sg-tag">DN 15–1000</span>
             </div>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN основной трубы и DN ответвления</div>
               <div class="sg-param">PN, марка стали</div>
@@ -121,13 +121,13 @@ return [
             <div class="sg-task-code">Задача 03</div>
             <div class="sg-task-h">Изменить диаметр трубопровода</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное изделие">
             <div class="sg-prod-name">Переходы — концентрические (соосные), эксцентрические (со смещением оси), сварные конусные</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17378</span><span class="sg-tag hi">СТО ЦКТИ 318.x</span><span class="sg-tag">ОСТ 36-22-77</span><span class="sg-tag">DN 15–1400</span>
             </div>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN₁ (большой) и DN₂ (меньший)</div>
               <div class="sg-param">Тип: концентрический (ось сохраняется) или эксцентрический (горизонтальная прокладка, дренаж)</div>
@@ -140,13 +140,13 @@ return [
             <div class="sg-task-code">Задача 04</div>
             <div class="sg-task-h">Закрыть торец трубы или сосуда давления</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное изделие">
             <div class="sg-prod-name">Днища эллиптические (a/D=0,25), заглушки эллиптические и плоские</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17379</span><span class="sg-tag hi">ГОСТ 6533</span><span class="sg-tag">ОСТ 36-25-77</span><span class="sg-tag">DN 25–4000</span>
             </div>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN и PN</div>
               <div class="sg-param">Тип: эллиптическое днище (постоянное закрытие) или плоская заглушка (временное / монтажное)</div>
@@ -159,13 +159,13 @@ return [
             <div class="sg-task-code">Задача 05</div>
             <div class="sg-task-h">Нестандартная деталь или специсполнение</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное изделие">
             <div class="sg-prod-name">По КД / ТУ заказчика — любые геометрия, материал, исполнение для ТЭС и АЭС</div>
             <div class="sg-tags">
               <span class="sg-tag hi">КД заказчика</span><span class="sg-tag hi">НП-045-18</span><span class="sg-tag">НП-089-15</span><span class="sg-tag">Любой DN</span>
             </div>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Чертёж или ТЗ с допусками и требованиями к контролю</div>
               <div class="sg-param">Марка стали и требования к сертификации</div>
@@ -181,7 +181,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -880,7 +880,7 @@ return [
           </div>
 
           <div>
-            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:7px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:10px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
             <div class="kb-doclist">
               <div class="kb-doc-item kb-aes">
                 <div class="kb-doc-name">Программа контроля качества</div>

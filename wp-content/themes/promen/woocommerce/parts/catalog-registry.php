@@ -43,8 +43,12 @@ if ( ! isset( $view ) ) {
 
 $show_cat_link = $promen_registry_show_cat_link ?? ! is_tax( 'product_cat' );
 $with_pdp      = $promen_registry_with_pdp ?? true;
+// На странице категории якорь #registry уже на секции-обёртке
+// (promen_render_category_catalog_embed) — второй такой id здесь дал бы
+// дубль. На /catalog/ обёртки нет, и id остаётся за этим блоком.
+$embedded      = ! empty( $promen_registry_embedded );
 ?>
-    <div class="cat-main" id="registry">
+    <div class="cat-main"<?php echo $embedded ? '' : ' id="registry"'; ?>>
       <div class="sticky-hd">
         <div class="main-hd">
           <div>
@@ -95,7 +99,8 @@ $with_pdp      = $promen_registry_with_pdp ?? true;
               <div class="cb-search-ic">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
               </div>
-              <input id="searchInput" name="q" type="text" value="<?php echo esc_attr( sanitize_text_field( wp_unslash( $_GET['q'] ?? '' ) ) ); ?>" placeholder="Поиск по наименованию, ГОСТ, типоразмеру…" autocomplete="off">
+              <?php // data-ph-sm — короткий плейсхолдер для телефонов, подставляет catalog.js ?>
+              <input id="searchInput" name="q" type="text" value="<?php echo esc_attr( sanitize_text_field( wp_unslash( $_GET['q'] ?? '' ) ) ); ?>" placeholder="Поиск по наименованию, ГОСТ, типоразмеру…" data-ph-sm="Поиск по ГОСТ" autocomplete="off">
             </form>
             <div class="cb-tabs" id="cbTabs" aria-label="Фильтр по отрасли">
               <a class="cb-tab<?php echo $sel_ind === '' ? ' on' : ''; ?>" href="<?php echo esc_url( promen_clear_param_url( 'industry' ) ); ?>" data-industry="">Все отрасли</a>
@@ -168,7 +173,8 @@ $with_pdp      = $promen_registry_with_pdp ?? true;
           <div class="cb-summary" id="cbSummary"<?php echo $summary ? '' : ' hidden'; ?>>
             <span class="cbs-lbl">Активные:</span>
             <?php foreach ( $summary as $s ) : ?>
-              <a class="cbs-tag" href="<?php echo esc_url( $s['clear_url'] ); ?>"><?php echo esc_html( $s['label'] . ' ' . $s['value'] ); ?><span class="cbs-x" aria-hidden="true">✕</span></a>
+              <?php // trim — у 'gost' подпись пустая (см. promen_active_summary). ?>
+              <a class="cbs-tag" href="<?php echo esc_url( $s['clear_url'] ); ?>"><?php echo esc_html( trim( $s['label'] . ' ' . $s['value'] ) ); ?><span class="cbs-x" aria-hidden="true">✕</span></a>
             <?php endforeach; ?>
             <a class="cbs-reset" href="<?php echo esc_url( promen_reset_url() ); ?>">Сбросить всё</a>
           </div>

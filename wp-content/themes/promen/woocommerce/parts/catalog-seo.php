@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
 
   <!-- Шапка-баннер: мета + ключевые цифры -->
   <div class="seo-header">
-    <div class="seo-hd-meta">ООО Завод «Промышленная Энергетика» · г. Челябинск · ПЭ-КТЛ / 2026</div>
+    <div class="seo-hd-meta">ООО Завод «Промышленная Энергетика» · г. Челябинск · ПЭ-КТЛ / 2026</div>
     <div class="seo-stats">
       <div class="seo-stat">
         <span class="seo-stat-v">8</span>
@@ -93,45 +93,45 @@ defined( 'ABSPATH' ) || exit;
     <div class="seo-spec-col">
       <div class="seo-spec-item">
         <span class="seo-spec-k">Диаметр условный</span>
-        <span class="seo-spec-v">DN 15 — DN 1400 мм</span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( 'DN 15 — DN 1400 мм' ); ?></span>
       </div>
       <div class="seo-spec-item">
         <span class="seo-spec-k">Условное давление</span>
-        <span class="seo-spec-v">PN 0.6 — PN 20.0 МПа (6–200 кгс/см²)</span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( 'PN 0.6 — PN 20.0 МПа (6–200 кгс/см²)' ); ?></span>
       </div>
       <div class="seo-spec-item">
         <span class="seo-spec-k">Рабочая температура</span>
-        <span class="seo-spec-v">−40 … +600°С</span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( '−40 … +600°С' ); ?></span>
       </div>
       <div class="seo-spec-item">
         <span class="seo-spec-k">Марки стали</span>
-        <span class="seo-spec-v">Ст20 · 09Г2С · 15ГС · 15Х1М1Ф · 12Х1МФ · 12Х18Н10Т · 10Х17Н13М2Т · 13Х11Н2В2МФ</span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( 'Ст20 · 09Г2С · 15ГС · 15Х1М1Ф · 12Х1МФ · 12Х18Н10Т · 10Х17Н13М2Т · 13Х11Н2В2МФ' ); ?></span>
       </div>
       <div class="seo-spec-item">
         <span class="seo-spec-k">Отрасли применения</span>
-        <span class="seo-spec-v">АЭС · ТЭС · ГРЭС · ТЭЦ · НГК · Нефтехим</span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( 'АЭС · ТЭС · ГРЭС · ТЭЦ · НГК · Нефтехим' ); ?></span>
       </div>
     </div>
     <div class="seo-spec-col">
       <div class="seo-spec-item">
         <span class="seo-spec-k">Нормативные документы</span>
-        <span class="seo-spec-v">ГОСТ · ОСТ · СТО ЦКТИ 321/720 · НП-045-18 · НП-068-05 · НП-089-15 · ТУ · КД</span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( 'ГОСТ · ОСТ · СТО ЦКТИ 321/720 · НП-045-18 · НП-068-05 · НП-089-15 · ТУ · КД' ); ?></span>
       </div>
       <div class="seo-spec-item">
         <span class="seo-spec-k">Методы контроля</span>
-        <span class="seo-spec-v">УЗК · РК · ВИК · МПД · ПВК · Гидравлические испытания (ГОСТ Р 55724-2013)</span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( 'УЗК · РК · ВИК · МПД · ПВК · Гидравлические испытания (ГОСТ Р 55724-2013)' ); ?></span>
       </div>
       <div class="seo-spec-item">
         <span class="seo-spec-k">Сертификация</span>
-        <span class="seo-spec-v">ТР ТС 032/2013 · Декл. RU С-RU.АБ53.В.08323/23 · Серия RU 0418908</span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( 'ТР ТС 032/2013 · Декл. RU С-RU.АБ53.В.08323/23 · Серия RU 0418908' ); ?></span>
       </div>
       <div class="seo-spec-item">
         <span class="seo-spec-k">Документация</span>
-        <span class="seo-spec-v">Паспорт 3.1 (ГОСТ ISO 10474-2016) · Сертификат на металл · Протокол НК · Прослеживаемость плавки</span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( 'Паспорт 3.1 (ГОСТ ISO 10474-2016) · Сертификат на металл · Протокол НК · Прослеживаемость плавки' ); ?></span>
       </div>
       <div class="seo-spec-item">
         <span class="seo-spec-k">Производство</span>
-        <span class="seo-spec-v">454091, г. Челябинск, ул. Орджоникидзе, 37 · zakaz@prom-en.com · +7 (351) 217-00-99</span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( '454091, г. Челябинск, ул. Орджоникидзе, 37 · zakaz@prom-en.com · +7 (351) 217-00-99' ); ?></span>
       </div>
     </div>
   </div>

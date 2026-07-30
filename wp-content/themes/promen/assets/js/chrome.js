@@ -77,6 +77,6 @@
     a.addEventListener('click', closeDrawer);
   });
   window.addEventListener('resize', function () {
-    if (window.innerWidth > 1024) closeDrawer();
+    if (window.innerWidth > 1199) closeDrawer(); /* порог бургера в base.css */
   });
 })();

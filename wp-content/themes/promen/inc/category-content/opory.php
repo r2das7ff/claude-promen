@@ -52,7 +52,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -82,31 +82,31 @@ return [
         <div class="sg-thead"><div class="sg-th">Задача</div><div class="sg-th">Нужное исполнение</div><div class="sg-th">Что передать</div></div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 01</div><div class="sg-task-h">Зафиксировать участок трубопровода</div></div>
-          <div class="sg-product"><div class="sg-prod-name">Опора неподвижная хомутовая</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Опора неподвижная хомутовая</div>
             <div class="sg-tags"><span class="sg-tag hi">НП</span><span class="sg-tag"><?php echo esc_html( (string) promen_catalog_group_count( 'opory-nepodv' ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'group', 'opory-nepodv', $ctx['shop_url'] ) ); ?>">К неподвижным →</a></div>
-          <div class="sg-params"><div class="sg-param-list"><div class="sg-param">DN трубы</div><div class="sg-param">Нагрузка</div><div class="sg-param">Количество</div></div></div>
+          <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">DN трубы</div><div class="sg-param">Нагрузка</div><div class="sg-param">Количество</div></div></div>
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 02</div><div class="sg-task-h">Компенсировать температурные перемещения</div></div>
-          <div class="sg-product"><div class="sg-prod-name">Опора скользящая</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Опора скользящая</div>
             <div class="sg-tags"><span class="sg-tag hi">СК</span><span class="sg-tag"><?php echo esc_html( (string) promen_catalog_group_count( 'opory-skolz' ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'group', 'opory-skolz', $ctx['shop_url'] ) ); ?>">К скользящим →</a></div>
-          <div class="sg-params"><div class="sg-param-list"><div class="sg-param">DN</div><div class="sg-param">Ход / покрытие</div><div class="sg-param">Количество</div></div></div>
+          <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">DN</div><div class="sg-param">Ход / покрытие</div><div class="sg-param">Количество</div></div></div>
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 03</div><div class="sg-task-h">Вертикальная нагрузка / подвеска</div></div>
-          <div class="sg-product"><div class="sg-prod-name">Опора пружинная</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Опора пружинная</div>
             <div class="sg-tags"><span class="sg-tag hi">ПР</span><span class="sg-tag"><?php echo esc_html( (string) promen_catalog_group_count( 'opory-pruzh' ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'group', 'opory-pruzh', $ctx['shop_url'] ) ); ?>">К пружинным →</a></div>
-          <div class="sg-params"><div class="sg-param-list"><div class="sg-param">DN</div><div class="sg-param">Нагрузка, кН</div><div class="sg-param">Ход пружины</div></div></div>
+          <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">DN</div><div class="sg-param">Нагрузка, кН</div><div class="sg-param">Ход пружины</div></div></div>
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 04</div><div class="sg-task-h">По КД / нестандарт</div></div>
-          <div class="sg-product"><div class="sg-prod-name">Подбор по спецификации</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Подбор по спецификации</div>
             <div class="sg-tags"><span class="sg-tag">КД</span></div>
             <a class="sg-link" href="#request">Форма запроса →</a></div>
-          <div class="sg-params"><div class="sg-param-list"><div class="sg-param">Чертёж</div><div class="sg-param">Нагрузки</div><div class="sg-param">Срок</div></div></div>
+          <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">Чертёж</div><div class="sg-param">Нагрузки</div><div class="sg-param">Срок</div></div></div>
         </div>
       </div>
     </div>

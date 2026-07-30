@@ -307,7 +307,7 @@ get_header();
 <section id="grades">
   <div class="grades-hd">
     <div class="grades-tag">БИБЛИОТЕКА МАТЕРИАЛОВ</div>
-    <span style="font-family:'DINPro',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--g2);opacity:.5;">STEEL GRADE REFERENCE</span>
+    <span style="font-family:'DINPro',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--g2);opacity:.5;">STEEL GRADE REFERENCE</span>
   </div>
   <div class="grades-intro">
     <div class="gi-statement">

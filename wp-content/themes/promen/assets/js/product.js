@@ -369,6 +369,9 @@ promenHideEmptyCols(document.querySelector('.series-full'));
   function toggle(show, deliveryMode) {
     modal.classList.toggle('open', show);
     overlay.classList.toggle('show', show);
+    // Замок прокрутки фона — как у бокового меню (chrome.js) и глобальной
+    // модалки запроса (request-modal.js).
+    document.body.classList.toggle('modal-locked', show);
     if (show) {
       if (cityField) cityField.style.display = deliveryMode ? '' : 'none';
       if (deliveryInput) deliveryInput.value = deliveryMode ? 'да' : '';
@@ -404,6 +407,31 @@ promenHideEmptyCols(document.querySelector('.series-full'));
   var tabs = document.querySelectorAll('#s10 .kb-tab');
   var panels = document.querySelectorAll('#s10 .kb-panel');
   if (!tabs.length) return;
+
+  /**
+   * Подтянуть ленту так, чтобы соседний таб next стал виден целиком.
+   * Скроллим саму .kb-tabrow, а не через scrollIntoView: тот уводит ещё и
+   * страницу по вертикали, вырывая пользователя из текущего места.
+   * Сдвиг ограничен так, чтобы только что выбранный таб active не ушёл
+   * за противоположный край — иначе на узком экране открытая вкладка
+   * пропадает из ленты сразу после нажатия.
+   */
+  function revealTab(active, next) {
+    var row = active && active.closest('.kb-tabrow');
+    if (!row || row.scrollWidth <= row.clientWidth) return;
+    var rr = row.getBoundingClientRect();
+    var tr = (next || active).getBoundingClientRect();
+    var pad = 16;
+    var d = 0;
+    if (tr.right > rr.right) { d = tr.right - rr.right + pad; }
+    else if (tr.left < rr.left) { d = tr.left - rr.left - pad; }
+    if (!d) return;
+    var ar = active.getBoundingClientRect();
+    if (d > 0) { d = Math.min(d, ar.left - rr.left); }
+    else { d = Math.max(d, ar.right - rr.right); }
+    if (d) { row.scrollBy({ left: d, behavior: 'smooth' }); }
+  }
+
   tabs.forEach(function (btn) {
     btn.addEventListener('click', function () {
       tabs.forEach(function (t) { t.classList.remove('active'); });
@@ -411,8 +439,69 @@ promenHideEmptyCols(document.querySelector('.series-full'));
       btn.classList.add('active');
       var target = document.getElementById('kp-' + btn.dataset.panel);
       if (target) target.classList.add('kp-active');
+      // Лента табов на телефоне втрое шире экрана, и признак прокрутки —
+      // только обрезанный край. Показываем следующий таб: и сам он
+      // становится доступен в одно касание, и видно, что лента едет.
+      revealTab(btn, btn.nextElementSibling);
     });
   });
+})();
+
+/* Марки стали: показать строки сверх телефонного порога (метку mr-extra-m
+   ставит inc/steel-reference.php, прячет product.css). */
+(function () {
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('[data-mat-more]');
+    if (!btn) return;
+    var tbl = btn.parentElement ? btn.parentElement.querySelector('[data-mat-tbl]') : null;
+    if (tbl) tbl.classList.add('is-expanded');
+    btn.remove();
+  });
+})();
+
+/*
+ * Аккордеон только для узких экранов — секция 06 «Области применения».
+ * На десктопе это сетка из шести карточек, читается одним взглядом; на
+ * 390px она разворачивается в 970px сплошного текста между паспортом
+ * качества и комплектом документов. Схлопываем описания, оставляя
+ * заголовки секторов: получается оглавление, раскрывается только нужное.
+ * Разметку не трогаем — классы и ARIA навешиваем здесь. Инициализируем
+ * только на телефоне: на десктопе тела карточек и так видны.
+ */
+(function () {
+  var mqPhone = window.matchMedia('(max-width:640px)');
+  var done = false;
+  function init() {
+    if (done || !mqPhone.matches) return;
+    var items = document.querySelectorAll('#s06 .app-c');
+    if (items.length < 2) return;
+    done = true;
+    items.forEach(function (item, i) {
+      var head = item.querySelector('.app-h');
+      if (!head) return;
+      item.classList.add('pm-acc');
+      head.classList.add('pm-acc-hd');
+      head.setAttribute('role', 'button');
+      head.setAttribute('tabindex', '0');
+      // Первая карточка раскрыта: пустой аккордеон не показывает, что внутри.
+      if (i === 0) item.classList.add('pm-acc-open');
+      head.setAttribute('aria-expanded', i === 0 ? 'true' : 'false');
+      function toggle() {
+        var open = item.classList.toggle('pm-acc-open');
+        head.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      head.addEventListener('click', toggle);
+      head.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
+  }
+  init();
+  if (mqPhone.addEventListener) { mqPhone.addEventListener('change', init); }
+  else if (mqPhone.addListener) { mqPhone.addListener(init); }
 })();
 
 /* QC: hover по этапу подсвечивает строку цифрового паспорта. */

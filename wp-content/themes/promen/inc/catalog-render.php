@@ -107,12 +107,22 @@ function promen_catalog_facet_label( string $param, string $slug ): string {
 	return $slug;
 }
 
-/** Шаблон grid для строк реестра. */
+/**
+ * Шаблон grid для строк реестра.
+ *
+ * Колонки обёрнуты в minmax(0,…), а не заданы жёстким px: у широких схем
+ * (фланцы — 13 колонок, тройники — 12) сумма фиксированных ширин превышала
+ * колонку контента на 1024–1280px, и таблица уезжала за край. С minmax
+ * базовый размер трека равен 0, поэтому при нехватке места колонки
+ * ужимаются, а при достатке получают ровно свои px — на широких экранах
+ * рендер не меняется. Дублируется в assets/js/catalog.js → gridTpl().
+ */
 function promen_catalog_grid_template( string $group ): string {
 	$cols = promen_catalog_columns( $group );
-	return '150px minmax(200px,1fr) '
-		. implode( ' ', array_map( static fn( $c ) => $c['w'], $cols ) )
-		. ' 120px 96px 32px';
+	$flex = static fn( string $w ): string => 'minmax(min-content,' . $w . ')';
+	return $flex( '150px' ) . ' minmax(120px,1fr) '
+		. implode( ' ', array_map( static fn( $c ) => $flex( (string) $c['w'] ), $cols ) )
+		. ' ' . $flex( '120px' ) . ' ' . $flex( '96px' ) . ' 32px';
 }
 
 /** Колонка → поле сортировки Meili (пусто = не сортируется). */
@@ -180,6 +190,38 @@ function promen_render_catalog_row( array $hit, string $grid_tpl, int $index = 0
 	echo '<span class="pr-arr">›</span></a>';
 }
 
+/**
+ * Значение технической таблицы: перечисление через « · » разбиваем на элементы.
+ *
+ * На десктопе вид не меняется — разделитель рисует CSS (.ssv-i + .ssv-i::before).
+ * На телефоне из этих элементов делаются чипы: сплошная строка вроде
+ * «Ст20 · 09Г2С · 15ГС · 15Х1М1Ф · …» переносилась в плотный блок и читалась
+ * как каша. Значения без разделителя возвращаются как обычный текст.
+ */
+function promen_spec_value( string $value ): string {
+	$parts = preg_split( '/\s+·\s+/u', trim( $value ) );
+	if ( ! is_array( $parts ) || count( $parts ) < 2 ) {
+		return esc_html( $value );
+	}
+	$out   = '';
+	$first = true;
+	foreach ( $parts as $p ) {
+		$p = trim( $p );
+		if ( '' === $p ) {
+			continue;
+		}
+		// Разделитель — настоящий текстовый узел, а не ::before: псевдоэлементы
+		// не попадают в выделение, и копирование давало бы «Ст2009Г2С15ГС…».
+		// На телефоне он визуально скрыт, но остаётся в разметке и в копии.
+		if ( ! $first ) {
+			$out .= '<i class="ssv-sep"> · </i>';
+		}
+		$out  .= '<span class="ssv-i">' . esc_html( $p ) . '</span>';
+		$first = false;
+	}
+	return $out;
+}
+
 /** Пагинация для канонического результата. */
 function promen_catalog_pagination_links( Promen_Catalog_Search_Result $result ): string {
 	$pages = (int) ceil( $result->total / max( 1, $result->per_page ) );
@@ -190,7 +232,14 @@ function promen_catalog_pagination_links( Promen_Catalog_Search_Result $result )
 		'total'     => $pages,
 		'current'   => $result->page,
 		'type'      => 'plain',
-		'prev_text' => '← Назад',
-		'next_text' => 'Вперёд →',
+		// Слово в <span>: на телефоне прячется, остаётся стрелка — иначе на
+		// страницах со 2-й пагинация не влезала в строку и «Вперёд →»
+		// переносился на отдельную строку.
+		'prev_text' => '<span class="pg-arr">←</span><span class="pg-txt">Назад</span>',
+		'next_text' => '<span class="pg-txt">Вперёд</span><span class="pg-arr">→</span>',
+		// ±1 вместо дефолтных ±2: на глубоких страницах ряд «← 1 … 3 4 5 6 7 … 514 →»
+		// (11 элементов, 441px) не помещался в телефон даже со стрелками вместо слов.
+		// Должно совпадать с win в renderPagination() (assets/js/catalog.js).
+		'mid_size'  => 1,
 	] );
 }

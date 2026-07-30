@@ -52,7 +52,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -90,14 +90,14 @@ return [
             <div class="sg-task-code">Задача 01</div>
             <div class="sg-task-h">Крепёж фланцевой пары</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Шпильки ГОСТ 9066 + гайки ГОСТ 9064</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ШП</span><span class="sg-tag">M × L</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-9066-1970', $ctx['url'] ) ); ?>">К позициям в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN/PN фланца</div><div class="sg-param">M и L</div><div class="sg-param">Комплект гаек/шайб</div>
             </div>
@@ -108,14 +108,14 @@ return [
             <div class="sg-task-code">Задача 02</div>
             <div class="sg-task-h">Шпилька общепромышленная</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Шпильки ГОСТ 15590 / 15591</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ШП</span><span class="sg-tag">M × L</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-15590-1970', $ctx['url'] ) ); ?>">К позициям в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">M и L</div><div class="sg-param">Марка / класс</div><div class="sg-param">Количество</div>
             </div>
@@ -126,14 +126,14 @@ return [
             <div class="sg-task-code">Задача 03</div>
             <div class="sg-task-h">Шпильки для сосудов и аппаратов</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Шпильки ОСТ 26-2040-96</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ШП</span><span class="sg-tag">M × L</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-26-2040-96', $ctx['url'] ) ); ?>">К позициям в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">M и L по КД</div><div class="sg-param">Марка</div><div class="sg-param">Объём НК</div>
             </div>
@@ -144,14 +144,14 @@ return [
             <div class="sg-task-code">Задача 04</div>
             <div class="sg-task-h">Шпилька Ст20</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Шпильки ГОСТ 10494-1980</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ШП</span><span class="sg-tag">M × L</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-10494-1980', $ctx['url'] ) ); ?>">К позициям в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">M и L</div><div class="sg-param">Ст20</div><div class="sg-param">Срок</div>
             </div>

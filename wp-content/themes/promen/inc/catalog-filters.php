@@ -769,9 +769,16 @@ function promen_group_filter_url( ?string $group_slug ): string {
 	return add_query_arg( [ 'group' => rawurlencode( $group_slug ) ], $base );
 }
 
-/** Сводка активных фильтров: [ ['label','value','clear_url'] ] для строки-резюме. */
+/**
+ * Сводка активных фильтров: [ ['label','value','clear_url'] ] для строки-резюме.
+ *
+ * У 'gost' подпись пустая намеренно. Значение фасета — полное обозначение
+ * документа («ГОСТ 17375-2001», «ОСТ 24.125.03-89», «СТО ЦКТИ 321.03-2009»),
+ * и приписка перед ним давала либо дубль («ГОСТ ГОСТ 17375-2001»), либо
+ * прямую ошибку: ОСТ и СТО подписывались как ГОСТ.
+ */
 function promen_active_summary(): array {
-	$labels  = [ 'dn' => 'DN', 'pn' => 'PN', 's' => 'Стенка', 'steel' => 'Сталь', 'industry' => 'Отрасль', 'angle' => 'Угол', 'gost' => 'ГОСТ' ];
+	$labels  = [ 'dn' => 'DN', 'pn' => 'PN', 's' => 'Стенка', 'steel' => 'Сталь', 'industry' => 'Отрасль', 'angle' => 'Угол', 'gost' => '' ];
 	$out     = [];
 	foreach ( promen_active_ranges() as $p => $r ) {
 		$val = ( null !== $r['min'] ? (float) $r['min'] : '…' ) . '–' . ( null !== $r['max'] ? (float) $r['max'] : '…' );

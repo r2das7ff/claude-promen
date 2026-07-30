@@ -560,7 +560,7 @@ function promen_catalog_columns( string $group ): array {
 	$RAD   = [ 'key' => 'radius', 'label' => 'R, мм',       'w' => '56px' ];
 	$HEIGHT= [ 'key' => 'height', 'label' => 'H, мм',       'w' => '56px' ];
 	$MASS  = [ 'key' => 'mass',   'label' => 'Масса, кг',   'w' => '78px' ];
-	$MASSM = [ 'key' => 'mass',   'label' => 'Масса, кг/м', 'w' => '90px' ];
+	$MASSM = [ 'key' => 'mass',   'label' => 'Масса, кг/м', 'w' => '100px' ];
 	$PN    = [ 'key' => 'pn',     'label' => 'PN',          'w' => '52px' ];
 	$TYPE  = [ 'key' => 'flange_type', 'label' => 'Тип',    'w' => '48px' ];
 	$B     = [ 'key' => 'b',      'label' => 'b, мм',       'w' => '54px' ];

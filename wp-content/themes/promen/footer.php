@@ -36,7 +36,7 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
         </div>
         <div class="s10-contact-row">
           <span class="s10-contact-k">АДРЕС</span>
-          <span class="s10-contact-v">454091, Челябинск, ул. Орджоникидзе, 37</span>
+          <span class="s10-contact-v">454091, Челябинск, ул. Орджоникидзе, 37</span>
         </div>
         <div class="s10-contact-row">
           <span class="s10-contact-k">ВРЕМЯ</span>

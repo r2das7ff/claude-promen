@@ -1108,13 +1108,13 @@ get_header();
         <!-- Технический паспорт детали (title block) -->
         <rect x="142" y="235" width="120" height="44" fill="rgba(232,236,240,0.85)" stroke="#A0B0BC" stroke-width="0.8"></rect>
         <line x1="142" y1="245" x2="262" y2="245" stroke="#A0B0BC" stroke-width="0.7"></line>
-        <text x="147" y="243" font-family="DINPro,monospace" font-size="6.5" fill="#6D8CA6" letter-spacing="1.2">МАТЕРИАЛ</text>
+        <text x="147" y="243" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="1.2">МАТЕРИАЛ</text>
         <text x="147" y="257" font-family="DINProCond,DINPro,monospace" font-size="10" fill="#0F2A44" font-weight="700" letter-spacing="0.3">09Г2С / 12Х1МФ</text>
         <text x="147" y="268" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="0.6">ГОСТ 17375 / ТУ</text>
-        <text x="147" y="276" font-family="DINPro,monospace" font-size="6.5" fill="#6D8CA6" letter-spacing="0.4" opacity="0.65">Р ≤ 250 / Т ≤ +600°C</text>
+        <text x="147" y="276" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="0.4" opacity="0.65">Р ≤ 250 / Т ≤ +600°C</text>
 
         <!-- Номер чертежа -->
-        <text x="290" y="16" text-anchor="end" font-family="DINPro,monospace" font-size="6.5" fill="#A0B0BC" letter-spacing="0.8" opacity="0.65">ОТВОД 90° ГОСТ 17375</text>
+        <text x="290" y="16" text-anchor="end" font-family="DINPro,monospace" font-size="7" fill="#A0B0BC" letter-spacing="0.8" opacity="0.65">ОТВОД 90° ГОСТ 17375</text>
         <text x="290" y="26" text-anchor="end" font-family="DINPro,monospace" font-size="7" fill="#A0B0BC" letter-spacing="0.6">ПЭ-01-100-90</text>
       </svg>
 

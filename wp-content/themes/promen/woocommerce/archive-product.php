@@ -62,7 +62,26 @@ foreach ( promen_catalog_nav_roots() as $root_slug ) {
 
   <div class="cat-body">
 
-    <aside class="cat-sb">
+    <?php
+    // Кнопка видна только на ≤900px, где сайдбар свёрнут: без неё на телефоне
+    // не было ни одной ссылки на категорию — каталог превращался в плоский
+    // список без навигации по разделам.
+    $promen_defs      = promen_catalog_taxonomy_defs();
+    $promen_cur_group = '';
+    if ( $group !== '' && isset( $promen_defs[ $group ] ) ) {
+    	$promen_cur_group = (string) ( $promen_defs[ $group ]['nav_name'] ?? $promen_defs[ $group ]['label'] ?? '' );
+    }
+    ?>
+    <button type="button" class="cat-sb-toggle" id="catSbToggle" aria-expanded="false" aria-controls="catSb">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1.5 2.5h11M1.5 7h11M1.5 11.5h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      <span class="cat-sb-toggle-t">Категории</span>
+      <?php if ( $promen_cur_group !== '' ) : ?>
+        <span class="cat-sb-toggle-cur"><?php echo esc_html( $promen_cur_group ); ?></span>
+      <?php endif; ?>
+      <span class="cat-sb-toggle-arr" aria-hidden="true"></span>
+    </button>
+
+    <aside class="cat-sb" id="catSb">
       <?php promen_render_catalog_sidebar( (string) $group ); ?>
     </aside>
 
@@ -75,9 +94,17 @@ foreach ( promen_catalog_nav_roots() as $root_slug ) {
 </div>
 
 <?php
-// Технический реестр + база знаний — только на чистом корне каталога
-// (как в katalog.html); при фильтрах/поиске/пагинации не дублируем.
-$promen_clean_root = ! promen_has_filters() && ! is_paged() && promen_active_group() === '';
+// Технический реестр + база знаний — на первой странице любого вида каталога.
+//
+// Прячем только на пагинации: страницы /page/N/ индексируются (canonical и
+// noindex на них не выставляются), и один и тот же большой блок на 514
+// страницах — настоящие дубли.
+//
+// Под фильтром и группой секции остаются: такие виды уже отдают
+// noindex,follow + canonical на чистый URL (inc/catalog-filters.php), дублей
+// там не возникает, а исчезновение половины страницы по клику на фильтр
+// читается как поломка.
+$promen_clean_root = ! is_paged();
 if ( $promen_clean_root ) {
 	include __DIR__ . '/parts/catalog-seo.php';
 	include __DIR__ . '/parts/catalog-kb.php';

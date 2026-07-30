@@ -51,7 +51,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -128,14 +128,14 @@ return [
             <div class="sg-task-code">Задача 01</div>
             <div class="sg-task-h">Крепёж фланцевой пары (шпилька + гайка)</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Шпильки ГОСТ 9066 / 15590 + гайки ГОСТ 9064</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ШП</span><span class="sg-tag">Г</span><span class="sg-tag">фланцы</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-9066-1970', $ctx['url'] ) ); ?>">К шпилькам 9066 в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN / PN фланца</div><div class="sg-param">Резьба M и длина L</div><div class="sg-param">Исполнение уплотнения</div>
             </div>
@@ -146,14 +146,14 @@ return [
             <div class="sg-task-code">Задача 02</div>
             <div class="sg-task-h">Болтовое соединение / общепромышленный монтаж</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Болты с шестигранной головкой ГОСТ 7798 / 7795 / 7805</div>
             <div class="sg-tags">
               <span class="sg-tag hi">Б</span><span class="sg-tag">ГОСТ 7798</span><span class="sg-tag">M × L</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-7798-1970', $ctx['url'] ) ); ?>">К болтам 7798 в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Резьба M</div><div class="sg-param">Длина L, мм</div><div class="sg-param">Класс прочности / покрытие</div>
             </div>
@@ -164,14 +164,14 @@ return [
             <div class="sg-task-code">Задача 03</div>
             <div class="sg-task-h">Фундаментный болт / анкерное крепление</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Болты фундаментные ГОСТ 22032 / 22043</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 22032</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'krepezh', 'gost-22032-1976' ) + promen_category_norm_count( 'krepezh', 'gost-22043-1976' ) ) ); ?> поз. семейства</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22032-1976', $ctx['url'] ) ); ?>">К фундаментным в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Тип исполнения по ГОСТ</div><div class="sg-param">M и L</div><div class="sg-param">Условия заделки</div>
             </div>
@@ -182,14 +182,14 @@ return [
             <div class="sg-task-code">Задача 04</div>
             <div class="sg-task-h">Шпильки для сосудов и аппаратов (ОСТ)</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Шпильки ОСТ 26-2040-96</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ОСТ 26-2040</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'krepezh', 'ost-26-2040-96' ) ) ); ?> поз.</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-26-2040-96', $ctx['url'] ) ); ?>">К шпилькам ОСТ в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">M и L по КД аппарата</div><div class="sg-param">Марка / класс</div><div class="sg-param">Объём НК</div>
             </div>
@@ -200,14 +200,14 @@ return [
             <div class="sg-task-code">Задача 05</div>
             <div class="sg-task-h">Нестандартный крепёж / по КД</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Изготовление по чертежу заказчика</div>
             <div class="sg-tags">
               <span class="sg-tag">КД</span><span class="sg-tag">ТУ завода</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( '#request' ); ?>">Отправить чертёж — форма запроса →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Чертёж / спецификация</div><div class="sg-param">Материал и покрытие</div><div class="sg-param">Количество и срок</div>
             </div>

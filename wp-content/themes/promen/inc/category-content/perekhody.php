@@ -51,7 +51,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -122,14 +122,14 @@ return [
             <div class="sg-task-code">Задача 01</div>
             <div class="sg-task-h">Состыковать трубы разного DN с сохранением оси</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Переходы концентрические бесшовные — штампованные приварные</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17378-2001</span><span class="sg-tag">тип ПК</span><span class="sg-tag">DN 32–600</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-17378-2001', $ctx['url'] ) ); ?>">К бесшовным в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">D1×s1 и D2×s2 (напр. 219×8 — 159×6)</div><div class="sg-param">DN / PN участка</div><div class="sg-param">Марка стали и среда</div>
             </div>
@@ -140,14 +140,14 @@ return [
             <div class="sg-task-code">Задача 02</div>
             <div class="sg-task-h">Нужен дренаж / смещение оси потока (эксцентрик)</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Переходы эксцентрические — бесшовные по ГОСТ 17378</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17378-2001</span><span class="sg-tag">тип ПЭ</span><span class="sg-tag">эксцентрические</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-17378-2001', $ctx['url'] ) ); ?>">К эксцентрическим в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">D1×s1 и D2×s2, ориентация «плоской» стороны</div><div class="sg-param">PN, марка стали</div><div class="sg-param">Объект: ТЭС / АЭС / нефтехим</div>
             </div>
@@ -158,14 +158,14 @@ return [
             <div class="sg-task-code">Задача 03</div>
             <div class="sg-task-h">Трубопровод высокого давления — свыше 10 до 100 МПа</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Переходы на Ру до 100 МПа — ГОСТ 22826-83</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 22826-83</span><span class="sg-tag">DN 25–200</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22826-1983', $ctx['url'] ) ); ?>">К переходам Ру 100 в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Рабочее давление Ру и температура (−50…+510 °C)</div><div class="sg-param">Dy×dy и исполнение по стандарту</div><div class="sg-param">Марка стали (в т.ч. 20ХЗМВФ)</div>
             </div>
@@ -176,14 +176,14 @@ return [
             <div class="sg-task-code">Задача 04</div>
             <div class="sg-task-h">Крупный DN / трубопровод ТЭС — штамповка недоступна</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Переходы сварные — ОСТ 36-22-77 и ОСТ 34-10-753-97</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ОСТ 36-22-77</span><span class="sg-tag hi">ОСТ 34-10-753</span><span class="sg-tag">DN 300–1600</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-36-22-77', $ctx['url'] ) ); ?>">К сварным в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">D1×s1 и D2×s2 магистрали</div><div class="sg-param">Объём НК сварных швов (ВИК / УЗК / РК)</div><div class="sg-param">Категория трубопровода ТЭС</div>
             </div>
@@ -194,14 +194,14 @@ return [
             <div class="sg-task-code">Задача 05</div>
             <div class="sg-task-h">Нестандартная геометрия, сталь или усиление</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Изготовление по КД заказчика — спецпереходы, усиленные стенки</div>
             <div class="sg-tags">
               <span class="sg-tag hi">По чертежу</span><span class="sg-tag">Согласование 1–3 дня</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( '#request' ); ?>">Отправить чертёж — форма запроса →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Чертёж или эскиз с D1×D2 и длиной</div><div class="sg-param">Среда, давление, температура</div><div class="sg-param">Количество и срок поставки</div>
             </div>

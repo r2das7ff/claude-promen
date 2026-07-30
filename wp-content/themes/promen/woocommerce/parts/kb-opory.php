@@ -127,7 +127,7 @@ defined( 'ABSPATH' ) || exit;
       <div class="kb-lead"><div class="kb-lead-h">Доставка и оплата</div><p class="kb-lead-p">Отгрузка после ОТК. Логистику считаем в КП — укажите объект или город.</p></div>
       <div class="kb-cards">
         <div class="kb-card"><div class="kb-card-badge">ДОСТАВКА</div><div class="kb-card-title">ТК по всей России</div><p class="kb-card-body">Отгрузка транспортной компанией по выбору заказчика.</p></div>
-        <div class="kb-card"><div class="kb-card-badge">САМОВЫВОЗ</div><div class="kb-card-title">Челябинск</div><p class="kb-card-body">454091, ул. Орджоникидзе, 37. Пн–Пт 09:00–18:00 МСК.</p></div>
+        <div class="kb-card"><div class="kb-card-badge">САМОВЫВОЗ</div><div class="kb-card-title">Челябинск</div><p class="kb-card-body">454091, ул. Орджоникидзе, 37. Пн–Пт 09:00–18:00 МСК.</p></div>
         <div class="kb-card"><div class="kb-card-badge">ОПЛАТА</div><div class="kb-card-title">Б/н с НДС</div><p class="kb-card-body">Счёт по КП. Аванс / доплата или график по договору.</p></div>
       </div>
     </div>

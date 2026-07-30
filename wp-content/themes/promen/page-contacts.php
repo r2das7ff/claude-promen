@@ -41,7 +41,7 @@ get_header();
           </div>
           <div class="cnt-row">
             <span class="cnt-row-k">Адрес</span>
-            <span class="cnt-row-v">454091, г. Челябинск,<br>ул. Орджоникидзе, 37</span>
+            <span class="cnt-row-v">454091, г. Челябинск,<br>ул. Орджоникидзе, 37</span>
           </div>
           <div class="cnt-row">
             <span class="cnt-row-k">Телефон</span>
@@ -72,9 +72,9 @@ get_header();
               <div class="cnt-loc-dot"></div>
             </div>
             <div>
-              <div class="cnt-loc-city">г. Челябинск</div>
+              <div class="cnt-loc-city">г. Челябинск</div>
               <div class="cnt-loc-coord">55.1644° N · 61.4368° E</div>
-              <div class="cnt-loc-addr">ул. Орджоникидзе, 37 — производственная<br>площадка завода</div>
+              <div class="cnt-loc-addr">ул. Орджоникидзе, 37 — производственная<br>площадка завода</div>
             </div>
           </div>
         </div>

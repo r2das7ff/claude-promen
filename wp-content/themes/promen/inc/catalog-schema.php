@@ -15,7 +15,9 @@ function promen_catalog_column_defs(): array {
 		'radius'      => [ 'key' => 'radius', 'label' => 'R, мм', 'w' => '56px' ],
 		'height'      => [ 'key' => 'height', 'label' => 'H, мм', 'w' => '56px' ],
 		'mass'        => [ 'key' => 'mass', 'label' => 'Масса, кг', 'w' => '78px' ],
-		'massm'       => [ 'key' => 'mass', 'label' => 'Масса, кг/м', 'w' => '90px' ],
+		// 100px, не 90: подпись «Масса, кг/м» + стрелка сортировки на 11px шапки
+		// упиралась в край колонки и срывалась в перенос.
+		'massm'       => [ 'key' => 'mass', 'label' => 'Масса, кг/м', 'w' => '100px' ],
 		'pn'          => [ 'key' => 'pn', 'label' => 'PN', 'w' => '52px' ],
 		'flange_type' => [ 'key' => 'flange_type', 'label' => 'Тип', 'w' => '124px' ],
 		'b'           => [ 'key' => 'b', 'label' => 'b, мм', 'w' => '54px' ],

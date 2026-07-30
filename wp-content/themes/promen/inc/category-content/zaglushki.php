@@ -51,7 +51,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -101,14 +101,14 @@ return [
             <div class="sg-task-code">Задача 01</div>
             <div class="sg-task-h">Глухое закрытие торца трубы приваркой</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Заглушки эллиптические приварные — тип ЗЭ по ГОСТ 17379</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17379-2001</span><span class="sg-tag">тип ЗЭ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'zaglushki', 'gost-17379-2001' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'zaglushki', 'gost-17379-2001' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-17379-2001', $ctx['url'] ) ); ?>">К эллиптическим в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">D×s трубы (или DN и стенка)</div><div class="sg-param">Марка стали</div><div class="sg-param">Исполнение 1 или 2</div>
             </div>
@@ -119,14 +119,14 @@ return [
             <div class="sg-task-code">Задача 02</div>
             <div class="sg-task-h">Временное / разъёмное закрытие на высоком давлении</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Заглушки фланцевые на Ру св. 10 до 100 МПа — ГОСТ 22815</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 22815-83</span><span class="sg-tag">тип ЗФ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'zaglushki', 'gost-22815-1983' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'zaglushki', 'gost-22815-1983' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22815-1983', $ctx['url'] ) ); ?>">К фланцевым в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN и Ру (или рабочее давление)</div><div class="sg-param">Исполнение фланца (1–4)</div><div class="sg-param">Марка стали (в т.ч. 20Х3МВФ)</div>
             </div>
@@ -137,14 +137,14 @@ return [
             <div class="sg-task-code">Задача 03</div>
             <div class="sg-task-h">Коррозионная среда или северное исполнение</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Заглушки из нержавеющих и хладостойких сталей каталога</div>
             <div class="sg-tags">
               <span class="sg-tag hi">12Х18Н10Т</span><span class="sg-tag">09Г2С · 13ХФА · 17Г1С</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( $ctx['url'] ); ?>">К реестру заглушек →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Среда, температура, давление</div><div class="sg-param">Марка стали и требования к МКК</div><div class="sg-param">Поднадзорность (ТР ТС 032/2013)</div>
             </div>
@@ -155,14 +155,14 @@ return [
             <div class="sg-task-code">Задача 04</div>
             <div class="sg-task-h">Нестандартная геометрия или исполнение по КД</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Изготовление по КД заказчика — заглушки нестандартных размеров</div>
             <div class="sg-tags">
               <span class="sg-tag hi">По чертежу</span><span class="sg-tag">Согласование 1–3 дня</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( '#request' ); ?>">Отправить чертёж — форма запроса →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Чертёж заглушки / узла</div><div class="sg-param">Среда, давление, температура</div><div class="sg-param">Количество и срок поставки</div>
             </div>

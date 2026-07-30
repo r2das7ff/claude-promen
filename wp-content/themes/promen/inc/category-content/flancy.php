@@ -51,7 +51,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -121,14 +121,14 @@ return [
             <div class="sg-task-code">Задача 01</div>
             <div class="sg-task-h">Разъёмное соединение высокого давления / PN до 250</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Фланцы ГОСТ 33259 — тип 11 (воротниковые) или тип 01 (плоские)</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 33259-2015</span><span class="sg-tag">тип 11 / 01</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'flancy', 'gost-33259-2015' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'flancy', 'gost-33259-2015' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-33259-2015', $ctx['url'] ) ); ?>">К фланцам 33259 в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN и PN</div><div class="sg-param">Тип 01 или 11</div><div class="sg-param">Исполнение уплотнительной поверхности</div>
             </div>
@@ -139,14 +139,14 @@ return [
             <div class="sg-task-code">Задача 02</div>
             <div class="sg-task-h">Плоский фланец на низкое / среднее давление</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Фланцы плоские приварные ФП по ГОСТ 12820-80</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 12820-80</span><span class="sg-tag">ФП</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'flancy', 'gost-12820-1980' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'flancy', 'gost-12820-1980' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-12820-1980', $ctx['url'] ) ); ?>">К плоским в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN (Dy) и Ру 0,1–2,5 МПа</div><div class="sg-param">Марка стали</div><div class="sg-param">Температура среды</div>
             </div>
@@ -157,14 +157,14 @@ return [
             <div class="sg-task-code">Задача 03</div>
             <div class="sg-task-h">Воротниковый фланец / приварка встык</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Фланцы ФВ по ГОСТ 12821 или тип 11 по ГОСТ 33259</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 12821-80</span><span class="sg-tag">тип 11</span><span class="sg-tag">ФВ</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-12821-1980', $ctx['url'] ) ); ?>">К воротниковым в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN и Ру / PN</div><div class="sg-param">Стыковка с трубой (разделка)</div><div class="sg-param">Марка стали</div>
             </div>
@@ -175,14 +175,14 @@ return [
             <div class="sg-task-code">Задача 04</div>
             <div class="sg-task-h">Фланец сосуда / аппарата крупного DN</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Сосудовые фланцы по ГОСТ 28759.2-2022</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 28759.2-2022</span><span class="sg-tag">DN 400–4000</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'flancy', 'gost-28759-2-2022' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'flancy', 'gost-28759-2-2022' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-28759-2-2022', $ctx['url'] ) ); ?>">К сосудовым в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN аппарата и расчётное давление</div><div class="sg-param">Марка стали</div><div class="sg-param">Объём НК и паспортизация</div>
             </div>
@@ -193,14 +193,14 @@ return [
             <div class="sg-task-code">Задача 05</div>
             <div class="sg-task-h">Нестандартная геометрия или исполнение по КД</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Изготовление по КД заказчика — фланцы нестандартных размеров</div>
             <div class="sg-tags">
               <span class="sg-tag hi">По чертежу</span><span class="sg-tag">Согласование 1–3 дня</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( '#request' ); ?>">Отправить чертёж — форма запроса →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Чертёж фланца / узла</div><div class="sg-param">Среда, давление, температура</div><div class="sg-param">Количество и срок поставки</div>
             </div>

@@ -51,7 +51,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -139,14 +139,14 @@ return [
             <div class="sg-task-code">Задача 01</div>
             <div class="sg-task-h">Повернуть трубу на стандартный угол 45° / 60° / 90° / 180°</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Отводы крутоизогнутые штампованные — R = 1,5DN (тип 3D) или R ≈ DN (тип 2D)</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17375-2001</span><span class="sg-tag hi">ГОСТ 30753-2001</span><span class="sg-tag">DN 15–800</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'otvody', 'gost-17375-2001' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'otvody', 'gost-17375-2001' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-17375-2001', $ctx['url'] ) ); ?>">К крутоизогнутым в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN и PN трубопровода</div>
               <div class="sg-param">Угол поворота и радиус: 1,5DN (3D) или DN (2D)</div>
@@ -160,14 +160,14 @@ return [
             <div class="sg-task-code">Задача 02</div>
             <div class="sg-task-h">Снизить сопротивление и эрозию в паропроводе ТЭС</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Отводы гнутые с увеличенным радиусом — R = 3,5–5DN, углы от 15°</div>
             <div class="sg-tags">
               <span class="sg-tag hi">СТО ЦКТИ 321.01/321.02/321.05</span><span class="sg-tag">DN 10–300</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'otvody', 'sto-321-05' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'otvody', 'sto-321-05' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'sto-321-05', $ctx['url'] ) ); ?>">К гнутым СТО ЦКТИ в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN, PN и температура среды</div>
               <div class="sg-param">Угол поворота (в т.ч. нестандартный 15–30°)</div>
@@ -180,14 +180,14 @@ return [
             <div class="sg-task-code">Задача 03</div>
             <div class="sg-task-h">Трубопровод высокого давления — свыше 10 до 100 МПа</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Отводы гнутые Ру 100 и колена с опорой — усиленная стенка, опорная пята</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 22793-83</span><span class="sg-tag hi">ГОСТ 22818-83</span><span class="sg-tag">DN 6–200</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'otvody', 'gost-22793-1983' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'otvody', 'gost-22793-1983' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22793-1983', $ctx['url'] ) ); ?>">К отводам Ру 100 в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Рабочее давление Ру и температура</div>
               <div class="sg-param">Исполнение по стандарту (1–4)</div>
@@ -200,14 +200,14 @@ return [
             <div class="sg-task-code">Задача 04</div>
             <div class="sg-task-h">Крупный диаметр — DN 500–1400, где штамповка недоступна</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Отводы сварные секторные — сборка из сегментов, R = 1,5DN</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ОСТ 36-21-77</span><span class="sg-tag">DN 500–1400</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'otvody', 'ost-36-21-77' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'otvody', 'ost-36-21-77' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-36-21-77', $ctx['url'] ) ); ?>">К секторным в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">DN, толщина стенки, угол</div>
               <div class="sg-param">Число секторов / допуски по проекту</div>
@@ -220,14 +220,14 @@ return [
             <div class="sg-task-code">Задача 05</div>
             <div class="sg-task-h">Нестандартный угол, радиус или сталь вне каталога</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Изготовление по КД заказчика — гибка под произвольный угол, спецстали</div>
             <div class="sg-tags">
               <span class="sg-tag hi">По чертежу</span><span class="sg-tag">ТУ 24.20.40</span><span class="sg-tag">Согласование 1–3 дня</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( '#request' ); ?>">Отправить чертёж — форма запроса →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Чертёж или эскиз с размерами</div>
               <div class="sg-param">Среда, давление, температура</div>
@@ -583,7 +583,7 @@ return [
           </div>
 
           <div>
-            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:7px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:10px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
             <div class="kb-doclist">
               <div class="kb-doc-item kb-aes">
                 <div class="kb-doc-name">Программа контроля качества</div>

@@ -51,7 +51,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -100,14 +100,14 @@ return [
             <div class="sg-task-code">Задача 01</div>
             <div class="sg-task-h">Точёный переход по ГОСТ 22826</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Переход точёный ПТ · ГОСТ 22826-1983</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 22826</span><span class="sg-tag">ПТ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22826-1983', $ctx['url'] ) ); ?>">К ГОСТ 22826 в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">D×s — d×s (или DN/DN2)</div><div class="sg-param">Исполнение 1–5</div><div class="sg-param">Марка стали</div>
             </div>
@@ -118,14 +118,14 @@ return [
             <div class="sg-task-code">Задача 02</div>
             <div class="sg-task-h">Точёный переход по ОСТ энергетики</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Переход точёный · ОСТ 34-42-664-84</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ОСТ 34-42-664</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'ost-34-42-664-84' ) ) ); ?> поз.</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-34-42-664-84', $ctx['url'] ) ); ?>">К ОСТ 664 в реестре →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Размеры по КД / ОСТ</div><div class="sg-param">Марка стали</div><div class="sg-param">Объём НК</div>
             </div>
@@ -136,14 +136,14 @@ return [
             <div class="sg-task-code">Задача 03</div>
             <div class="sg-task-h">Нестандартный точёный переход / по КД</div>
           </div>
-          <div class="sg-product">
+          <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Изготовление по чертежу заказчика</div>
             <div class="sg-tags">
               <span class="sg-tag">КД</span><span class="sg-tag">ТУ завода</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( '#request' ); ?>">Отправить чертёж — форма запроса →</a>
           </div>
-          <div class="sg-params">
+          <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
               <div class="sg-param">Чертёж перехода</div><div class="sg-param">Материал и НК</div><div class="sg-param">Количество и срок</div>
             </div>

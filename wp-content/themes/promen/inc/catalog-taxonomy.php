@@ -482,6 +482,12 @@ function promen_render_category_catalog_embed( string $group_slug, int $count = 
 	$group = $group_slug;
 	$promen_registry_show_cat_link = false;
 	$promen_registry_with_pdp      = true;
+	// Якорь #registry несёт секция-обёртка ниже. Партиал реестра ставит тот же
+	// id на свой .cat-main — на /catalog/ он там единственный, а на странице
+	// категории получались два элемента с одинаковым id: невалидная разметка,
+	// и getElementById (catalog.js scrollToCatalog, прокрутка по ?gost=)
+	// попадал на внешний, а якорная ссылка — как повезёт.
+	$promen_registry_embedded = true;
 	?>
 <section class="s catalog-embed" id="registry">
   <div class="s-hd">
@@ -904,8 +910,14 @@ function promen_render_category_norms_section( string $group_slug ): void {
 	$meta  = strtoupper( preg_replace( '/[^a-z0-9]+/i', '-', $group_slug ) ?: $group_slug );
 	$norms = promen_catalog_group_norm_stats( $group_slug, 0, true );
 	$base  = promen_product_cat_link( $group_slug ) ?: ( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' ) );
-	$visible = 6;
-	$hidden  = max( 0, count( $norms ) - $visible );
+	// Порог разный: на десктопе сетка двухколоночная и шесть карточек — это
+	// три ряда, на телефоне колонка одна и те же шесть дают шесть экранов
+	// подряд. Прячем сверх трёх, разворот — одной кнопкой на оба порога.
+	$visible   = 6;
+	$visible_m = 3;
+	$total_n   = count( $norms );
+	$hidden    = max( 0, $total_n - $visible );
+	$hidden_m  = max( 0, $total_n - $visible_m );
 	?>
 <section class="s s-dark" id="s04">
   <div class="s-hd">
@@ -921,23 +933,33 @@ function promen_render_category_norms_section( string $group_slug ): void {
         <div class="norm-grid2" data-norm-grid>
           <?php foreach ( $norms as $i => $n ) :
 				$href    = add_query_arg( 'gost', $n['slug'], $base );
-				$classes = 'nc reveal sg-link' . ( $i >= $visible ? ' nc-extra' : '' );
+				$classes = 'nc reveal sg-link'
+					. ( $i >= $visible ? ' nc-extra' : '' )
+					. ( $i >= $visible_m ? ' nc-extra-m' : '' );
+				// steel_display приходит уже усечённым («20, 09Г2С … +12») —
+				// тот же вид, что в строке реестра .rr-m. Не переформатируем.
+				$steel_txt = trim( (string) ( $n['steels'] ?? '' ) );
 				?>
           <a class="<?php echo esc_attr( $classes ); ?>" href="<?php echo esc_url( $href ); ?>">
             <div class="nc-code"><?php echo esc_html( $n['name'] ); ?></div>
-            <div class="nc-title"><?php echo esc_html( number_format_i18n( $n['count'] ) ); ?> типоразмеров в реестре</div>
-            <div class="nc-desc">Клик откроет живой реестр раздела с фильтром по этому нормативу.</div>
-            <div class="nc-tags">
-              <span class="nc-tag"><?php echo esc_html( number_format_i18n( $n['count'] ) ); ?> поз.</span>
-              <span class="nc-tag">Фильтр →</span>
+            <div class="nc-facts">
+              <div class="nc-fact"><span class="nc-fk">Позиций</span><span class="nc-fv"><?php echo esc_html( number_format_i18n( $n['count'] ) ); ?></span></div>
+              <?php if ( ( $n['dn'] ?? '' ) !== '' ) : ?>
+              <div class="nc-fact"><span class="nc-fk">DN</span><span class="nc-fv"><?php echo esc_html( $n['dn'] ); ?></span></div>
+              <?php endif; ?>
+              <?php if ( $steel_txt !== '' ) : ?>
+              <div class="nc-fact"><span class="nc-fk">Сталь</span><span class="nc-fv"><?php echo esc_html( $steel_txt ); ?></span></div>
+              <?php endif; ?>
             </div>
-            <div class="nc-status"><div class="nc-dot"></div>В каталоге</div>
+            <div class="nc-go">Открыть в реестре<i>→</i></div>
           </a>
           <?php endforeach; ?>
         </div>
-        <?php if ( $hidden > 0 ) : ?>
-          <button type="button" class="norm-more-btn" data-norm-more>
-            Показать ещё <?php echo esc_html( (string) $hidden ); ?> <?php echo esc_html( promen_ru_plural( $hidden, 'норматив', 'норматива', 'нормативов' ) ); ?>
+        <?php if ( $hidden_m > 0 ) : ?>
+          <?php // Если на десктопе не скрыто ничего, кнопка нужна только телефону. ?>
+          <?php // Число отдельно: «все 21 норматив» / «все 25 нормативов» — разные падежи. ?>
+          <button type="button" class="norm-more-btn<?php echo $hidden > 0 ? '' : ' norm-more-btn--m'; ?>" data-norm-more>
+            Все нормативы раздела · <?php echo esc_html( number_format_i18n( $total_n ) ); ?>
           </button>
         <?php endif; ?>
       </div>

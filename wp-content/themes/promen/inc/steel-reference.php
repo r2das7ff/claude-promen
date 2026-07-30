@@ -125,8 +125,10 @@ function promen_sort_steels( array $steels ): array {
  * Формат 1:1 с существующей разметкой (mat-r + mat-expand), но динамический.
  *
  * @param string[] $steels имена марок (как в pa_steel / dims).
+ * @return int сколько строк отрисовано (после нормализации и дедупа —
+ *             входной список может содержать одну марку в разных написаниях).
  */
-function promen_render_materials_rows( array $steels, bool $expandable = true ): void {
+function promen_render_materials_rows( array $steels, bool $expandable = true ): int {
 	$ref  = promen_steel_reference();
 	$keys = [];
 	foreach ( $steels as $s ) {
@@ -138,8 +140,13 @@ function promen_render_materials_rows( array $steels, bool $expandable = true ):
 	$keys = promen_sort_steels( array_keys( $keys ) );
 	if ( ! $keys ) {
 		echo '<div class="mat-r"><div class="mr-desc" style="opacity:.65;">Марки уточняются под заказ.</div></div>';
-		return;
+		return 0;
 	}
+	// Метка «сверх телефонного порога»: на десктопе таблица марок — обзор,
+	// на 390px её 21 строка занимает больше полутора тысяч пикселей. Строки
+	// сверх шестой прячет category-sdt.css, разворот — кнопкой из секции 05.
+	$phone_visible = 6;
+	$row_i         = 0;
 	foreach ( $keys as $grade ) {
 		$d    = $ref[ $grade ] ?? [];
 		$desc = $d['desc'] ?? 'Марка по нормативу изделия; характеристики — в паспорте поставки.';
@@ -148,8 +155,10 @@ function promen_render_materials_rows( array $steels, bool $expandable = true ):
 		$std  = $d['std'] ?? '';
 		$apps = (array) ( $d['apps'] ?? [] );
 		$mech = $expandable ? ( $d['mech'] ?? null ) : null;
+		$xtra = $row_i >= $phone_visible ? ' mr-extra-m' : '';
+		$row_i++;
 		// Канонические 6 колонок: Марка | Описание | Темп | PN | Отрасль | ГОСТ.
-		echo '<div class="mat-r" data-grade="' . esc_attr( $grade ) . '"' . ( $mech ? ' onclick="toggleMat(this)"' : '' ) . '>';
+		echo '<div class="mat-r' . $xtra . '" data-grade="' . esc_attr( $grade ) . '"' . ( $mech ? ' onclick="toggleMat(this)"' : '' ) . '>';
 		echo '<div class="mr-g">' . esc_html( $grade ) . '</div>';
 		echo '<div class="mr-desc">' . esc_html( $desc ) . '</div>';
 		echo '<div class="mr-temp">' . esc_html( $temp ) . '</div>';
@@ -162,7 +171,7 @@ function promen_render_materials_rows( array $steels, bool $expandable = true ):
 		echo '<div class="mr-std">' . esc_html( $std !== '' ? $std : '—' ) . '</div>';
 		echo '</div>';
 		if ( $mech ) {
-			echo '<div class="mat-expand"><div class="me-grid">'
+			echo '<div class="mat-expand' . $xtra . '"><div class="me-grid">'
 				. '<div class="me-item"><div class="me-k">σв, МПа</div><div class="me-v">' . esc_html( $mech['sv'] ) . '</div></div>'
 				. '<div class="me-item"><div class="me-k">σт, МПа</div><div class="me-v">' . esc_html( $mech['st'] ) . '</div></div>'
 				. '<div class="me-item"><div class="me-k">δ, %</div><div class="me-v">' . esc_html( $mech['delta'] ) . '</div></div>'
@@ -171,6 +180,7 @@ function promen_render_materials_rows( array $steels, bool $expandable = true ):
 				. '</div></div>';
 		}
 	}
+	return count( $keys );
 }
 
 /**
@@ -186,10 +196,17 @@ function promen_render_materials_section( string $group ): void {
       <div class="s-meta">STEEL GRADES</div>
     </div>
     <div class="s-body">
-      <div class="mat-tbl-wrap reveal">
+      <div class="mat-tbl-wrap reveal" data-mat-tbl>
         <div class="mat-tbl-hd"><span>Марка</span><span>Описание</span><span>Темп. среды</span><span>PN макс</span><span>Отрасль</span><span>ГОСТ / ТУ</span></div>
-        <?php promen_render_materials_rows( $steels, true ); ?>
+        <?php $mat_rows = promen_render_materials_rows( $steels, true ); ?>
       </div>
+      <?php if ( $mat_rows > 6 ) : ?>
+        <?php // Кнопка нужна только телефону — на десктопе таблица не урезана. ?>
+        <?php // «все N марок» спотыкается на числах на -1 («все 21 марку»), поэтому число отдельно. ?>
+        <button type="button" class="norm-more-btn norm-more-btn--m" data-mat-more>
+          Все марки стали · <?php echo esc_html( number_format_i18n( $mat_rows ) ); ?>
+        </button>
+      <?php endif; ?>
     </div>
   </section>
 	<?php

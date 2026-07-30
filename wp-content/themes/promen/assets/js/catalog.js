@@ -63,6 +63,11 @@
   function parsePageUrl(url) {
     var u = new URL(url, location.origin);
     var p = { group: groupFromHref(u.toString()) || cfg.group || '', page: 1 };
+    // ЧПУ-пагинация: WordPress отдаёт /catalog/page/2/, номер лежит в пути,
+    // а не в query. Без этого клик по «2» менял URL, но список оставался
+    // первой страницей — и хвостовые секции не скрывались, как на сервере.
+    var pretty = u.pathname.match(/\/page\/(\d+)\/?$/);
+    if (pretty) p.page = parseInt(pretty[1], 10) || 1;
     u.searchParams.forEach(function (v, k) {
       if (k === 'group') return; // группа из ЧПУ / ?group=
       if (k === 'paged') p.page = parseInt(v, 10) || 1;
@@ -90,9 +95,13 @@
     return q.toString();
   }
 
+  // Держать в синхроне с promen_catalog_grid_template() (inc/catalog-render.php):
+  // minmax(0,…) даёт трекам нулевой базовый размер, поэтому широкие схемы
+  // ужимаются вместо вылета за колонку контента на 1024–1280px.
   function gridTpl(columns) {
-    var widths = (columns || []).map(function (c) { return c.w; }).join(' ');
-    return '150px minmax(200px,1fr) ' + widths + ' 120px 96px 32px';
+    var widths = (columns || []).map(function (c) { return 'minmax(min-content,' + c.w + ')'; }).join(' ');
+    return 'minmax(min-content,150px) minmax(120px,1fr) ' + widths
+      + ' minmax(min-content,120px) minmax(min-content,96px) 32px';
   }
 
   var SORT_FIELDS = { dn: 'dn', mass: 'mass', massm: 'mass', pn: 'pn' };
@@ -375,17 +384,35 @@
     if (!pagination) return;
     var pages = data.pages || 0;
     if (pages <= 1) { pagination.innerHTML = ''; return; }
-    var u = new URL(pageUrl);
     var cur = data.page || 1;
-    function link(p, label, cls) {
-      u.searchParams.set('paged', String(p));
-      return '<a class="' + cls + '" href="' + esc(u.toString()) + '">' + label + '</a> ';
+    // Ссылки строим в том же виде, что и paginate_links на сервере:
+    // /catalog/ для первой, /catalog/page/N/ дальше, query сохраняем.
+    // Раньше номер дописывался как ?paged=N поверх уже существующего
+    // /page/2/ в пути — получалось /catalog/page/2/?paged=3, где путь и
+    // query противоречат друг другу.
+    function pageHref(p) {
+      var u = new URL(pageUrl);
+      u.searchParams.delete('paged');
+      u.searchParams.delete('page');
+      var path = u.pathname.replace(/\/page\/\d+\/?$/, '/');
+      if (path.charAt(path.length - 1) !== '/') path += '/';
+      u.pathname = p > 1 ? path + 'page/' + p + '/' : path;
+      return u.toString();
     }
+    function link(p, label, cls) {
+      return '<a class="' + cls + '" href="' + esc(pageHref(p)) + '">' + label + '</a> ';
+    }
+    // Разметка стрелок — как в promen_catalog_pagination_links(): слово в
+    // отдельном span, чтобы CSS мог спрятать его на узких экранах.
+    var PREV = '<span class="pg-arr">←</span><span class="pg-txt">Назад</span>';
+    var NEXT = '<span class="pg-txt">Вперёд</span><span class="pg-arr">→</span>';
     var html = '';
-    if (cur > 1) html += link(cur - 1, '← Назад', 'prev page-numbers');
+    if (cur > 1) html += link(cur - 1, PREV, 'prev page-numbers');
 
     // Компактное окно: 1, последняя и ±2 вокруг текущей; разрывы — многоточие.
-    var win = 2, set = {};
+    // ±1 — как mid_size в promen_catalog_pagination_links(): при ±2 ряд
+    // на глубоких страницах не помещался в телефон.
+    var win = 1, set = {};
     set[1] = 1; set[pages] = 1;
     for (var i = cur - win; i <= cur + win; i++) { if (i >= 1 && i <= pages) set[i] = 1; }
     var list = Object.keys(set).map(Number).sort(function (a, b) { return a - b; });
@@ -397,7 +424,7 @@
       else html += link(p, String(p), 'page-numbers');
       prev = p;
     }
-    if (cur < pages) html += link(cur + 1, 'Вперёд →', 'next page-numbers');
+    if (cur < pages) html += link(cur + 1, NEXT, 'next page-numbers');
     pagination.innerHTML = html.trim();
   }
 
@@ -532,6 +559,20 @@
     });
   }
 
+  // Сервер рендерит SEO-досье и базу знаний только на чистом корне каталога
+  // (archive-product.php, $promen_clean_root). JS-фильтрация этого не повторяла:
+  // до перезагрузки секции оставались на месте, после — исчезали, и выглядело
+  // это как пропавший контент. Держим состояние синхронно.
+  function syncTailSections(params) {
+    // Зеркало $promen_clean_root (archive-product.php): секции прячем только
+    // на пагинации. Под фильтром и группой они остаются — там noindex+canonical,
+    // дублей нет, а пропажа половины страницы по клику на фильтр сбивает.
+    var clean = !params.page || params.page <= 1;
+    document.querySelectorAll('.cat-seo, .cat-kb').forEach(function (el) {
+      el.hidden = !clean;
+    });
+  }
+
   function swap(url, push, opts) {
     opts = opts || {};
     var parsed = parsePageUrl(url);
@@ -545,6 +586,7 @@
         updateCount(data.total || 0);
         updateSidebar(parsed.params.group);
         markSeriesActive(parsed.params.gost || '');
+        syncTailSections(parsed.params);
         if (window._promenBindFilterToggle) window._promenBindFilterToggle();
         list.style.opacity = '';
         if (push) history.pushState({ promen: true }, '', parsed.url.toString());
@@ -611,15 +653,102 @@
     var toggle = document.getElementById('cbToggle');
     var panel = document.getElementById('cbFilters');
     if (!toggle || !panel) return;
-    if (window._promenFiltersOpen) { panel.classList.remove('is-collapsed'); toggle.setAttribute('aria-expanded', 'true'); }
+    var sticky = panel.closest('.sticky-hd');
+    // Раскрытая панель делает шапку выше экрана (на 390px — 1041px против
+    // 780px доступных). Прилипшая к верху шапка тогда не даёт долистать себя
+    // до низа: скроллится только таблица под ней. Помечаем состояние —
+    // CSS на это время снимает залипание.
+    var mark = function (open) { if (sticky) sticky.classList.toggle('filters-open', open); };
+    if (window._promenFiltersOpen) {
+      panel.classList.remove('is-collapsed');
+      toggle.setAttribute('aria-expanded', 'true');
+      mark(true);
+    }
     toggle.onclick = function () {
       var open = panel.classList.toggle('is-collapsed') === false;
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       window._promenFiltersOpen = open;
+      mark(open);
     };
   }
   bindFilterToggle();
   window._promenBindFilterToggle = bindFilterToggle;
+
+  // Плейсхолдер поиска подбирается по ФАКТИЧЕСКОЙ ширине поля, а не по
+  // медиазапросу: поле сужают и ширина экрана, и кнопка «Фильтры», и кнопка
+  // «Сбросить» с бейджем при активных фильтрах. На брейкпоинтах это ловилось
+  // не везде — например, на десктопе 1440 с активным фильтром полный вариант
+  // всё равно обрезался. Меряем текст канвасом и берём самый длинный из
+  // влезающих.
+  (function bindSearchPlaceholder() {
+    var input = document.getElementById('searchInput');
+    if (!input || !input.dataset.phSm) return;
+    var variants = [input.getAttribute('placeholder'), input.dataset.phSm];
+    var ctx = document.createElement('canvas').getContext('2d');
+    var apply = function () {
+      var cs = getComputedStyle(input);
+      ctx.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+      var room = input.clientWidth - 4; // небольшой запас на курсор
+      for (var i = 0; i < variants.length; i++) {
+        if (ctx.measureText(variants[i]).width <= room || i === variants.length - 1) {
+          if (input.getAttribute('placeholder') !== variants[i]) {
+            input.setAttribute('placeholder', variants[i]);
+          }
+          return;
+        }
+      }
+    };
+    apply();
+    if (window.ResizeObserver) {
+      var ro = new ResizeObserver(apply);
+      ro.observe(input);
+    } else {
+      window.addEventListener('resize', apply);
+    }
+    // Шрифт DINPro грузится асинхронно — после подмены метрики меняются.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
+  })();
+
+  // Сворачивание сайдбара категорий на ≤900px (на десктопе кнопка скрыта CSS).
+  // Высоту задаём по факту, а после анимации снимаем ограничение: список выше
+  // экрана, и фиксированный max-height превращал панель в отдельный
+  // скролл-контейнер со своей полосой прокрутки.
+  (function bindCatNavToggle() {
+    var toggle = document.getElementById('catSbToggle');
+    var panel = document.getElementById('catSb');
+    if (!toggle || !panel) return;
+
+    panel.addEventListener('transitionend', function (e) {
+      if (e.target === panel && e.propertyName === 'max-height' && panel.classList.contains('is-open')) {
+        panel.style.maxHeight = 'none';
+      }
+    });
+
+    toggle.addEventListener('click', function () {
+      var willOpen = !panel.classList.contains('is-open');
+      if (willOpen) {
+        panel.classList.add('is-open');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+      } else {
+        // Фиксируем текущую высоту (могла быть none), иначе схлопывание не анимируется.
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        void panel.offsetHeight;
+        panel.classList.remove('is-open');
+        panel.style.maxHeight = '0px';
+      }
+      toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    });
+
+    // Раскрытие вложенной группы меняет высоту панели — пока идёт анимация
+    // открытия, max-height ещё зафиксирован, поэтому подтягиваем его.
+    panel.addEventListener('click', function (e) {
+      if (!panel.classList.contains('is-open')) return;
+      if (!e.target.closest('.sbn-toggle')) return;
+      setTimeout(function () {
+        if (panel.style.maxHeight !== 'none') panel.style.maxHeight = panel.scrollHeight + 'px';
+      }, 0);
+    });
+  })();
 
   // Клавиатура на бегунках (стрелки при фокусе): живой UI + запрос на change.
   document.addEventListener('input', function (e) {

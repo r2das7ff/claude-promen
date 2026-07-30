@@ -52,7 +52,7 @@ return [
 <section class="s map-outer" id="s02">
     <div class="map-grid"></div>
     <div class="s-hd" style="border-bottom:1px solid rgba(109,140,166,.15);">
-      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
+      <div class="s-badge s-dark" style="display:flex;"><span class="s-badge-num">02</span><span style="color:rgba(109,140,166,.6);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;margin-left:14px;">Карта типоисполнений</span></div>
       <div class="s-meta">PRODUCT TYPE MAP</div>
     </div>
     <div class="map-body">
@@ -82,31 +82,31 @@ return [
         <div class="sg-thead"><div class="sg-th">Задача</div><div class="sg-th">Нужное исполнение</div><div class="sg-th">Что передать</div></div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 01</div><div class="sg-task-h">Перекрыть поток на магистрали</div></div>
-          <div class="sg-product"><div class="sg-prod-name">Задвижка клиновая стальная</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Задвижка клиновая стальная</div>
             <div class="sg-tags"><span class="sg-tag hi">ЗД</span><span class="sg-tag"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-zadvizhki' ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'group', 'armatura-zadvizhki', $ctx['shop_url'] ) ); ?>">К задвижкам →</a></div>
-          <div class="sg-params"><div class="sg-param-list"><div class="sg-param">DN</div><div class="sg-param">PN</div><div class="sg-param">Среда / t°</div></div></div>
+          <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">DN</div><div class="sg-param">PN</div><div class="sg-param">Среда / t°</div></div></div>
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 02</div><div class="sg-task-h">Не допустить обратный ток</div></div>
-          <div class="sg-product"><div class="sg-prod-name">Клапан обратный подъёмный</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Клапан обратный подъёмный</div>
             <div class="sg-tags"><span class="sg-tag hi">КО</span><span class="sg-tag"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-klapany' ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'group', 'armatura-klapany', $ctx['shop_url'] ) ); ?>">К клапанам →</a></div>
-          <div class="sg-params"><div class="sg-param-list"><div class="sg-param">DN</div><div class="sg-param">PN</div><div class="sg-param">Количество</div></div></div>
+          <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">DN</div><div class="sg-param">PN</div><div class="sg-param">Количество</div></div></div>
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 03</div><div class="sg-task-h">Быстрое перекрытие / полнопроход</div></div>
-          <div class="sg-product"><div class="sg-prod-name">Кран шаровой полнопроходный</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Кран шаровой полнопроходный</div>
             <div class="sg-tags"><span class="sg-tag hi">КР</span><span class="sg-tag"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-krany' ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'group', 'armatura-krany', $ctx['shop_url'] ) ); ?>">К кранам →</a></div>
-          <div class="sg-params"><div class="sg-param-list"><div class="sg-param">DN</div><div class="sg-param">PN</div><div class="sg-param">Привод</div></div></div>
+          <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">DN</div><div class="sg-param">PN</div><div class="sg-param">Привод</div></div></div>
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 04</div><div class="sg-task-h">По спецификации объекта</div></div>
-          <div class="sg-product"><div class="sg-prod-name">Подбор по КД / опросный лист</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Подбор по КД / опросный лист</div>
             <div class="sg-tags"><span class="sg-tag">КД</span></div>
             <a class="sg-link" href="#request">Форма запроса →</a></div>
-          <div class="sg-params"><div class="sg-param-list"><div class="sg-param">Опросный лист</div><div class="sg-param">Среда</div><div class="sg-param">Срок</div></div></div>
+          <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">Опросный лист</div><div class="sg-param">Среда</div><div class="sg-param">Срок</div></div></div>
         </div>
       </div>
     </div>

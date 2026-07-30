@@ -6,12 +6,13 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 <div class="cat-kb">
-  <div style="display:flex;align-items:center;justify-content:space-between;padding:24px 56px 20px;border-bottom:1px solid var(--ln2);">
-    <div style="display:flex;align-items:center;gap:14px;font-family:'DINPro',monospace;font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);">
-      <span style="border:1px solid var(--g1);padding:3px 8px;font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:11px;letter-spacing:.14em;line-height:1;">КБ</span>
-      База знаний · Справочник
+  <?php // Стили — в catalog.css (.kb-hd*): инлайном адаптив до этой шапки не доходил. ?>
+  <div class="kb-hd">
+    <div class="kb-hd-lbl">
+      <span class="kb-hd-badge">КБ</span>
+      <span class="kb-hd-txt">База знаний · Справочник</span>
     </div>
-    <div style="font-family:'DINPro',monospace;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--g2);opacity:.45;">KNOWLEDGE BASE / ENGINEERING REFERENCE</div>
+    <div class="kb-hd-ref">Knowledge base / Engineering reference</div>
   </div>
 
   <div class="kb-tabrow" role="tablist">
@@ -229,7 +230,7 @@ defined( 'ABSPATH' ) || exit;
           </div>
         </div>
         <div>
-          <div class="kb-col-title">Расширенный пакет АЭС <span style="font-weight:400;font-size:7px;color:var(--g1);">по НП-045-18</span></div>
+          <div class="kb-col-title">Расширенный пакет АЭС <span style="font-weight:400;font-size:10px;color:var(--g1);">по НП-045-18</span></div>
           <div class="kb-doclist">
             <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Программа контроля качества</div><div class="kb-doc-desc">Индивидуальная программа НК для каждой категории трубопровода, согласованная с заказчиком до запуска в производство.</div></div>
             <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Карты идентификации и прослеживаемости</div><div class="kb-doc-desc">От заготовки до готовой детали. Номер плавки, номер детали, ссылки на все протоколы контроля.</div></div>

@@ -276,7 +276,7 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-card">
             <div class="kb-card-badge">САМОВЫВОЗ</div>
             <div class="kb-card-title">Со склада завода в Челябинске</div>
-            <p class="kb-card-body">454091, г. Челябинск, ул. Орджоникидзе, 37. Отгрузка в рабочие дни 09:00–18:00 МСК после уведомления о готовности. Погрузка силами завода.</p>
+            <p class="kb-card-body">454091, г. Челябинск, ул. Орджоникидзе, 37. Отгрузка в рабочие дни 09:00–18:00 МСК после уведомления о готовности. Погрузка силами завода.</p>
             <div class="kb-card-tags"><span class="kb-tag">Пн–Пт 09:00–18:00</span><span class="kb-tag">Погрузка заводом</span></div>
           </div>
           <div class="kb-card">
