@@ -307,7 +307,7 @@ get_header();
 <section id="grades">
   <div class="grades-hd">
     <div class="grades-tag">БИБЛИОТЕКА МАТЕРИАЛОВ</div>
-    <span style="font-family:'DINPro',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--g2);opacity:.5;">STEEL GRADE REFERENCE</span>
+    <span style="font-family:'DINPro',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--g2);opacity:.5;">СПРАВОЧНИК МАРОК СТАЛИ</span>
   </div>
   <div class="grades-intro">
     <div class="gi-statement">
@@ -429,7 +429,7 @@ $shm_stages = [
 <section id="shopmap">
   <div class="shm-hd">
     <div class="shm-tag">ПРОИЗВОДСТВЕННЫЕ УЧАСТКИ</div>
-    <span class="sec-hd-en">PRODUCTION STAGES</span>
+    <span class="sec-hd-en">ЭТАПЫ ПРОИЗВОДСТВА</span>
   </div>
 
   <div class="shm-intro">
@@ -515,9 +515,9 @@ $shm_stages = [
     <div class="therm-hd-left">
       <div class="therm-tag">ТЕРМООБРАБОТКА</div>
       <div class="therm-headline">Мы меняем<br>структуру<br>металла</div>
-      <div class="therm-statement">Термообработка — не финальная операция, а часть технологии. Каждый режим рассчитан под марку стали, геометрию изделия и требования НД. 42 программы в управляющей системе, точность выдержки ±5°C.</div>
     </div>
     <div class="therm-hd-right">
+      <div class="therm-statement">Термообработка — не финальная операция, а часть технологии. Каждый режим рассчитан под марку стали, геометрию изделия и требования НД. 42 программы в управляющей системе, точность выдержки ±5°C.</div>
       <div class="therm-stats">
         <div class="therm-stat"><div class="therm-stat-v">+700°C</div><div class="therm-stat-l">Максимальная температура</div></div>
         <div class="therm-stat"><div class="therm-stat-v">42</div><div class="therm-stat-l">Программы термообработки</div></div>
@@ -556,7 +556,7 @@ $shm_stages = [
 <section id="journal">
   <div class="jrn-hd">
     <div class="jrn-tag">ЖУРНАЛ ВХОДНОГО КОНТРОЛЯ · ФОРМА ВК-001</div>
-    <span class="jrn-hd-en">INCOMING MATERIAL INSPECTION LOG</span>
+    <span class="jrn-hd-en">ПРИЁМКА МЕТАЛЛОПРОКАТА И ЗАГОТОВОК</span>
   </div>
   <div class="jrn-context">
     <div class="jc-statement">
@@ -626,7 +626,7 @@ $shm_stages = [
 <section id="capacity">
   <div class="cap-hd">
     <div class="cap-tag">ПРОИЗВОДСТВЕННЫЕ ВОЗМОЖНОСТИ</div>
-    <span class="sec-hd-en">PRODUCTION CAPACITY</span>
+    <span class="sec-hd-en">ДИАПАЗОНЫ И СРОКИ</span>
   </div>
   <div class="cap-body">
     <div class="cap-anchor">
@@ -680,7 +680,7 @@ $shm_stages = [
 <section id="fleet">
   <div class="fl-hd">
     <div class="fl-tag">МАШИННЫЙ ПАРК</div>
-    <span class="sec-hd-en">EQUIPMENT FLEET</span>
+    <span class="sec-hd-en">СТАНКИ · ПОСТЫ · ПЕЧИ</span>
   </div>
   <div class="fl-body">
     <div class="fl-anchor">
@@ -739,7 +739,7 @@ $shm_stages = [
 <section id="gallery">
   <div class="gal-hd">
     <div class="gal-tag">ФОТОДОКУМЕНТАЦИЯ</div>
-    <span class="sec-hd-en">PRODUCTION IN LENS</span>
+    <span class="sec-hd-en">СЪЁМКА В РАБОЧУЮ СМЕНУ</span>
   </div>
   <div class="gal-intro">
     <div class="gal-headline">ЦЕХ<br>В ОБЪЕКТИВЕ</div>

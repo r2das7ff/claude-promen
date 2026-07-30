@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
   <section class="s kb-wrap" id="s10">
     <div class="s-hd">
       <div class="s-badge"><span class="s-badge-num">10</span>База знаний</div>
-      <div class="s-meta">KNOWLEDGE BASE / ТРУБЫ</div>
+      <div class="s-meta">ТРУБЫ</div>
     </div>
 
     <div class="kb-tabrow" role="tablist">

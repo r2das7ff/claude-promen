@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
     <div class="qc-scanline"></div>
     <div class="s-hd">
       <div class="s-badge"><span class="s-badge-num">07</span>Маршрут контроля качества</div>
-      <div class="s-meta">QC ROUTE / TRACEABILITY</div>
+      
     </div>
     <div class="prod-qc-grid">
       <div class="prod-qc-left reveal">

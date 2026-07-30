@@ -591,9 +591,10 @@ img{display:block;max-width:100%;}
 /* ══════════════════════════════════════════════
    §03 THERMAL
 ══════════════════════════════════════════════ */
+/* без min-height:100vh — секция по контенту, шкала без пустых полей вокруг */
 #thermal{
   position:relative;background:#060E18;
-  min-height:100vh;display:flex;flex-direction:column;overflow:hidden;
+  display:flex;flex-direction:column;overflow:hidden;
 }
 #thermal::before{
   content:'';position:absolute;inset:0;
@@ -609,12 +610,14 @@ img{display:block;max-width:100%;}
     radial-gradient(ellipse 75% 40% at 50% 0%, rgba(196,74,14,.06) 0%, transparent 70%),
     linear-gradient(180deg, transparent 55%, rgba(2,8,15,.28) 100%);
 }
+/* Хедер по образцу «Участков» (.shm-intro): заголовок слева,
+   справа — лид + строка цифр, выравнивание по низу. */
 .therm-hd{
   position:relative;z-index:1;
   padding:32px 56px 28px;
   border-bottom:1px solid rgba(109,140,166,.08);
-  display:grid;grid-template-columns:1fr 300px;
-  gap:48px;align-items:start;flex-shrink:0;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);
+  gap:56px;align-items:end;flex-shrink:0;
 }
 .therm-tag{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:rgba(109,140,166,.52);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
 .therm-tag::before{content:'';width:14px;height:1px;background:rgba(109,140,166,.38);}
@@ -626,15 +629,15 @@ img{display:block;max-width:100%;}
 .therm-statement{
   font-family:'DINPro',sans-serif;font-weight:400;
   font-size:clamp(13px,1.3vw,15px);line-height:1.75;
-  color:rgba(169,183,198,.75);max-width:460px;
+  color:rgba(169,183,198,.75);max-width:62ch;
 }
-.therm-hd-right{border-left:1px solid rgba(109,140,166,.1);padding-left:28px;padding-top:6px;}
-.therm-stats{display:flex;flex-direction:column;}
-.therm-stat{padding:12px 0;border-bottom:1px solid rgba(109,140,166,.10);display:flex;flex-direction:column;gap:4px;}
-.therm-stat:last-child{border-bottom:none;}
+.therm-hd-right{display:flex;flex-direction:column;gap:22px;}
+.therm-stats{display:flex;gap:0;}
+.therm-stat{padding:0 26px;border-left:1px solid rgba(109,140,166,.14);display:flex;flex-direction:column;gap:5px;}
+.therm-stat:first-child{padding-left:0;border-left:none;}
 .therm-stat-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:28px;letter-spacing:-.02em;color:rgba(169,183,198,.92);line-height:1;}
 .therm-stat-l{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(109,140,166,.65);}
-.therm-body{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center;padding:28px 56px 40px;}
+.therm-body{position:relative;z-index:1;padding:36px 56px 44px;}
 .therm-bar-wrap{position:relative;margin-bottom:16px;}
 .therm-bar{height:96px;background:linear-gradient(90deg,#0a1826 0%,#0f2a44 10%,#1a3550 22%,#2e5570 34%,#8c3518 48%,#c44a0e 60%,#df7025 73%,#eda030 86%,#f8ca52 100%);position:relative;}
 .therm-bar::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent calc(100%/7 - 1px),rgba(255,255,255,.08) calc(100%/7 - 1px),rgba(255,255,255,.08) calc(100%/7));pointer-events:none;}
@@ -653,7 +656,8 @@ img{display:block;max-width:100%;}
 .therm-tick{display:flex;flex-direction:column;align-items:center;gap:3px;}
 .therm-tk-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;line-height:1;}
 .therm-tk-u{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;color:rgba(109,140,166,.38);}
-.therm-phases{display:grid;grid-template-columns:7fr 17fr 29fr 7fr 14fr 8fr 20fr;gap:1px;background:rgba(109,140,166,.07);}
+/* равные колонки вместо пропорций диапазонов — ровная симметричная лента */
+.therm-phases{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:rgba(109,140,166,.07);}
 .therm-ph{padding:15px 12px;background:rgba(6,14,24,.55);cursor:default;transition:background .2s;}
 .therm-ph:hover{background:rgba(30,61,92,.45);}
 .therm-ph-r{font-family:'DINPro',monospace;font-size:13px;letter-spacing:.03em;color:rgba(109,140,166,.60);margin-bottom:7px;}
@@ -1215,7 +1219,6 @@ img{display:block;max-width:100%;}
 
 .s10-file-label-txt{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);min-width:80px;}
 
-.s10-note{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;color:var(--g1);opacity:.6;margin-top:12px;}
 
 .footer-zone .s10,
 .footer-zone #order-cta{
@@ -1240,13 +1243,16 @@ img{display:block;max-width:100%;}
 @media(max-width:1200px){
   .jrn-layout{grid-template-columns:1fr;}.jrn-side{display:none;}
   .therm-phases{grid-template-columns:repeat(4,1fr);}
+  /* 7 ячеек на чётной сетке: последняя тянется, ряды без дыр (4-кол: 4+3+span; 2-кол: 3×2+full) */
+  .therm-ph:last-child{grid-column:span 2;}
   .grades-grid{grid-template-columns:repeat(3,1fr);}
   .grades-intro{flex-direction:column;gap:24px;}
   .jrn-context{flex-direction:column;gap:20px;}
-  .therm-hd{grid-template-columns:1fr;}
-  .therm-hd-right{border-left:none;padding-left:0;border-top:1px solid rgba(109,140,166,.1);padding-top:20px;}
-  .therm-stats{flex-direction:row;flex-wrap:wrap;gap:0 32px;}
-  .therm-stat{padding-right:24px;}
+  .therm-hd{grid-template-columns:1fr;gap:24px;}
+  .therm-hd-right{border-top:1px solid rgba(109,140,166,.1);padding-top:20px;}
+  .therm-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+  .therm-stat{padding:0 16px;}
+  .therm-stat:first-child{padding-left:0;}
   .jc-steps{flex-wrap:wrap;gap:12px;}
   .cap-body{grid-template-columns:1fr;}
   .cap-anchor{border-right:none;border-bottom:1px solid var(--ln2);padding:48px 56px;}
@@ -1298,10 +1304,7 @@ img{display:block;max-width:100%;}
    плашки-гарантии, пол шрифта ≥10px, тач-цели 44px). Десктоп ≥1025 не трогаем.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Плашки-гарантии + чекбокс согласия (все ширины) */
-.s10-promise{ display:flex; flex-wrap:wrap; gap:10px; margin:2px 0 30px; }
-.s10-promise-item{ display:inline-flex; align-items:center; gap:9px; padding:10px 15px; border:1px solid var(--g1); background:rgba(109,140,166,.08); font-family:'DINPro',sans-serif; font-weight:700; font-size:14px; letter-spacing:.01em; color:var(--dark); }
-.s10-promise-dot{ width:7px; height:7px; border-radius:50%; background:var(--g1); flex-shrink:0; animation:blink 1.8s step-end infinite; }
+/* Плашки-гарантии переехали в base.css (общие для s10 всех страниц) */
 .s10-consent{ display:flex; align-items:flex-start; gap:12px; margin-top:20px; cursor:pointer; }
 
 .s10-consent-txt{ font-family:'DINPro',sans-serif; font-size:13.5px; line-height:1.5; color:var(--blue); }
@@ -1372,7 +1375,7 @@ img{display:block;max-width:100%;}
 
 /* ── §3 Пол шрифта: служебные подписи ≥10px на ≤1024 ── */
 @media (max-width:1024px){
-  .prf-ib-label-l,.prf-ib-label-r,.prf-ib-sk,.prf-kicker,.prf-pk,.prf-pv,.prf-rec,.prf-status-r,.prf-status-sep,.s2-industry-full,.s2-continue,.gi-stat-l,.ge-idx,.ge-pk,.shm-num-k,.stg-f-k,.stg-fact-k,.therm-stat-l,.therm-tk-u,.jc-step-l,.cap-anchor-kicker,.cap-row-label,.fl-anchor-kicker,.fl-astat-k,.fl-group-cat,.fl-item-spec,.gal-num,.gal-zone,.gal-info-detail,.gal-hint,.pdoc-badge,.s10-contact-k,.s10-form-label,.s10-field-label,.s10-file-label-txt,.s10-note,.strip-yr{ font-size:12px; }
+  .prf-ib-label-l,.prf-ib-label-r,.prf-ib-sk,.prf-kicker,.prf-pk,.prf-pv,.prf-rec,.prf-status-r,.prf-status-sep,.s2-industry-full,.s2-continue,.gi-stat-l,.ge-idx,.ge-pk,.shm-num-k,.stg-f-k,.stg-fact-k,.therm-stat-l,.therm-tk-u,.jc-step-l,.cap-anchor-kicker,.cap-row-label,.fl-anchor-kicker,.fl-astat-k,.fl-group-cat,.fl-item-spec,.gal-num,.gal-zone,.gal-info-detail,.gal-hint,.pdoc-badge,.s10-contact-k,.s10-form-label,.s10-field-label,.s10-file-label-txt,.strip-yr{ font-size:12px; }
   .jrn-layout .jd-stamp{ font-size:12px; }
   .s1-top,.s1-foot-l,.s1-foot-r,.prf-ib-cue,.s2-top-r,.cap-anchor-badge{ font-size:12px; }
   .s10-file-btn{ font-size:12px; }
@@ -1466,8 +1469,13 @@ img{display:block;max-width:100%;}
   .prf-main{ bottom:80px; }
 }
 @media (max-width:480px){
-  .prf-ib-left{ gap:16px; }
-  .prf-ib-right{ gap:16px; }
+  /* Пары спек не помещаются строкой в свои половины (метка «Шероховатость»
+     шире полуэкрана минус вторая спека) — правая группа наезжала на левую.
+     Складываем каждую половину в столбец: слева пара к левому краю,
+     справа — к правому, значения остаются под метками. */
+  .prf-ib-left{ flex-direction:column; align-items:flex-start; gap:12px; }
+  .prf-ib-right{ flex-direction:column; align-items:flex-end; gap:12px; }
+  .prf-ib-right .prf-ib-spec{ align-items:flex-end; text-align:right; }
   .prf-ib-sv{ font-size:16px; }
 }
 
@@ -1595,6 +1603,32 @@ img{display:block;max-width:100%;}
   }
   /* единственный секционный заголовок страницы — к 34px главной */
   .gal-headline{ font-size:34px; line-height:.88; letter-spacing:-.015em; }
+  /* Шапка S2 жала лид в колонку ~половины экрана рядом с индексом секции.
+     Индекс «02 · Нормирование» встаёт над лидом как кикер, лид — во всю ось. */
+  .s2-top{ flex-direction:column-reverse; align-items:flex-start; gap:14px; }
+  .s2-claim{ max-width:none; }
+}
+
+/* ── Статы-триплеты ≤640: flex-wrap ронял третий элемент под первый —
+   строка 2+1 с разделителем в пустоту и рваной осью. Сетка из трёх
+   равных колонок: подписи переносятся внутри своей ячейки, разделители
+   несут вторая и третья ячейки левой границей. ── */
+@media (max-width:640px){
+  .gi-stats{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; }
+  .gi-stat{ padding:0; border-right:none; }
+  .gi-stat:nth-child(n+2){ border-left:1px solid var(--ln2); padding-left:12px; }
+  .gi-stat:nth-child(-n+2){ padding-right:12px; }
+  .jc-steps{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; }
+  .jc-step{ padding:0; border-right:none; align-items:flex-start; }
+  .jc-step-l{ text-align:left; }
+  .jc-step:nth-child(n+2){ border-left:1px solid var(--ln2); padding-left:12px; }
+  .jc-step:nth-child(-n+2){ padding-right:12px; }
+  .therm-stat{ padding:0; }
+  .therm-stat:nth-child(n+2){ padding-left:12px; }
+  .therm-stat:nth-child(-n+2){ padding-right:12px; }
+  /* «ТЕРМООБРАБОТКИ» (14 зн.) шире трети экрана на 12px/.2em — ужимаем
+     кегль и трекинг, чтобы слово не налезало на соседнюю ячейку */
+  .therm-stat-l{ font-size:11px; letter-spacing:.14em; }
 }
 
 /* ── JOURNAL ≤640: документ в стек, статусы под пунктами ── */
@@ -1667,8 +1701,8 @@ img{display:block;max-width:100%;}
   .stg-f-k{ margin-bottom:0; font-size:10.5px; letter-spacing:.14em; align-self:baseline; }
   .stg-f-v{ font-size:13.5px; line-height:1.35; }
   .stg-bar{ padding:12px 20px 26px; }
-  .shm-nums{ grid-template-columns:repeat(2,minmax(0,1fr)); row-gap:18px; }
-  .shm-num:nth-child(3){ border-left:none; padding-left:0; }
+  /* триплет в одну строку, как статы материалов/журнала */
+  .shm-num{ padding:0 10px; }
   .shm-num-v{ font-size:23px; }
 }
 
@@ -1693,8 +1727,9 @@ img{display:block;max-width:100%;}
   .gal-footer{ gap:12px; }
 }
 @media (max-width:480px){
-  .gal-dot{ padding:13px; }
-  .gal-arrow{ width:40px; height:40px; }
+  /* Стрелки — основной контрол листания, держим тач-цель 44px (правило
+     порта). Чтобы ряд влез в 430, ужимаем хит-зону вторичных точек до 28px. */
+  .gal-dot{ padding:10px; }
   .gal-arrows{ gap:8px; }
 }
 

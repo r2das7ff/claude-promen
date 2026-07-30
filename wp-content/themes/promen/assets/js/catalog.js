@@ -123,6 +123,18 @@
     return '<span class="pr-tags">' + tags + '</span>';
   }
 
+  // TEST (2026-07-30): зеркало promen_steel_cell_html() из catalog-render.php —
+  // без него подсказка живёт только до первой AJAX-перерисовки списка.
+  function steelCellHtml(hit) {
+    var txt = String(hit.steel_display || '').trim();
+    if (!txt) return '—';
+    var labels = (hit.steel_labels || []).filter(Boolean);
+    var m = txt.match(/^(.*?)\s*(…\s*\+\d+)$/);
+    if (!labels.length || !m) return esc(txt);
+    return esc(m[1]) + ' <span class="pr-mat-more" data-steels="' +
+      esc(labels.join(', ')) + '">' + esc(m[2]) + '</span>';
+  }
+
   function renderRow(hit, columns, tpl, i) {
     var cells = (columns || []).map(function (col) {
       var val = (hit.cells && hit.cells[col.key]) ? hit.cells[col.key] : '—';
@@ -136,7 +148,7 @@
       '<span class="pr-norm"><span class="pr-norm-code">' + esc(hit.norm || '—') + '</span></span>' +
       '<span class="pr-name">' + esc(hit.title) + (hit.family ? '<small>' + esc(hit.family) + '</small>' : '') + '</span>' +
       cells +
-      '<span class="pr-mat">' + esc(hit.steel_display || '—') + '</span>' +
+      '<span class="pr-mat">' + steelCellHtml(hit) + '</span>' +
       '<span class="pr-ind">' + industryTagsHtml(hit.industries) + '</span>' +
       '<span class="pr-arr">›</span></a>';
   }
@@ -961,5 +973,89 @@
   });
   document.querySelectorAll('.fq-q').forEach(function (q) {
     q.addEventListener('click', function () { q.parentElement.classList.toggle('open'); });
+  });
+})();
+
+/**
+ * TEST (2026-07-30): подсказка марок стали.
+ *
+ * Колонка «Материал» усечена до 2 марок на 77% строк реестра («20, 09Г2С … +12»).
+ * Наведение на хвост «… +N» показывает полный список из data-steels.
+ *
+ * Тестовый режим — только hover: тач и клавиатура не покрыты (span внутри <a>
+ * нельзя сделать кнопкой, не сломав Tab по строкам). Если подсказка приживётся —
+ * переводить на клик с фокусируемым триггером.
+ *
+ * Откат: удалить этот блок, .pr-mat-more/.mat-pop из catalog.css,
+ * promen_steel_cell_html() из catalog-render.php и steelCellHtml() выше.
+ */
+(function () {
+  var HIDE_DELAY = 90;
+  var pop = null;
+  var hideTimer = null;
+  var current = null;
+
+  function ensurePop() {
+    if (pop) return pop;
+    pop = document.createElement('div');
+    pop.className = 'mat-pop';
+    pop.setAttribute('role', 'tooltip');
+    document.body.appendChild(pop);
+    return pop;
+  }
+
+  function place(trigger) {
+    var r = trigger.getBoundingClientRect();
+    var p = pop.getBoundingClientRect();
+    var gap = 8;
+    // Вправо места нет — колонка «Материал» прижата к «Отрасли», поэтому
+    // прижимаем правый край подсказки к правому краю триггера.
+    var left = Math.min(r.right - p.width, window.innerWidth - p.width - 12);
+    var top = r.top - p.height - gap;
+    if (top < 8) top = r.bottom + gap;
+    pop.style.left = Math.max(12, left) + 'px';
+    pop.style.top = top + 'px';
+  }
+
+  function show(trigger) {
+    var raw = trigger.getAttribute('data-steels') || '';
+    if (!raw) return;
+    clearTimeout(hideTimer);
+    current = trigger;
+    var box = ensurePop();
+    var items = raw.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    box.innerHTML = '<b class="mat-pop-h">Марки стали · ' + items.length + '</b>' +
+      '<span class="mat-pop-list">' + items.map(function (s) {
+        return '<i>' + s.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</i>';
+      }).join('') + '</span>';
+    box.classList.add('is-on');
+    place(trigger);
+  }
+
+  function hide() {
+    if (!pop) return;
+    current = null;
+    pop.classList.remove('is-on');
+  }
+
+  // Делегирование: строк в реестре до 15k, свой слушатель на каждую не вешаем.
+  document.addEventListener('mouseover', function (e) {
+    var t = e.target.closest ? e.target.closest('.pr-mat-more') : null;
+    if (t && t !== current) show(t);
+  });
+
+  document.addEventListener('mouseout', function (e) {
+    if (!current) return;
+    var t = e.target.closest ? e.target.closest('.pr-mat-more') : null;
+    if (t !== current) return;
+    // Небольшая задержка: без неё подсказка мигает на дрожании курсора.
+    hideTimer = setTimeout(hide, HIDE_DELAY);
+  });
+
+  // Скролл/ресайз — подсказка отвязана от потока, пересчитывать дороже, чем скрыть.
+  window.addEventListener('scroll', hide, true);
+  window.addEventListener('resize', hide);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') hide();
   });
 })();

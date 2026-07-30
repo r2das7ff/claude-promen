@@ -41,7 +41,7 @@ get_header();
           </div>
           <div class="cnt-row">
             <span class="cnt-row-k">Адрес</span>
-            <span class="cnt-row-v">454091, г. Челябинск,<br>ул. Орджоникидзе, 37</span>
+            <span class="cnt-row-v">454091, г. Челябинск, ул. Орджоникидзе, 37</span>
           </div>
           <div class="cnt-row">
             <span class="cnt-row-k">Телефон</span>
@@ -57,7 +57,7 @@ get_header();
           </div>
           <div class="cnt-row">
             <span class="cnt-row-k">Декларация</span>
-            <span class="cnt-row-v mono">ТР ТС 032 RU С-RU.АБ53.В.08323/23<br>серия RU 0418908</span>
+            <span class="cnt-row-v mono">ТР ТС 032 RU С-RU.АБ53.В.08323/23 серия RU 0418908</span>
           </div>
         </div>
       </div>
@@ -84,6 +84,10 @@ get_header();
     <!-- RIGHT: request form -->
     <div class="cnt-right">
       <div class="cnt-label">Форма обратной связи — ПЭ-ФОРМА/11</div>
+      <div class="s10-promise">
+        <span class="s10-promise-item"><span class="s10-promise-dot"></span>Ответ в течение 1 рабочего дня</span>
+        <span class="s10-promise-item"><span class="s10-promise-dot"></span>Обращение без обязательств</span>
+      </div>
       <form id="cntForm" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"<?php echo $promen_sent ? ' style="display:none;"' : ''; ?>>
         <input type="hidden" name="action" value="promen_request">
         <input type="hidden" name="preset" value="contact">
@@ -127,7 +131,6 @@ get_header();
             <button type="submit" class="cnt-submit">Отправить сообщение →</button>
             <a class="cnt-ghost" href="mailto:zakaz@prom-en.com">Написать напрямую</a>
           </div>
-          <p class="cnt-note">Ответ в течение 1 рабочего дня · Обращение без обязательств</p>
         </div>
       </form>
       <div class="cnt-success" id="cntSuccess"<?php echo $promen_sent ? ' style="display:block;"' : ''; ?>>

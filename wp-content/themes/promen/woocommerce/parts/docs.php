@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
 <section class="s" id="s08">
     <div class="s-hd">
       <div class="s-badge"><span class="s-badge-num">08</span>Комплект документов</div>
-      <div class="s-meta">DOCUMENT PACKAGE</div>
+      
     </div>
     <div class="s-body">
       <div class="docs-grid reveal">

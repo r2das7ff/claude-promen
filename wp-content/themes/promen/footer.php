@@ -46,6 +46,10 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
     </div>
     <div class="s10-right">
       <div class="s10-form-label">ФОРМА ЗАПРОСА — ПЭ-ФОРМА/КТЛ</div>
+      <div class="s10-promise">
+        <span class="s10-promise-item"><span class="s10-promise-dot"></span>Ответ в течение 1 рабочего дня</span>
+        <span class="s10-promise-item"><span class="s10-promise-dot"></span>Запрос без обязательств</span>
+      </div>
       <?php $promen_sent = isset( $_GET['sent'] ); ?>
       <form id="s10-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"<?php echo $promen_sent ? ' style="display:none;"' : ''; ?>>
         <?php if ( function_exists( 'is_product' ) && is_product() ) : ?>
@@ -110,7 +114,6 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
           <button type="submit" class="s10-submit">ОТПРАВИТЬ ЗАПРОС →</button>
           <a class="s10-ghost-link" href="mailto:zakaz@prom-en.com">Написать напрямую</a>
         </div>
-        <p class="s10-note">Ответ в течение 1 рабочего дня · Запрос без обязательств</p>
       </form>
       <div class="s10-success" id="s10-success"<?php echo $promen_sent ? ' style="display:block;"' : ''; ?>>
         ✓ ЗАПРОС ПРИНЯТ. Наш инженер свяжется с вами в течение рабочего дня.

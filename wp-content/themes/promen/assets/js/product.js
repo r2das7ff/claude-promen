@@ -17,6 +17,63 @@
   }
 })();
 
+/* Боковая навигация: активная точка и всплывающая подпись — как на главной
+   (front.js). На карточке скроллспая не было вовсе: точки стояли серыми,
+   подписи не показывались, хотя разметка и стили под это уже есть. */
+(function () {
+  var items = document.querySelectorAll('.sidenav-item');
+  if (!items.length || !('IntersectionObserver' in window)) return;
+
+  var targets = [];
+  var idxMap = {};
+  items.forEach(function (a, i) {
+    var id = (a.getAttribute('href') || '').replace(/^#/, '');
+    var el = id && document.getElementById(id);
+    if (!el) return;              // секции категории на карточке может не быть
+    targets.push(id);
+    idxMap[id] = i;
+  });
+  if (!targets.length) return;
+
+  var visible = {};
+  var current = null;
+  var labelTimer = null;
+
+  function showLabelFor(item) {
+    if (labelTimer) { clearTimeout(labelTimer); labelTimer = null; }
+    items.forEach(function (it) { it.classList.remove('sn-show-label'); });
+    if (!item) return;
+    item.classList.add('sn-show-label');
+    labelTimer = setTimeout(function () {
+      item.classList.remove('sn-show-label');
+      labelTimer = null;
+    }, 1500);
+  }
+
+  function updateActive() {
+    var active = null;
+    for (var i = 0; i < targets.length; i++) {
+      if (visible[targets[i]]) { active = targets[i]; break; }
+    }
+    items.forEach(function (it, i) {
+      it.classList.toggle('sn-active', active !== null && idxMap[active] === i);
+    });
+    if (active !== current) {
+      current = active;
+      showLabelFor(active !== null ? items[idxMap[active]] : null);
+    }
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { visible[e.target.id] = true; } else { delete visible[e.target.id]; }
+    });
+    updateActive();
+  }, { rootMargin: '-20% 0px -20% 0px', threshold: 0 });
+
+  targets.forEach(function (id) { io.observe(document.getElementById(id)); });
+})();
+
 /* Sticky passport bar — появляется после ухода hero из viewport. */
 (function () {
   var bar = document.getElementById('stickyPass');
@@ -68,12 +125,9 @@
     var steels = data.steels || {};
     var slugs = Object.keys(steels);
     if (!slugs.length) return;
-    // Активная первая, остальные — ссылки.
-    var ordered = slugs.slice();
-    if (state.steel && ordered.indexOf(state.steel) >= 0) {
-      ordered = [state.steel].concat(ordered.filter(function (s) { return s !== state.steel; }));
-    }
-    list.innerHTML = ordered.map(function (slug) {
+    // Порядок марок фиксирован: активная подсвечивается на месте. Прежняя
+    // перестановка активной в начало уводила соседние марки из-под курсора.
+    list.innerHTML = slugs.map(function (slug) {
       var active = slug === state.steel;
       return '<button type="button" class="pp-steel' + (active ? ' is-active' : ' is-alt') + '"' +
         ' data-steel="' + slug.replace(/"/g, '') + '"' +
@@ -185,6 +239,81 @@
     e.preventDefault();
     setSteel(btn.getAttribute('data-steel'));
   });
+
+  // ── Копирование характеристик ───────────────────────────────────────
+  // Клик по строке кладёт значение в буфер, кнопка в подвале — всю таблицу
+  // как TSV (вставляется в Excel и спецификацию одной вставкой).
+  (function () {
+    var card = document.getElementById('passCard');
+    if (!card) return;
+
+    function rowValue(row) {
+      // В строке материала значений много, а актуальное — выбранная марка.
+      var active = row.querySelector('.pp-steel.is-active');
+      if (active) {
+        var cert = row.querySelector('.pp-mat-cert');
+        return (active.textContent + (cert ? cert.textContent : '')).replace(/\s+/g, ' ').trim();
+      }
+      var v = row.querySelector('.pp-v');
+      return v ? v.textContent.replace(/\s+/g, ' ').trim() : '';
+    }
+
+    function copy(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+      }
+      // http-доступ по локальной сети: Clipboard API недоступен.
+      return new Promise(function (resolve, reject) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+        document.body.removeChild(ta);
+        ok ? resolve() : reject();
+      });
+    }
+
+    var timers = new WeakMap();
+    function flash(el) {
+      el.classList.add('is-copied');
+      clearTimeout(timers.get(el));
+      timers.set(el, setTimeout(function () { el.classList.remove('is-copied'); }, 1400));
+    }
+
+    card.addEventListener('click', function (e) {
+      // Марки стали — переключатель, кнопка подвала — свой обработчик.
+      if (e.target.closest('.pp-steel') || e.target.closest('#passCopyAll')) return;
+      var row = e.target.closest('.pp-row');
+      if (!row) return;
+      // Выделение текста мышью заканчивается кликом — копировать не нужно.
+      if (String(window.getSelection())) return;
+      var text = rowValue(row);
+      if (text) copy(text).then(function () { flash(row); }, function () {});
+    });
+
+    var all = document.getElementById('passCopyAll');
+    if (all) {
+      all.addEventListener('click', function () {
+        var lines = [];
+        card.querySelectorAll('.pp-row').forEach(function (row) {
+          var k = row.querySelector('.pp-k');
+          lines.push((k ? k.textContent.trim() : '') + '\t' + rowValue(row));
+        });
+        var id = document.getElementById('passId');
+        if (id) lines.unshift('Артикул\t' + id.textContent.trim());
+        lines.unshift((data.title || document.title) + '\t');
+        copy(lines.join('\n')).then(function () { flash(all); }, function () {});
+      });
+    }
+
+    card.querySelectorAll('.pp-row').forEach(function (row) {
+      if (!row.title) row.title = 'Скопировать значение';
+    });
+  })();
 
   if (supGrid) {
     var urlSup = param('nadzor');
@@ -382,13 +511,31 @@ promenHideEmptyCols(document.querySelector('.series-full'));
   }
   function prefillFromSelection() {
     var sel = window.PROMEN_SEL;
-    if (!sel) return;
     var name = document.getElementById('om-name');
     var dn = document.getElementById('om-dn');
     var sku = document.getElementById('omSku');
-    if (name) name.value = sel.title;
-    if (dn) dn.value = ['DN ' + (sel.dn || '—'), sel.d ? sel.d + '×' + sel.wall : ''].filter(Boolean).join(' / ');
-    if (sku) sku.value = sel.sku;
+    var mat = document.getElementById('om-mat');
+
+    // Марка стали и артикул — из текущего выбора паспорта. Раньше форма
+    // заполнялась на сервере первой маркой серии и переключатель её не менял,
+    // а без взаимодействия с конфигуратором (PROMEN_SEL пуст) функция вообще
+    // выходила по return и не трогала ничего.
+    var steel = document.querySelector('#ppMatList .pp-steel.is-active') || document.getElementById('heroMat');
+    var steelName = steel ? steel.textContent.trim() : '';
+    if (mat && steelName) mat.value = steelName;
+
+    // Артикул с учётом выбранной марки конфигуратор уже посчитал в #cfgSku —
+    // в форму уходил базовый артикул серии без марки.
+    var cfgSku = document.getElementById('cfgSku');
+    var code = cfgSku ? cfgSku.textContent.replace(/^[^:]*:\s*/, '').trim() : '';
+
+    if (sel) {
+      if (name) name.value = sel.title;
+      if (dn) dn.value = ['DN ' + (sel.dn || '—'), sel.d ? sel.d + '×' + sel.wall : ''].filter(Boolean).join(' / ');
+      if (sku) sku.value = code || sel.sku;
+      return;
+    }
+    if (sku && code) sku.value = code;
   }
 
   var orderBtn = document.getElementById('orderOpen');

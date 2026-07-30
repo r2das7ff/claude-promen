@@ -154,6 +154,32 @@ function promen_catalog_header_cells( array $cols, string $sort_field, string $s
 	return $html;
 }
 
+/**
+ * TEST (2026-07-30): ячейка «Материал» с подсказкой по «… +N».
+ *
+ * `steel_display` усечён до 2 марок при >3 (см. promen_product_steel_display) —
+ * 77% строк реестра показывают «20, 09Г2С … +12» и не отвечают, что за остальные.
+ * Полный список уже лежит в канон-документе (`steel_labels`), добирать нечего.
+ * Хвост «… +N» оборачиваем в триггер, JS вешает на него hover-подсказку.
+ *
+ * Откат: вернуть `<span class="pr-mat">$steel</span>`, снять .pr-mat-more/.mat-pop
+ * в catalog.css и блок «TEST: подсказка марок стали» в catalog.js.
+ */
+function promen_steel_cell_html( array $hit ): string {
+	$txt = trim( (string) ( $hit['steel_display'] ?? '' ) );
+	if ( $txt === '' ) {
+		return '—';
+	}
+	$labels = array_values( array_filter( array_map( 'strval', (array) ( $hit['steel_labels'] ?? [] ) ) ) );
+	// Гейт — наличие хвоста «… +N»: при активном фильтре по стали API переписывает
+	// steel_display на выбранные марки, там усечения нет и триггер не нужен.
+	if ( ! $labels || ! preg_match( '/^(.*?)\s*(…\s*\+\d+)$/u', $txt, $m ) ) {
+		return esc_html( $txt );
+	}
+	return esc_html( $m[1] ) . ' <span class="pr-mat-more" data-steels="'
+		. esc_attr( implode( ', ', $labels ) ) . '">' . esc_html( $m[2] ) . '</span>';
+}
+
 /** HTML одной строки реестра из канон-документа. */
 function promen_render_catalog_row( array $hit, string $grid_tpl, int $index = 0 ): void {
 	$url    = esc_url( (string) ( $hit['url'] ?? '#' ) );
@@ -161,7 +187,6 @@ function promen_render_catalog_row( array $hit, string $grid_tpl, int $index = 0
 	$title  = esc_html( (string) ( $hit['title'] ?? '' ) );
 	$family = esc_html( (string) ( $hit['family'] ?? '' ) );
 	$sku    = esc_attr( (string) ( $hit['sku'] ?? '' ) );
-	$steel  = esc_html( (string) ( $hit['steel_display'] ?? '—' ) );
 	$industries = (array) ( $hit['industries'] ?? [] );
 	$ind_html = function_exists( 'promen_industry_tags_html' )
 		? promen_industry_tags_html( $industries )
@@ -185,7 +210,7 @@ function promen_render_catalog_row( array $hit, string $grid_tpl, int $index = 0
 		$empty = ( $val === '—' || $val === '' );
 		echo '<span class="pr-' . esc_attr( $col['key'] ) . ( $empty ? ' is-empty' : '' ) . '">' . esc_html( (string) $val ) . '</span>';
 	}
-	echo '<span class="pr-mat">' . $steel . '</span>';
+	echo '<span class="pr-mat">' . promen_steel_cell_html( $hit ) . '</span>';
 	echo '<span class="pr-ind">' . $ind_html . '</span>';
 	echo '<span class="pr-arr">›</span></a>';
 }

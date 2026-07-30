@@ -20,6 +20,7 @@
   font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
   font-size:clamp(60px,7.5vw,140px);letter-spacing:-.04em;
   color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;white-space:nowrap;
+  z-index:-1; /* вод. знак — под текстом hero (статы справа), не поверх */
 }
 .cnt-eyebrow{
   display:flex;align-items:center;gap:16px;margin-bottom:20px;
@@ -40,7 +41,9 @@
 .hs-k{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);}
 
 /* ── BODY ── */
-.cnt-wrap{display:grid;grid-template-columns:minmax(320px,440px) 1fr;flex:1;}
+/* Левая колонка — по самой длинной строке реквизитов (декларация в одну
+   строку), форма справа отдаёт излишек; minmax(0,1fr) не даёт ей распирать. */
+.cnt-wrap{display:grid;grid-template-columns:minmax(440px,max-content) minmax(0,1fr);flex:1;}
 .cnt-left{border-right:1px solid var(--ln2);padding:48px 52px 48px var(--head-x);display:flex;flex-direction:column;gap:40px;}
 .cnt-right{padding:48px 52px;background:var(--form-bg);}
 
@@ -98,9 +101,9 @@
   font-size:13.5px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .15s;
 }
 .cnt-submit:hover{background:var(--blue);}
-.cnt-ghost{font-family:'DINPro',monospace;font-size:13px;letter-spacing:.06em;color:var(--g1);border-bottom:1px solid var(--ln2);transition:color .15s,border-color .15s;}
-.cnt-ghost:hover{color:var(--dark);border-color:var(--g1);}
-.cnt-note{grid-column:1 / -1;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g2);margin-top:-4px;}
+/* подчёркивание текстом — рамка бокса уезжала вниз на тач-цели 44px */
+.cnt-ghost{font-family:'DINPro',monospace;font-size:13px;letter-spacing:.06em;color:var(--g1);text-decoration:underline;text-decoration-color:var(--ln2);text-decoration-thickness:1px;text-underline-offset:4px;transition:color .15s,text-decoration-color .15s;}
+.cnt-ghost:hover{color:var(--dark);text-decoration-color:var(--g1);}
 
 .cnt-success{
   display:none;padding:32px 0;font-family:'DINPro',monospace;font-size:14px;letter-spacing:.04em;color:var(--blue);
@@ -160,7 +163,7 @@
 
 /* ── Пол шрифта: служебные подписи >=10px на <=1024 ── */
 @media (max-width:1024px){
-  .cnt-eyebrow,.cnt-label,.cnt-row-k,.cnt-loc-coord,.cnt-field-label,.cnt-required,.cnt-note,.cnt-bar-copy,.cnt-bar-policy,.cnt-bar-idx,.hs-k{font-size:12px;}
+  .cnt-eyebrow,.cnt-label,.cnt-row-k,.cnt-loc-coord,.cnt-field-label,.cnt-required,.cnt-bar-copy,.cnt-bar-policy,.cnt-bar-idx,.hs-k{font-size:12px;}
 }
 
 /* ── Белая плитка активного поля — как .s10-field:focus-within на главной ── */

@@ -14,7 +14,7 @@
 
 /* ── HERO ── */
 .nb-hero{border-bottom:1px solid var(--ln2);padding:56px 52px 44px 56px;display:grid;grid-template-columns:1fr 260px;align-items:end;gap:48px;position:relative;overflow:hidden;}
-.nb-hero::after{content:'REGISTRY';position:absolute;right:48px;bottom:-30px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(70px,8vw,150px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;white-space:nowrap;}
+.nb-hero::after{content:'REGISTRY';position:absolute;right:48px;bottom:-30px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(70px,8vw,150px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;white-space:nowrap;z-index:-1;/* под контентом hero */}
 .nb-eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:20px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);}
 .nb-eyebrow::before{content:'12';border:1px solid var(--g1);padding:3px 8px;font-size:12px;letter-spacing:.2em;line-height:1;}
 .nb-h1{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(44px,5.5vw,80px);line-height:.88;letter-spacing:-.02em;text-transform:uppercase;color:var(--dark);margin-bottom:20px;}

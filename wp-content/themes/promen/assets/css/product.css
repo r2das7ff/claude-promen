@@ -36,7 +36,8 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .sidenav-item.sn-active .sidenav-dot{background:var(--dark);transform:scale(1.6);box-shadow:0 0 0 3px rgba(15,42,68,.12);}
 .sidenav-label{position:absolute;left:52px;top:50%;transform:translateY(-50%) translateX(-10px);font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;color:var(--dark);text-transform:uppercase;white-space:nowrap;background:var(--bg);border:1px solid var(--ln);padding:4px 10px;line-height:1.5;opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;}
 .sidenav-item:hover .sidenav-label{opacity:1;transform:translateY(-50%) translateX(0);}
-.sidenav-item.sn-active .sidenav-label{opacity:1;transform:translateY(-50%) translateX(0);}
+/* Подпись активной секции держалась постоянно и перекрывала контент — на
+   главной её показывают кратко через .sn-show-label (product.js делает так же). */
 @media(max-width:1100px){.sidenav{display:none;}}
 
 /* PAGE SHELL */
@@ -44,7 +45,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 
 /* ── HERO ── */
 .sdt-hero{border-bottom:1px solid var(--ln2);display:grid;grid-template-columns:1fr 1fr;min-height:300px;position:relative;overflow:hidden;}
-.sdt-hero::after{content:'СДТ';position:absolute;right:-20px;bottom:-52px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(100px,13vw,220px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;}
+.sdt-hero::after{content:'СДТ';position:absolute;right:-20px;bottom:-52px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(100px,13vw,220px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;z-index:-1;/* под контентом hero */}
 .hero-left{padding:44px 52px 48px var(--head-x);border-right:1px solid var(--ln2);display:flex;flex-direction:column;}
 .hero-crumb{display:flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:24px;}
 .hero-crumb a{color:var(--g1);transition:color .12s;}
@@ -57,7 +58,10 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .hero-desc{font-size:15px;font-weight:300;line-height:1.74;color:var(--blue);max-width:460px;flex:1;}
 .hero-params{display:flex;gap:0;margin-top:28px;border-top:1px solid var(--ln2);padding-top:22px;}
 .hp{flex:1;padding-right:20px;border-right:1px solid var(--ln);}
-.hp:last-child{border-right:none;padding-right:0;padding-left:20px;}
+/* Отступ слева у всех плиток, кроме первой: без него «R 55 / РАДИУС ГИБА»
+   упирался в разделитель предыдущей колонки. */
+.hp + .hp{padding-left:20px;}
+.hp:last-child{border-right:none;padding-right:0;}
 .hp-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:22px;line-height:1;letter-spacing:-.02em;color:var(--dark);display:block;margin-bottom:4px;}
 .hp-k{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);}
 .hero-right{padding:44px 48px;display:flex;flex-direction:column;gap:20px;position:relative;z-index:1;}
@@ -491,7 +495,9 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
   .hero-crumb::-webkit-scrollbar{display:none;}
 }
 
-.prod-hero::after{content:'90°';position:absolute;right:-10px;bottom:-48px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(100px,12vw,200px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;}
+/* Знак задаёт шаблон через --hero-wm (угол изделия либо DN): «90°» было
+   захардкожено и стояло на всех карточках, включая фланцы и крепёж. */
+.prod-hero::after{content:var(--hero-wm,'');position:absolute;right:-10px;bottom:-48px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(100px,12vw,200px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;z-index:-1;/* под контентом hero */}
 /* Фото изделия «парит» на сетке hero: прозрачный PNG, без коробки, с подсветкой снизу. */
 .hero-media{flex:1;min-height:180px;position:relative;display:flex;align-items:center;justify-content:center;margin:18px 0 6px;}
 .hero-media img{position:relative;max-width:100%;max-height:340px;width:auto;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 18px 40px rgba(20,40,66,.10));z-index:1;}
@@ -506,40 +512,51 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .pass-sys{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);opacity:.6;}
 .pass-id{font-family:'DINProCond',monospace;font-weight:700;font-size:13px;letter-spacing:.08em;color:var(--dark);}
 .pass-body{padding:0;}
-/* Колонка ключа 132px: «Поднадзорность» на 11px не влезала в прежние 110. */
-.pp-row{display:grid;grid-template-columns:132px 1fr 24px;padding:11px 20px;border-bottom:1px solid var(--ln);align-items:center;transition:background .15s;}
+/* Колонка ключа 132px: «Поднадзорность» на 11px не влезала в прежние 110.
+   column-gap обязателен: без него значение начиналось ровно на границе колонки
+   и длинные подписи («Поднадзорность», «Радиус гиба R») упирались в него.
+   Третьей колонки (декоративные ✓) больше нет — вместо неё клик по строке
+   копирует значение, иконка позиционируется абсолютно и места не занимает. */
+.pp-row{display:grid;grid-template-columns:140px 1fr;column-gap:24px;padding:11px 44px 11px 20px;border-bottom:1px solid var(--ln);align-items:center;position:relative;cursor:pointer;transition:background .15s;}
 .pp-row:last-child{border-bottom:none;}
 .pp-row.hl{background:rgba(109,140,166,.12);}
 .pp-k{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);}
 .pp-v{font-family:'DINPro',monospace;font-size:12.5px;font-weight:600;color:var(--dark);letter-spacing:.02em;}
-.pp-chk{font-family:'DINPro',monospace;font-size:11px;color:var(--g1);text-align:right;opacity:.5;}
-.pp-mat-wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 2px;}
-.pp-mat-list{display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;}
-.pp-steel{font:inherit;font-family:'DINPro',monospace;font-size:12.5px;font-weight:600;letter-spacing:.02em;color:var(--dark);background:none;border:0;padding:0;margin:0;cursor:pointer;text-decoration:none;}
-.pp-steel.is-alt{font-weight:500;color:var(--blue);text-decoration:underline;text-underline-offset:2px;}
-.pp-steel.is-active{font-weight:600;color:var(--dark);text-decoration:none;cursor:default;}
-.pp-steel:focus-visible{outline:1px solid var(--blue);outline-offset:2px;}
 
-/* Телефон: марки стали — это переключатель, а не текст. Инлайновые кнопки
-   без паддингов давали тач-цели 14×17px («20», «35», «45»), попасть в них
-   пальцем невозможно. Разворачиваем в чипы с нормальной высотой. */
-@media(max-width:640px){
-  .pp-mat-wrap{align-items:center;gap:8px;}
-  .pp-mat-list{align-items:center;gap:8px;}
-  .pp-steel{
-    display:inline-flex;align-items:center;justify-content:center;
-    min-height:40px;min-width:48px;padding:0 12px;
-    border:1px solid var(--ln2);background:var(--bg);
-    text-decoration:none;
-  }
-  .pp-steel.is-alt{text-decoration:none;}
-  .pp-steel.is-active{background:var(--dark);color:var(--white);border-color:var(--dark);}
-}
+/* ── Копирование значения ────────────────────────────────────────────
+   Иконка проявляется по наведению, после клика на 1,4 с превращается
+   в галочку: теперь ✓ действительно означает результат действия. */
+.pass-card{--ic-copy:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5.2 1.6h6.4a2 2 0 0 1 2 2v8.2' fill='none' stroke='%23000' stroke-width='1.6'/%3E%3Crect x='1.6' y='4.4' width='9.2' height='10' rx='1.4' fill='none' stroke='%23000' stroke-width='1.6'/%3E%3C/svg%3E");
+  --ic-done:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 8.4l4.2 4.2L14 3.4' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E");}
+.pp-row::after{content:'';position:absolute;right:16px;top:50%;width:13px;height:13px;margin-top:-6.5px;background:var(--g1);opacity:0;transition:opacity .12s,background .12s;
+  -webkit-mask:var(--ic-copy) center/contain no-repeat;mask:var(--ic-copy) center/contain no-repeat;}
+.pp-row:hover{background:var(--g1b);}
+.pp-row:hover::after{opacity:.7;}
+.pp-row.is-copied{background:rgba(76,175,80,.14);}
+.pp-row.is-copied::after{opacity:1;background:#3d8b40;-webkit-mask-image:var(--ic-done);mask-image:var(--ic-done);}
+/* Инлайновый поток, а не flex: при flex список марок был отдельным элементом
+   и «· серт. 3.1» выносило на свою строку, как только марки переносились. */
+.pp-mat-wrap{display:block;line-height:1.9;}
+.pp-mat-list{display:inline;}
+/* Выбранная марка подсвечивается на месте, без перестановки списка (см. product.js).
+   Остальные — приглушённые, подчёркивание появляется по наведению. */
+.pp-steel{font:inherit;font-family:'DINPro',monospace;font-size:12.5px;font-weight:500;letter-spacing:.02em;color:var(--g1);background:none;border:1px solid transparent;display:inline-block;padding:1px 6px;margin:0 2px 0 0;cursor:pointer;text-decoration:none;transition:color .12s,background .12s,border-color .12s;}
+.pp-steel.is-alt:hover{color:var(--dark);border-color:var(--ln2);}
+.pp-steel.is-active{font-weight:700;color:var(--white);background:var(--blue);border-color:var(--blue);cursor:default;}
+.pp-steel:focus-visible{outline:1px solid var(--blue);outline-offset:2px;}
+/* Тач-раскладка марок стали — в блоке ≤1024 ниже по файлу; отдельный ≤640
+   дублировал те же правила и удалён. */
 .pp-mat-cert{font-family:'DINPro',monospace;font-size:12.5px;font-weight:600;color:var(--dark);white-space:nowrap;}
 .pass-ft{padding:12px 20px;border-top:1px solid var(--ln2);display:flex;justify-content:space-between;align-items:center;background:var(--bg);}
 .pass-status{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:8px;}
 .pass-status::before{content:'';width:6px;height:6px;border-radius:50%;background:#4caf50;animation:blink 1.8s step-end infinite;}
 .pass-meta{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;color:var(--blue);}
+.pass-copy-all{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);background:none;border:0;padding:4px 0;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:color .12s;}
+.pass-copy-all::after{content:'';width:12px;height:12px;background:var(--blue);-webkit-mask:var(--ic-copy) center/contain no-repeat;mask:var(--ic-copy) center/contain no-repeat;transition:background .12s;}
+.pass-copy-all:hover{color:var(--dark);}
+.pass-copy-all:hover::after{background:var(--dark);}
+.pass-copy-all.is-copied{color:#3d8b40;}
+.pass-copy-all.is-copied::after{background:#3d8b40;-webkit-mask-image:var(--ic-done);mask-image:var(--ic-done);}
 .bp-panel{background:var(--dark);position:relative;overflow:hidden;border:1px solid var(--ln2);}
 .bp-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(109,140,166,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(109,140,166,.06) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
 .bp-inner{padding:32px 40px 40px;position:relative;z-index:1;display:grid;grid-template-columns:1fr 280px;gap:32px;align-items:center;}
@@ -824,14 +841,19 @@ a.nc{display:block;}
 .hero-cta-row{display:flex;align-items:center;gap:22px;margin-top:30px;flex-wrap:wrap;}
 .hero-order-btn{display:inline-flex;margin-left:0;}
 
-/* ── Конфигуратор: подпись фильтра и кнопка «показать все» ── */
-.cfg-tbl-note{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);opacity:.75;margin-top:10px;}
+/* ── Конфигуратор: подпись фильтра и кнопка «показать все» ──
+   Отступ 16px = левый padding ячеек .ptbl: подпись и кнопка вставали вплотную
+   к краю таблицы, на 16px левее значений первой колонки. */
+.cfg-tbl-note{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);opacity:.75;margin-top:10px;margin-left:16px;}
 .series-more{
-  display:inline-flex;align-items:center;gap:8px;margin-top:16px;
+  display:inline-flex;align-items:center;gap:8px;margin:16px 0 4px 16px;
   font-family:'DINPro',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--g1);border:1px solid var(--ln2);padding:10px 18px;transition:all .15s;
 }
 .series-more:hover{background:var(--bg2);color:var(--dark);border-color:var(--g1);}
+/* Реестр размеров серии (s03): кнопку добавляет product.js в .mat-tbl-wrap
+   сразу за таблицей — без воздуха она липла к последней строке. */
+.mat-tbl-wrap .series-more{margin:22px 0 8px 16px;}
 
 /* ── Модал заявки (как на лендингах) ── */
 .order-overlay{position:fixed;inset:0;background:rgba(15,42,68,.45);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .2s;z-index:400;}
@@ -866,9 +888,10 @@ a.nc{display:block;}
 
 /* Чертёж: тёмный ореол вокруг подписей размеров — читаемость поверх линий */
 #s01 svg text{ paint-order:stroke; stroke:rgba(15,42,68,.9); stroke-width:3.5px; stroke-linejoin:round; }
-/* Кнопка «показать все» и подпись под таблицей конфигуратора — аккуратный блок */
-.par-right .cfg-tbl-note{margin:12px 0 0;}
-.par-right .series-more{margin-top:12px;}
+/* Кнопка «показать все» и подпись под таблицей конфигуратора — аккуратный блок.
+   Левые 16px держим: выравнивание по значениям первой колонки .ptbl. */
+.par-right .cfg-tbl-note{margin:12px 0 0 16px;}
+.par-right .series-more{margin:14px 0 4px 16px;}
 
 
 /* ── Этап 7 (v3): правила макета 2026-07-23, отсутствовавшие в теме ── */
@@ -908,9 +931,10 @@ a.nc{display:block;}
   /* Паспорт изделия: на 132px-колонку ключа остаётся ~190px под значение —
      чипы марок стали влезали по два в ряд и раздували строку. Кладём ключ
      над значением, как в остальных таблицах характеристик темы. */
-  .pp-row{grid-template-columns:1fr 24px;gap:6px 10px;align-items:start;padding:12px 20px;}
-  .pp-k{grid-column:1 / -1;}
-  .pp-chk{grid-column:2;grid-row:1;text-align:right;}
+  .pp-row{grid-template-columns:1fr;gap:6px;align-items:start;padding:12px 44px 12px 20px;}
+  /* Тач: иконка копирования показана всегда — навести пальцем нельзя. */
+  .pp-row::after{opacity:.5;top:14px;margin-top:0;}
+  .pass-copy-all{min-height:44px;}
 }
 
 /* Планшет — тач: см. комментарий в catalog.css */
@@ -939,10 +963,9 @@ a.nc{display:block;}
   .pp-steel{
     display:inline-flex;align-items:center;justify-content:center;
     min-height:40px;min-width:48px;padding:0 12px;
-    border:1px solid var(--ln2);background:var(--bg);text-decoration:none;
+    border:1px solid var(--ln2);background:var(--bg);
   }
-  .pp-steel.is-alt{text-decoration:none;}
-  .pp-steel.is-active{background:var(--dark);color:var(--white);border-color:var(--dark);}
+  .pp-steel.is-active{background:var(--blue);color:var(--white);border-color:var(--blue);}
 }
 
 /* ═══ Липкая панель конфигурации ═══

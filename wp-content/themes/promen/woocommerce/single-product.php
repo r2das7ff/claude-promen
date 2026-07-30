@@ -79,6 +79,18 @@ while ( have_posts() ) :
 		$flange_series = '';
 	}
 
+	// Данные, которые печатало краткое описание, но не показывала таблица.
+	$temperature = trim( (string) ( $dims['temperature_c'] ?? ( $dims['temperature'] ?? '' ) ) );
+	if ( $temperature !== '' && strpos( $temperature, '°' ) === false ) {
+		$temperature .= ' °C';
+	}
+	$designation = trim( (string) ( $dims['gost_designation'] ?? '' ) );
+	if ( $designation === '' ) {
+		$designation = trim( (string) get_post_meta( $product->get_id(), '_promen_gost_designation', true ) );
+	}
+	$shell   = trim( (string) ( $dims['shell'] ?? '' ) );
+	$coating = trim( (string) ( $dims['coating'] ?? '' ) );
+
 	// Правила правдивости характеристик (см. inc/product-data.php).
 	$cat_group = promen_category_group( $product->get_id() );
 	$is_flange = $cat_group === 'flange';
@@ -165,7 +177,12 @@ while ( have_posts() ) :
 
 <div class="pg">
 
-  <div class="prod-hero" id="hero">
+  <?php
+    /* Водяной знак hero: был захардкожен «90°» в CSS и врал на всех остальных
+       позициях. Берём угол изделия, иначе DN, иначе знака нет. */
+    $hero_wm = ! empty( $dims['angle'] ) ? $dims['angle'] . '°' : ( $dn !== '' ? 'DN ' . $dn : '' );
+  ?>
+  <div class="prod-hero" id="hero"<?php echo $hero_wm !== '' ? ' style="--hero-wm:\'' . esc_attr( $hero_wm ) . '\'"' : ''; ?>>
     <div class="hero-left">
       <nav class="hero-crumb">
         <?php foreach ( $crumbs as $i => [ $label, $url ] ) : ?>
@@ -244,54 +261,58 @@ while ( have_posts() ) :
     <div class="hero-right">
       <div class="pass-card" id="passCard">
         <div class="pass-hd">
-          <span class="pass-sys">SYS://PRODUCT.PASSPORT.v1</span>
+          <span class="pass-sys">Технические характеристики</span>
           <span class="pass-id" id="passId"><?php echo esc_html( $series_meta['pass_id'] ); ?></span>
         </div>
         <div class="pass-body">
           <?php if ( $norm_key ) : ?>
-            <div class="pp-row" data-field="standard"><span class="pp-k">Стандарт</span><span class="pp-v"><?php echo esc_html( $norm_key ); ?></span><span class="pp-chk">✓</span></div>
+            <div class="pp-row" data-field="standard"><span class="pp-k">Стандарт</span><span class="pp-v"><?php echo esc_html( $norm_key ); ?></span></div>
+          <?php endif; ?>
+          <?php if ( $designation !== '' ) : ?>
+            <?php /* Условное обозначение по нормативу — то, что уходит в спецификацию. */ ?>
+            <div class="pp-row" data-field="designation" title="Условное обозначение изделия по нормативу"><span class="pp-k">Обозначение</span><span class="pp-v"><?php echo esc_html( $designation ); ?></span></div>
           <?php endif; ?>
           <?php if ( $is_flange && $flange_type !== '' ) : ?>
-            <div class="pp-row" data-field="type"><span class="pp-k">Тип</span><span class="pp-v"><?php echo esc_html( $flange_type ); ?></span><span class="pp-chk">✓</span></div>
+            <div class="pp-row" data-field="type"><span class="pp-k">Тип</span><span class="pp-v"><?php echo esc_html( $flange_type ); ?></span></div>
           <?php elseif ( $family && ! $is_flange ) : ?>
-            <div class="pp-row" data-field="type"><span class="pp-k">Тип</span><span class="pp-v"><?php echo esc_html( $family . ( ! empty( $dims['angle'] ) ? ' · ' . $dims['angle'] . '°' : '' ) ); ?></span><span class="pp-chk">✓</span></div>
+            <div class="pp-row" data-field="type"><span class="pp-k">Тип</span><span class="pp-v"><?php echo esc_html( $family . ( ! empty( $dims['angle'] ) ? ' · ' . $dims['angle'] . '°' : '' ) ); ?></span></div>
           <?php endif; ?>
           <?php if ( $is_fastener ) : ?>
             <?php if ( $washer_type !== '' ) : ?>
-              <div class="pp-row" data-field="dn"><span class="pp-k">Диаметр</span><span class="pp-v" id="ppDnPn"><?php echo esc_html( promen_fmt_dim( $thread_raw ) ); ?> мм</span><span class="pp-chk">✓</span></div>
-              <div class="pp-row" data-field="washer"><span class="pp-k">Тип шайбы</span><span class="pp-v"><?php echo esc_html( $washer_type ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="dn"><span class="pp-k">Диаметр</span><span class="pp-v" id="ppDnPn"><?php echo esc_html( promen_fmt_dim( $thread_raw ) ); ?> мм</span></div>
+              <div class="pp-row" data-field="washer"><span class="pp-k">Тип шайбы</span><span class="pp-v"><?php echo esc_html( $washer_type ); ?></span></div>
             <?php else : ?>
               <?php if ( $thread_m !== '' ) : ?>
-                <div class="pp-row" data-field="dn"><span class="pp-k">Резьба</span><span class="pp-v" id="ppDnPn"><?php echo esc_html( $thread_m ); ?></span><span class="pp-chk">✓</span></div>
+                <div class="pp-row" data-field="dn"><span class="pp-k">Резьба</span><span class="pp-v" id="ppDnPn"><?php echo esc_html( $thread_m ); ?></span></div>
               <?php endif; ?>
               <?php if ( $length !== '' ) : ?>
-                <div class="pp-row" data-field="length"><span class="pp-k">Длина L</span><span class="pp-v"><?php echo esc_html( $length ); ?> мм</span><span class="pp-chk">✓</span></div>
+                <div class="pp-row" data-field="length"><span class="pp-k">Длина L</span><span class="pp-v"><?php echo esc_html( $length ); ?> мм</span></div>
               <?php endif; ?>
             <?php endif; ?>
             <?php if ( $strength !== '' ) : ?>
-              <div class="pp-row" data-field="strength"><span class="pp-k">Класс прочности</span><span class="pp-v"><?php echo esc_html( $strength ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="strength"><span class="pp-k">Класс прочности</span><span class="pp-v"><?php echo esc_html( $strength ); ?></span></div>
             <?php endif; ?>
             <?php if ( $accuracy !== '' ) : ?>
-              <div class="pp-row" data-field="accuracy"><span class="pp-k">Класс точности</span><span class="pp-v"><?php echo esc_html( $accuracy ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="accuracy"><span class="pp-k">Класс точности</span><span class="pp-v"><?php echo esc_html( $accuracy ); ?></span></div>
             <?php endif; ?>
             <?php if ( $mat_grade !== '' && ! $steels ) : ?>
-              <div class="pp-row" data-field="material"><span class="pp-k">Материал</span><span class="pp-v" id="ppMat"><?php echo esc_html( promen_fmt_steel( $mat_grade ) ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="material"><span class="pp-k">Материал</span><span class="pp-v" id="ppMat"><?php echo esc_html( promen_fmt_steel( $mat_grade ) ); ?></span></div>
             <?php endif; ?>
           <?php elseif ( $is_flange ) : ?>
             <?php if ( $dn !== '' ) : ?>
-              <div class="pp-row" data-field="dn"><span class="pp-k">DN</span><span class="pp-v">DN <?php echo esc_html( $dn ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="dn"><span class="pp-k">DN</span><span class="pp-v">DN <?php echo esc_html( $dn ); ?></span></div>
             <?php endif; ?>
             <?php if ( $pn_ok ) : ?>
-              <div class="pp-row" data-field="pn"><span class="pp-k">PN</span><span class="pp-v">PN <?php echo esc_html( $pn ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="pn"><span class="pp-k">PN</span><span class="pp-v">PN <?php echo esc_html( $pn ); ?></span></div>
             <?php endif; ?>
             <?php if ( $flange_type !== '' ) : ?>
-              <div class="pp-row" data-field="ftype"><span class="pp-k">Тип</span><span class="pp-v"><?php echo esc_html( promen_flange_type_label( $flange_type ) ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="ftype"><span class="pp-k">Тип</span><span class="pp-v"><?php echo esc_html( promen_flange_type_label( $flange_type ) ); ?></span></div>
             <?php endif; ?>
             <?php if ( $seal_face !== '' ) : ?>
-              <div class="pp-row" data-field="seal"><span class="pp-k">Уплотн. поверхность</span><span class="pp-v"><?php echo esc_html( $seal_face ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="seal"><span class="pp-k">Уплотн. поверхность</span><span class="pp-v"><?php echo esc_html( $seal_face ); ?></span></div>
             <?php endif; ?>
             <?php if ( $flange_series !== '' ) : ?>
-              <div class="pp-row" data-field="series"><span class="pp-k">Ряд</span><span class="pp-v"><?php echo esc_html( $flange_series ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="series"><span class="pp-k">Ряд</span><span class="pp-v"><?php echo esc_html( $flange_series ); ?></span></div>
             <?php endif; ?>
             <?php
               // Единый набор геометрии фланца — по строке на размер, чёткие подписи.
@@ -303,7 +324,7 @@ while ( have_posts() ) :
               ];
             ?>
             <?php foreach ( $flange_geo as $lbl => $val ) : if ( $val === '' ) continue; ?>
-              <div class="pp-row" data-field="geo"><span class="pp-k"><?php echo esc_html( $lbl ); ?></span><span class="pp-v"><?php echo esc_html( $val ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="geo"><span class="pp-k"><?php echo esc_html( $lbl ); ?></span><span class="pp-v"><?php echo esc_html( $val ); ?></span></div>
             <?php endforeach; ?>
             <?php if ( $stud_count !== '' || $bolt_d !== '' ) : ?>
               <div class="pp-row" data-field="bolts"><span class="pp-k">Крепёж</span><span class="pp-v"><?php
@@ -312,42 +333,60 @@ while ( have_posts() ) :
                   . ( $bolt_d !== '' ? ( $stud_count !== '' ? ' × ' : '' ) . 'M' . promen_fmt_dim( $bolt_d ) : '' )
                 );
                 echo esc_html( $bolt_lbl );
-              ?></span><span class="pp-chk">✓</span></div>
+              ?></span></div>
             <?php endif; ?>
             <?php if ( $flange_h4 !== '' && ( $flange_type === 'ФВ' || $flange_type === '11' ) ) : ?>
-              <div class="pp-row" data-field="h4"><span class="pp-k">h4</span><span class="pp-v"><?php echo esc_html( promen_fmt_dim( $flange_h4 ) ); ?> мм</span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="h4"><span class="pp-k">h4</span><span class="pp-v"><?php echo esc_html( promen_fmt_dim( $flange_h4 ) ); ?> мм</span></div>
             <?php endif; ?>
           <?php else : ?>
             <?php if ( $dn !== '' ) : ?>
-              <div class="pp-row" data-field="dn"><span class="pp-k">DN<?php echo $dn2 !== '' ? ' / DN2' : ''; ?></span><span class="pp-v" id="ppDnPn">DN <?php echo esc_html( $dn ); ?><?php echo $dn2 !== '' ? ' / DN ' . esc_html( $dn2 ) : ''; ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="dn"><span class="pp-k">DN<?php echo $dn2 !== '' ? ' / DN2' : ''; ?></span><span class="pp-v" id="ppDnPn">DN <?php echo esc_html( $dn ); ?><?php echo $dn2 !== '' ? ' / DN ' . esc_html( $dn2 ) : ''; ?></span></div>
             <?php endif; ?>
             <?php if ( $pn_ok ) : ?>
-              <div class="pp-row" data-field="pn"><span class="pp-k">PN</span><span class="pp-v">PN <?php echo esc_html( $pn ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="pn"><span class="pp-k">PN</span><span class="pp-v">PN <?php echo esc_html( $pn ); ?></span></div>
+            <?php elseif ( $pn !== '' && is_numeric( $pn ) ) : ?>
+              <?php
+                /* У СДТ pn — не номинальный класс PN, а давление в МПа из обозначения
+                   по нормативу. Краткое описание его уже печатает («PN 32 МПа»),
+                   поэтому в таблице оно тоже должно быть — иначе блоки на одной
+                   странице противоречат друг другу. Подпись без «PN»: номиналом
+                   ряда эти значения не являются (бывают 11,77 / 37,27 МПа). */
+              ?>
+              <div class="pp-row" data-field="pressure" title="Давление по обозначению изделия в нормативе"><span class="pp-k">Давление</span><span class="pp-v"><?php echo esc_html( promen_fmt_dim( $pn ) ); ?> МПа</span></div>
             <?php endif; ?>
             <?php if ( $d_out !== '' ) : ?>
-              <div class="pp-row" data-field="d1"><span class="pp-k"><?php echo $has_branch ? 'D1' : 'D нар.'; ?></span><span class="pp-v"><?php echo esc_html( $d_out ); ?> мм</span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="d1"><span class="pp-k"><?php echo $has_branch ? 'D1' : 'D нар.'; ?></span><span class="pp-v"><?php echo esc_html( $d_out ); ?> мм</span></div>
             <?php endif; ?>
             <?php if ( $wall !== '' ) : ?>
-              <div class="pp-row" data-field="wall"><span class="pp-k"><?php echo $has_branch ? 'Стенка s1' : 'Стенка'; ?></span><span class="pp-v" id="ppWall"><?php echo esc_html( $wall ); ?> мм</span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="wall"><span class="pp-k"><?php echo $has_branch ? 'Стенка s1' : 'Стенка'; ?></span><span class="pp-v" id="ppWall"><?php echo esc_html( $wall ); ?> мм</span></div>
             <?php endif; ?>
             <?php if ( ! empty( $dims['execution'] ) ) : ?>
-              <div class="pp-row" data-field="exec"><span class="pp-k">Исполнение</span><span class="pp-v"><?php echo esc_html( $dims['execution'] ); ?></span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="exec"><span class="pp-k">Исполнение</span><span class="pp-v"><?php echo esc_html( $dims['execution'] ); ?></span></div>
             <?php endif; ?>
             <?php if ( $d2 !== '' ) : ?>
-              <div class="pp-row" data-field="d2"><span class="pp-k">D2</span><span class="pp-v"><?php echo esc_html( $d2 ); ?> мм</span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="d2"><span class="pp-k">D2</span><span class="pp-v"><?php echo esc_html( $d2 ); ?> мм</span></div>
             <?php endif; ?>
             <?php if ( $s2 !== '' ) : ?>
-              <div class="pp-row" data-field="wall2"><span class="pp-k">Стенка s2</span><span class="pp-v"><?php echo esc_html( $s2 ); ?> мм</span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="wall2"><span class="pp-k">Стенка s2</span><span class="pp-v"><?php echo esc_html( $s2 ); ?> мм</span></div>
             <?php endif; ?>
             <?php if ( $radius !== '' ) : ?>
-              <div class="pp-row" data-field="radius"><span class="pp-k">Радиус гиба R</span><span class="pp-v"><?php echo esc_html( $radius ); ?> мм</span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="radius"><span class="pp-k">Радиус гиба R</span><span class="pp-v"><?php echo esc_html( $radius ); ?> мм</span></div>
             <?php endif; ?>
             <?php if ( ! empty( $dims['angle'] ) ) : ?>
-              <div class="pp-row" data-field="angle"><span class="pp-k">Угол</span><span class="pp-v"><?php echo esc_html( $dims['angle'] ); ?>°</span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="angle"><span class="pp-k">Угол</span><span class="pp-v"><?php echo esc_html( $dims['angle'] ); ?>°</span></div>
             <?php endif; ?>
             <?php if ( $length !== '' ) : ?>
-              <div class="pp-row" data-field="length"><span class="pp-k">Длина L</span><span class="pp-v"><?php echo esc_html( $length ); ?> мм</span><span class="pp-chk">✓</span></div>
+              <div class="pp-row" data-field="length"><span class="pp-k">Длина L</span><span class="pp-v"><?php echo esc_html( $length ); ?> мм</span></div>
             <?php endif; ?>
+          <?php endif; ?>
+          <?php if ( $shell !== '' ) : ?>
+            <div class="pp-row" data-field="shell"><span class="pp-k">Оболочка</span><span class="pp-v"><?php echo esc_html( $shell ); ?></span></div>
+          <?php endif; ?>
+          <?php if ( $coating !== '' && $coating !== $shell ) : ?>
+            <div class="pp-row" data-field="coating"><span class="pp-k">Покрытие</span><span class="pp-v"><?php echo esc_html( $coating ); ?></span></div>
+          <?php endif; ?>
+          <?php if ( $temperature !== '' ) : ?>
+            <div class="pp-row" data-field="temperature" title="Диапазон рабочих температур по нормативу"><span class="pp-k">Температура</span><span class="pp-v"><?php echo esc_html( $temperature ); ?></span></div>
           <?php endif; ?>
           <?php if ( $steels ) : ?>
             <div class="pp-row" data-field="material">
@@ -365,19 +404,19 @@ while ( have_posts() ) :
                 </span>
                 <span class="pp-mat-cert"> · серт. 3.1</span>
               </span>
-              <span class="pp-chk">✓</span>
-            </div>
+                          </div>
           <?php endif; ?>
           <?php if ( $mass_ok ) : ?>
-            <div class="pp-row" data-field="mass"><span class="pp-k">Масса<?php echo $cat_group === 'pipe' ? ', кг/м' : ', кг'; ?></span><span class="pp-v" id="ppMass"><?php echo esc_html( $mass ); ?></span><span class="pp-chk">≈</span></div>
+            <?php /* «≈» перенесён в значение: как отдельный глиф в правой колонке он читался как декор. */ ?>
+            <div class="pp-row" data-field="mass" title="Масса расчётная, по номинальным размерам"><span class="pp-k">Масса<?php echo $cat_group === 'pipe' ? ', кг/м' : ', кг'; ?></span><span class="pp-v">≈ <span id="ppMass"><?php echo esc_html( $mass ); ?></span></span></div>
           <?php endif; ?>
           <?php if ( $sups ) : ?>
-            <div class="pp-row" data-field="supervised"><span class="pp-k">Поднадзорность</span><span class="pp-v" id="ppSup"><?php echo esc_html( reset( $sups ) ); ?></span><span class="pp-chk">✓</span></div>
+            <div class="pp-row" data-field="supervised"><span class="pp-k">Поднадзорность</span><span class="pp-v" id="ppSup"><?php echo esc_html( reset( $sups ) ); ?></span></div>
           <?php endif; ?>
         </div>
         <div class="pass-ft">
           <span class="pass-status">Конфигурация активна</span>
-          <span class="pass-meta">Обновляется конфигуратором</span>
+          <button type="button" class="pass-copy-all" id="passCopyAll" title="Скопировать таблицу целиком — вставляется в Excel и спецификацию">Копировать таблицу</button>
         </div>
       </div>
     </div>
@@ -386,7 +425,7 @@ while ( have_posts() ) :
   <section class="s prod-essence" id="s00">
     <div class="s-hd">
       <div class="s-badge"><span class="s-badge-num">00</span>Суть изделия</div>
-      <div class="s-meta">PRODUCT ESSENCE</div>
+      
     </div>
     <div class="s-body">
       <div class="essence-grid reveal">
@@ -466,7 +505,6 @@ while ( have_posts() ) :
   <section class="s" id="s02">
     <div class="s-hd">
       <div class="s-badge"><span class="s-badge-num">02</span>Конфигуратор</div>
-      <div class="s-meta"><?php echo $is_fastener ? 'M · L · MATERIAL' : 'DN · MATERIAL · SUPERVISION'; ?></div>
     </div>
     <div class="s-body">
       <div class="params-wrap reveal">
@@ -686,7 +724,7 @@ while ( have_posts() ) :
   <section class="s s-dark" id="s04">
     <div class="s-hd">
       <div class="s-badge"><span class="s-badge-num">04</span>Нормативная база</div>
-      <div class="s-meta">STANDARDS REGISTRY</div>
+      
     </div>
     <div class="s-body">
       <div class="norm-grid reveal">
@@ -721,7 +759,7 @@ while ( have_posts() ) :
   <section class="s s-alt" id="s09">
     <div class="s-hd">
       <div class="s-badge"><span class="s-badge-num">09</span>Связанные позиции<?php echo $is_fastener ? ( $thread_m !== '' ? ' · ' . esc_html( $thread_m ) : '' ) : ( $dn !== '' ? ' · DN ' . esc_html( $dn ) : '' ); ?></div>
-      <div class="s-meta">RELATED PRODUCTS</div>
+      
     </div>
     <div class="s-body">
       <div class="rel-grid reveal">

@@ -74,7 +74,7 @@ $schem_labels = [
 <section class="s s-dark" id="s01">
     <div class="s-hd">
       <div class="s-badge"><span class="s-badge-num">01</span>Инженерный чертёж</div>
-      <div class="s-meta">BLUEPRINT<?php echo $norm_key ? ' / ' . esc_html( $norm_key ) : ''; ?></div>
+      <div class="s-meta"><?php echo $norm_key ? esc_html( $norm_key ) : ''; ?></div>
     </div>
     <div class="bp-panel">
       <div class="bp-grid-bg"></div>

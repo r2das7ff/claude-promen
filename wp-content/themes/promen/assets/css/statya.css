@@ -110,8 +110,27 @@
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
 
 @media(max-width:1024px){
-  .ar-split{grid-template-columns:1fr;}
+  /* Вертикальный ритм 28: паддинги секции ужаты с 44, ряды сетки
+     (оглавление → текст → CTA) разделяет row-gap — без него CTA
+     прилипал к тексту, а под ним зияло 44 паддинга секции. */
+  .ar-split{grid-template-columns:1fr;padding-top:28px;padding-bottom:28px;row-gap:28px;}
   .ar-toc{position:static;}
+  .ar-tags{padding-top:28px;padding-bottom:28px;}
+  /* Оглавление-аккордеон наверху статьи (перенос — statya.js): шапка-кнопка
+     «В этой статье · N ↓» с тач-целью 48px, маркер ↓/↑ как у аккордеонов
+     «Производства»; список скрыт до тапа и сворачивается после перехода. */
+  .ar-toc-top .ar-toc-box{padding:0;}
+  .ar-toc-top .ar-toc-lbl{
+    margin:0;padding:0 16px;min-height:48px;
+    display:flex;align-items:center;gap:10px;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .ar-toc-top .ar-toc-count{color:var(--dark);font-weight:700;}
+  .ar-toc-top .ar-toc-lbl::after{content:'↓';margin-left:auto;font-size:13.5px;color:var(--g1);line-height:1;}
+  .ar-toc-top .ar-toc-box:not(.is-collapsed) .ar-toc-lbl::after{content:'↑';}
+  .ar-toc-top .ar-toc-list{margin:0 16px 14px;}
+  .ar-toc-top .ar-toc-list a{padding:12px 0;}
+  .ar-toc-top .ar-toc-box.is-collapsed .ar-toc-list{display:none;}
 }
 @media(max-width:900px){
   .strip{display:none;}

@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
 <section class="s s-alt" id="s05">
     <div class="s-hd">
       <div class="s-badge"><span class="s-badge-num">05</span>Материалы исполнения</div>
-      <div class="s-meta">MATERIAL GRADES</div>
+      
     </div>
     <div class="s-body">
       <div class="mat-tbl-wrap reveal" data-mat-tbl>

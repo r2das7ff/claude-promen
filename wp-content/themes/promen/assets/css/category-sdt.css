@@ -42,7 +42,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 
 /* ── HERO ── */
 .sdt-hero{border-bottom:1px solid var(--ln2);display:grid;grid-template-columns:1fr 1fr;min-height:300px;position:relative;overflow:hidden;}
-.sdt-hero::after{content:'СДТ';position:absolute;right:-20px;bottom:-52px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(100px,13vw,220px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;}
+.sdt-hero::after{content:'СДТ';position:absolute;right:-20px;bottom:-52px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(100px,13vw,220px);letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;z-index:-1;/* под контентом hero */}
 .hero-left{padding:44px 52px 48px var(--head-x);border-right:1px solid var(--ln2);display:flex;flex-direction:column;}
 .hero-crumb{display:flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:24px;}
 .hero-crumb a{color:var(--g1);transition:color .12s;}

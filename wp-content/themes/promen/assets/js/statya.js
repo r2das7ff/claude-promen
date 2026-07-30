@@ -15,3 +15,52 @@
   map.forEach((a,h)=>io.observe(h));
 })();
 
+/* ── Оглавление на ≤1024: колонка TOC в одноколоночной сетке падала под
+   статью, где навигация уже бесполезна. Переносим бокс первым элементом
+   .ar-split и сворачиваем в аккордеон; после перехода по ссылке список
+   сворачивается. CTA-бокс остаётся в aside после статьи. Разметка статей
+   живёт в БД — весь перенос делается здесь, контент не меняется. ── */
+(()=>{
+  const split = document.querySelector('.ar-split');
+  const box = document.querySelector('.ar-toc-box');
+  if(!split || !box) return;
+  const lbl = box.querySelector('.ar-toc-lbl');
+  const list = box.querySelector('.ar-toc-list');
+  if(!lbl || !list) return;
+  const count = document.createElement('span');
+  count.className = 'ar-toc-count';
+  count.textContent = String(list.querySelectorAll('a').length).padStart(2,'0');
+  const mq = window.matchMedia('(max-width:1024px)');
+  const home = { parent: box.parentElement, next: box.nextElementSibling };
+  let wrap = null;
+  const collapse = (v)=>{
+    box.classList.toggle('is-collapsed', v);
+    lbl.setAttribute('aria-expanded', v ? 'false' : 'true');
+  };
+  const toggle = ()=>{ if(wrap) collapse(!box.classList.contains('is-collapsed')); };
+  function apply(){
+    if(mq.matches && !wrap){
+      wrap = document.createElement('div');
+      wrap.className = 'ar-toc-top';
+      wrap.appendChild(box);
+      split.insertBefore(wrap, split.firstChild);
+      lbl.appendChild(count);
+      lbl.setAttribute('role','button');
+      lbl.setAttribute('tabindex','0');
+      if(list.id) lbl.setAttribute('aria-controls', list.id);
+      collapse(true);
+    } else if(!mq.matches && wrap){
+      home.parent.insertBefore(box, home.next);
+      wrap.remove(); wrap = null;
+      count.remove();
+      ['role','tabindex','aria-controls','aria-expanded'].forEach(a=>lbl.removeAttribute(a));
+      box.classList.remove('is-collapsed');
+    }
+  }
+  lbl.addEventListener('click', toggle);
+  lbl.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
+  list.addEventListener('click', (e)=>{ if(wrap && e.target.closest('a')) collapse(true); });
+  apply();
+  if(mq.addEventListener) mq.addEventListener('change', apply);
+})();
+

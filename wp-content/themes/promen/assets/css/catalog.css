@@ -37,6 +37,7 @@
   font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
   font-size:clamp(80px,9vw,160px);letter-spacing:-.04em;
   color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;
+  z-index:-1; /* вод. знак — под контентом hero, не поверх */
 }
 /* Хлебные крошки: на архиве .hero-crumb не стилизовался вовсе
    (правила лежат в product.css / category-sdt.css, которые тут не грузятся)
@@ -1247,4 +1248,57 @@ button.c-chip--more:hover{color:var(--dark);border-color:var(--g1);}
   .prod-row>span:first-child{grid-column:1;grid-row:1;margin-bottom:5px;}
   .prod-row>span.pr-name{grid-column:1;grid-row:2;}
   .prod-row>span.pr-arr{grid-column:2;grid-row:1 / span 2;}
+}
+
+/* ── TEST (2026-07-30): подсказка марок стали в колонке «Материал» ──
+   Хвост «… +12» — триггер, при наведении показывается полный список.
+   Откат: удалить весь блок до конца файла + JS-блок «подсказка марок стали». */
+.pr-mat-more{
+  border-bottom:1px dashed var(--g1);
+  cursor:help;
+  color:var(--dark);
+  white-space:nowrap;
+}
+.prod-row:hover .pr-mat-more{border-bottom-color:var(--dark);}
+
+.mat-pop{
+  position:fixed;
+  z-index:80;
+  left:-9999px;
+  top:-9999px;
+  max-width:280px;
+  padding:9px 11px 10px;
+  background:var(--dark);
+  color:var(--white);
+  border:1px solid var(--blue);
+  box-shadow:0 8px 24px rgba(15,42,68,.28);
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .12s ease;
+  pointer-events:none; /* подсказка не должна перехватывать курсор со строки */
+}
+.mat-pop.is-on{opacity:1;visibility:visible;}
+.mat-pop-h{
+  display:block;
+  font-family:'DINPro',monospace;
+  font-size:9px;
+  font-weight:400;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--g2);
+  margin-bottom:7px;
+}
+.mat-pop-list{display:flex;flex-wrap:wrap;gap:4px 5px;}
+.mat-pop-list i{
+  font-style:normal;
+  font-family:'DINPro',monospace;
+  font-size:11px;
+  letter-spacing:.03em;
+  line-height:1;
+  padding:4px 6px;
+  background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.16);
+}
+@media(prefers-reduced-motion:reduce){
+  .mat-pop{transition:none;}
 }

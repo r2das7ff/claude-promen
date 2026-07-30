@@ -26,6 +26,7 @@ html{scroll-behavior:smooth;}
   font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
   font-size:clamp(60px,7.5vw,140px);letter-spacing:-.04em;
   color:transparent;-webkit-text-stroke:1px var(--ln);pointer-events:none;line-height:1;user-select:none;white-space:nowrap;
+  z-index:-1; /* под контентом hero */
 }
 .pol-eyebrow{
   display:flex;align-items:center;gap:16px;margin-bottom:20px;
