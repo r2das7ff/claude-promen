@@ -16,8 +16,10 @@
 # Лежат локально; для кросс-филла по DATA-QUALITY-FIX брать с рабочей машины.
 products-csv/new_products_from_az/az/
 
-# Composer (регенерируется composer install)
-vendor/
+# Composer (регенерируется composer install). Якорь «/» обязателен:
+# без него правило матчило и assets/js/vendor/ — self-hosted GSAP
+# не попадал в git, и на свежем клоне разваливались скролл-секции главной.
+/vendor/
 
 # OS
 .DS_Store
