@@ -69,7 +69,7 @@
 .pd-prod-name{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:17px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);line-height:1.15;}
 .pd-prod-desc{font-size:13px;color:var(--blue);line-height:1.5;flex:1;}
 .pd-prod-link{display:inline-flex;align-items:center;gap:8px;font-family:'DINPro',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dark);border-bottom:1px solid var(--g1);padding-bottom:2px;align-self:flex-start;transition:color .15s,gap .15s;}
-.pd-prod-link:hover{color:var(--g1);gap:11px;}
+@media(hover:hover) and (pointer:fine){.pd-prod-link:hover{color:var(--g1);gap:11px;}}
 
 /* ── RELATED PROJECTS ── */
 .pd-rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;}

@@ -69,7 +69,7 @@
 .ar-toc-list{list-style:none;border-top:1px solid var(--ln);}
 .ar-toc-list a{display:flex;gap:10px;align-items:baseline;padding:9px 0;font-size:13px;color:var(--blue);border-bottom:1px solid var(--ln);transition:color .15s,padding-left .15s;}
 .ar-toc-list a .n{font-family:'DINPro',monospace;font-size:11px;color:var(--g1);flex-shrink:0;}
-.ar-toc-list a:hover{color:var(--dark);padding-left:4px;}
+@media(hover:hover) and (pointer:fine){.ar-toc-list a:hover{color:var(--dark);padding-left:4px;}}
 .ar-toc-list a.active{color:var(--dark);font-weight:700;border-bottom-color:var(--g1);padding-left:4px;}
 .ar-toc-cta{border:1px solid var(--g1);background:var(--dark);padding:18px;display:flex;flex-direction:column;gap:10px;}
 .ar-toc-cta-t{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:16px;line-height:1.2;letter-spacing:-.01em;text-transform:uppercase;color:var(--white);}

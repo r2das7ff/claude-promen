@@ -24,6 +24,28 @@
   --nav-h:64px;    /* высота фиксированного .nav */
   --split-even:1fr 1fr;
   --hero-split:minmax(0,1.1fr) minmax(420px,0.9fr);
+
+  /* ── ДВИЖЕНИЕ ──
+     До 2026-07-31 кривые набирались руками: пять почти одинаковых
+     cubic-bezier расползлись по 14 файлам (38 вхождений), и «такая же,
+     как у соседнего блока» приходилось искать глазами. Значения ниже —
+     ровно те, что уже стояли в теме, поэтому перевод на токены ничего
+     не меняет визуально; новые правила берут только их.
+     Три одиночные кривые оставлены литералами по месту: они осознанно
+     не такие, как всё остальное (проливка .nb-card, наезд картинки
+     проекта, подъём цифры на «Производстве»). */
+  --ease-out:cubic-bezier(.16,1,.3,1);        /* основная: входы, сдвиги, раскрытия */
+  --ease-out-sm:cubic-bezier(.2,.7,.3,1);     /* мелкие элементы: select, стрелка */
+  --ease-out-lg:cubic-bezier(.22,1,.36,1);    /* длинные ходы: ламели «Производства» */
+  --ease-std:cubic-bezier(.4,0,.2,1);         /* material standard: панели, шторки */
+  --ease-overshoot:cubic-bezier(.34,1.56,.64,1); /* лёгкий перелёт: точки сайднава */
+
+  /* Бюджеты длительностей. UI держим под 300ms; всё, что дольше,
+     живёт на маркетинговых секциях и задаётся по месту. */
+  --dur-press:160ms;  /* отклик на нажатие */
+  --dur-fast:.15s;    /* цвет, границы, ховер */
+  --dur-ui:.22s;      /* меню, тултипы, мелкие входы */
+  --dur-panel:.32s;   /* drawer, PDP, боковые панели */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:'DINPro','Arial Narrow',Arial,sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;}
@@ -55,23 +77,26 @@ body::before{
 }
 .nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--g1);transform:scaleX(0);transform-origin:left;transition:transform .2s;}
 .nav-links a:hover{color:var(--dark);background:var(--bg2);}
-.nav-links a:hover::after,.nav-links a.is-active::after{transform:scaleX(1);}
+/* Ховер-движение — только для мыши: на таче hover «залипает» после тапа.
+   Правило .is-active расщеплено от ховера — активный пункт подчёркнут везде. */
+.nav-links a.is-active::after{transform:scaleX(1);}
+@media(hover:hover) and (pointer:fine){.nav-links a:hover::after{transform:scaleX(1);}}
 .nav-links a.is-active{color:var(--dark);font-weight:700;}
 /* min-width:0 + overflow — часы принимают на себя остаточный пересчёт флекса
    (кириллица/фолбэк шрифта шире расчёта): усыхают и обрезаются они, а не CTA. */
 .nav-meta{display:flex;align-items:center;margin-left:auto;min-width:0;overflow:hidden;white-space:nowrap;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;color:var(--g1);opacity:.55;border-left:1px solid var(--ln2);padding-left:20px;}
-.nav-cta{margin-left:16px;flex-shrink:0;display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:var(--blue);border:1px solid var(--g1);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--white);cursor:pointer;transition:all .15s;}
+.nav-cta{margin-left:16px;flex-shrink:0;display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:var(--blue);border:1px solid var(--g1);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--white);cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
 .nav-cta:hover{background:var(--g1);color:var(--bg);}
 
 /* ── МОБИЛЬНОЕ МЕНЮ (бургер + drawer), ревизия 2026-07-22 ── */
 .nav-burger{display:none;width:44px;height:44px;margin-left:auto;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:none;border:1px solid var(--ln2);cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
-.nav-burger span{width:18px;height:1.5px;background:var(--dark);transition:transform .25s cubic-bezier(.16,1,.3,1),opacity .2s ease;}
+.nav-burger span{width:18px;height:1.5px;background:var(--dark);transition:transform .25s var(--ease-out),opacity .2s ease;}
 .nav-burger.is-open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
 .nav-burger.is-open span:nth-child(2){opacity:0;}
 .nav-burger.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 .nav-drawer-overlay{position:fixed;inset:0;top:var(--nav-h,64px);background:rgba(15,42,68,.45);backdrop-filter:blur(2px);z-index:190;opacity:0;pointer-events:none;transition:opacity .25s ease;}
 .nav-drawer-overlay.is-open{opacity:1;pointer-events:auto;}
-.nav-drawer{position:fixed;top:var(--nav-h,64px);right:0;bottom:0;width:min(340px,86vw);background:var(--bg);border-left:1px solid var(--ln2);z-index:195;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .32s cubic-bezier(.16,1,.3,1);overflow-y:auto;box-shadow:-24px 0 48px rgba(15,42,68,.14);}
+.nav-drawer{position:fixed;top:var(--nav-h,64px);right:0;bottom:0;width:min(340px,86vw);background:var(--bg);border-left:1px solid var(--ln2);z-index:195;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .32s var(--ease-out);overflow-y:auto;box-shadow:-24px 0 48px rgba(15,42,68,.14);}
 .nav-drawer.is-open{transform:translateX(0);}
 .nav-drawer-head{display:flex;align-items:center;padding:20px 20px 16px;border-bottom:1px solid var(--ln2);flex-shrink:0;}
 .nav-drawer-lbl{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1);}
@@ -138,7 +163,7 @@ a.s10-contact-v:hover{color:var(--blue);}
 .s10-field--wide{grid-column:span 2;}
 .s10-file-row{grid-column:span 2;display:flex;align-items:center;gap:16px;background:var(--bg);padding:16px 20px;flex-wrap:wrap;}
 .s10-file-label-txt{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);min-width:80px;}
-.s10-file-btn{display:inline-flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);border:1px solid var(--ln2);padding:7px 14px;cursor:pointer;transition:all .15s;background:transparent;}
+.s10-file-btn{display:inline-flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);border:1px solid var(--ln2);padding:7px 14px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;background:transparent;}
 .s10-file-btn:hover{background:var(--bg2);color:var(--dark);border-color:var(--g1);}
 .s10-file-name{font-family:'DINPro',monospace;font-size:12px;color:var(--g1);opacity:.7;}
 .s10-consent{display:flex;align-items:flex-start;gap:10px;margin-top:16px;cursor:pointer;}
@@ -147,7 +172,7 @@ a.s10-contact-v:hover{color:var(--blue);}
 .s10-consent-txt a{color:var(--dark);text-decoration:underline;text-underline-offset:2px;}
 .s10-consent.err input{outline:2px solid var(--g1);outline-offset:2px;}
 .s10-actions{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap;}
-.s10-submit{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--dark);color:var(--white);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--dark);cursor:pointer;transition:all .15s;}
+.s10-submit{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--dark);color:var(--white);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--dark);cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
 .s10-submit:hover{background:var(--blue);border-color:var(--blue);}
 /* подчёркивание текстом, не рамкой бокса: на тач-целях 44px рамка
    уезжала далеко от строки — underline держится у текста при любой высоте */
@@ -231,7 +256,7 @@ a.s10-contact-v:hover{color:var(--blue);}
   width:8px;height:8px;flex:0 0 auto;margin-bottom:3px;
   border-right:1.5px solid var(--g1);border-bottom:1.5px solid var(--g1);
   transform:rotate(45deg);transform-origin:60% 60%;
-  transition:transform .28s cubic-bezier(.2,.7,.3,1),border-color .15s;
+  transition:transform .28s var(--ease-out-sm),border-color .15s;
 }
 .pm-select-trigger:hover .pm-select-arrow{border-color:var(--dark);}
 .pm-select.is-open .pm-select-arrow{transform:rotate(-135deg);border-color:var(--dark);}
@@ -243,7 +268,7 @@ a.s10-contact-v:hover{color:var(--blue);}
   max-height:264px;overflow-y:auto;overscroll-behavior:contain;
   padding:4px 0;
   opacity:0;visibility:hidden;transform:translateY(-8px) scaleY(.98);transform-origin:top center;
-  transition:opacity .16s ease,transform .22s cubic-bezier(.2,.7,.3,1),visibility 0s linear .22s;
+  transition:opacity .16s ease,transform .22s var(--ease-out-sm),visibility 0s linear .22s;
 }
 .pm-select.is-up .pm-select-menu{top:auto;bottom:calc(100% + 6px);transform-origin:bottom center;transform:translateY(8px) scaleY(.98);}
 .pm-select.is-open .pm-select-menu{opacity:1;visibility:visible;transform:none;transition-delay:0s;}
@@ -259,7 +284,7 @@ a.s10-contact-v:hover{color:var(--blue);}
 .pm-select.is-open .pm-select-opt{opacity:1;transform:none;transition-delay:calc(var(--i,0) * 22ms);}
 .pm-select-opt::before{
   content:'';position:absolute;left:0;top:6px;bottom:6px;width:2px;background:var(--g1);
-  transform:scaleY(0);transform-origin:center;transition:transform .18s cubic-bezier(.2,.7,.3,1);
+  transform:scaleY(0);transform-origin:center;transition:transform .18s var(--ease-out-sm);
 }
 .pm-select-opt.is-active{background:var(--g1b);color:var(--dark);}
 .pm-select-opt.is-selected{color:var(--dark);font-weight:700;}
@@ -281,7 +306,11 @@ a.s10-contact-v:hover{color:var(--blue);}
    chrome.js на каждой странице; правило общее и дублировать его в страничных
    CSS не нужно (до 2026-07-31 копии лежали в front/nb/proekt/proekty/stati/
    statya — на остальных страницах полосы просто не было). */
-.scroll-progress{position:fixed;top:var(--nav-h,64px);left:0;height:2px;width:0;background:var(--dark);z-index:199;display:none;transition:width .1s linear;pointer-events:none;}
+/* Заполнение — transform, а не width: width на каждом кадре скролла — это
+   layout+paint во всю ширину экрана, scaleX считает композитор. Перехода нет
+   сознательно: полоса привязана к скроллу 1:1, «догоняющая» анимация только
+   размазывала бы позицию. */
+.scroll-progress{position:fixed;top:var(--nav-h,64px);left:0;height:2px;width:100%;background:var(--dark);z-index:199;display:none;transform:scaleX(0);transform-origin:left;pointer-events:none;}
 @media(max-width:1100px){.scroll-progress{display:block;}}
 
 /* ── ANIMATIONS ── */

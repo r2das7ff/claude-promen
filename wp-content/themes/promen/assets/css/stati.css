@@ -47,7 +47,7 @@
 .bl-filters{position:sticky;top:64px;z-index:150;padding:20px var(--head-x);border-bottom:1px solid var(--ln2);display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:rgba(232,236,240,.96);backdrop-filter:blur(8px);}
 .bl-filter-lbl{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);opacity:.7;flex-shrink:0;}
 .bl-chips{display:flex;flex-wrap:wrap;gap:9px;}
-.bl-chip{padding:11px 18px;border:1px solid var(--ln2);font-family:'DINPro',monospace;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);background:var(--white);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:8px;}
+.bl-chip{padding:11px 18px;border:1px solid var(--ln2);font-family:'DINPro',monospace;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);background:var(--white);cursor:pointer;transition:background .15s,color .15s,border-color .15s;display:inline-flex;align-items:center;gap:8px;}
 .bl-chip-n{opacity:.55;font-size:11px;}
 .bl-chip:hover{border-color:var(--g1);}
 .bl-chip.active{background:var(--dark);border-color:var(--dark);color:var(--white);}
@@ -60,7 +60,7 @@
 .bl-featured:hover{border-color:var(--g1);}
 .bl-featured-media{position:absolute;inset:0;z-index:0;}
 .bl-featured-media img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.15) contrast(1.05);transition:transform .5s;}
-.bl-featured:hover .bl-featured-media img{transform:scale(1.04);}
+@media(hover:hover) and (pointer:fine){.bl-featured:hover .bl-featured-media img{transform:scale(1.04);}}
 .bl-featured-media::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(15,42,68,.94) 0%,rgba(15,42,68,.62) 40%,rgba(15,42,68,.06) 72%);}
 .bl-featured-badge{position:absolute;top:22px;left:22px;z-index:2;padding:6px 12px;background:var(--g1);font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--white);}
 .bl-featured-body{position:relative;z-index:2;padding:44px 48px;display:flex;flex-direction:column;gap:16px;max-width:700px;}
@@ -69,15 +69,15 @@
 .bl-featured-excerpt{font-size:13.5px;color:var(--g2);line-height:1.68;font-weight:300;max-width:600px;}
 .bl-featured-meta{display:flex;gap:18px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--g2);opacity:.9;padding-top:8px;border-top:1px solid rgba(255,255,255,.22);}
 .bl-featured-link{display:inline-flex;align-items:center;gap:8px;font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);align-self:flex-start;transition:gap .15s,color .15s;}
-.bl-featured:hover .bl-featured-link{gap:13px;color:var(--g2);}
+@media(hover:hover) and (pointer:fine){.bl-featured:hover .bl-featured-link{gap:13px;color:var(--g2);}}
 
 /* ── CARD GRID ── */
 .bl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:28px;}
 .bl-card{background:var(--white);border:1px solid var(--ln2);display:flex;flex-direction:column;transition:border-color .2s,transform .2s,box-shadow .2s;}
-.bl-card:hover{border-color:var(--g1);transform:translateY(-4px);box-shadow:0 16px 32px -16px rgba(15,42,68,.22);}
+@media(hover:hover) and (pointer:fine){.bl-card:hover{border-color:var(--g1);transform:translateY(-4px);box-shadow:0 16px 32px -16px rgba(15,42,68,.22);}}
 .bl-card-media{aspect-ratio:4/3;overflow:hidden;border-bottom:1px solid var(--ln2);background:var(--blue);position:relative;}
 .bl-card-media img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.2) contrast(1.05);transition:transform .4s;}
-.bl-card:hover .bl-card-media img{transform:scale(1.06);}
+@media(hover:hover) and (pointer:fine){.bl-card:hover .bl-card-media img{transform:scale(1.06);}}
 .bl-card-cat{position:absolute;top:12px;left:12px;padding:5px 10px;background:rgba(15,42,68,.85);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--white);}
 .bl-card-body{padding:24px 26px 26px;display:flex;flex-direction:column;gap:13px;flex:1;}
 .bl-card-title{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:19px;line-height:1.2;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);}

@@ -140,8 +140,7 @@
       var val = (hit.cells && hit.cells[col.key]) ? hit.cells[col.key] : '—';
       return '<span class="pr-' + esc(col.key) + '">' + esc(val) + '</span>';
     }).join('');
-    var delay = Math.min(i * 0.025, 0.35);
-  return '<a class="prod-row" href="' + esc(hit.url) + '" style="grid-template-columns:' + esc(tpl) + ';animation-delay:' + delay + 's"' +
+  return '<a class="prod-row" href="' + esc(hit.url) + '" style="grid-template-columns:' + esc(tpl) + '"' +
       ' data-sku="' + esc(hit.sku) + '" data-title="' + esc(hit.title) + '"' +
       ' data-norm="' + esc(hit.norm) + '" data-steel="' + esc(hit.steel_display) + '"' +
       ' data-industry="' + esc(hit.industry_display) + '">' +

@@ -338,6 +338,13 @@ document.addEventListener('DOMContentLoaded', function(){
   if (!ctx) return;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   let rafId = 0;
+  /* Цикл живёт, только пока карта во вьюпорте — см. IntersectionObserver в
+     конце модуля. До 2026-07-31 rAF крутился с загрузки до закрытия вкладки
+     (полная перерисовка с градиентами ~60 раз/с), cancelAnimationFrame не
+     вызывался вовсе. При prefers-reduced-motion постоянного цикла нет:
+     кадр рисуется разово — по появлению, ресайзу и взаимодействию. */
+  let running = false;
+  const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
   const startTime = performance.now();
   let hoveredId = null;
   let mask = null, maskW = 0, maskH = 0, maskStep = 0;
@@ -522,9 +529,14 @@ document.addEventListener('DOMContentLoaded', function(){
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     mask = null; maskW = 0; maskH = 0;
   };
+  /* canvas.width= очищает холст, поэтому при reduce после ресайза нужен
+     разовый кадр — иначе карта остаётся пустой до взаимодействия.
+     resizeAndRedraw/renderOnce — function declarations: вызываются они
+     только асинхронно, когда draw ниже уже инициализирован. */
+  function resizeAndRedraw() { resize(); if (reduceMq.matches) renderOnce(); }
   resize();
-  window.addEventListener('load', resize);
-  const ro = new ResizeObserver(resize);
+  window.addEventListener('load', resizeAndRedraw);
+  const ro = new ResizeObserver(resizeAndRedraw);
   ro.observe(container);
 
   canvas.addEventListener('mousemove', e => {
@@ -552,7 +564,7 @@ document.addEventListener('DOMContentLoaded', function(){
   const draw = () => {
     const rect = container.getBoundingClientRect();
     const w = rect.width, h = rect.height;
-    if (w === 0 || h === 0) { rafId = requestAnimationFrame(draw); return; }
+    if (w === 0 || h === 0) { if (running) rafId = requestAnimationFrame(draw); return; }
     const now = performance.now();
     const t = (now - startTime) / 1000;
     const mx = mouse.x, my = mouse.y;
@@ -722,10 +734,44 @@ document.addEventListener('DOMContentLoaded', function(){
     vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(0.6,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.06)');
     ctx.fillStyle=vg; ctx.fillRect(0,0,w,h);
 
-    rafId = requestAnimationFrame(draw);
+    if (running) rafId = requestAnimationFrame(draw);
   };
 
-  rafId = requestAnimationFrame(draw);
+  function startLoop() {
+    if (running || reduceMq.matches) return;
+    running = true;
+    rafId = requestAnimationFrame(draw);
+  }
+  function stopLoop() {
+    running = false;
+    cancelAnimationFrame(rafId);
+  }
+  /* Разовый кадр: карта — контент (точки, маршруты, подписи), нарисована
+     она должна быть и при reduce; двигаться сама — нет. */
+  function renderOnce() { if (!running) draw(); }
+
+  const vis = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) { stopLoop(); return; }
+      if (reduceMq.matches) renderOnce(); else startLoop();
+    });
+  }, { rootMargin: '120px' });
+  vis.observe(container);
+
+  if (reduceMq.addEventListener) reduceMq.addEventListener('change', function () {
+    stopLoop();
+    var r = container.getBoundingClientRect();
+    if (r.bottom > -120 && r.top < window.innerHeight + 120) {
+      if (reduceMq.matches) renderOnce(); else startLoop();
+    }
+  });
+
+  /* При reduce ховер/тап всё же обновляют кадр — интерактив остаётся,
+     фонового движения нет. Слушатели ниже штатных (строки 530+), поэтому
+     координаты мыши к моменту перерисовки уже выставлены. */
+  canvas.addEventListener('mousemove', function () { if (reduceMq.matches) renderOnce(); });
+  canvas.addEventListener('mouseleave', function () { if (reduceMq.matches) renderOnce(); });
+  canvas.addEventListener('touchstart', function () { if (reduceMq.matches) renderOnce(); }, { passive: true });
 })();
 
 (function() {
@@ -836,11 +882,12 @@ document.addEventListener('DOMContentLoaded', function(){
 
   function updateProgress(idx) {
     if (!progress) return;
+    /* scaleX вместо width — см. .s5-tl-progress в front.css */
     if (total <= 1) {
-      progress.style.width = '100%';
+      progress.style.transform = 'scaleX(1)';
       return;
     }
-    progress.style.width = ((idx / (total - 1)) * 100) + '%';
+    progress.style.transform = 'scaleX(' + (idx / (total - 1)) + ')';
   }
 
   function updateNavButtons() {

@@ -34,7 +34,8 @@
       var b = document.body, d = document.documentElement;
       var st = b.scrollTop || d.scrollTop || window.pageYOffset || 0;
       var h = Math.max(b.scrollHeight, d.scrollHeight) - window.innerHeight;
-      bar.style.width = (h > 0 ? Math.min(100, Math.max(0, st / h * 100)) : 0) + '%';
+      /* scaleX вместо width — см. .scroll-progress в base.css */
+      bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, Math.max(0, st / h)) : 0) + ')';
       ticking = false;
     }
     function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }

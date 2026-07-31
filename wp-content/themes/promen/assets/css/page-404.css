@@ -118,7 +118,7 @@
 .nf-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:560px;margin-bottom:8px;}
 .nf-chip{
   font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--g1);padding:6px 12px;border:1px solid var(--ln2);cursor:pointer;transition:all .12s;
+  color:var(--g1);padding:6px 12px;border:1px solid var(--ln2);cursor:pointer;transition:background .12s,color .12s,border-color .12s;
 }
 .nf-chip:hover{border-color:var(--g1);color:var(--dark);background:var(--bg2);}
 
@@ -135,7 +135,7 @@
   padding:18px 4px;border-bottom:1px solid var(--ln);transition:background .12s;
 }
 .nf-qrow:hover{background:var(--bg2);}
-.nf-qrow:hover .nf-qarrow{transform:translateX(4px);color:var(--dark);}
+@media(hover:hover) and (pointer:fine){.nf-qrow:hover .nf-qarrow{transform:translateX(4px);color:var(--dark);}}
 .nf-qn{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.1em;color:var(--g1);opacity:.6;}
 .nf-qt{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:17px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);}
 .nf-qd{font-size:13.5px;color:var(--blue);line-height:1.5;}

@@ -191,10 +191,9 @@ function promen_render_catalog_row( array $hit, string $grid_tpl, int $index = 0
 	$ind_html = function_exists( 'promen_industry_tags_html' )
 		? promen_industry_tags_html( $industries )
 		: esc_html( (string) ( $hit['industry_display'] ?? '—' ) );
-	$delay  = esc_attr( (string) min( $index * 0.025, 0.35 ) );
 	$cells  = (array) ( $hit['cells'] ?? [] );
 
-	echo '<a class="prod-row" href="' . $url . '" style="grid-template-columns:' . esc_attr( $grid_tpl ) . ';animation-delay:' . $delay . 's"';
+	echo '<a class="prod-row" href="' . $url . '" style="grid-template-columns:' . esc_attr( $grid_tpl ) . '"';
 	echo ' data-sku="' . $sku . '" data-title="' . esc_attr( (string) ( $hit['title'] ?? '' ) ) . '"';
 	echo ' data-norm="' . esc_attr( (string) ( $hit['norm'] ?? '' ) ) . '"';
 	echo ' data-steel="' . esc_attr( (string) ( $hit['steel_display'] ?? '' ) ) . '"';

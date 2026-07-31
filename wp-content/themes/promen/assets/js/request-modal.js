@@ -112,6 +112,10 @@
     }
   };
 
+  /* Вход панели — var(--ease-out) (токен из base.css, есть на каждой
+     странице): встроенный ease для главной конверсионной поверхности слишком
+     вялый — начало почти линейное, останов размазан. Сильный ease-out
+     стартует быстро и мягко доводит — модалка «отвечает» на клик. */
   var CSS = ''
     + '.rm-overlay{position:fixed;inset:0;z-index:9990;background:rgba(15,42,68,.72);'
     + 'display:flex;align-items:center;justify-content:center;padding:32px;'
@@ -119,11 +123,17 @@
     + '.rm-overlay.show{opacity:1;visibility:visible;}'
     + '.rm-modal{position:relative;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;'
     + 'background:var(--white);border:1px solid var(--g1);padding:48px 44px 36px;'
-    + 'transform:translateY(16px);transition:transform .22s ease;}'
+    + 'transform:translateY(16px);transition:transform .22s var(--ease-out,ease);}'
     + '.rm-overlay.show .rm-modal{transform:translateY(0);}'
+    /* reduce: появление остаётся (fade помогает понять смену контекста),
+       сдвиг убираем. */
+    + '@media (prefers-reduced-motion:reduce){'
+    + '.rm-modal{transform:none;transition:none;}'
+    + '.rm-overlay{transition:none;}'
+    + '}'
     + '.rm-close{position:absolute;top:20px;right:20px;width:32px;height:32px;'
     + 'display:flex;align-items:center;justify-content:center;border:1px solid var(--g1);'
-    + 'background:none;color:var(--dark);font-size:14px;cursor:pointer;transition:all .12s;}'
+    + 'background:none;color:var(--dark);font-size:14px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;}'
     + '.rm-close:hover{background:var(--dark);color:var(--white);}'
     + '.rm-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:22px;}'
     + '.rm-eye-num{font-family:"DINPro",monospace;font-size:11px;letter-spacing:.2em;'
@@ -154,14 +164,14 @@
     + 'text-transform:uppercase;color:var(--g1);opacity:.6;}'
     + '.rm-file-btn{display:inline-flex;align-items:center;gap:8px;font-family:"DINPro",monospace;'
     + 'font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);'
-    + 'border:1px solid var(--g1);padding:8px 14px;cursor:pointer;transition:all .12s;background:var(--white);}'
+    + 'border:1px solid var(--g1);padding:8px 14px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;background:var(--white);}'
     + '.rm-file-btn:hover{background:var(--bg);color:var(--dark);border-color:var(--g1);}'
     + '.rm-file-name{font-family:"DINPro",monospace;font-size:12px;color:var(--g1);opacity:.7;}'
     + '.rm-actions{display:flex;align-items:center;gap:16px;margin-top:24px;flex-wrap:wrap;}'
     + '.rm-submit{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;'
     + 'background:var(--dark);color:var(--white);border:1px solid var(--dark);'
     + 'font-family:"DINPro",sans-serif;font-weight:700;font-size:13.5px;letter-spacing:.08em;'
-    + 'text-transform:uppercase;cursor:pointer;transition:all .15s;}'
+    + 'text-transform:uppercase;cursor:pointer;transition:background .15s,color .15s,border-color .15s,opacity .15s;}'
     + '.rm-submit:hover{background:var(--blue);border-color:var(--blue);}'
     + '.rm-submit[disabled]{opacity:.55;cursor:default;}'
     + '.rm-ghost-link{font-family:"DINPro",monospace;font-size:12px;letter-spacing:.1em;'
