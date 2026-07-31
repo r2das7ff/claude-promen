@@ -3644,27 +3644,54 @@ img { display:block; }
 
 /* ── S10 NOTE ────────────────────────────────────────────────── */
 
-/* ── CHAPTER BAND ────────────────────────────────────────────── */
+/* ── CHAPTER BAND ────────────────────────────────────────────────
+   Заголовок ГЛАВЫ: анонсирует сразу три секции (S6·S7·S8), поэтому
+   вес — между кикером и секционным h2, а не служебная строка 10px.
+   Отступ слева — ось контента rail-w + head-x (100px), как у head
+   всех секций: раньше band начинался на 44px и лип к боковой ленте. */
 .chapter-band {
-  display: flex; align-items: center; gap: 20px;
-  padding: 13px 56px 13px 44px;
+  display: flex; align-items: center; gap: 24px;
+  padding: 26px 52px 26px calc(var(--rail-w) + var(--head-x));
   background: var(--bg2);
   border-top: 1px solid var(--ln); border-bottom: 1px solid var(--ln);
 }
-.chapter-band-label {
-  font-family: 'DINPro', monospace; font-size: 10px;
-  letter-spacing: .3em; color: var(--g1); text-transform: uppercase;
+.chapter-band-title {
+  font-family: 'DINProCond', 'DINPro', sans-serif;
+  font-weight: 900;
+  font-size: clamp(22px, 2.4vw, 34px);
+  line-height: 1;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+  color: var(--dark);
   white-space: nowrap;
 }
 .chapter-band-line { flex: 1; height: 1px; background: var(--ln); }
+.chapter-band-tag {
+  font-family: 'DINPro', monospace;
+  font-size: 12px;
+  letter-spacing: .2em;
+  line-height: 1;
+  color: var(--g1);
+  border: 1px solid var(--g1);
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+@media(max-width:640px) {
+  .chapter-band { padding: 20px 20px 20px calc(var(--rail-w) + 20px); gap: 16px; }
+  .chapter-band-title { font-size: 19px; white-space: normal; }
+}
+@media(max-width:480px) {
+  /* лента скрыта, секции обнуляют rail-отступ — band следом */
+  .chapter-band { padding-left: 20px; }
+}
 
 /* ── TEXT SCALE — harmonious increase of small text ──────────────
    Targets: field labels, eyebrows, kickers, badges, body/lead
    Unchanged: nav chrome, HUD overlays, decorative strip text
    ──────────────────────────────────────────────────────────────── */
 
-/* 7.5px → 9px: inline field labels */
-.chapter-band-label{ font-size: 11px; }
+/* 7.5px → 9px: inline field labels — chapter-band-label упразднён
+   (band стал заголовком главы, см. основной блок CHAPTER BAND) */
 
 /* 8–8.5px → 10px: badges, status chips, key-labels, card identifiers */
 .s9-type,.s9-status,.s8-card-label,.s8-card-id,.s8-stage-n,.trust-mark,.s3-fitting-lbl,.s2-status,.s7-pk,.s8-ck,.s8-docs-label,.s9-link,.s8-kicker-line,.s3-tag-inv{ font-size: 12px; }

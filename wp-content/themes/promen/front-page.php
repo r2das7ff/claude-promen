@@ -1012,9 +1012,9 @@ get_header();
 
 <!-- CHAPTER BAND: ПРОИЗВОДСТВЕННЫЕ ВОЗМОЖНОСТИ (S6 · S7 · S8) -->
 <div class="chapter-band">
-  <span class="chapter-band-label">ПРОИЗВОДСТВЕННЫЕ ВОЗМОЖНОСТИ</span>
+  <span class="chapter-band-title">ПРОИЗВОДСТВЕННЫЕ ВОЗМОЖНОСТИ</span>
   <span class="chapter-band-line"></span>
-  <span class="chapter-band-label">S6 · S7 · S8</span>
+  <span class="chapter-band-tag">S6 · S7 · S8</span>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════
