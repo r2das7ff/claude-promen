@@ -810,6 +810,11 @@ document.addEventListener('DOMContentLoaded', function(){
   var scrollRoot = null;
   var s5Timeline = null;
   var s5ScrollTrigger = null;
+  /* Дискретное листание колесом внутри пина (см. wheel-обработчик ниже) */
+  var stepTween = null;
+  var wheelAnimating = false;
+  var wheelAcc = 0;
+  var wheelLast = 0;
   var metrics   = {
     scrollDistance: 0,
     hScrollDistance: 0,
@@ -853,6 +858,12 @@ document.addEventListener('DOMContentLoaded', function(){
     var opts = { top: y, behavior: smooth ? 'smooth' : 'auto' };
     if (scrollRoot) scrollRoot.scrollTo(opts);
     else window.scrollTo(opts);
+  }
+
+  function setScrollY(y) {
+    if (scrollRoot) { scrollRoot.scrollTop = y; return; }
+    document.documentElement.scrollTop = y;
+    document.body.scrollTop = y;
   }
 
   function renderIndex(idx) {
@@ -963,6 +974,11 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function destroyScrollTrigger() {
+    if (stepTween) {
+      stepTween.kill();
+      stepTween = null;
+    }
+    wheelAnimating = false;
     if (s5Timeline) {
       s5Timeline.kill();
       s5Timeline = null;
@@ -1010,24 +1026,20 @@ document.addEventListener('DOMContentLoaded', function(){
         scroller: scrollRoot || undefined,
         start: 'top top+=' + NAV_H,
         end: '+=' + scrollDistance,
-        /* 0.25, не true: жёсткий скраб телепортировал трек за каждым тиком
-           колеса с усилением ~3.3× (трек ~6600px на ~2000px скролла) —
-           ступеньки при честных 60fps. Число — время доводки. Больше 0.3
-           не ставить: трек «доплывает» после снапа вторым движением. */
-        scrub: 0.25,
-        /* Снап НАПРАВЛЕННЫЙ, а не к ближайшему: шаг этапа ~500px скролла,
-           тик колеса ~56px — «к ближайшему» утаскивал назад к текущему
-           году, и одиночный тик выглядел как подскок с откатом. Теперь
-           любое движение вперёд — доводка к следующему году, назад —
-           к предыдущему: один тик = полная смена этапа. */
+        /* 0.15, не true: жёсткий скраб телепортировал трек за каждым тиком
+           колеса — ступеньки при честных 60fps. Колесо в пине теперь идёт
+           через goToStep-твин (см. wheel ниже), скраб сглаживает остальное:
+           скроллбар, клавиатуру, въезд. Больше 0.3 не ставить: трек
+           «доплывает» после твина/снапа отдельным вторым движением. */
+        scrub: 0.15,
+        /* Снап к ближайшему — страховка для не-колёсного скролла.
+           Направленным ему быть нельзя: на въезде в секцию с ходу
+           остаток инерции (2–3% прогресса) уводил бы с 2017 сразу на
+           2019, у нижнего края симметрично. */
         snap: total > 1 ? {
-          snapTo: function(value, self) {
+          snapTo: function(value) {
             var step = 1 / (total - 1);
-            var dir = (self && self.direction) || 1;
-            var target = dir > 0
-              ? Math.ceil(value / step - 0.001)
-              : Math.floor(value / step + 0.001);
-            return clamp(target, 0, total - 1) * step;
+            return Math.round(value / step) * step;
           },
           duration: { min: 0.25, max: 0.5 },
           delay: 0.08,
@@ -1069,7 +1081,21 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     var p = total > 1 ? idx / (total - 1) : 0;
     var y = s5ScrollTrigger.start + p * (s5ScrollTrigger.end - s5ScrollTrigger.start);
-    scrollToY(y, true);
+    if (typeof gsap === 'undefined') { scrollToY(y, true); return; }
+    /* Вся смена этапа — один управляемый твин скролла. Native smooth не
+       годится: у него своя длительность и он не сообщает о завершении —
+       нечем держать wheelAnimating, серия тиков рвала бы движение. */
+    if (stepTween) stepTween.kill();
+    var pos = { v: getScrollY() };
+    wheelAnimating = true;
+    stepTween = gsap.to(pos, {
+      v: y,
+      duration: 0.55,
+      ease: 'power2.inOut',
+      onUpdate: function() { setScrollY(pos.v); },
+      onComplete: function() { wheelAnimating = false; stepTween = null; },
+      onInterrupt: function() { wheelAnimating = false; }
+    });
   }
 
   function onResize() {
@@ -1106,6 +1132,31 @@ document.addEventListener('DOMContentLoaded', function(){
 
   if (btnPrev) btnPrev.addEventListener('click', function() { goToStep(current - 1); });
   if (btnNext) btnNext.addEventListener('click', function() { goToStep(current + 1); });
+
+  /* Колесо внутри пина листает этапы дискретно: тик — ровно один год одним
+     твином, страница под колесом не скроллится (это убирает двухфазность
+     «свой глайд тика → пауза → глайд снапа»). Тики во время твина глотаются.
+     На краях (2017 вверх / 2025 вниз) событие не перехватывается — страница
+     скроллится дальше. Порог 24px копит трекпадные микродельты; пауза 250мс
+     сбрасывает жест. Снап остаётся страховкой для скроллбара и клавиатуры. */
+  s5.addEventListener('wheel', function(e) {
+    if (!isHMode() || !s5ScrollTrigger || typeof gsap === 'undefined') return;
+    /* Не st.isActive: в текущей сборке ScrollTrigger его нет (undefined).
+       Считаем «внутри пина» по границам сами. */
+    var sy = getScrollY();
+    if (sy < s5ScrollTrigger.start - 1 || sy > s5ScrollTrigger.end + 1) return;
+    var dir = e.deltaY > 0 ? 1 : -1;
+    if (wheelAnimating) { e.preventDefault(); return; }
+    if ((current === 0 && dir < 0) || (current === LAST && dir > 0)) return;
+    e.preventDefault();
+    var now = performance.now();
+    if (now - wheelLast > 250) wheelAcc = 0;
+    wheelLast = now;
+    wheelAcc += (e.deltaMode === 1 ? e.deltaY * 40 : e.deltaY);
+    if (Math.abs(wheelAcc) < 24) return;
+    goToStep(current + (wheelAcc > 0 ? 1 : -1));
+    wheelAcc = 0;
+  }, { passive: false });
 
   /* Swipe support for the mobile/tablet slide-switch mode — a "slide" reads
      as swipeable on touch even with prev/next buttons present; hmode is left
