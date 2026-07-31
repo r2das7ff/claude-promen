@@ -1010,18 +1010,27 @@ document.addEventListener('DOMContentLoaded', function(){
         scroller: scrollRoot || undefined,
         start: 'top top+=' + NAV_H,
         end: '+=' + scrollDistance,
-        /* 0.4, не true: жёсткий скраб телепортирует трек за каждым тиком
+        /* 0.25, не true: жёсткий скраб телепортировал трек за каждым тиком
            колеса с усилением ~3.3× (трек ~6600px на ~2000px скролла) —
-           скачки по 300–480px/кадр при честных 60fps, движение ступеньками.
-           Число — время доводки: трек догоняет скролл плавно. */
-        scrub: 0.4,
+           ступеньки при честных 60fps. Число — время доводки. Больше 0.3
+           не ставить: трек «доплывает» после снапа вторым движением. */
+        scrub: 0.25,
+        /* Снап НАПРАВЛЕННЫЙ, а не к ближайшему: шаг этапа ~500px скролла,
+           тик колеса ~56px — «к ближайшему» утаскивал назад к текущему
+           году, и одиночный тик выглядел как подскок с откатом. Теперь
+           любое движение вперёд — доводка к следующему году, назад —
+           к предыдущему: один тик = полная смена этапа. */
         snap: total > 1 ? {
-          snapTo: function(value) {
+          snapTo: function(value, self) {
             var step = 1 / (total - 1);
-            return Math.round(value / step) * step;
+            var dir = (self && self.direction) || 1;
+            var target = dir > 0
+              ? Math.ceil(value / step - 0.001)
+              : Math.floor(value / step + 0.001);
+            return clamp(target, 0, total - 1) * step;
           },
-          duration: { min: 0.2, max: 0.45 },
-          delay: 0.05,
+          duration: { min: 0.25, max: 0.5 },
+          delay: 0.08,
           ease: 'power1.inOut'
         } : false,
         invalidateOnRefresh: true,
