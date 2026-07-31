@@ -527,8 +527,26 @@ document.addEventListener('DOMContentLoaded', function(){
     canvas.style.width  = `${rect.width}px`;
     canvas.style.height = `${rect.height}px`;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    mask = null; maskW = 0; maskH = 0;
+    /* Маску здесь НЕ сбрасываем: ensureMask сама заметит смену размера.
+       Сброс на каждый вызов заставлял window.load (поздние ленивые
+       картинки) обнулять валидную маску, и пересборка — isLand по сетке
+       ~24k точек × ~500 вершин полигонов, сотни мс — падала в первый же
+       rAF-кадр после рестарта цикла: разовый фриз ровно на границе S4/S5. */
   };
+  /* Пересборка маски суши — единственная тяжёлая операция модуля.
+     Вызывается из draw при фактической смене размера, а при загрузке —
+     заранее, в idle, чтобы первый вход карты в вьюпорт её не оплачивал. */
+  function ensureMask(w, h) {
+    const step = Math.max(4, w / 210);
+    if (maskW !== w || maskH !== h || maskStep !== step) {
+      mask = buildLandMask(w, h, step); maskW = w; maskH = h; maskStep = step;
+    }
+    return step;
+  }
+  (window.requestIdleCallback || function (fn) { setTimeout(fn, 200); })(function () {
+    const rect = container.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) ensureMask(rect.width, rect.height);
+  });
   /* canvas.width= очищает холст, поэтому при reduce после ресайза нужен
      разовый кадр — иначе карта остаётся пустой до взаимодействия.
      resizeAndRedraw/renderOnce — function declarations: вызываются они
@@ -574,12 +592,9 @@ document.addEventListener('DOMContentLoaded', function(){
     for (let i=1; i<10; i++) { ctx.beginPath(); ctx.moveTo(w/10*i,0); ctx.lineTo(w/10*i,h); ctx.stroke(); }
     for (let i=1; i<6; i++)  { ctx.beginPath(); ctx.moveTo(0,h/6*i); ctx.lineTo(w,h/6*i); ctx.stroke(); }
 
-    const step = Math.max(4, w/210);
+    const step = ensureMask(w, h);
     const cols = Math.floor(w/step), rows = Math.floor(h/step);
     const dotR = (step-1)/2, hoverR = step*8;
-    if (maskW !== w || maskH !== h || maskStep !== step) {
-      mask = buildLandMask(w, h, step); maskW = w; maskH = h; maskStep = step;
-    }
     if (mask) {
       ctx.fillStyle = C.dotBase;
       for (let r=0; r<rows; r++) {
