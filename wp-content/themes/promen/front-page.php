@@ -8,6 +8,8 @@
 $promen_catalog_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' );
 // S9 «Нормативная база» — карточки стандартов ведут в полный реестр документов.
 $promen_nb_url      = ( $p = promen_page( 'normativnaya-baza' ) ) ? get_permalink( $p ) : home_url( '/normativnaya-baza/' );
+// S3 CTA «Все направления производства» → страница «Производство».
+$promen_prod_url    = ( $p = promen_page( 'production' ) ) ? get_permalink( $p ) : home_url( '/production/' );
 
 add_filter( 'promen_footer_idx', fn () => 'ПЭ-00.FTR / REV.1' );
 add_filter( 'promen_s10_eyebrow_num', fn () => '10' );
@@ -648,7 +650,7 @@ get_header();
         <p class="s3-cta-text">Готовы обсудить параметры вашего трубопровода. Подготовим технико-коммерческое предложение на основе технического задания, чертежей или проектной документации — в рабочие сроки.</p>
         <div class="s3-cta-actions">
           <button class="s3-btn" onclick="openRequestModal('solution')">Подобрать решение по ТЗ ↗</button>
-          <span class="s3-btn-alt">Все направления производства</span>
+          <a class="s3-btn-alt" href="<?php echo esc_url( $promen_prod_url ); ?>">Все направления производства</a>
         </div>
       </div>
     </div><!-- /.s3-cta -->
