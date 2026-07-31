@@ -437,8 +437,14 @@ img { display:block; }
   }
   .pe-img { animation:none !important; }
   .pe-g1, .pe-g2 { display:none; }
-  
+
   .hud-render::before { animation:none !important; }
+
+  /* Вечные циклы (2026-07-31): пиксельное облако hero (40 rect с inline
+     animation:pf1–pf4 — inline перебивается только !important) и скан
+     паспорта S8. Облако остаётся видимым, просто замирает. */
+  .pixel-cloud rect { animation:none !important; }
+  .s8-scanline { animation:none !important; opacity:0; }
 }
 
 /* ── RESPONSIVE — HERO ──────────────────────────────────────────
@@ -2854,17 +2860,27 @@ img { display:block; }
 .s8-bracket.tr { top:-1px; right:-1px; border-width:2px 2px 0 0; }
 .s8-bracket.bl { bottom:-1px; left:-1px; border-width:0 0 2px 2px; }
 .s8-bracket.br { bottom:-1px; right:-1px; border-width:0 2px 2px 0; }
+/* Ход — transform, а не top (layout каждый кадр вечного цикла). Элемент
+   растянут на весь блок, полоса — ::before на top:-56px; translateY в
+   процентах считается от собственной высоты, поэтому прежний путь
+   top:-56px → calc(100%+56px) даёт translateY(calc(100% + 112px)). */
 .s8-scanline {
   position:absolute;
   left:0; right:0;
-  height:56px;
-  background:linear-gradient(to bottom, transparent 0%, rgba(109,140,166,.05) 50%, transparent 100%);
-  top:-56px;
+  top:0; bottom:0;
   animation:s8scan 6s ease-in-out infinite;
   z-index:1;
   pointer-events:none;
 }
-@keyframes s8scan { 0%{top:-56px} 100%{top:calc(100% + 56px)} }
+.s8-scanline::before {
+  content:'';
+  position:absolute;
+  left:0; right:0;
+  top:-56px;
+  height:56px;
+  background:linear-gradient(to bottom, transparent 0%, rgba(109,140,166,.05) 50%, transparent 100%);
+}
+@keyframes s8scan { 0%{transform:translateY(0)} 100%{transform:translateY(calc(100% + 112px))} }
 .s8-pp-head {
   position:relative;
   z-index:2;

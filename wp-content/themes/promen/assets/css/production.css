@@ -40,9 +40,14 @@ img{display:block;max-width:100%;}
   overflow:hidden;
 }
 /* Blueprint micro-grid */
+/* Дрейф — transform слоя, а не background-position: сдвиг фона перерисовывает
+   всю площадь секции каждый кадр 28-секундного цикла, transform считает
+   композитор. inset:-40px — запас в один шаг паттерна, чтобы при сдвиге не
+   обнажался край (#s1 сам overflow:hidden, наружу ничего не вылезет).
+   Движение то же: субпиксельное дыхание .8px/.4px. */
 #s1::before{
   content:'';
-  position:absolute;inset:0;
+  position:absolute;inset:-40px;
   background-image:
     linear-gradient(rgba(109,140,166,.038) 1px,transparent 1px),
     linear-gradient(90deg,rgba(109,140,166,.038) 1px,transparent 1px);
@@ -52,8 +57,8 @@ img{display:block;max-width:100%;}
 }
 @keyframes s1GridIn{from{opacity:0;}to{opacity:1;}}
 @keyframes s1GridDrift{
-  0%,100%{background-position:0 0;}
-  50%    {background-position:.8px .4px;}
+  0%,100%{transform:translate(0,0);}
+  50%    {transform:translate(.8px,.4px);}
 }
 
 /* Corner registration marks */
@@ -331,18 +336,25 @@ img{display:block;max-width:100%;}
     linear-gradient(to top,rgba(4,10,20,.95) 0%,rgba(4,10,20,.45) 18%,transparent 38%),
     linear-gradient(to right,rgba(4,10,20,.65) 0%,rgba(4,10,20,.15) 28%,transparent 44%);
 }
-/* Scan line */
+/* Scan line.
+   Ход — transform, а не top: top пересчитывает layout каждый кадр вечного
+   цикла. Элемент растянут на весь кадр (translateY в процентах считается от
+   собственной высоты), сама линия — ::before. Траектория и тайминг прежние:
+   линейно 0→100% за 9с, той же прозрачностью по тем же ключам. */
 .prf-scan{
-  position:absolute;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent 0%,rgba(109,140,166,.32) 22%,rgba(169,183,198,.52) 50%,rgba(109,140,166,.32) 78%,transparent 100%);
+  position:absolute;left:0;right:0;top:0;bottom:0;
   z-index:3;pointer-events:none;
   animation:prfScan 9s linear infinite;
 }
+.prf-scan::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,rgba(109,140,166,.32) 22%,rgba(169,183,198,.52) 50%,rgba(109,140,166,.32) 78%,transparent 100%);
+}
 @keyframes prfScan{
-  0%{top:0%;opacity:0;}
+  0%{transform:translateY(0);opacity:0;}
   4%{opacity:1;}
   94%{opacity:.75;}
-  100%{top:100%;opacity:0;}
+  100%{transform:translateY(100%);opacity:0;}
 }
 /* Corner brackets */
 .prf-brk{position:absolute;z-index:3;width:20px;height:20px;pointer-events:none;}
@@ -647,16 +659,23 @@ img{display:block;max-width:100%;}
 .therm-bar-wrap{position:relative;margin-bottom:16px;}
 .therm-bar{height:96px;background:linear-gradient(90deg,#0a1826 0%,#0f2a44 10%,#1a3550 22%,#2e5570 34%,#8c3518 48%,#c44a0e 60%,#df7025 73%,#eda030 86%,#f8ca52 100%);position:relative;}
 .therm-bar::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent calc(100%/7 - 1px),rgba(255,255,255,.08) calc(100%/7 - 1px),rgba(255,255,255,.08) calc(100%/7));pointer-events:none;}
+/* Ход — transform, а не left: left это layout каждый кадр вечного цикла.
+   Элемент растянут на ширину шкалы (translateX в процентах — от собственной
+   ширины), видимая полоска со свечением — ::before. Путь и ease-in-out
+   прежние: 0 → 100%−2px и обратно за 9с. */
 .therm-cursor{
-  position:absolute;top:0;bottom:0;width:2px;left:0;
-  background:rgba(255,255,255,.92);
-  box-shadow:0 0 8px rgba(255,255,255,.6),0 0 22px rgba(248,202,82,.55),0 0 44px rgba(248,202,82,.2);
+  position:absolute;top:0;bottom:0;left:0;right:0;
   animation:thermCursor 9s ease-in-out infinite;
   pointer-events:none;
 }
+.therm-cursor::before{
+  content:'';position:absolute;top:0;bottom:0;left:0;width:2px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 0 8px rgba(255,255,255,.6),0 0 22px rgba(248,202,82,.55),0 0 44px rgba(248,202,82,.2);
+}
 @keyframes thermCursor{
-  0%,100%{left:0%;}
-  50%{left:calc(100% - 2px);}
+  0%,100%{transform:translateX(0);}
+  50%{transform:translateX(calc(100% - 2px));}
 }
 .therm-ticks{display:flex;justify-content:space-between;padding:10px 0 26px;}
 .therm-tick{display:flex;flex-direction:column;align-items:center;gap:3px;}
@@ -816,6 +835,7 @@ img{display:block;max-width:100%;}
 .jd-vv-wrap{display:flex;align-items:center;gap:24px;}
 .jd-vv{font-family:'DINPro',monospace;font-weight:900;font-size:30px;letter-spacing:.22em;text-transform:uppercase;color:#2E7D32;border:2px solid rgba(46,125,50,.45);padding:10px 28px;}
 .jd-stamp{
+  position:relative;
   width:130px;height:130px;
   border:2px solid rgba(46,125,50,.55);
   border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -826,8 +846,17 @@ img{display:block;max-width:100%;}
   opacity:0;transform:rotate(-13deg) scale(.7);
   transition:opacity .55s ease, transform .65s var(--ease-out);
 }
-.jd-stamp.revealed{opacity:1;transform:rotate(-13deg) scale(1);animation:stampGlow 2.5s ease-in-out .8s infinite;}
-@keyframes stampGlow{0%,100%{box-shadow:0 0 0 rgba(46,125,50,0);}50%{box-shadow:0 0 18px rgba(46,125,50,.18);}}
+/* Свечение — готовая тень на ::after, пульсирует её opacity: анимация
+   box-shadow перерисовывает штамп каждый кадр вечного цикла, opacity
+   уходит композитору. Ритм тот же: 2.5s ease-in-out, вдох на середине. */
+.jd-stamp::after{
+  content:'';position:absolute;inset:-2px;border-radius:50%;
+  box-shadow:0 0 18px rgba(46,125,50,.18);
+  opacity:0;pointer-events:none;
+}
+.jd-stamp.revealed{opacity:1;transform:rotate(-13deg) scale(1);}
+.jd-stamp.revealed::after{animation:stampGlow 2.5s ease-in-out .8s infinite;}
+@keyframes stampGlow{0%,100%{opacity:0;}50%{opacity:1;}}
 /* Side list */
 .jrn-side{padding:30px 24px;}
 .jrn-slbl{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:rgba(109,140,166,.62);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
@@ -1130,6 +1159,21 @@ img{display:block;max-width:100%;}
   .stg-bg{animation:none;transform:scale(1.04);}
   .stg-seg.is-on .stg-seg-f{animation:none;transform:scaleX(1);}
   .stg-hint-dot{animation:none;}
+
+  /* Вечные фоновые циклы s1/prf/therm/jrn (2026-07-31): reduce глушит
+     только их — одноразовые входы остаются, это «мягче», а не «ничего».
+     У .s1-reg переопределение animation сбрасывает и пульс, и второй
+     animation-delay (4.15s у .tr/.bl станет .2s — на вход это и нужно). */
+  #s1::before{animation:s1GridIn .9s ease both;}          /* дрейф сетки */
+  .s1-reg{animation:s1RegIn .4s var(--ease-out) .2s both;} /* пульс меток */
+  .s1-num{animation:none;}                                 /* дыхание цифры */
+  .s1-beam-line{animation:none;opacity:0;}                 /* луч по экрану */
+  .s1-scroll{animation:none;}                              /* подпрыгивание стрелки */
+  .prf-ib-cue{animation:none;}                             /* качание scroll-cue */
+  .prf-scan{animation:none;opacity:0;}                     /* скан-линия видео */
+  .prf-target-ring{animation:none;}                        /* пульс кольца цели */
+  .therm-cursor{animation:none;}                           /* курсор остаётся на 20° */
+  .jd-stamp.revealed::after{animation:none;}               /* свечение штампа */
 }
 
 /* ══════════════════════════════════════════════
