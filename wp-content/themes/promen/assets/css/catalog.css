@@ -366,10 +366,14 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
 .seo-specs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--ln2);}
 .seo-spec-col{display:flex;flex-direction:column;}
 .seo-spec-col:first-child{border-right:1px solid var(--ln2);}
-.seo-spec-item{display:grid;grid-template-columns:224px 1fr;border-bottom:1px solid var(--ln);transition:background .12s;}
+/* Колонка лейблов — 25%, не фикс: восемь карточек .seo-cats делят ряд на
+   восьмые, и внутренняя вертикаль таблицы обязана попадать в ту же ось
+   (25% полуширины = 1/8 ряда; в одноколонном тире = 1/4 = граница карточек
+   4-в-ряд). Фиксированные 224px давали линию в 25–35px мимо. */
+.seo-spec-item{display:grid;grid-template-columns:25% 1fr;border-bottom:1px solid var(--ln);transition:background .12s;}
 .seo-spec-item:last-child{border-bottom:none;}
 .seo-spec-item:hover{background:rgba(109,140,166,.04);}
-.seo-spec-k{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);padding:12px 20px;border-right:1px solid var(--ln);}
+.seo-spec-k{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1);padding:12px 14px;border-right:1px solid var(--ln);}
 .seo-spec-v{font-family:'DINPro',monospace;font-size:13px;font-weight:500;color:var(--dark);padding:12px 20px;letter-spacing:.02em;}
 
 /* Нижняя полоса */
@@ -466,6 +470,12 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
 }
 
 /* ── RESPONSIVE ── */
+@media(max-width:1500px){
+  /* На средних ширинах в 25% лейблы не помещаются (DINPro моно широкий) —
+     колонка становится 50% полуширины = граница ВТОРОЙ карточки. Линия
+     остаётся на узле восьмичастной сетки, переносов нет. */
+  .seo-spec-item{grid-template-columns:50% 1fr;}
+}
 @media(max-width:1280px){
   .tbl-hd,.prod-row{grid-template-columns:72px 1fr 76px 76px 110px 1fr 100px 28px;}
   .tbl-hd.tbl-hd--branch,
@@ -537,6 +547,9 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
   .seo-cat:nth-child(5){border-top:1px solid var(--ln2);}
   .seo-cat:nth-child(8){border-right:none;}
   .seo-specs{grid-template-columns:1fr;}
+  /* Одна колонка спеков на полной ширине: 25% = граница первой из
+     четырёх карточек (.seo-cats здесь 4-в-ряд). */
+  .seo-spec-item{grid-template-columns:25% 1fr;}
   .seo-spec-col:first-child{border-right:none;border-bottom:1px solid var(--ln2);}
   .seo-foot{flex-wrap:wrap;}
   .seo-foot-item{padding:10px 16px;}
