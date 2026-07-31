@@ -1084,34 +1084,48 @@ document.addEventListener('DOMContentLoaded', function(){
     var p = total > 1 ? idx / (total - 1) : 0;
     var y = s5ScrollTrigger.start + p * (s5ScrollTrigger.end - s5ScrollTrigger.start);
     if (typeof gsap === 'undefined') { scrollToY(y, true); return; }
-    /* Вся смена этапа — один управляемый твин скролла. Native smooth не
-       годится: у него своя длительность и он не сообщает о завершении —
-       нечем держать wheelAnimating, серия тиков рвала бы движение.
-       0.9s power1.inOut: мягкий разгон и вылет; 0.55/power2 читались
-       как резкий бросок. */
+    /* Листание — ОДИН твин самого таймлайна, ScrollTrigger на это время
+       выключен. Если тянуть твином скролл, скраб-твин ST ретаргетится
+       вдогонку порциями, и трек едет серией затухающих всплесков
+       (покадрово: 881→…→5, 734→…, 583→… — те самые «3 скачка»).
+       Пин секции — CSS sticky, ST его не держит, disable безопасен.
+       Скролл подводим синхронно, чтобы после enable ST оказался ровно
+       в той же точке и пересинхронизация была бесшовной. */
     if (stepTween) stepTween.kill();
-    var pos = { v: getScrollY() };
+    var trig = s5ScrollTrigger;
+    var startY = getScrollY();
+    var p0 = s5Timeline ? s5Timeline.progress() : 0;
+    var pos = { k: 0 };
     wheelAnimating = true;
+    trig.disable(false, false);
     stepTween = gsap.to(pos, {
-      v: y,
+      k: 1,
       duration: 0.9,
       ease: 'power1.inOut',
-      onUpdate: function() { setScrollY(pos.v); },
-      onComplete: function() {
-        wheelAnimating = false;
-        stepTween = null;
-        /* Тик, пришедший во время глайда, не потерян — цепочкой уводим
-           дальше: серия тиков листает годы подряд без «едет-стоп-едет». */
-        if (pendingStep) {
-          var d = pendingStep;
-          pendingStep = 0;
-          if (!((current === 0 && d < 0) || (current === LAST && d > 0))) {
-            goToStep(current + d);
-          }
-        }
+      onUpdate: function() {
+        var prog = p0 + (p - p0) * pos.k;
+        if (s5Timeline) s5Timeline.progress(prog);
+        setScrollY(startY + (y - startY) * pos.k);
+        syncVisualFromProgress(prog);
+        s5.classList.toggle('s5-pinned', prog > 0.01 && prog < 0.99);
       },
-      onInterrupt: function() { wheelAnimating = false; pendingStep = 0; }
+      onComplete: finishStep,
+      onInterrupt: finishStep
     });
+    function finishStep() {
+      wheelAnimating = false;
+      stepTween = null;
+      trig.enable(false, false);
+      /* Тик, пришедший во время глайда, не потерян — цепочкой уводим
+         дальше: серия тиков листает годы подряд без «едет-стоп-едет». */
+      if (pendingStep) {
+        var d = pendingStep;
+        pendingStep = 0;
+        if (!((current === 0 && d < 0) || (current === LAST && d > 0))) {
+          goToStep(current + d);
+        }
+      }
+    }
   }
 
   function onResize() {
