@@ -815,6 +815,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var wheelAnimating = false;
   var wheelAcc = 0;
   var wheelLast = 0;
+  var pendingStep = 0;
   var metrics   = {
     scrollDistance: 0,
     hScrollDistance: 0,
@@ -979,6 +980,7 @@ document.addEventListener('DOMContentLoaded', function(){
       stepTween = null;
     }
     wheelAnimating = false;
+    pendingStep = 0;
     if (s5Timeline) {
       s5Timeline.kill();
       s5Timeline = null;
@@ -1084,17 +1086,31 @@ document.addEventListener('DOMContentLoaded', function(){
     if (typeof gsap === 'undefined') { scrollToY(y, true); return; }
     /* Вся смена этапа — один управляемый твин скролла. Native smooth не
        годится: у него своя длительность и он не сообщает о завершении —
-       нечем держать wheelAnimating, серия тиков рвала бы движение. */
+       нечем держать wheelAnimating, серия тиков рвала бы движение.
+       0.9s power1.inOut: мягкий разгон и вылет; 0.55/power2 читались
+       как резкий бросок. */
     if (stepTween) stepTween.kill();
     var pos = { v: getScrollY() };
     wheelAnimating = true;
     stepTween = gsap.to(pos, {
       v: y,
-      duration: 0.55,
-      ease: 'power2.inOut',
+      duration: 0.9,
+      ease: 'power1.inOut',
       onUpdate: function() { setScrollY(pos.v); },
-      onComplete: function() { wheelAnimating = false; stepTween = null; },
-      onInterrupt: function() { wheelAnimating = false; }
+      onComplete: function() {
+        wheelAnimating = false;
+        stepTween = null;
+        /* Тик, пришедший во время глайда, не потерян — цепочкой уводим
+           дальше: серия тиков листает годы подряд без «едет-стоп-едет». */
+        if (pendingStep) {
+          var d = pendingStep;
+          pendingStep = 0;
+          if (!((current === 0 && d < 0) || (current === LAST && d > 0))) {
+            goToStep(current + d);
+          }
+        }
+      },
+      onInterrupt: function() { wheelAnimating = false; pendingStep = 0; }
     });
   }
 
@@ -1146,7 +1162,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var sy = getScrollY();
     if (sy < s5ScrollTrigger.start - 1 || sy > s5ScrollTrigger.end + 1) return;
     var dir = e.deltaY > 0 ? 1 : -1;
-    if (wheelAnimating) { e.preventDefault(); return; }
+    if (wheelAnimating) { e.preventDefault(); pendingStep = dir; return; }
     if ((current === 0 && dir < 0) || (current === LAST && dir > 0)) return;
     e.preventDefault();
     var now = performance.now();
