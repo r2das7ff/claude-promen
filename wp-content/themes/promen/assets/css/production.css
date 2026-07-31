@@ -416,7 +416,7 @@ img{display:block;max-width:100%;}
   color:rgba(109,140,166,.65);margin-bottom:18px;
 }
 .prf-text{
-  font-size:14px;font-weight:300;line-height:1.72;
+  /* кегль/вес/интерлиньяж — в общем правиле лидов секций (конец файла) */
   color:rgba(169,183,198,.52);max-width:400px;
 }
 /* Measurement target (right) */
@@ -516,8 +516,7 @@ img{display:block;max-width:100%;}
   border-bottom:1px solid var(--ln2);flex-shrink:0;
 }
 .s2-claim{
-  font-family:'DINPro',sans-serif;font-weight:300;
-  font-size:16px;line-height:1.6;
+  font-family:'DINPro',sans-serif;
   color:var(--blue);max-width:540px;
 }
 .s2-top-r{
@@ -645,8 +644,7 @@ img{display:block;max-width:100%;}
   color:#fff;line-height:.92;margin-bottom:16px;
 }
 .therm-statement{
-  font-family:'DINPro',sans-serif;font-weight:400;
-  font-size:clamp(13px,1.3vw,15px);line-height:1.75;
+  font-family:'DINPro',sans-serif;
   color:rgba(169,183,198,.75);max-width:62ch;
 }
 .therm-hd-right{display:flex;flex-direction:column;gap:22px;}
@@ -702,8 +700,7 @@ img{display:block;max-width:100%;}
   display:flex;align-items:flex-start;justify-content:space-between;gap:48px;
 }
 .gi-statement{
-  font-family:'DINPro',sans-serif;font-weight:300;
-  font-size:16px;line-height:1.6;
+  font-family:'DINPro',sans-serif;
   color:var(--blue);max-width:560px;
 }
 .gi-statement strong{font-weight:700;color:var(--dark);}
@@ -754,8 +751,7 @@ img{display:block;max-width:100%;}
   display:flex;align-items:flex-start;justify-content:space-between;gap:48px;
 }
 .jc-statement{
-  font-family:'DINPro',sans-serif;font-weight:300;
-  font-size:16px;line-height:1.6;
+  font-family:'DINPro',sans-serif;
   color:var(--blue);max-width:520px;
 }
 .jc-statement strong{color:var(--dark);font-weight:700;}
@@ -884,7 +880,7 @@ img{display:block;max-width:100%;}
 .cap-anchor-kicker::before{content:'';width:14px;height:1px;background:var(--g1);}
 .cap-anchor-num{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(88px,12vw,190px);letter-spacing:-.04em;color:var(--dark);line-height:.85;position:relative;z-index:1;}
 .cap-anchor-unit{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:clamp(28px,3.5vw,56px);letter-spacing:-.02em;color:var(--blue);line-height:1;margin-top:12px;margin-bottom:28px;position:relative;z-index:1;}
-.cap-anchor-note{font-size:14px;font-weight:300;line-height:1.65;color:rgba(30,61,92,.68);max-width:280px;position:relative;z-index:1;}
+.cap-anchor-note{color:rgba(30,61,92,.68);max-width:280px;position:relative;z-index:1;}
 .cap-anchor-badge{margin-top:28px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1);border:1px solid var(--ln2);padding:7px 16px;display:inline-block;position:relative;z-index:1;}
 .cap-list{position:relative;z-index:1;display:flex;flex-direction:column;}
 .cap-row{flex:1;padding:0 48px;border-bottom:1px solid var(--ln2);display:flex;align-items:center;gap:32px;cursor:default;opacity:0;transform:translateX(20px);transition:opacity .7s ease,transform .7s var(--ease-out),background .2s;}
@@ -969,7 +965,7 @@ img{display:block;max-width:100%;}
   text-transform:uppercase;color:var(--dark);
 }
 .shm-intro-r{display:flex;flex-direction:column;gap:24px;}
-.shm-statement{font-size:13.5px;font-weight:300;line-height:1.72;color:var(--blue);max-width:62ch;}
+.shm-statement{color:var(--blue);max-width:62ch;}
 .shm-nums{display:flex;gap:0;}
 .shm-num{display:flex;flex-direction:column;gap:5px;padding:0 26px;border-left:1px solid var(--ln);}
 .shm-num:first-child{padding-left:0;border-left:none;}
@@ -1222,7 +1218,7 @@ img{display:block;max-width:100%;}
 .gal-tag::before{content:'';width:14px;height:1px;background:rgba(109,140,166,.45);}
 .gal-intro{position:relative;z-index:1;padding:22px 56px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:60px;}
 .gal-headline{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(28px,3.8vw,50px);letter-spacing:-.02em;line-height:.95;text-transform:uppercase;color:#fff;}
-.gal-desc{font-size:15px;font-weight:300;line-height:1.72;color:rgba(169,183,198,.52);flex-shrink:0;max-width:340px;}
+.gal-desc{color:rgba(169,183,198,.52);flex-shrink:0;max-width:340px;}
 .gal-stage{position:relative;z-index:1;overflow:hidden;cursor:grab;padding:0 56px;}
 .gal-stage.is-dragging{cursor:grabbing;}
 .gal-track{display:flex;gap:16px;will-change:transform;align-items:flex-start;user-select:none;-webkit-user-select:none;}
@@ -1632,6 +1628,17 @@ img{display:block;max-width:100%;}
   .fl-group.open{ padding-bottom:18px; }
 }
 
+/* ── ЛИДЫ СЕКЦИЙ — единая роль, единый кегль на всех вьюпортах.
+   До 2026-07-31 разброс по секциям: 13.5 / 14 / 15 / 16px и clamp,
+   интерлиньяж 1.6–1.75, вес 300/400 — «библиотека материалов»,
+   «участки» и «термообработка» читались разным шрифтом. Эталон —
+   мобильная унификация (15/1.72/300), теперь она базовая. Цвет и
+   max-width остаются секционными (светлые/тёмные фоны). ── */
+.prf-text,.s2-claim,.gi-statement,.jc-statement,
+.shm-statement,.therm-statement,.cap-anchor-note,.gal-desc{
+  font-size:15px; line-height:1.72; font-weight:300;
+}
+
 /* ── ТИПОГРАФИКА СЕКЦИЙ ≤640 — сверка с эталоном (главная).
    Шкала главной на телефоне: эйбрау 11px/.25em в одну строку, лид
    14px/1.72/300. Здесь эйбрау был 10px и делил строку с английской
@@ -1646,11 +1653,8 @@ img{display:block;max-width:100%;}
   .fl-tag,.gal-tag,.portal-tag{ font-size:13px; letter-spacing:.25em; }
   /* вторичные подписи — на ступень тише тега, чтобы шапка читалась сверху вниз */
   .sec-hd-en,.jrn-hd-en{ font-size:11px; letter-spacing:.2em; }
-  /* лиды секций: были 13/14/15px с разбросом интерлиньяжа 1.6–1.75 */
-  .prf-text,.shm-statement,.therm-statement,.cap-anchor-note,
-  .gi-statement,.jc-statement{
-    font-size:15px; line-height:1.72; font-weight:300;
-  }
+  /* лиды секций больше не переопределяются здесь: единый кегль на всех
+     вьюпортах задаёт общее правило перед медиа-блоками */
   /* единственный секционный заголовок страницы — к 34px главной */
   .gal-headline{ font-size:34px; line-height:.88; letter-spacing:-.015em; }
   /* Шапка S2 жала лид в колонку ~половины экрана рядом с индексом секции.
