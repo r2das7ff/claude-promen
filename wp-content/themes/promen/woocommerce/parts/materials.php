@@ -22,11 +22,13 @@ defined( 'ABSPATH' ) || exit;
       <?php if ( $mat_rows > 6 ) : ?>
         <?php
         // Кнопка нужна только телефону — на десктопе таблица не урезана.
-        // Число отдельно: «все 21 марку» / «все 14 марок» — разные падежи.
+        // Формулировка как у «Показать все N типоразмеров» ниже по странице:
+        // прежняя подпись «Все марки стали · 14» читалась заголовком, а не
+        // действием. Падежи разные: «все 21 марку» / «все 14 марок».
         ?>
-        <button type="button" class="norm-more-btn norm-more-btn--m" data-mat-more>
-          Все марки стали · <?php echo esc_html( number_format_i18n( $mat_rows ) ); ?>
-        </button>
+        <button type="button" class="norm-more-btn norm-more-btn--m" data-mat-more aria-expanded="false"
+          data-more="Показать все <?php echo esc_attr( number_format_i18n( $mat_rows ) . ' ' . promen_ru_plural( $mat_rows, 'марку', 'марки', 'марок' ) ); ?> ↓"
+          data-less="Свернуть ↑">Показать все <?php echo esc_html( number_format_i18n( $mat_rows ) . ' ' . promen_ru_plural( $mat_rows, 'марку', 'марки', 'марок' ) ); ?> ↓</button>
       <?php endif; ?>
     </div>
   </section>

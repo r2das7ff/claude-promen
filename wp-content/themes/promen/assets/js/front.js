@@ -1261,26 +1261,8 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 
 (function(){
-  /* #5 — тонкий индикатор прогресса под шапкой (боковые точки скрыты ≤1100px).
-     ВАЖНО: на этой странице html,body{height:100%; overflow-x:hidden} → у body
-     включается overflow-y:auto, и скроллит <body>, а не window (window.scrollY
-     всегда 0). Поэтому читаем body.scrollTop и слушаем scroll на body И window. */
-  var bar = document.createElement('div');
-  bar.className = 'scroll-progress';
-  document.body.appendChild(bar);
-  var ticking = false;
-  function update(){
-    var b = document.body, d = document.documentElement;
-    var st = b.scrollTop || d.scrollTop || window.pageYOffset || 0;
-    var h  = Math.max(b.scrollHeight, d.scrollHeight) - window.innerHeight;
-    bar.style.width = (h > 0 ? Math.min(100, Math.max(0, st / h * 100)) : 0) + '%';
-    ticking = false;
-  }
-  function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
-  document.body.addEventListener('scroll', onScroll, { passive:true });
-  window.addEventListener('scroll', onScroll, { passive:true });
-  window.addEventListener('resize', update, { passive:true });
-  update();
+  /* #5 — индикатор прогресса скролла переехал в общий assets/js/chrome.js:
+     он нужен всем страницам, а не только главной (2026-07-31). */
 
   /* #3 — S4 «показать все»: длинный список городов свёрнут до 3 карточек */
   var list = document.getElementById('s4MobileList');

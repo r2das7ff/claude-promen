@@ -3954,20 +3954,8 @@ img { display:block; }
   .s4-showall:active { background:var(--bg2); }
 }
 
-/* ── #5 · Навигация: боковые точки скрыты ≤1100px → индикатор прогресса
-   скролла тонкой полосой под шапкой. */
-.scroll-progress {
-  position:fixed; top:var(--nav-h); left:0;
-  height:2px; width:0;
-  background:var(--dark);
-  z-index:199;
-  display:none;
-  transition:width .1s linear;
-  pointer-events:none;
-}
-@media (max-width:1100px) {
-  .scroll-progress { display:block; }
-}
+/* ── #5 · Индикатор прогресса скролла переехал в base.css: он общий для всех
+   страниц, а не только для главной (2026-07-31). */
 
 /* ── #4 · S9 документы: «показать все» (видно 4 карточки) ─────────────────
    Кнопка учитывает активный radio-фильтр (пересчёт в JS). */

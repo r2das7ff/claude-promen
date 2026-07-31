@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
     <div class="prod-qc-grid">
       <div class="prod-qc-left reveal">
         <div>
-          <p class="prod-qc-lead">От сертификата металла и номера плавки до ОТК, неразрушающего контроля и комплекта сопроводительной документации. Наведите на этап — подсветится строка цифрового паспорта.</p>
+          <p class="prod-qc-lead">От сертификата металла и номера плавки до ОТК, неразрушающего контроля и комплекта сопроводительной документации. Выберите этап — подсветится строка цифрового паспорта.</p>
         </div>
         <div>
           <div class="prod-qc-route-hd">Маршрут контроля качества</div>
@@ -33,7 +33,6 @@ defined( 'ABSPATH' ) || exit;
       <div class="prod-qc-right reveal">
         <div class="pq-pass-hd">
           <span class="pq-pass-lbl">Цифровой паспорт изделия</span>
-          <span class="pq-pass-sys">SYS://QC.PASSPORT.v2.4</span>
         </div>
         <div class="pq-pass" id="qcPassport">
           <div class="pq-bracket tl"></div><div class="pq-bracket tr"></div><div class="pq-bracket bl"></div><div class="pq-bracket br"></div>
@@ -54,7 +53,7 @@ defined( 'ABSPATH' ) || exit;
           </div>
           <div class="pq-ft">
             <div class="pq-status"><div class="pq-pulse"></div><span class="pq-accepted">Маршрут приёмки ОТК</span></div>
-            <div class="pq-meta">Формируется для каждой партии<br>при отгрузке</div>
+            <div class="pq-meta">Формируется для каждой партии при отгрузке</div>
           </div>
         </div>
         <div class="pq-ann">

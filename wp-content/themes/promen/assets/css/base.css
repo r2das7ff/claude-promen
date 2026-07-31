@@ -101,7 +101,10 @@ body.modal-locked{overflow:hidden;}
   padding:20px 0 24px;background:var(--bg);
 }
 .strip-yr{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;color:var(--g1);writing-mode:vertical-rl;text-transform:uppercase;user-select:none;}
-.strip-pulse{width:4px;height:4px;border-radius:50%;background:var(--g1);animation:blink 1.8s step-end infinite;}
+/* margin-bottom:auto вместо space-between: пульс прижимается к году вверху.
+   По центру ленты он попадал ровно в колонку точек .sidenav (шаг 27px, тот же
+   x и цвет) и читался как мигающий пункт навигации. */
+.strip-pulse{width:4px;height:4px;border-radius:50%;background:var(--g1);animation:blink 1.8s step-end infinite;margin:14px 0 auto;}
 .strip-txt{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.2em;color:var(--g1);writing-mode:vertical-rl;transform:rotate(180deg);text-transform:uppercase;opacity:.4;user-select:none;}
 
 /* ── PAGE SHELL ── */
@@ -204,6 +207,83 @@ a.s10-contact-v:hover{color:var(--blue);}
    ось даёт сам .pg — собственный отступ футера гасим на всех тирах. */
 .pg .site-footer{padding-left:0;}
 
+/* ── ВЫПАДАЮЩИЙ СПИСОК (замена нативного select) ──
+   Разметку строит assets/js/select.js для <select data-select>. Нативный
+   элемент остаётся носителем значения, поэтому прячем его без display:none
+   (иначе часть браузеров исключает поле из отправки при некоторых настройках)
+   и убираем из потока. Скруглений в системе нет — углы прямые, разделители
+   волосяные, палитра только токенами. */
+.pm-select{position:relative;}
+.pm-select.is-open{z-index:40;}
+.pm-select-native{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;pointer-events:none;}
+.pm-select-trigger{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+  background:transparent;border:none;border-bottom:1px solid var(--ln2);
+  padding:9px 2px;font-family:'DINPro',sans-serif;font-size:14px;color:var(--dark);
+  text-align:left;cursor:pointer;outline:none;transition:border-color .15s;
+}
+.pm-select-trigger:hover{border-bottom-color:var(--g1);}
+.pm-select-trigger:focus-visible{border-bottom-color:var(--dark);outline:1px solid var(--g1);outline-offset:3px;}
+.pm-select.is-open .pm-select-trigger{border-bottom-color:var(--dark);}
+.pm-select-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* Стрелка — две линии через border, чтобы не тащить иконочный шрифт. */
+.pm-select-arrow{
+  width:8px;height:8px;flex:0 0 auto;margin-bottom:3px;
+  border-right:1.5px solid var(--g1);border-bottom:1.5px solid var(--g1);
+  transform:rotate(45deg);transform-origin:60% 60%;
+  transition:transform .28s cubic-bezier(.2,.7,.3,1),border-color .15s;
+}
+.pm-select-trigger:hover .pm-select-arrow{border-color:var(--dark);}
+.pm-select.is-open .pm-select-arrow{transform:rotate(-135deg);border-color:var(--dark);}
+
+.pm-select-menu{
+  position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:41;
+  background:var(--white);border:1px solid var(--ln2);
+  box-shadow:0 18px 44px rgba(15,42,68,.16);
+  max-height:264px;overflow-y:auto;overscroll-behavior:contain;
+  padding:4px 0;
+  opacity:0;visibility:hidden;transform:translateY(-8px) scaleY(.98);transform-origin:top center;
+  transition:opacity .16s ease,transform .22s cubic-bezier(.2,.7,.3,1),visibility 0s linear .22s;
+}
+.pm-select.is-up .pm-select-menu{top:auto;bottom:calc(100% + 6px);transform-origin:bottom center;transform:translateY(8px) scaleY(.98);}
+.pm-select.is-open .pm-select-menu{opacity:1;visibility:visible;transform:none;transition-delay:0s;}
+/* Верхняя грань-акцент: тот же приём, что у .hud-block и .pass-card. */
+.pm-select-menu::before{content:'';position:absolute;top:0;left:0;width:28px;height:2px;background:var(--g1);}
+
+.pm-select-opt{
+  position:relative;padding:10px 16px 10px 18px;cursor:pointer;
+  font-family:'DINPro',sans-serif;font-size:14px;color:var(--blue);
+  opacity:0;transform:translateY(-6px);
+  transition:opacity .18s ease,transform .18s ease,background .12s,color .12s;
+}
+.pm-select.is-open .pm-select-opt{opacity:1;transform:none;transition-delay:calc(var(--i,0) * 22ms);}
+.pm-select-opt::before{
+  content:'';position:absolute;left:0;top:6px;bottom:6px;width:2px;background:var(--g1);
+  transform:scaleY(0);transform-origin:center;transition:transform .18s cubic-bezier(.2,.7,.3,1);
+}
+.pm-select-opt.is-active{background:var(--g1b);color:var(--dark);}
+.pm-select-opt.is-selected{color:var(--dark);font-weight:700;}
+.pm-select-opt.is-selected::before{transform:scaleY(1);}
+
+@media(max-width:1024px){
+  /* Тач-цели: пункт списка и кнопка не меньше 44px. */
+  .pm-select-trigger{min-height:44px;font-size:16px;} /* 16px — анти-зум iOS */
+  .pm-select-opt{min-height:44px;display:flex;align-items:center;font-size:15px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .pm-select-menu,.pm-select-opt,.pm-select-arrow,.pm-select-opt::before{transition:none !important;}
+  .pm-select-opt{transition-delay:0s !important;}
+}
+
+/* ── ПОЛОСА ПРОГРЕССА ЧТЕНИЯ ──
+   Ниже 1100px боковая точечная навигация скрыта, и ориентира «сколько ещё
+   осталось» не остаётся — его даёт тонкая полоса под шапкой. Элемент создаёт
+   chrome.js на каждой странице; правило общее и дублировать его в страничных
+   CSS не нужно (до 2026-07-31 копии лежали в front/nb/proekt/proekty/stati/
+   statya — на остальных страницах полосы просто не было). */
+.scroll-progress{position:fixed;top:var(--nav-h,64px);left:0;height:2px;width:0;background:var(--dark);z-index:199;display:none;transition:width .1s linear;pointer-events:none;}
+@media(max-width:1100px){.scroll-progress{display:block;}}
+
 /* ── ANIMATIONS ── */
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
 @keyframes rowIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
@@ -280,7 +360,11 @@ a.s10-contact-v:hover{color:var(--blue);}
   .s10-consent{align-items:center;min-height:44px;}
   .s10-consent input{width:22px;height:22px;}
   .s10-consent-txt{font-size:14px;}
-  a.s10-contact-v{display:inline-flex;align-items:center;min-height:44px;}
+  /* Тач-цель 44px была только у ссылок (почта, телефон), и строки контактов
+     выходили разной высоты: 73 против 46. Задаём всем значениям. */
+  .s10-contacts .s10-contact-v{display:flex;align-items:center;min-height:44px;}
+  /* Заголовок S10 в три строки: «Передайте нам» одной строкой. */
+  .s10-h2-br{display:none;}
 }
 @media(max-width:640px){
   .s10-left{padding:48px 20px;}
@@ -306,6 +390,20 @@ a.s10-contact-v:hover{color:var(--blue);}
 @media(min-width:481px) and (max-width:640px){
   /* display:contents снял rail-отступ секции — колонки несут rail(20)+ось(20) */
   .footer-zone .s10-left,.footer-zone .s10-right{padding-left:40px;}
+}
+@media(min-width:641px) and (max-width:1024px){
+  /* Планшет: наезд делаем той же механикой, что и на телефоне. Липнуть всей
+     секцией нельзя — в одну колонку она выше экрана (1536px против 1024), и
+     после залипания низ формы недостижим прокруткой. Секция распадается
+     (display:contents), пиннится только форма .s10-right — она в экран
+     помещается, поэтому видна целиком, а футер наезжает на неё снизу.
+     top задаёт chrome.js (innerHeight − height); var(--nav-h) — фолбэк. */
+  .footer-zone .s10,.footer-zone .s10-inner{display:contents;}
+  .footer-zone .s10-left{border-top:1px solid var(--ln2);}
+  .footer-zone .s10-right{position:sticky;top:var(--nav-h);z-index:5;}
+  /* display:contents снял с секции rail-паддинг (20px) — колонки несут его
+     сами: 20 рельсы + 32 собственных поля колонки на этой ширине. */
+  .footer-zone .s10-left,.footer-zone .s10-right{padding-left:52px;}
 }
 
 /* ── FOOTER: сетка 1200, ось 28/20, тач-цели, один экран ≤640 ── */

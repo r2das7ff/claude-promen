@@ -602,7 +602,9 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
 .kb-col-sub{font-size:14px;font-weight:300;line-height:1.75;color:var(--blue);margin-bottom:14px;}
 .kb-col-sub strong{font-weight:700;color:var(--dark);}
 .kb-params{border:1px solid var(--ln2);display:flex;flex-direction:column;}
-.kb-param{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--ln);align-items:start;}
+/* stretch, а не start: фон и правая граница ячейки ключа обрывались на её
+   высоте, не доходя до низа строки (см. комментарий в product.css). */
+.kb-param{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--ln);align-items:stretch;}
 .kb-param:last-child{border-bottom:none;}
 .kb-param-key{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dark);padding:11px 16px;font-weight:700;border-right:1px solid var(--ln2);background:var(--bg2);line-height:1.5;}
 .kb-param-val{font-size:14px;font-weight:300;color:var(--blue);padding:11px 16px;line-height:1.65;}

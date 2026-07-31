@@ -17,16 +17,54 @@
   startClock(document.getElementById('navClock'));
   startClock(document.getElementById('navDrawerClock'));
 
-  /* S10 · наезд на телефоне: пиним форму низом к нижнему краю экрана
-     (top = vh − h) — кнопка «Отправить» видна до наезда, футер стартует
-     ровно когда форму долистали. Порт ревизии hero-variant-d (§6);
-     на планшете липнет вся секция (base.css), top сбрасываем. */
+  /* ПОЛОСА ПРОГРЕССА ЧТЕНИЯ (стили — base.css, видна ≤1100px, где скрыта
+     боковая точечная навигация). Живёт здесь, а не в страничных скриптах:
+     до 2026-07-31 копии лежали в front.js и projects.js, и полосы не было на
+     карточке товара, в каталоге, на категориях, контактах, производстве,
+     политике и 404.
+     Скроллером может быть body ИЛИ documentElement — на страницах с
+     html,body{height:100%} прокручивается body, и window.scrollY всегда 0,
+     поэтому читаем оба и слушаем оба. */
+  (function () {
+    var bar = document.createElement('div');
+    bar.className = 'scroll-progress';
+    document.body.appendChild(bar);
+    var ticking = false;
+    function update() {
+      var b = document.body, d = document.documentElement;
+      var st = b.scrollTop || d.scrollTop || window.pageYOffset || 0;
+      var h = Math.max(b.scrollHeight, d.scrollHeight) - window.innerHeight;
+      bar.style.width = (h > 0 ? Math.min(100, Math.max(0, st / h * 100)) : 0) + '%';
+      ticking = false;
+    }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+    document.body.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
+
+  /* S10 · наезд на телефоне и планшете: пиним форму так, чтобы её низ совпал
+     с нижним краем экрана (top = vh − h) — кнопка «Отправить» видна до наезда,
+     футер стартует ровно когда форму долистали. Порт ревизии hero-variant-d
+     (§6). Порог 1024, а не 640: на планшете секция тоже распадается и пиннится
+     только форма (base.css), иначе низ формы уходил бы за экран.
+
+     Но при высоком экране (iPad 820×1180) форма ниже вьюпорта, и «низом к
+     краю» означало бы top≈380: форма зависала в середине, а над ней зияла
+     пустота — контактный блок уже уехал, футер ещё не пришёл. Поэтому берём
+     минимум из двух: либо низом к краю (форма выше экрана), либо шапкой под
+     навигацию (форма помещается целиком). */
   var s10Right = document.querySelector('.footer-zone .s10-right');
   if (s10Right) {
-    var mqFooter = window.matchMedia('(max-width:640px)');
+    var mqFooter = window.matchMedia('(max-width:1024px)');
+    var navH = function () {
+      var v = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'), 10);
+      return isNaN(v) ? 64 : v;
+    };
     var setStickyTop = function () {
       if (!mqFooter.matches) { s10Right.style.top = ''; return; }
-      s10Right.style.top = (window.innerHeight - s10Right.offsetHeight) + 'px';
+      s10Right.style.top = Math.min(window.innerHeight - s10Right.offsetHeight, navH()) + 'px';
     };
     setStickyTop();
     window.addEventListener('resize', setStickyTop, { passive: true });

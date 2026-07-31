@@ -24,25 +24,6 @@
   });
 })();
 
-/* ── Индикатор прогресса скролла (порт с главной): скроллер может быть
-   body ИЛИ documentElement — читаем оба и слушаем оба ── */
-(function(){
-  var bar=document.createElement('div');
-  bar.className='scroll-progress';
-  document.body.appendChild(bar);
-  var ticking=false;
-  function update(){
-    var b=document.body,d=document.documentElement;
-    var st=b.scrollTop||d.scrollTop||window.pageYOffset||0;
-    var h=Math.max(b.scrollHeight,d.scrollHeight)-window.innerHeight;
-    bar.style.width=(h>0?Math.min(100,Math.max(0,st/h*100)):0)+'%';
-    ticking=false;
-  }
-  function onScroll(){if(!ticking){ticking=true;requestAnimationFrame(update);}}
-  document.body.addEventListener('scroll',onScroll,{passive:true});
-  window.addEventListener('scroll',onScroll,{passive:true});
-  window.addEventListener('resize',update,{passive:true});
-  update();
-})();
+/* Индикатор прогресса скролла — общий assets/js/chrome.js (грузится везде). */
 
 /* Наезд футера — общий assets/js/footer-pin.js (подключается enqueue'ом). */

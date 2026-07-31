@@ -58,7 +58,7 @@ defined( 'ABSPATH' ) || exit;
           </div>
         </div>
 
-        <div style="font-family:'DINPro',monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;display:flex;align-items:center;gap:16px;"><span style="flex:1;height:1px;background:var(--ln);display:block;"></span>Сравнение типов<span style="flex:1;height:1px;background:var(--ln);display:block;"></span></div>
+        <div style="font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;display:flex;align-items:center;gap:16px;"><span style="flex:1;height:1px;background:var(--ln);display:block;"></span>Сравнение типов<span style="flex:1;height:1px;background:var(--ln);display:block;"></span></div>
         <div class="kb-compare">
           <div class="kb-compare-hd">
             <span class="kb-cmp-h">Параметр</span>
@@ -178,7 +178,7 @@ defined( 'ABSPATH' ) || exit;
             </div>
           </div>
           <div>
-            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:10px;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;color:var(--g1);">по НП-045-18</span></div>
             <div class="kb-doclist">
               <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Программа контроля качества</div><div class="kb-doc-desc">Индивидуальная программа НК для категории трубопровода. Согласовывается до запуска в производство.</div></div>
               <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Карты идентификации и прослеживаемости</div><div class="kb-doc-desc">От заготовки до готовой детали. Номер плавки, детали, ссылки на все протоколы контроля.</div></div>

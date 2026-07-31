@@ -188,9 +188,11 @@
   .cnt-bar-policy{display:inline-flex;align-items:center;min-height:44px;}
   /* реквизиты — плотная таблица: фон-сетка не должна просвечивать (§3) */
   .cnt-reg{background:var(--bg);}
-  /* у select убрана системная стрелка (appearance:none) — возвращаем индикатор */
-  .cnt-field:has(select){position:relative;}
-  .cnt-field:has(select)::after{content:'▾';position:absolute;right:6px;bottom:16px;font-size:13.5px;color:var(--g1);pointer-events:none;}
+  /* у select убрана системная стрелка (appearance:none) — возвращаем индикатор.
+     Поле с подменяющим списком (.pm-select) исключаем: там своя стрелка,
+     иначе под ней рисовался второй, уже лишний, треугольник. */
+  .cnt-field:has(select):not(:has(.pm-select)){position:relative;}
+  .cnt-field:has(select):not(:has(.pm-select))::after{content:'▾';position:absolute;right:6px;bottom:16px;font-size:13.5px;color:var(--g1);pointer-events:none;}
 }
 @media (max-width:900px){
   .cnt-stats{display:grid;grid-template-columns:repeat(3,auto);gap:0 32px;border-left:none;border-top:1px solid var(--ln2);padding:18px 0 0;justify-content:start;}

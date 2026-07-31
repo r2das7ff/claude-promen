@@ -559,7 +559,7 @@ return [
           </div>
 
           <div>
-            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:10px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
             <div class="kb-doclist">
               <div class="kb-doc-item kb-aes">
                 <div class="kb-doc-name">Программа контроля качества</div>

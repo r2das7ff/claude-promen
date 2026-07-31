@@ -124,10 +124,6 @@
 }
 
 /* ── Индикатор прогресса скролла под шапкой (порт с главной, виден <=1100) ── */
-.scroll-progress{position:fixed;top:var(--nav-h,64px);left:0;height:2px;width:0;background:var(--dark);z-index:199;display:none;transition:width .1s linear;pointer-events:none;}
-@media (max-width:1100px){
-  .scroll-progress{display:block;}
-}
 
 /* ── Плашки проектов: на моб/планшете отдельные карточки с воздухом (как у статей) ── */
 @media (max-width:1024px){

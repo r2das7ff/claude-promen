@@ -62,10 +62,14 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .hud-block{border:1px solid var(--ln2);padding:16px 20px;position:relative;}
 .hud-block::before{content:'';position:absolute;top:-1px;left:12px;width:20px;height:2px;background:var(--g1);}
 .hud-label{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;}
-.hud-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--ln);}
+/* Кегль строк 11 → 14px (роль «основной текст», BRIEF §3). Зазор и перенос
+   ключа обязательны: на 375px «СТО ЦКТИ 321.01–.05» и «Гнутые для ТЭС»
+   сходились вплотную без единого пикселя между ними. Значение держим одной
+   строкой справа, переносится при нехватке места только подпись. */
+.hud-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:5px 0;border-bottom:1px solid var(--ln);}
 .hud-row:last-child{border-bottom:none;}
-.hud-rk{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.06em;color:var(--blue);}
-.hud-rv{font-family:'DINPro',monospace;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--dark);}
+.hud-rk{font-family:'DINPro',monospace;font-size:14px;letter-spacing:.06em;color:var(--blue);min-width:0;}
+.hud-rv{font-family:'DINPro',monospace;font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--dark);flex:0 0 auto;text-align:right;}
 .hud-rv.live{color:var(--g1);}
 
 /* ── SECTION PATTERN ── */
@@ -97,7 +101,7 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 .ec-code{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .ec-code::before{content:'';width:16px;height:1px;background:var(--g1);}
 .ec-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:21px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);margin-bottom:10px;line-height:1.1;}
-.ec-p{font-size:13px;font-weight:300;line-height:1.75;color:var(--blue);}
+.ec-p{font-size:14px;font-weight:300;line-height:1.75;color:var(--blue);}
 .ec-p strong{font-weight:700;color:var(--dark);}
 .ec-tags{margin-top:12px;display:flex;gap:5px;flex-wrap:wrap;}
 .ec-tag{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border:1px solid var(--ln2);color:var(--g1);}
@@ -170,7 +174,7 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 .nc:hover{border-left-color:var(--g1);background:rgba(30,61,92,.8);}
 .nc-code{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(24px,2.8vw,40px);letter-spacing:-.01em;color:var(--g1);margin-bottom:6px;line-height:1;}
 .nc-title{font-size:13px;font-weight:500;color:var(--white);margin-bottom:7px;line-height:1.42;}
-.nc-desc{font-size:12px;font-weight:300;color:rgba(169,183,198,.65);line-height:1.65;}
+.nc-desc{font-size:14px;font-weight:300;color:rgba(169,183,198,.65);line-height:1.65;}
 .nc-tags{margin-top:12px;display:flex;flex-wrap:wrap;gap:4px;}
 .nc-tag{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid rgba(109,140,166,.2);color:rgba(109,140,166,.6);}
 .nc-status{margin-top:8px;display:flex;align-items:center;gap:6px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(109,140,166,.4);}
@@ -184,7 +188,7 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 .mat-r.exp{background:rgba(30,61,92,.03);}
 .mr-g{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:17px;letter-spacing:.02em;color:var(--dark);line-height:1;}
 .mr-std{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.06em;color:var(--blue);display:block;margin-top:2px;}
-.mr-desc{font-size:12.5px;color:var(--blue);line-height:1.4;}
+.mr-desc{font-size:14px;color:var(--blue);line-height:1.4;}
 .mr-temp{font-family:'DINProCond',monospace;font-weight:700;font-size:15px;color:var(--dark);}
 .mr-pn{font-family:'DINPro',monospace;font-size:12px;color:var(--dark);}
 .mr-apps{display:flex;flex-wrap:wrap;gap:3px;}
@@ -207,7 +211,7 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 .app-c:hover .app-bg{-webkit-text-stroke-color:rgba(109,140,166,.3);}
 .app-code{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;}
 .app-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:19px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);margin-bottom:8px;line-height:1.1;}
-.app-p{font-size:12.5px;font-weight:300;line-height:1.72;color:var(--blue);}
+.app-p{font-size:14px;font-weight:300;line-height:1.72;color:var(--blue);}
 .app-params{margin-top:12px;display:flex;flex-direction:column;gap:4px;}
 .app-pr{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--ln);}
 .app-pr:last-child{border-bottom:none;}
@@ -322,45 +326,13 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 .fq-a-in li{padding-left:16px;position:relative;}
 .fq-a-in li::before{content:'—';position:absolute;left:0;color:var(--g1);}
 
-/* ── FOOTER ZONE — sticky context для S10 ── */
+/* ── S10: ФОРМА ЗАПРОСА ──
+   Правил здесь нет намеренно. Форма и sticky-каркас .footer-zone целиком
+   описаны в base.css; этот файл грузится позже и при равной специфичности
+   перебивал их устаревшей раскладкой «подпись слева / поле справа» — отсюда
+   росли и компенсирующие медиаблоки, возвращавшие адаптив обратно.
+   Дубли удалены 2026-07-31: правки формы вносить только в base.css. */
 
-.footer-zone .s10 { position: sticky; top: 0; z-index: 5; background: var(--bg); }
-
-/* ── S10: ФОРМА ЗАПРОСА ── */
-.s10{background:var(--bg);} /* геометрия и адаптив — base.css */
-.s10-inner { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; background: var(--bg); }
-.s10-left { padding: 80px 56px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--ln2); }
-
-
-
-
-.s10-h2 { font-family: 'DINProCond', 'DINPro', sans-serif; font-weight: 900; font-size: clamp(38px, 4.5vw, 72px); line-height: .9; letter-spacing: -.015em; text-transform: uppercase; color: var(--dark); margin-bottom: 28px; }
-.s10-sub { font-size: 14px; font-weight: 300; line-height: 1.72; color: var(--blue); max-width: 380px; margin-bottom: 44px; }
-
-.s10-contact-row{display:grid;grid-template-columns:110px 1fr;gap:0;padding:14px 20px;border-bottom:1px solid var(--ln);align-items:center;}
-.s10-contact-k { font-family: 'DINPro', monospace; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--g1); min-width: 100px; }
-.s10-contact-v { font-family: 'DINPro', sans-serif; font-size: 14px; font-weight: 500; color: var(--dark); }
-.s10-right { padding: 80px 56px; display: flex; flex-direction: column; justify-content: center; }
-.s10-form-label { font-family: 'DINPro', monospace; font-size: 10.5px; letter-spacing: .25em; text-transform: uppercase; color: var(--g1); margin-bottom: 24px; opacity: .6; }
-.s10-form { display: flex; flex-direction: column; gap: 0; }
-.s10-field { display: grid; grid-template-columns: 180px 1fr; gap: 0 16px; border-top: 1px solid var(--ln2); align-items: center; transition: background .12s; }
-.s10-field:last-of-type { border-bottom: 1px solid var(--ln2); }
-.s10-field:focus-within { background: rgba(109,140,166,.04); }
-.s10-field-label { font-family: 'DINPro', monospace; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--g1); padding: 14px 0; user-select: none; cursor: text; }
-.s10-field input { border: none; background: transparent; font-family: 'DINPro', sans-serif; font-size: 14px; font-weight: 500; color: var(--dark); padding: 14px 0; outline: none; width: 100%; }
-.s10-field input::placeholder { color: var(--g2); font-weight: 300; }
-.s10-file-row { display: grid; grid-template-columns: 180px 1fr; gap: 0 16px; border-top: 1px solid var(--ln2); align-items: center; padding: 14px 0; }
-.s10-file-label-txt { font-family: 'DINPro', monospace; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--g1); }
-.s10-file-btn { display: inline-flex; align-items: center; gap: 8px; font-family: 'DINPro', monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--g1); border: 1px solid var(--ln2); padding: 8px 14px; cursor: pointer; transition: all .15s; background: transparent; }
-
-.s10-file-name { font-family: 'DINPro', monospace; font-size: 12px; color: var(--g1); margin-left: 10px; opacity: .7; }
-.s10-actions { display: flex; align-items: center; gap: 16px; margin-top: 32px; flex-wrap: wrap; }
-
-
-
-
-
-.s10-note { font-family: 'DINPro', monospace; font-size: 10.5px; letter-spacing: .16em; color: var(--g1); text-transform: uppercase; margin-top: 10px; text-align: center; }
 
 /* ── FOOTER ── */
 
@@ -392,7 +364,6 @@ a.nc.sg-link:hover{border-color:var(--blue);}
   
   
   
-  .s10-field,.s10-file-row{grid-template-columns:140px 1fr;}
   
   
   
@@ -403,9 +374,6 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 @media(max-width:640px){
   
   
-  .s10-field,.s10-file-row{grid-template-columns:1fr;}
-  .s10-field-label{padding-bottom:0;}
-  .s10-file-row{gap:8px;}
   
   
   
@@ -607,7 +575,7 @@ a.nc.sg-link:hover .nc-go i{transform:translateX(3px);}
 /* intro text */
 .kb-lead{max-width:720px;margin-bottom:32px;}
 .kb-lead-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:21px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);margin-bottom:9px;line-height:1.05;}
-.kb-lead-p,.kb-intro-p{font-size:13.5px;font-weight:300;line-height:1.8;color:var(--blue);}
+.kb-lead-p,.kb-intro-p{font-size:15px;font-weight:300;line-height:1.8;color:var(--blue);}
 .kb-intro-p{max-width:760px;margin-bottom:28px;}
 .kb-intro-p strong,.kb-lead-p strong{font-weight:700;color:var(--dark);}
 
@@ -638,15 +606,17 @@ a.nc.sg-link:hover .nc-go i{transform:translateX(3px);}
 .kb-2col{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
 .kb-3col{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
 .kb-col-title{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--dark);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--dark);}
-.kb-col-sub{font-size:13px;font-weight:300;line-height:1.75;color:var(--blue);margin-bottom:14px;}
+.kb-col-sub{font-size:14px;font-weight:300;line-height:1.75;color:var(--blue);margin-bottom:14px;}
 .kb-col-sub strong{font-weight:700;color:var(--dark);}
 
 /* param kv table */
 .kb-params{border:1px solid var(--ln2);display:flex;flex-direction:column;}
-.kb-param{display:grid;grid-template-columns:185px 1fr;border-bottom:1px solid var(--ln);align-items:start;}
+/* stretch, а не start: фон и правая граница ячейки ключа обрывались на её
+   высоте, не доходя до низа строки (см. комментарий в product.css). */
+.kb-param{display:grid;grid-template-columns:185px 1fr;border-bottom:1px solid var(--ln);align-items:stretch;}
 .kb-param:last-child{border-bottom:none;}
 .kb-param-key{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dark);padding:11px 16px;font-weight:700;border-right:1px solid var(--ln2);background:var(--bg2);line-height:1.5;}
-.kb-param-val{font-size:12.5px;font-weight:300;color:var(--blue);padding:11px 16px;line-height:1.65;}
+.kb-param-val{font-size:14px;font-weight:300;color:var(--blue);padding:11px 16px;line-height:1.65;}
 .kb-param-val strong{font-weight:700;color:var(--dark);}
 
 /* steps */
@@ -668,7 +638,7 @@ a.nc.sg-link:hover .nc-go i{transform:translateX(3px);}
 .kb-norm-item:last-child{border-bottom:none;}
 .kb-norm-item:hover{background:var(--bg2);}
 .kb-norm-code{font-family:'DINPro',monospace;font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--dark);padding:9px 14px;border-right:1px solid var(--ln);}
-.kb-norm-desc{font-size:12px;font-weight:300;color:var(--blue);padding:9px 14px;line-height:1.55;}
+.kb-norm-desc{font-size:14px;font-weight:300;color:var(--blue);padding:9px 14px;line-height:1.55;}
 
 /* material 4-col */
 .kb-mat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--ln2);}
@@ -677,7 +647,7 @@ a.nc.sg-link:hover .nc-go i{transform:translateX(3px);}
 .kb-mat-grade{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:22px;letter-spacing:-.01em;color:var(--dark);line-height:1;margin-bottom:3px;}
 .kb-mat-std{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;color:var(--g1);margin-bottom:8px;}
 .kb-mat-range{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.04em;color:var(--dark);font-weight:700;padding:5px 0;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);margin-bottom:8px;}
-.kb-mat-apps{font-size:12px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-mat-apps{font-size:14px;font-weight:300;color:var(--blue);line-height:1.6;}
 
 /* doc list */
 .kb-doclist{border:1px solid var(--ln2);display:flex;flex-direction:column;}
@@ -686,7 +656,7 @@ a.nc.sg-link:hover .nc-go i{transform:translateX(3px);}
 .kb-doc-item:hover{background:var(--bg2);}
 .kb-doc-item.kb-aes{border-left:2px solid var(--g1);padding-left:16px;}
 .kb-doc-name{font-family:'DINPro',monospace;font-size:11px;font-weight:700;letter-spacing:.07em;color:var(--dark);margin-bottom:3px;}
-.kb-doc-desc{font-size:12.5px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-doc-desc{font-size:14px;font-weight:300;color:var(--blue);line-height:1.6;}
 .kb-doc-badge{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:1px 5px;border:1px solid var(--g1);color:var(--g1);margin-left:8px;vertical-align:middle;}
 
 /* checklist */
@@ -696,7 +666,7 @@ a.nc.sg-link:hover .nc-go i{transform:translateX(3px);}
 .kb-check:hover{background:var(--bg2);}
 .kb-check-n{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:18px;color:var(--g2);flex-shrink:0;line-height:1;margin-top:2px;}
 .kb-check-title{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);font-weight:700;margin-bottom:4px;}
-.kb-check-body{font-size:12px;font-weight:300;color:var(--blue);line-height:1.62;}
+.kb-check-body{font-size:14px;font-weight:300;color:var(--blue);line-height:1.62;}
 .kb-check-body strong{font-weight:700;color:var(--dark);}
 
 /* cost factors */
@@ -706,7 +676,7 @@ a.nc.sg-link:hover .nc-go i{transform:translateX(3px);}
 .kb-factor:hover{background:var(--bg2);}
 .kb-factor-ic{font-family:'DINProCond',sans-serif;font-weight:900;font-size:16px;color:var(--g1);flex-shrink:0;width:18px;text-align:center;line-height:1;margin-top:3px;}
 .kb-factor-name{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);font-weight:700;margin-bottom:3px;}
-.kb-factor-note{font-size:12px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-factor-note{font-size:14px;font-weight:300;color:var(--blue);line-height:1.6;}
 
 /* common errors */
 .kb-errors{border:1px solid var(--ln2);display:flex;flex-direction:column;}
@@ -715,7 +685,7 @@ a.nc.sg-link:hover .nc-go i{transform:translateX(3px);}
 .kb-err:hover{background:rgba(109,140,166,.04);}
 .kb-err-ic{font-family:'DINPro',monospace;font-size:11px;font-weight:700;color:var(--g1);flex-shrink:0;width:14px;text-align:center;line-height:1;margin-top:3px;opacity:.7;}
 .kb-err-title{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);font-weight:700;margin-bottom:3px;}
-.kb-err-note{font-size:12px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-err-note{font-size:14px;font-weight:300;color:var(--blue);line-height:1.6;}
 
 /* responsive KB */
 @media(max-width:1100px){
@@ -879,13 +849,6 @@ a.nc.sg-link:hover .nc-go i{transform:translateX(3px);}
   .om-close{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0;}
 }
 
-/* Форма КП: этот файл грузится после base.css и переобъявляет .s10-inner
-   в две колонки без медиазапроса, чем убивал адаптив из base.css — на
-   планшете правая колонка уезжала за край секции. Дублируем свёртку. */
-@media (max-width:1024px){
-  .s10-inner{grid-template-columns:1fr;min-height:auto;}
-}
-
 @media (max-width:340px){
   .hero-h1{font-size:clamp(34px,10vw,44px);}
 }
@@ -1024,29 +987,6 @@ a.nc.sg-link:hover .nc-go i{transform:translateX(3px);}
   .reg-bar{flex-wrap:nowrap;gap:12px;padding:11px 24px;}
   .reg-bar .rb-lbl + .rb-lbl{display:none;}
   .rb-count{min-width:0;flex-shrink:1;text-align:right;}
-}
-
-/* ═══ Форма КП: вернуть адаптив base.css ═══
-   Тот же случай, что и с .s10-inner двумя блоками выше: этот файл грузится
-   после base.css и переобъявляет .s10-left/.s10-right/.s10-contact-* без
-   медиазапроса — сверстанные там телефонные значения не доживали до
-   применения. На 390px это давало padding:80px 56px против каталожных
-   48px/20px: 112px из 390 уходило в поля, из-за чего «zakaz@prom-en.com»
-   ломался на две строки, а адрес — на три. Дублируем свёртку base.css. */
-@media (max-width:1024px){
-  .s10-left{border-right:none;border-bottom:1px solid var(--ln2);padding:60px 32px;}
-  .s10-right{padding:60px 32px;}
-  .s10-form-label,.s10-contact-k{font-size:12px;}
-}
-@media (max-width:640px){
-  .s10-left{padding:48px 20px;}
-  .s10-right{padding:40px 20px;}
-  .s10-contact-row{grid-template-columns:90px 1fr;padding:12px 16px;}
-  .s10-contact-k{min-width:0;letter-spacing:.14em;}
-}
-@media (min-width:481px) and (max-width:640px){
-  /* display:contents снял rail-отступ секции — колонки несут rail(20)+ось(20) */
-  .footer-zone .s10-left,.footer-zone .s10-right{padding-left:40px;}
 }
 
 /* ═══ Телефон: аккордеон для s03 «Подбор» и s06 «Области применения» ═══

@@ -111,7 +111,8 @@ get_header();
           </div>
           <div class="cnt-field">
             <label class="cnt-field-label" for="c-topic">Тема обращения</label>
-            <select id="c-topic" name="topic">
+            <?php /* data-select — включает подменяющий список из assets/js/select.js. */ ?>
+            <select id="c-topic" name="topic" data-select>
               <option>Коммерческий запрос / расчёт</option>
               <option>Техническая консультация</option>
               <option>Статус текущего заказа</option>

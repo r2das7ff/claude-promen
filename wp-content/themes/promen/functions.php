@@ -5,7 +5,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PROMEN_VERSION', '0.97.33' );
+define( 'PROMEN_VERSION', '0.97.67' );
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );
@@ -197,6 +197,9 @@ add_action( 'wp_enqueue_scripts', function () {
 
 	// Хром сайта: часы, бургер/drawer + модалка запроса — на всех страницах.
 	wp_enqueue_script( 'promen-chrome', get_theme_file_uri( 'assets/js/chrome.js' ), [], PROMEN_VERSION, [ 'in_footer' => true ] );
+	// Подменяющий выпадающий список: включается атрибутом data-select у <select>,
+	// стили — base.css. Глобально, чтобы новые страницы получали его сами.
+	wp_enqueue_script( 'promen-select', get_theme_file_uri( 'assets/js/select.js' ), [], PROMEN_VERSION, [ 'in_footer' => true ] );
 	wp_enqueue_script( 'promen-request-modal', get_theme_file_uri( 'assets/js/request-modal.js' ), [], PROMEN_VERSION, [ 'in_footer' => true ] );
 	wp_localize_script( 'promen-request-modal', 'promenRM', [
 		'ajaxUrl'    => admin_url( 'admin-post.php' ),

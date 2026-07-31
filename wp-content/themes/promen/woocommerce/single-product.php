@@ -524,7 +524,7 @@ while ( have_posts() ) :
           <?php if ( $steels ) : ?>
           <div class="par-grp">
             <div class="par-grp-name">Марка стали</div>
-            <select class="par-sel" id="matSel">
+            <select class="par-sel" id="matSel" data-select>
               <?php foreach ( $steels as $slug => $name ) : ?>
                 <option value="<?php echo esc_attr( $slug ); ?>"><?php echo esc_html( $name ); ?></option>
               <?php endforeach; ?>
@@ -731,7 +731,17 @@ while ( have_posts() ) :
         <a class="nc" href="<?php echo esc_url( get_term_link( $norm_term ) ); ?>">
           <div class="nc-code"><?php echo esc_html( $norm_term->name ); ?></div>
           <div class="nc-title"><?php echo esc_html( $family ?: 'Норматив изделия' ); ?></div>
-          <div class="nc-desc"><?php echo esc_html( $norm_term->description ? wp_trim_words( $norm_term->description, 24 ) : 'Основной стандарт изделия. Все типоразмеры и требования — на странице норматива.' ); ?></div>
+          <?php
+            /* wp_trim_words вешал многоточие вплотную к точке предложения
+               («Статус Действует.…»). Обрезаем без хвоста и добавляем его
+               сами — только если текст правда урезан. */
+            $nc_full  = trim( (string) $norm_term->description );
+            $nc_short = $nc_full !== '' ? wp_trim_words( $nc_full, 24, '' ) : '';
+            $nc_desc  = $nc_short !== ''
+              ? rtrim( $nc_short, " .,;:" ) . ( mb_strlen( $nc_short ) < mb_strlen( $nc_full ) ? '…' : '.' )
+              : 'Основной стандарт изделия. Все типоразмеры и требования — на странице норматива.';
+          ?>
+          <div class="nc-desc"><?php echo esc_html( $nc_desc ); ?></div>
           <div class="nc-tags"><span class="nc-tag">Базовый</span></div>
           <div class="nc-status"><span class="nc-dot"></span>Действует</div>
         </a>

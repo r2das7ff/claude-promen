@@ -68,10 +68,12 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .hud-block{border:1px solid var(--ln2);padding:16px 20px;position:relative;}
 .hud-block::before{content:'';position:absolute;top:-1px;left:12px;width:20px;height:2px;background:var(--g1);}
 .hud-label{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;}
-.hud-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--ln);}
+/* Кегль строк 11 → 14px (роль «основной текст», BRIEF §3); зазор и перенос
+   ключа — см. комментарий в category-sdt.css. */
+.hud-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:5px 0;border-bottom:1px solid var(--ln);}
 .hud-row:last-child{border-bottom:none;}
-.hud-rk{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.06em;color:var(--blue);}
-.hud-rv{font-family:'DINPro',monospace;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--dark);}
+.hud-rk{font-family:'DINPro',monospace;font-size:14px;letter-spacing:.06em;color:var(--blue);min-width:0;}
+.hud-rv{font-family:'DINPro',monospace;font-size:14px;font-weight:700;letter-spacing:.04em;color:var(--dark);flex:0 0 auto;text-align:right;}
 .hud-rv.live{color:var(--g1);}
 
 /* ── SECTION PATTERN ── */
@@ -99,7 +101,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .ec-code{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .ec-code::before{content:'';width:16px;height:1px;background:var(--g1);}
 .ec-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:21px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);margin-bottom:10px;line-height:1.1;}
-.ec-p{font-size:13px;font-weight:300;line-height:1.75;color:var(--blue);}
+.ec-p{font-size:14px;font-weight:300;line-height:1.75;color:var(--blue);}
 .ec-p strong{font-weight:700;color:var(--dark);}
 .ec-tags{margin-top:12px;display:flex;gap:5px;flex-wrap:wrap;}
 .ec-tag{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border:1px solid var(--ln2);color:var(--g1);}
@@ -172,7 +174,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .nc:hover{border-left-color:var(--g1);background:rgba(30,61,92,.8);}
 .nc-code{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(24px,2.8vw,40px);letter-spacing:-.01em;color:var(--g1);margin-bottom:6px;line-height:1;}
 .nc-title{font-size:13px;font-weight:500;color:var(--white);margin-bottom:7px;line-height:1.42;}
-.nc-desc{font-size:12px;font-weight:300;color:rgba(169,183,198,.65);line-height:1.65;}
+.nc-desc{font-size:14px;font-weight:300;color:rgba(169,183,198,.65);line-height:1.65;}
 .nc-tags{margin-top:12px;display:flex;flex-wrap:wrap;gap:4px;}
 .nc-tag{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid rgba(109,140,166,.2);color:rgba(109,140,166,.6);}
 .nc-status{margin-top:8px;display:flex;align-items:center;gap:6px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(109,140,166,.4);}
@@ -186,7 +188,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .mat-r.exp{background:rgba(30,61,92,.03);}
 .mr-g{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:17px;letter-spacing:.02em;color:var(--dark);line-height:1;}
 .mr-std{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.06em;color:var(--blue);display:block;margin-top:2px;}
-.mr-desc{font-size:12.5px;color:var(--blue);line-height:1.4;}
+.mr-desc{font-size:14px;color:var(--blue);line-height:1.4;}
 .mr-temp{font-family:'DINProCond',monospace;font-weight:700;font-size:15px;color:var(--dark);}
 .mr-pn{font-family:'DINPro',monospace;font-size:12px;color:var(--dark);}
 .mr-apps{display:flex;flex-wrap:wrap;gap:3px;}
@@ -209,7 +211,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .app-c:hover .app-bg{-webkit-text-stroke-color:rgba(109,140,166,.3);}
 .app-code{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;}
 .app-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:19px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);margin-bottom:8px;line-height:1.1;}
-.app-p{font-size:12.5px;font-weight:300;line-height:1.72;color:var(--blue);}
+.app-p{font-size:14px;font-weight:300;line-height:1.72;color:var(--blue);}
 .app-params{margin-top:12px;display:flex;flex-direction:column;gap:4px;}
 .app-pr{display:flex;align-items:center;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--ln);}
 .app-pr:last-child{border-bottom:none;}
@@ -312,45 +314,13 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .fq-a-in li{padding-left:16px;position:relative;}
 .fq-a-in li::before{content:'—';position:absolute;left:0;color:var(--g1);}
 
-/* ── FOOTER ZONE — sticky context для S10 ── */
+/* ── S10: ФОРМА ЗАПРОСА ──
+   Правил здесь нет намеренно. Форма и sticky-каркас .footer-zone целиком
+   описаны в base.css; этот файл грузится позже и при равной специфичности
+   перебивал их устаревшей раскладкой «подпись слева / поле справа» — отсюда
+   росли и компенсирующие медиаблоки, возвращавшие адаптив обратно.
+   Дубли удалены 2026-07-31: правки формы вносить только в base.css. */
 
-.footer-zone .s10 { position: sticky; top: 0; z-index: 5; background: var(--bg); }
-
-/* ── S10: ФОРМА ЗАПРОСА ── */
-.s10{background:var(--bg);} /* геометрия и адаптив — base.css */
-.s10-inner { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; background: var(--bg); }
-.s10-left { padding: 80px 56px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid var(--ln2); }
-
-
-
-
-.s10-h2 { font-family: 'DINProCond', 'DINPro', sans-serif; font-weight: 900; font-size: clamp(38px, 4.5vw, 72px); line-height: .9; letter-spacing: -.015em; text-transform: uppercase; color: var(--dark); margin-bottom: 28px; }
-.s10-sub { font-size: 14px; font-weight: 300; line-height: 1.72; color: var(--blue); max-width: 380px; margin-bottom: 44px; }
-
-.s10-contact-row{display:grid;grid-template-columns:110px 1fr;gap:0;padding:14px 20px;border-bottom:1px solid var(--ln);align-items:center;}
-.s10-contact-k { font-family: 'DINPro', monospace; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--g1); min-width: 100px; }
-.s10-contact-v { font-family: 'DINPro', sans-serif; font-size: 14px; font-weight: 500; color: var(--dark); }
-.s10-right { padding: 80px 56px; display: flex; flex-direction: column; justify-content: center; }
-.s10-form-label { font-family: 'DINPro', monospace; font-size: 10.5px; letter-spacing: .25em; text-transform: uppercase; color: var(--g1); margin-bottom: 24px; opacity: .6; }
-.s10-form { display: flex; flex-direction: column; gap: 0; }
-.s10-field { display: grid; grid-template-columns: 180px 1fr; gap: 0 16px; border-top: 1px solid var(--ln2); align-items: center; transition: background .12s; }
-.s10-field:last-of-type { border-bottom: 1px solid var(--ln2); }
-.s10-field:focus-within { background: rgba(109,140,166,.04); }
-.s10-field-label { font-family: 'DINPro', monospace; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--g1); padding: 14px 0; user-select: none; cursor: text; }
-.s10-field input { border: none; background: transparent; font-family: 'DINPro', sans-serif; font-size: 14px; font-weight: 500; color: var(--dark); padding: 14px 0; outline: none; width: 100%; }
-.s10-field input::placeholder { color: var(--g2); font-weight: 300; }
-.s10-file-row { display: grid; grid-template-columns: 180px 1fr; gap: 0 16px; border-top: 1px solid var(--ln2); align-items: center; padding: 14px 0; }
-.s10-file-label-txt { font-family: 'DINPro', monospace; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--g1); }
-.s10-file-btn { display: inline-flex; align-items: center; gap: 8px; font-family: 'DINPro', monospace; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--g1); border: 1px solid var(--ln2); padding: 8px 14px; cursor: pointer; transition: all .15s; background: transparent; }
-
-.s10-file-name { font-family: 'DINPro', monospace; font-size: 12px; color: var(--g1); margin-left: 10px; opacity: .7; }
-.s10-actions { display: flex; align-items: center; gap: 16px; margin-top: 32px; flex-wrap: wrap; }
-
-
-
-
-
-.s10-note { font-family: 'DINPro', monospace; font-size: 10.5px; letter-spacing: .16em; color: var(--g1); text-transform: uppercase; margin-top: 10px; text-align: center; }
 
 /* ── FOOTER ── */
 
@@ -382,7 +352,6 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
   
   
   
-  .s10-field,.s10-file-row{grid-template-columns:140px 1fr;}
   
   
   
@@ -393,9 +362,6 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 @media(max-width:640px){
   
   
-  .s10-field,.s10-file-row{grid-template-columns:1fr;}
-  .s10-field-label{padding-bottom:0;}
-  .s10-file-row{gap:8px;}
   
   
   
@@ -547,6 +513,15 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 /* Тач-раскладка марок стали — в блоке ≤1024 ниже по файлу; отдельный ≤640
    дублировал те же правила и удалён. */
 .pp-mat-cert{font-family:'DINPro',monospace;font-size:12.5px;font-weight:600;color:var(--dark);white-space:nowrap;}
+/* Кнопка свёртки таблицы характеристик. Строки помечает product.js, скрытие
+   включается только на узких экранах — на десктопе кнопки нет вовсе. */
+.pass-more{display:none;width:100%;padding:12px 20px;border:0;border-top:1px solid var(--ln);background:none;cursor:pointer;
+  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);text-align:left;transition:background .12s,color .12s;}
+.pass-more:hover{background:var(--g1b);color:var(--dark);}
+@media (max-width:1024px){
+  .pass-more{display:block;min-height:44px;}
+  .pass-card.is-collapsed .pp-row.pp-extra{display:none;}
+}
 .pass-ft{padding:12px 20px;border-top:1px solid var(--ln2);display:flex;justify-content:space-between;align-items:center;background:var(--bg);}
 .pass-status{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:8px;}
 .pass-status::before{content:'';width:6px;height:6px;border-radius:50%;background:#4caf50;animation:blink 1.8s step-end infinite;}
@@ -581,7 +556,15 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .rel-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:17px;text-transform:uppercase;color:var(--dark);margin-bottom:6px;line-height:1.05;}
 .rel-norm{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--blue);}
 @media(max-width:1100px){.prod-hero{grid-template-columns:1fr;}.bp-inner{grid-template-columns:1fr;}.qc-pass-grid{grid-template-columns:1fr;}.rel-grid{grid-template-columns:1fr 1fr;}.prod-qc-grid{grid-template-columns:1fr;}.prod-qc-right{padding:36px 32px 48px;}}
-@media(max-width:900px){.prod-hero::after{display:none;}.rel-grid{grid-template-columns:1fr;}.bp-dual{grid-template-columns:1fr;}.sticky-pass{padding:10px 20px;}.sticky-pass-k{display:none;}.docs-grid{grid-template-columns:1fr;}}
+/* minmax(0,1fr), а не 1fr: у .rel-h стоит white-space:nowrap, из-за чего
+   min-content колонки равнялся длине заголовка — на 375px колонка выходила
+   365px при контейнере 327px, и карточки обрезались правым краем экрана. */
+@media(max-width:900px){.prod-hero::after{display:none;}.rel-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.rel-c{min-width:0;}.bp-dual{grid-template-columns:1fr;}.sticky-pass{padding:10px 20px;}.sticky-pass-k{display:none;}.docs-grid{grid-template-columns:1fr;}}
+/* Связанные позиции: на планшете две колонки, на телефоне одна. Заголовку
+   в узкой карточке нужен перенос — в одну строку с многоточием от названия
+   оставалась половина. */
+@media(max-width:1100px){.rel-c .rel-h{white-space:normal;}}
+@media(max-width:640px){.rel-grid{grid-template-columns:minmax(0,1fr);}}
 
 /* essence strip */
 .prod-essence{border-bottom:1px solid var(--ln2);}
@@ -590,11 +573,12 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .bp-dual{display:grid;grid-template-columns:var(--split-even);gap:0;min-height:480px;}
 /* Дубль адаптива: правило на ≤900 объявлено выше базового (строка ~567) и при
    равной специфичности ему проигрывало — панель чертежа оставалась в две
-   колонки, и .bp-side уезжал за край .bp-panel с overflow:hidden. */
+   колонки, и .bp-side уезжал за край .bp-panel с overflow:hidden.
+   Работает только то, что базовые правила не переобъявляют: сетка и границы.
+   Поля колонок — в блоке в конце файла, иначе их так же перебивает. */
 @media(max-width:900px){
-  .bp-dual{grid-template-columns:1fr;min-height:0;}
-  .bp-photo-wrap{border-right:none;border-bottom:1px solid rgba(109,140,166,.2);min-height:0;}
-  .bp-side{padding:24px 20px 28px;}
+  .bp-dual{grid-template-columns:1fr;}
+  .bp-photo-wrap{border-right:none;border-bottom:1px solid rgba(109,140,166,.2);}
 }
 .bp-photo-wrap{position:relative;border-right:1px solid rgba(109,140,166,.2);padding:28px 32px;display:flex;flex-direction:column;justify-content:center;align-items:stretch;min-height:480px;}
 .bp-photo{border:1px solid rgba(109,140,166,.28);background:rgba(15,42,68,.45);padding:12px;position:relative;}
@@ -611,17 +595,17 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 
 /* premium QC (hero s8 pattern) */
 .prod-qc-grid{display:grid;grid-template-columns:var(--split-even);gap:0;min-height:520px;}
-/* Адаптив продублирован ЗДЕСЬ намеренно: правило на ≤1100 объявлено выше
+/* Адаптив сетки продублирован ЗДЕСЬ намеренно: правило на ≤1100 объявлено выше
    базового (строка ~550), поэтому при равной специфичности проигрывало ему
    и секция никогда не сворачивалась в одну колонку — правый блок уезжал
-   за край .qc-wrap с overflow:hidden и обрезался. */
+   за край .qc-wrap с overflow:hidden и обрезался.
+   Поля колонок в этом блоке держать НЕЛЬЗЯ: .prod-qc-left/.prod-qc-right
+   объявлены ниже по файлу и перебивали их — см. блок в конце файла. */
 @media(max-width:1100px){
   .prod-qc-grid{grid-template-columns:1fr;}
-  .prod-qc-left{border-right:none;border-bottom:1px solid rgba(109,140,166,.12);padding:36px 32px 40px;}
-  .prod-qc-right{padding:36px 32px 48px;}
 }
 .prod-qc-left{padding:48px 56px 56px;border-right:1px solid rgba(109,140,166,.12);display:flex;flex-direction:column;gap:36px;}
-.prod-qc-lead{font-size:13.5px;font-weight:300;line-height:1.75;color:rgba(169,183,198,.75);max-width:420px;border-left:2px solid rgba(109,140,166,.22);padding-left:16px;}
+.prod-qc-lead{font-size:15px;font-weight:300;line-height:1.75;color:rgba(169,183,198,.75);max-width:420px;border-left:2px solid rgba(109,140,166,.22);padding-left:16px;}
 .prod-qc-route-hd{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);opacity:.45;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
 .prod-qc-route-hd::before{content:'';width:20px;height:1px;background:var(--g1);opacity:.4;}
 .pq-item{display:grid;grid-template-columns:16px 38px 1fr auto;align-items:center;gap:0 10px;padding:12px 4px 12px 0;border-top:1px solid rgba(200,208,216,.07);cursor:default;transition:background .2s;}
@@ -631,7 +615,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .pq-item.active .pq-dot{border-color:var(--g1);background:rgba(109,140,166,.2);box-shadow:0 0 6px rgba(109,140,166,.45);}
 .pq-num{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;color:rgba(109,140,166,.38);}
 .pq-item.active .pq-num{color:var(--g1);}
-.pq-name{font-family:'DINPro',monospace;font-size:13px;font-weight:500;color:rgba(109,140,166,.6);letter-spacing:.015em;transition:color .2s;}
+.pq-name{font-family:'DINPro',monospace;font-size:14px;font-weight:500;color:rgba(109,140,166,.6);letter-spacing:.015em;transition:color .2s;}
 .pq-item:hover .pq-name,.pq-item.active .pq-name{color:var(--g2);}
 .pq-ok{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:rgba(109,140,166,.28);}
 .pq-item.active .pq-ok{color:var(--g1);}
@@ -680,7 +664,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .doc-dl:hover{border-color:var(--g1);background:var(--g1b);}
 .doc-dl-n{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:26px;color:var(--g2);line-height:1;flex-shrink:0;width:36px;}
 .doc-dl-t{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px;}
-.doc-dl-d{font-size:12px;font-weight:300;line-height:1.62;color:var(--blue);}
+.doc-dl-d{font-size:14px;font-weight:300;line-height:1.62;color:var(--blue);}
 .doc-dl-fmt{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1);margin-top:8px;display:inline-block;border:1px solid var(--ln2);padding:2px 6px;}
 
 /* sticky config bar */
@@ -706,7 +690,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .kb-panel.kp-active{display:block;}
 .kb-lead{max-width:720px;margin-bottom:32px;}
 .kb-lead-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:21px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);margin-bottom:9px;line-height:1.05;}
-.kb-lead-p,.kb-intro-p{font-size:13.5px;font-weight:300;line-height:1.8;color:var(--blue);}
+.kb-lead-p,.kb-intro-p{font-size:15px;font-weight:300;line-height:1.8;color:var(--blue);}
 .kb-intro-p{max-width:760px;margin-bottom:28px;}
 .kb-intro-p strong,.kb-lead-p strong{font-weight:700;color:var(--dark);}
 .kb-type-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--ln2);margin-bottom:36px;}
@@ -714,7 +698,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .kb-type:hover{background:var(--bg);}
 .kb-type-badge{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:14px;color:var(--g1);border:1px solid var(--g1);display:inline-block;padding:2px 8px;margin-bottom:10px;line-height:1.4;letter-spacing:.06em;}
 .kb-type-title{font-family:'DINPro',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dark);margin-bottom:9px;}
-.kb-type-body{font-size:12.5px;font-weight:300;line-height:1.72;color:var(--blue);}
+.kb-type-body{font-size:14px;font-weight:300;line-height:1.72;color:var(--blue);}
 .kb-type-body strong{font-weight:700;color:var(--dark);}
 .kb-type-tags{margin-top:12px;display:flex;flex-wrap:wrap;gap:3px;}
 .kb-tag{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--ln2);color:var(--g1);}
@@ -726,19 +710,23 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .kb-compare-row:last-child{border-bottom:none;}
 .kb-compare-row:hover{background:var(--bg2);}
 .kb-cmp-k{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1);padding:10px 14px;border-right:1px solid var(--ln2);background:var(--bg2);font-weight:700;}
-.kb-cmp-v{font-size:12px;font-weight:300;color:var(--dark);padding:10px 14px;border-right:1px solid var(--ln);}
+.kb-cmp-v{font-size:14px;font-weight:300;color:var(--dark);padding:10px 14px;border-right:1px solid var(--ln);}
 .kb-cmp-v:last-child{border-right:none;}
 .kb-cmp-v strong{font-weight:700;}
 .kb-2col{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
 .kb-3col{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
 .kb-col-title{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--dark);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--dark);}
-.kb-col-sub{font-size:13px;font-weight:300;line-height:1.75;color:var(--blue);margin-bottom:14px;}
+.kb-col-sub{font-size:14px;font-weight:300;line-height:1.75;color:var(--blue);margin-bottom:14px;}
 .kb-col-sub strong{font-weight:700;color:var(--dark);}
 .kb-params{border:1px solid var(--ln2);display:flex;flex-direction:column;}
-.kb-param{display:grid;grid-template-columns:185px 1fr;border-bottom:1px solid var(--ln);align-items:start;}
+/* stretch, а не start: у ячейки ключа свои фон и правая граница, и при
+   start они обрывались на её собственной высоте — серая плашка не доходила
+   до низа строки, разделитель колонок повисал в воздухе. Заметно стало после
+   перевода значений на 14px: строки выросли, ключ остался прежним. */
+.kb-param{display:grid;grid-template-columns:185px 1fr;border-bottom:1px solid var(--ln);align-items:stretch;}
 .kb-param:last-child{border-bottom:none;}
 .kb-param-key{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dark);padding:11px 16px;font-weight:700;border-right:1px solid var(--ln2);background:var(--bg2);line-height:1.5;}
-.kb-param-val{font-size:12.5px;font-weight:300;color:var(--blue);padding:11px 16px;line-height:1.65;}
+.kb-param-val{font-size:14px;font-weight:300;color:var(--blue);padding:11px 16px;line-height:1.65;}
 .kb-param-val strong{font-weight:700;color:var(--dark);}
 .kb-norm-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 .kb-norm-group{border:1px solid var(--ln2);}
@@ -748,21 +736,21 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .kb-norm-item:last-child{border-bottom:none;}
 .kb-norm-item:hover{background:var(--bg2);}
 .kb-norm-code{font-family:'DINPro',monospace;font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--dark);padding:9px 14px;border-right:1px solid var(--ln);}
-.kb-norm-desc{font-size:12px;font-weight:300;color:var(--blue);padding:9px 14px;line-height:1.55;}
+.kb-norm-desc{font-size:14px;font-weight:300;color:var(--blue);padding:9px 14px;line-height:1.55;}
 .kb-mat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--ln2);}
 .kb-mat{background:var(--bg2);padding:18px 16px;transition:background .15s;}
 .kb-mat:hover{background:var(--bg);}
 .kb-mat-grade{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:22px;letter-spacing:-.01em;color:var(--dark);line-height:1;margin-bottom:3px;}
 .kb-mat-std{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;color:var(--g1);margin-bottom:8px;}
 .kb-mat-range{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.04em;color:var(--dark);font-weight:700;padding:5px 0;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln);margin-bottom:8px;}
-.kb-mat-apps{font-size:12px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-mat-apps{font-size:14px;font-weight:300;color:var(--blue);line-height:1.6;}
 .kb-doclist{border:1px solid var(--ln2);display:flex;flex-direction:column;}
 .kb-doc-item{padding:12px 18px;border-bottom:1px solid var(--ln);transition:background .12s;}
 .kb-doc-item:last-child{border-bottom:none;}
 .kb-doc-item:hover{background:var(--bg2);}
 .kb-doc-item.kb-aes{border-left:2px solid var(--g1);padding-left:16px;}
 .kb-doc-name{font-family:'DINPro',monospace;font-size:11px;font-weight:700;letter-spacing:.07em;color:var(--dark);margin-bottom:3px;}
-.kb-doc-desc{font-size:12.5px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-doc-desc{font-size:14px;font-weight:300;color:var(--blue);line-height:1.6;}
 .kb-doc-badge{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:1px 5px;border:1px solid var(--g1);color:var(--g1);margin-left:8px;vertical-align:middle;}
 .kb-checklist{border:1px solid var(--ln2);display:flex;flex-direction:column;}
 .kb-check{display:flex;gap:14px;padding:13px 16px;border-bottom:1px solid var(--ln);align-items:flex-start;transition:background .12s;}
@@ -770,7 +758,7 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .kb-check:hover{background:var(--bg2);}
 .kb-check-n{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:18px;color:var(--g2);flex-shrink:0;line-height:1;margin-top:2px;}
 .kb-check-title{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);font-weight:700;margin-bottom:4px;}
-.kb-check-body{font-size:12px;font-weight:300;color:var(--blue);line-height:1.62;}
+.kb-check-body{font-size:14px;font-weight:300;color:var(--blue);line-height:1.62;}
 .kb-check-body strong{font-weight:700;color:var(--dark);}
 .kb-factors{border:1px solid var(--ln2);display:flex;flex-direction:column;}
 .kb-factor{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ln);align-items:flex-start;transition:background .12s;}
@@ -778,14 +766,14 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .kb-factor:hover{background:var(--bg2);}
 .kb-factor-ic{font-family:'DINProCond',sans-serif;font-weight:900;font-size:16px;color:var(--g1);flex-shrink:0;width:18px;text-align:center;line-height:1;margin-top:3px;}
 .kb-factor-name{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);font-weight:700;margin-bottom:3px;}
-.kb-factor-note{font-size:12px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-factor-note{font-size:14px;font-weight:300;color:var(--blue);line-height:1.6;}
 .kb-errors{border:1px solid var(--ln2);display:flex;flex-direction:column;}
 .kb-err{display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ln);align-items:flex-start;transition:background .12s;}
 .kb-err:last-child{border-bottom:none;}
 .kb-err:hover{background:rgba(109,140,166,.04);}
 .kb-err-ic{font-family:'DINPro',monospace;font-size:11px;font-weight:700;color:var(--g1);flex-shrink:0;width:14px;text-align:center;line-height:1;margin-top:3px;opacity:.7;}
 .kb-err-title{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);font-weight:700;margin-bottom:3px;}
-.kb-err-note{font-size:12px;font-weight:300;color:var(--blue);line-height:1.6;}
+.kb-err-note{font-size:14px;font-weight:300;color:var(--blue);line-height:1.6;}
 @media(max-width:1100px){
   .kb-type-grid,.kb-mat-grid{grid-template-columns:repeat(2,1fr);}
   .kb-3col{grid-template-columns:1fr 1fr;}
@@ -845,12 +833,21 @@ a.nc{display:block;}
    Отступ 16px = левый padding ячеек .ptbl: подпись и кнопка вставали вплотную
    к краю таблицы, на 16px левее значений первой колонки. */
 .cfg-tbl-note{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);opacity:.75;margin-top:10px;margin-left:16px;}
-.series-more{
-  display:inline-flex;align-items:center;gap:8px;margin:16px 0 4px 16px;
+/* .norm-more-btn («все марки стали», секция 05) базово описан только в
+   category-sdt.css, а он на карточке товара не подключается: кнопка выходила
+   системной — чёрный текст 13px без рамки и полей. Одеваем как соседнюю
+   «Показать все …».
+   Отступ слева разный и это намеренно: .norm-more-btn — прямой ребёнок
+   .s-body, он равняется по левому краю контента секции, как все кнопки
+   «показать ещё» в каталоге; .series-more лежит внутри таблицы и равняется
+   по значениям её первой колонки. */
+.series-more,.norm-more-btn{
+  display:inline-flex;align-items:center;gap:8px;margin:16px 0 4px;
   font-family:'DINPro',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--g1);border:1px solid var(--ln2);padding:10px 18px;transition:all .15s;
+  color:var(--g1);border:1px solid var(--ln2);background:none;padding:10px 18px;cursor:pointer;transition:all .15s;
 }
-.series-more:hover{background:var(--bg2);color:var(--dark);border-color:var(--g1);}
+.series-more{margin-left:16px;}
+.series-more:hover,.norm-more-btn:hover{background:var(--bg2);color:var(--dark);border-color:var(--g1);}
 /* Реестр размеров серии (s03): кнопку добавляет product.js в .mat-tbl-wrap
    сразу за таблицей — без воздуха она липла к последней строке. */
 .mat-tbl-wrap .series-more{margin:22px 0 8px 16px;}
@@ -927,32 +924,88 @@ a.nc{display:block;}
   .series-more,.norm-more-btn{min-height:44px;}
 }
 
+/* ── Секция 07: поля колонок ──
+   Объявлены после базовых .prod-qc-left/.prod-qc-right — иначе не работают
+   (см. комментарий у блока ≤1100 выше). До этого на телефоне сохранялись
+   десктопные 56/48px: бланк паспорта стоял на 48…327 при сетке страницы
+   24…351 и не совпадал даже с заголовком собственной секции. */
+@media (max-width:1100px){
+  .prod-qc-left{border-right:none;border-bottom:1px solid rgba(109,140,166,.12);padding:36px 32px 40px;}
+  .prod-qc-right{padding:36px 32px 48px;}
+}
+/* Ниже 900 у секций поля 24px (.s-body) — держим ту же сетку, иначе бланк
+   уже остального контента на 8px с каждой стороны. */
+@media (max-width:900px){
+  .prod-qc-left{padding:32px 24px 36px;}
+  .prod-qc-right{padding:32px 24px 44px;}
+}
+/* Карусель строится один раз на ≤640 и переживает поворот экрана: выше
+   порога возвращаем страницам прозрачность, а точки прячем. */
+@media (min-width:641px){
+  .pq-page{display:contents;}
+  .pq-dots{display:none;}
+}
 @media (max-width:640px){
-  /* Паспорт изделия: на 132px-колонку ключа остаётся ~190px под значение —
-     чипы марок стали влезали по два в ряд и раздували строку. Кладём ключ
-     над значением, как в остальных таблицах характеристик темы. */
-  .pp-row{grid-template-columns:1fr;gap:6px;align-items:start;padding:12px 44px 12px 20px;}
+  .prod-qc-left{padding:28px 24px 32px;}
+  .prod-qc-right{padding:28px 24px 40px;}
+
+  /* Подвал бланка: статус и приписка в столбик по левому краю. В строку они
+     не помещались, и приписка жалась к правому краю в две строки. */
+  .pq-ft{flex-direction:column;align-items:flex-start;gap:8px;}
+  .pq-meta{text-align:left;font-size:10px;letter-spacing:.08em;white-space:nowrap;}
+
+  /* ── Цифровой паспорт (S07): страницы по две строки, листаются вбок ──
+     Восемь строк подряд занимали почти экран. Страницы собирает product.js,
+     здесь только раскладка: тело — снап-лента, страница во всю ширину.
+     Высота ленты равна самой высокой странице (flex растягивает остальные),
+     поэтому при листании бланк не «дышит». */
+  /* Колонка «1fr» = minmax(auto,1fr): её минимум тянется за min-content, а он
+     у снап-ленты равен сумме страниц — колонка раздувалась до 857px и бланк
+     обрезался overflow:hidden. Ограничиваем минимум нулём по всей цепочке. */
+  .prod-qc-grid{grid-template-columns:minmax(0,1fr);}
+  .prod-qc-right,.pq-pass{min-width:0;}
+  #qcPassport .pq-body{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  #qcPassport .pq-body::-webkit-scrollbar{display:none;}
+  #qcPassport .pq-page{flex:0 0 100%;min-width:0;scroll-snap-align:start;}
+  /* Ключ 120px на 375px оставлял значению 150px — «09Г2С · серт. 3.1»
+     переносилось в три строки. */
+  #qcPassport .pq-row{grid-template-columns:96px 1fr 20px;padding:12px 20px;}
+  #qcPassport .pq-page:last-child .pq-row:last-child{border-bottom:none;}
+  .pq-dots{display:flex;justify-content:center;gap:8px;padding:16px 0 14px;border-top:1px solid rgba(200,208,216,.055);}
+  .pq-dot-nav{width:7px;height:7px;padding:0;border:0;border-radius:50%;background:rgba(109,140,166,.35);cursor:pointer;transition:background .2s,transform .2s;}
+  .pq-dot-nav.on{background:var(--g1);transform:scale(1.35);}
+
+  /* Паспорт изделия. Ключ над значением давал 75px на строку — четырнадцать
+     строк занимали почти целый экран сверх фото и заголовка. Возвращаем две
+     колонки: 118px хватает всем подписям, кроме «Уплотн. поверхность»
+     (переносится в две строки). В столбик остаётся только материал — там
+     чипы марок стали, им нужна вся ширина. */
+  .pp-row{grid-template-columns:118px 1fr;column-gap:12px;row-gap:4px;align-items:center;padding:10px 40px 10px 20px;}
+  /* «Поднадзорность» — 14 знаков одним словом, на .18em не влезала в колонку
+     и наезжала на значение; перенести неразрывное слово некуда. */
+  .pp-k{letter-spacing:.12em;}
+  .pp-row[data-field="material"]{grid-template-columns:1fr;align-items:start;padding-top:12px;padding-bottom:12px;}
+  .pp-row[data-field="material"] .pp-k{grid-column:1 / -1;}
   /* Тач: иконка копирования показана всегда — навести пальцем нельзя. */
-  .pp-row::after{opacity:.5;top:14px;margin-top:0;}
+  .pp-row::after{opacity:.5;}
+  .pp-row[data-field="material"]::after{top:18px;margin-top:0;}
   .pass-copy-all{min-height:44px;}
 }
 
 /* Планшет — тач: см. комментарий в catalog.css */
 @media (max-width:1024px){
   .par-sel{font-size:16px;min-height:44px;padding:10px 12px;}
-  .hero-crumb a{min-height:44px;display:inline-flex;align-items:center;}
+  /* Крошкам 44px не даём: цепочка из шести звеньев переносится в две строки,
+     и блок раздувался до 96px под 11px текста. 32px хватает пальцу на
+     второстепенной навигации, ряды сводим вплотную. */
+  .hero-crumb a{min-height:32px;display:inline-flex;align-items:center;}
+  .hero-crumb{gap:0 8px;}
   .dn-b,a.dn-b{min-height:44px;display:inline-flex;align-items:center;justify-content:center;}
   .ptbl td a{min-height:44px;}
   .sticky-pass-cta,.series-more,.norm-more-btn{min-height:44px;}
   .om-close{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:0;}
 }
 
-/* Форма КП: этот файл грузится после base.css и переобъявляет .s10-inner
-   в две колонки без медиазапроса, чем убивал адаптив из base.css — на
-   планшете правая колонка уезжала за край секции. Дублируем свёртку. */
-@media (max-width:1024px){
-  .s10-inner{grid-template-columns:1fr;min-height:auto;}
-}
 
 /* Марки стали — чипы и на планшете: инлайновые кнопки давали тач-цели
    14×17px. Раскладку строки паспорта при этом не трогаем — на планшете
@@ -979,11 +1032,18 @@ a.nc{display:block;}
    разрастался до 147px и закрывал шестую часть экрана.
    Возвращаем адаптив и держим панель в одну строку. */
 @media (max-width:900px){
-  .sticky-pass{left:0;padding:10px 20px;gap:12px;}
+  /* 24px — левое поле сетки страницы на телефоне. */
+  .sticky-pass{left:0;padding:10px 24px;gap:12px;}
   .sticky-pass-sep{display:none;}
-  /* Название — единственный тянущийся элемент; не влезло — многоточие. */
+  /* Название — единственный тянущийся элемент. Две строки помещаются в высоту
+     кнопки (2×17px против 44px), поэтому бар от переноса не растёт, а имя
+     конфигурации видно целиком; третья строка обрезается многоточием. */
   .sticky-pass-v{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  #stickyLine{flex:1 1 auto;font-size:14px;}
+  #stickyLine{flex:1 1 auto;font-size:14px;white-space:normal;line-height:1.2;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  /* Кнопка тянется до 44px тач-цели: без flex-центрирования однострочная
+     подпись прижималась к верхнему паддингу вместо середины. */
+  .sticky-pass-cta{display:inline-flex;align-items:center;justify-content:center;text-align:center;}
   #stickyMass{flex:0 0 auto;}
   .sticky-pass-cta{flex:0 0 auto;}
 }
@@ -991,6 +1051,18 @@ a.nc{display:block;}
   /* Под 320–420px названию нужны все оставшиеся пиксели: масса продублирована
      в паспорте изделия строкой ниже, CTA — нет. */
   #stickyMass{display:none;}
+}
+@media (min-width:641px) and (max-width:1024px){
+  /* Панель растянута от x=0, а под ней видна лента с годом шириной 20px:
+     на планшете название вставало вплотную к её краю. Сдвигаем на левое
+     поле сетки страницы (rail 20 + ось 24). */
+  .sticky-pass{padding-left:44px;}
+}
+@media (max-width:360px){
+  /* На 320px кнопка забирает 181 из 320, названию остаётся 87 — в две строки
+     не влезает даже короткое. Ужимаем подпись кнопки: тач-цель (44px) держит
+     высота, не ширина. */
+  .sticky-pass-cta{padding:8px 10px;font-size:10px;letter-spacing:.08em;}
 }
 
 /* ═══ Пары «подпись — значение» во флексе со space-between ═══
@@ -1037,7 +1109,19 @@ a.nc{display:block;}
    их из viewBox — работает для любой категории, где viewBox другой). */
 @media (max-width:900px){
   .bp-photo-wrap{min-height:0;}
+  .bp-dual{min-height:0;}
   .bp-schematic svg{flex:0 0 auto;height:auto;}
+}
+
+/* ═══ Чертёж: поля колонок по сетке страницы ═══
+   Объявлять их выше нельзя — базовые .bp-photo-wrap/.bp-side стоят после
+   раннего блока ≤900 и перебивают его (см. комментарий там). Держались
+   десктопные 32 и 36px: на телефоне схема начиналась на 33px, теги на 37px
+   при сетке 24px; на планшете — 53 и 57px при сетке 44px.
+   23px, а не 24: панель несёт рамку в 1px, и та уже стоит на краю сетки. */
+@media (max-width:900px){
+  .bp-photo-wrap{padding:24px 23px;}
+  .bp-side{padding:24px 23px 28px;}
 }
 
 /* ═══ Телефон: шапка героя ═══ */
@@ -1067,7 +1151,10 @@ a.nc{display:block;}
      значение слева, подпись справа, волосяная линейка между строками — тот
      же язык, что у строк паспорта изделия ниже. */
   .hero-params{flex-direction:column;gap:0;margin-top:24px;padding-top:0;}
-  .hp,.hp:last-child{
+  /* .hp + .hp из десктопных правил перебивал бы padding ниже по специфичности:
+     средняя плитка получала отступ 20px и «R 1200» стояло со сдвигом
+     относительно соседних значений. */
+  .hp,.hp + .hp,.hp:last-child{
     flex:0 0 auto;display:flex;align-items:baseline;justify-content:space-between;
     gap:16px;padding:11px 0;border-right:none;border-left:none;
     border-bottom:1px solid var(--ln);
@@ -1102,27 +1189,6 @@ a.nc{display:block;}
   .hero-h1{letter-spacing:-.02em;}
 }
 
-/* ═══ Форма КП: вернуть адаптив base.css ═══
-   Тот же случай, что и с .s10-inner в блоке выше: этот файл грузится после
-   base.css и переобъявляет .s10-left/.s10-right/.s10-contact-* без
-   медиазапроса — телефонные значения оттуда не доживали. На 390px это
-   давало padding:80px 56px против каталожных 48px/20px и колонку значения
-   контактов в 125px: адрес ломался на четыре строки. Дублируем свёртку. */
-@media (max-width:1024px){
-  .s10-left{border-right:none;border-bottom:1px solid var(--ln2);padding:60px 32px;}
-  .s10-right{padding:60px 32px;}
-  .s10-form-label,.s10-contact-k{font-size:12px;}
-}
-@media (max-width:640px){
-  .s10-left{padding:48px 20px;}
-  .s10-right{padding:40px 20px;}
-  .s10-contact-row{grid-template-columns:90px 1fr;padding:12px 16px;}
-  .s10-contact-k{min-width:0;letter-spacing:.14em;}
-}
-@media (min-width:481px) and (max-width:640px){
-  /* display:contents снял rail-отступ секции — колонки несут rail(20)+ось(20) */
-  .footer-zone .s10-left,.footer-zone .s10-right{padding-left:40px;}
-}
 
 /* ═══ Телефон: сокращаем длину страницы ═══ */
 @media (max-width:640px){
@@ -1135,14 +1201,8 @@ a.nc{display:block;}
   /* S06: аккордеон. Классы pm-acc/pm-acc-open навешивает product.js
      (только ≤640px), там же причина и ARIA. Тело прячем через
      :not(.pm-acc-open), а не переключаем display на самом блоке — иначе
-     при раскрытии потерялся бы исходный тип отображения. */
-  .pm-acc-hd{position:relative;cursor:pointer;padding-right:36px;min-height:44px;}
-  .pm-acc-hd::after{
-    content:'';position:absolute;right:16px;top:calc(50% - 4px);
-    width:7px;height:7px;border-right:1.4px solid var(--g1);border-bottom:1.4px solid var(--g1);
-    transform:rotate(45deg);transition:transform .2s ease;
-  }
-  .pm-acc.pm-acc-open > .pm-acc-hd::after{transform:rotate(-135deg);}
+     при раскрытии потерялся бы исходный тип отображения.
+     Общие стили заголовка и стрелки — в блоке ≤900 ниже. */
   .app-c.pm-acc:not(.pm-acc-open) > .app-p{display:none;}
   .app-c .pm-acc-hd{display:flex;align-items:center;margin-bottom:0;}
   .app-c.pm-acc-open > .app-p{margin-top:8px;}
@@ -1154,4 +1214,31 @@ a.nc{display:block;}
 @media (min-width:641px){
   /* На десктопе и планшете таблица марок не урезана — кнопка не нужна. */
   .norm-more-btn--m{display:none;}
+}
+
+/* ═══ Телефон и планшет: свёртка длинных блоков карточки ═══
+   Страница на 375px — 22 экрана. Секции, которые дают больше всего высоты
+   при наименьшей ценности при первом чтении, сворачиваем: реестр серии
+   дублирует таблицу конфигуратора, документы и база знаний читаются по
+   заголовкам, связанные позиции удобнее листать вбок. */
+@media (max-width:900px){
+  /* Общая механика аккордеона: заголовок-кнопка со стрелкой. Классы
+     pm-acc/pm-acc-open навешивает product.js, там же ARIA и причины.
+     Тач-цель держит сама карточка (клик на ней, см. product.js), поэтому
+     заголовку min-height не нужен — он только раздувал плашку. */
+  .pm-acc{cursor:pointer;}
+  .pm-acc-hd{position:relative;cursor:pointer;padding-right:36px;}
+  .pm-acc-hd::after{
+    content:'';position:absolute;right:16px;top:calc(50% - 4px);
+    width:7px;height:7px;border-right:1.4px solid var(--g1);border-bottom:1.4px solid var(--g1);
+    transform:rotate(45deg);transition:transform .2s ease;
+  }
+  .pm-acc.pm-acc-open > .pm-acc-hd::after{transform:rotate(-135deg);}
+
+  /* S08: текстовая колонка карточки — flex-элемент без flex-grow, её ширина
+     шла по контенту, из-за чего у коротких названий блок не добирал ширину.
+     Номер и заголовок — по общей базовой линии. */
+  .doc-dl > div{flex:1 1 auto;min-width:0;}
+  .doc-dl{align-items:baseline;padding:14px 22px;}
+  .doc-dl-n{line-height:1;}
 }

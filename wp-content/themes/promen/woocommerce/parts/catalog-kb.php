@@ -230,7 +230,7 @@ defined( 'ABSPATH' ) || exit;
           </div>
         </div>
         <div>
-          <div class="kb-col-title">Расширенный пакет АЭС <span style="font-weight:400;font-size:10px;color:var(--g1);">по НП-045-18</span></div>
+          <div class="kb-col-title">Расширенный пакет АЭС <span style="font-weight:400;font-size:11px;color:var(--g1);">по НП-045-18</span></div>
           <div class="kb-doclist">
             <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Программа контроля качества</div><div class="kb-doc-desc">Индивидуальная программа НК для каждой категории трубопровода, согласованная с заказчиком до запуска в производство.</div></div>
             <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Карты идентификации и прослеживаемости</div><div class="kb-doc-desc">От заготовки до готовой детали. Номер плавки, номер детали, ссылки на все протоколы контроля.</div></div>

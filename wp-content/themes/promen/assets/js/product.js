@@ -240,6 +240,50 @@
     setSteel(btn.getAttribute('data-steel'));
   });
 
+  /*
+   * Таблица характеристик на узком экране: у СДТ это 12–15 строк, у фланцев
+   * до 15 — карточка вырастает до 700px и отодвигает всё содержимое страницы.
+   * Оставляем шапку серии (норматив, обозначение, тип, типоразмер, диаметр),
+   * остальное — по кнопке. Строку материала не прячем никогда: это не справка,
+   * а переключатель марки, от которого зависят артикул и форма заявки.
+   * Скрытие гейтится медиазапросом в CSS — на десктопе кнопки нет и все
+   * строки видны, поэтому обработчик resize не нужен.
+   */
+  (function () {
+    var card = document.getElementById('passCard');
+    if (!card) return;
+    var body = card.querySelector('.pass-body');
+    if (!body) return;
+    var rows = [].slice.call(body.querySelectorAll('.pp-row'));
+    var KEEP = 5;
+    var extra = rows.filter(function (r, i) { return i >= KEEP && r.getAttribute('data-field') !== 'material'; });
+    if (extra.length < 2) return;
+
+    extra.forEach(function (r) { r.classList.add('pp-extra'); });
+    card.classList.add('is-collapsed');
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pass-more';
+    btn.setAttribute('aria-expanded', 'false');
+    // Формы держим локально: блок стоит выше объявления общих констант
+    // в файле, и на момент вызова глобальная переменная ещё undefined.
+    var CH = ['характеристика', 'характеристики', 'характеристик'];
+    function label() {
+      return card.classList.contains('is-collapsed')
+        ? 'Ещё ' + extra.length + ' ' + promenPlural(extra.length, CH) + ' ↓'
+        : 'Свернуть ↑';
+    }
+    btn.textContent = label();
+    body.appendChild(btn);
+
+    btn.addEventListener('click', function () {
+      var collapsed = card.classList.toggle('is-collapsed');
+      btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      btn.textContent = label();
+    });
+  })();
+
   // ── Копирование характеристик ───────────────────────────────────────
   // Клик по строке кладёт значение в буфер, кнопка в подвале — всю таблицу
   // как TSV (вставляется в Excel и спецификацию одной вставкой).
@@ -464,26 +508,49 @@ promenHideEmptyCols(document.querySelector('.series-full'));
   applyFilter(null);
 })();
 
-/* Реестр размеров серии: сворачиваем длинный список (ссылки остаются в DOM — SEO не страдает). */
+/*
+ * Реестр размеров серии: сворачиваем длинный список (ссылки остаются в DOM —
+ * SEO не страдает). На телефоне и планшете лимит короче: двадцать строк там
+ * дают экран с лишним таблицы, которую пролистывают вслепую, — показываем
+ * пять и даём развернуть. Строку текущей позиции (.on) не прячем никогда.
+ */
 (function () {
   var tbl = document.querySelector('.series-full');
   if (!tbl) return;
-  var limit = parseInt(tbl.dataset.collapse || '20', 10);
-  var rows = tbl.querySelectorAll('tbody tr');
-  if (rows.length <= limit) return;
-  var hidden = 0;
-  rows.forEach(function (tr, i) {
-    if (i >= limit && !tr.classList.contains('on')) { tr.style.display = 'none'; hidden++; }
-  });
+  var deskLimit = parseInt(tbl.dataset.collapse || '20', 10);
+  var mqNarrow = window.matchMedia('(max-width:1024px)');
+  var rows = Array.prototype.slice.call(tbl.querySelectorAll('tbody tr'));
+  var expanded = false;
+
+  var NARROW_LIMIT = 5;
+  function limit() { return mqNarrow.matches ? NARROW_LIMIT : deskLimit; }
+  // Порог по меньшему из лимитов: иначе при загрузке на десктопе и сужении
+  // окна кнопки бы не было, а строк — больше узкого лимита.
+  if (rows.length <= Math.min(NARROW_LIMIT, deskLimit)) return;
+
   var btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'series-more';
-  btn.textContent = 'Показать все ' + rows.length + ' ' + promenPlural(rows.length, PROMEN_TR) + ' ↓';
+  btn.setAttribute('aria-expanded', 'false');
   tbl.parentNode.appendChild(btn);
-  btn.addEventListener('click', function () {
-    rows.forEach(function (tr) { tr.style.display = ''; });
-    btn.remove();
-  });
+
+  function apply() {
+    var lim = expanded ? rows.length : limit();
+    rows.forEach(function (tr, i) {
+      tr.style.display = (i >= lim && !tr.classList.contains('on')) ? 'none' : '';
+    });
+    var hidden = rows.length - Math.min(rows.length, lim);
+    btn.style.display = (hidden > 0 || expanded) ? '' : 'none';
+    btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    btn.textContent = expanded
+      ? 'Свернуть ↑'
+      : 'Показать все ' + rows.length + ' ' + promenPlural(rows.length, PROMEN_TR) + ' ↓';
+  }
+
+  btn.addEventListener('click', function () { expanded = !expanded; apply(); });
+  if (mqNarrow.addEventListener) { mqNarrow.addEventListener('change', apply); }
+  else if (mqNarrow.addListener) { mqNarrow.addListener(apply); }
+  apply();
 })();
 
 /* Модал заявки: «Заказать» и «Рассчитать доставку» (режим с полем города). */
@@ -595,14 +662,19 @@ promenHideEmptyCols(document.querySelector('.series-full'));
 })();
 
 /* Марки стали: показать строки сверх телефонного порога (метку mr-extra-m
-   ставит inc/steel-reference.php, прячет product.css). */
+   ставит inc/steel-reference.php, прячет product.css). Кнопка-переключатель,
+   а не одноразовая: развернув 14 марок, список нужно уметь свернуть — как
+   в реестре размеров серии. */
 (function () {
   document.addEventListener('click', function (e) {
     var btn = e.target.closest && e.target.closest('[data-mat-more]');
     if (!btn) return;
     var tbl = btn.parentElement ? btn.parentElement.querySelector('[data-mat-tbl]') : null;
-    if (tbl) tbl.classList.add('is-expanded');
-    btn.remove();
+    if (!tbl) return;
+    var open = tbl.classList.toggle('is-expanded');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    var next = open ? btn.getAttribute('data-less') : btn.getAttribute('data-more');
+    if (next) btn.textContent = next;
   });
 })();
 
@@ -616,55 +688,164 @@ promenHideEmptyCols(document.querySelector('.series-full'));
  * только на телефоне: на десктопе тела карточек и так видны.
  */
 (function () {
-  var mqPhone = window.matchMedia('(max-width:640px)');
-  var done = false;
-  function init() {
-    if (done || !mqPhone.matches) return;
-    var items = document.querySelectorAll('#s06 .app-c');
-    if (items.length < 2) return;
-    done = true;
-    items.forEach(function (item, i) {
-      var head = item.querySelector('.app-h');
-      if (!head) return;
-      item.classList.add('pm-acc');
-      head.classList.add('pm-acc-hd');
-      head.setAttribute('role', 'button');
-      head.setAttribute('tabindex', '0');
-      // Первая карточка раскрыта: пустой аккордеон не показывает, что внутри.
-      if (i === 0) item.classList.add('pm-acc-open');
-      head.setAttribute('aria-expanded', i === 0 ? 'true' : 'false');
-      function toggle() {
-        var open = item.classList.toggle('pm-acc-open');
+  /**
+   * Навешивает аккордеон на набор карточек при выполнении медиазапроса.
+   * @param {string} media     медиазапрос, при котором аккордеон нужен
+   * @param {string} itemSel   селектор карточки
+   * @param {string} headSel   селектор заголовка внутри карточки
+   * @param {boolean} openFirst раскрыть первую карточку
+   */
+  function accordion(media, itemSel, headSel, openFirst) {
+    var mq = window.matchMedia(media);
+    var done = false;
+    function init() {
+      if (done || !mq.matches) return;
+      var items = document.querySelectorAll(itemSel);
+      if (items.length < 2) return;
+      done = true;
+      items.forEach(function (item, i) {
+        var head = item.querySelector(headSel);
+        if (!head) return;
+        item.classList.add('pm-acc');
+        head.classList.add('pm-acc-hd');
+        head.setAttribute('role', 'button');
+        head.setAttribute('tabindex', '0');
+        var open = openFirst && i === 0;
+        if (open) item.classList.add('pm-acc-open');
         head.setAttribute('aria-expanded', open ? 'true' : 'false');
-      }
-      head.addEventListener('click', toggle);
-      head.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-          e.preventDefault();
-          toggle();
+        function toggle() {
+          var isOpen = item.classList.toggle('pm-acc-open');
+          head.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         }
+        // Клик по всей карточке, а не только по заголовку: так тач-цель равна
+        // плашке целиком и заголовку не нужен раздутый min-height ради 44px.
+        item.addEventListener('click', toggle);
+        head.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+            e.preventDefault();
+            toggle();
+          }
+        });
       });
-    });
+    }
+    init();
+    if (mq.addEventListener) { mq.addEventListener('change', init); }
+    else if (mq.addListener) { mq.addListener(init); }
   }
-  init();
-  if (mqPhone.addEventListener) { mqPhone.addEventListener('change', init); }
-  else if (mqPhone.addListener) { mqPhone.addListener(init); }
+
+  // S06 «Области применения»: 6 секторов = 970px сплошного текста на 390px.
+  accordion('(max-width:640px)', '#s06 .app-c', '.app-h', true);
+  // S08 и S10 аккордеонами были, но описания там короткие (2–3 строки):
+  // экономия высоты не окупала лишний тап — решение от 2026-07-31.
 })();
 
-/* QC: hover по этапу подсвечивает строку цифрового паспорта. */
+
+/*
+ * Телефон: цифровой паспорт — восемь строк по 60–80px, почти экран в высоту.
+ * Разбиваем тело на страницы по две строки и листаем вбок со снапом; шапка
+ * и подвал бланка остаются на месте. Под телом — точки-указатели: без них
+ * непонятно, что содержимое продолжается за правым краем.
+ * Разметку в qc.php не трогаем — страницы собираются здесь.
+ */
+(function () {
+  var PER_PAGE = 2;
+  var mq = window.matchMedia('(max-width:640px)');
+  var body = document.querySelector('#qcPassport .pq-body');
+  if (!body) return;
+  var rows = Array.prototype.slice.call(body.querySelectorAll('.pq-row'));
+  if (rows.length <= PER_PAGE) return;
+  var built = false;
+  var dots = null;
+
+  function pageOf(row) {
+    var page = row.closest('.pq-page');
+    return page ? Array.prototype.indexOf.call(page.parentNode.children, page) : -1;
+  }
+
+  function build() {
+    if (built || !mq.matches) return;
+    built = true;
+
+    for (var i = 0; i < rows.length; i += PER_PAGE) {
+      var page = document.createElement('div');
+      page.className = 'pq-page';
+      for (var j = i; j < i + PER_PAGE && j < rows.length; j++) {
+        page.appendChild(rows[j]);
+      }
+      body.appendChild(page);
+    }
+
+    var pages = Array.prototype.slice.call(body.children);
+    dots = document.createElement('div');
+    dots.className = 'pq-dots';
+    pages.forEach(function (p, i) {
+      var d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'pq-dot-nav' + (i === 0 ? ' on' : '');
+      d.setAttribute('aria-label', 'Страница ' + (i + 1) + ' из ' + pages.length);
+      d.addEventListener('click', function () {
+        body.scrollTo({ left: i * body.clientWidth, behavior: 'smooth' });
+      });
+      dots.appendChild(d);
+    });
+    body.parentNode.insertBefore(dots, body.nextSibling);
+
+    body.addEventListener('scroll', function () {
+      var i = Math.round(body.scrollLeft / body.clientWidth);
+      Array.prototype.forEach.call(dots.children, function (d, k) { d.classList.toggle('on', k === i); });
+    }, { passive: true });
+
+    // Подсветка от маршрута ОТК: строка может лежать на другой странице —
+    // подтягиваем её в видимую область, иначе тап по этапу выглядит пустым.
+    document.addEventListener('promen:qc-stage', function (e) {
+      var row = e.detail && e.detail.row;
+      if (!row) return;
+      var i = pageOf(row);
+      if (i >= 0) body.scrollTo({ left: i * body.clientWidth, behavior: 'smooth' });
+    });
+  }
+
+  build();
+  if (mq.addEventListener) { mq.addEventListener('change', build); }
+  else if (mq.addListener) { mq.addListener(build); }
+})();
+
+/* QC: этап маршрута подсвечивает строку цифрового паспорта.
+   Было только на hover — на телефоне и планшете связь не работала вовсе,
+   хотя лид секции предлагал ею воспользоваться. Тап переключает подсветку
+   (та же механика, что у маршрута на главной, front.js). */
 (function () {
   var items = document.querySelectorAll('#pqRoute .pq-item');
   var rows = document.querySelectorAll('#qcPassport .pq-row');
   if (!items.length) return;
-  items.forEach(function (item) {
-    item.addEventListener('mouseenter', function () {
-      var stage = item.getAttribute('data-stage');
-      rows.forEach(function (row) { row.classList.toggle('hl', row.getAttribute('data-field') === stage); });
-      item.classList.add('active');
+
+  function clear() {
+    rows.forEach(function (row) { row.classList.remove('hl'); });
+    items.forEach(function (it) { it.classList.remove('active'); });
+  }
+  function highlight(item) {
+    var stage = item.getAttribute('data-stage');
+    var target = null;
+    rows.forEach(function (row) {
+      var on = row.getAttribute('data-field') === stage;
+      row.classList.toggle('hl', on);
+      if (on) target = row;
     });
-    item.addEventListener('mouseleave', function () {
-      rows.forEach(function (row) { row.classList.remove('hl'); });
-      item.classList.remove('active');
+    item.classList.add('active');
+    // На телефоне строки разложены по страницам-свайпам: сообщаем карусели,
+    // какую строку показать (обработчик — в блоке сборки страниц выше).
+    if (target) {
+      document.dispatchEvent(new CustomEvent('promen:qc-stage', { detail: { row: target } }));
+    }
+  }
+
+  items.forEach(function (item) {
+    item.addEventListener('mouseenter', function () { highlight(item); });
+    item.addEventListener('mouseleave', clear);
+    item.addEventListener('click', function () {
+      var wasActive = item.classList.contains('active');
+      clear();
+      if (!wasActive) highlight(item);
     });
   });
 })();

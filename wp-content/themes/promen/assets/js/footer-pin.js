@@ -28,4 +28,19 @@
   setTop();
   window.addEventListener('resize',setTop,{passive:true});
   window.addEventListener('load',setTop);
+
+  /* top считается от высоты контента, а она меняется без изменения окна:
+     «Показать ещё» в реестре нормативов, фильтры, аккордеоны, догрузка
+     картинок. Со старым top обёртка пиннилась раньше времени — контент
+     замирал на пол-экрана прокрутки, а последние карточки так и оставались
+     под футером. Пересчитываем по фактическому изменению размера.
+     rAF — чтобы правка top не приходила внутрь того же кадра наблюдения. */
+  if('ResizeObserver' in window){
+    var pending=false;
+    new ResizeObserver(function(){
+      if(pending)return;
+      pending=true;
+      requestAnimationFrame(function(){pending=false;setTop();});
+    }).observe(wrap);
+  }
 })();
