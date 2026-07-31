@@ -1305,6 +1305,43 @@ document.addEventListener('DOMContentLoaded', function(){
     var grid = document.querySelector('.s9-grid');
     if(grid) io.observe(grid);
   }
+
+  /* Направленная проливка карточек — порт из nb.js (нормативы): белое
+     втекает с грани входа курсора и вытекает через грань выхода, подсветка
+     читается как проходящая между соседними карточками. Слой — .s9-card::after
+     (front.css). Гейт: только мышь — на таче mouseover эмулируется тапом и
+     проливка бы залипала. */
+  var s9FlowGrid = document.querySelector('.s9-grid');
+  if (s9FlowGrid && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    var s9FlowEdge = function(e, card){
+      var r = card.getBoundingClientRect();
+      var w = r.width, h = r.height;
+      var x = (e.clientX - r.left - w/2) * (w > h ? h/w : 1);
+      var y = (e.clientY - r.top - h/2) * (h > w ? w/h : 1);
+      return Math.round((Math.atan2(y,x)*(180/Math.PI)+180)/90+3)%4; /* 0 top,1 right,2 bottom,3 left */
+    };
+    var S9_FLOW_OFFSET = [{x:'0%',y:'-100%'},{x:'100%',y:'0%'},{x:'0%',y:'100%'},{x:'-100%',y:'0%'}];
+    s9FlowGrid.addEventListener('mouseover', function(e){
+      var card = e.target.closest('.s9-card');
+      if (!card || card.contains(e.relatedTarget)) return;
+      var off = S9_FLOW_OFFSET[s9FlowEdge(e, card)];
+      /* прыжком ставим слой за грань входа, затем плавно вливаем */
+      card.classList.add('flow-instant');
+      card.style.setProperty('--flow-x', off.x);
+      card.style.setProperty('--flow-y', off.y);
+      void card.offsetWidth;
+      card.classList.remove('flow-instant');
+      card.style.setProperty('--flow-x', '0%');
+      card.style.setProperty('--flow-y', '0%');
+    });
+    s9FlowGrid.addEventListener('mouseout', function(e){
+      var card = e.target.closest('.s9-card');
+      if (!card || card.contains(e.relatedTarget)) return;
+      var off = S9_FLOW_OFFSET[s9FlowEdge(e, card)];
+      card.style.setProperty('--flow-x', off.x);
+      card.style.setProperty('--flow-y', off.y);
+    });
+  }
 })();
 
 (function(){

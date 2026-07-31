@@ -58,7 +58,7 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
 .nb-grid-wrap{padding:32px 52px 24px var(--head-x);flex:1;}
 .nb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bg2);}
 .nb-card{background:var(--bg);padding:26px 26px 22px;display:flex;flex-direction:column;animation:cardIn .25s ease both;position:relative;isolation:isolate;overflow:hidden;}
-.nb-card::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--white);transform:translate3d(var(--flow-x,0%),var(--flow-y,-100%),0);transition:transform .5s cubic-bezier(.65,0,.35,1);}
+.nb-card::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--white);transform:translate3d(var(--flow-x,0%),var(--flow-y,-100%),0);transition:transform .5s var(--ease-flow);}
 .nb-card.flow-instant::before{transition:none;}
 .nb-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
 .nb-type{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--white);background:var(--g1);padding:3px 8px;display:inline-block;line-height:1.5;}

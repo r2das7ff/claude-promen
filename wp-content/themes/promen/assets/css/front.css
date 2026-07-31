@@ -445,6 +445,8 @@ img { display:block; }
      паспорта S8. Облако остаётся видимым, просто замирает. */
   .pixel-cloud rect { animation:none !important; }
   .s8-scanline { animation:none !important; opacity:0; }
+  /* Проливка s9: карточка белеет мгновенно вместо направленного втекания */
+  .s9-card::after { transition:none !important; }
 }
 
 /* ── RESPONSIVE — HERO ──────────────────────────────────────────
@@ -2740,7 +2742,11 @@ img { display:block; }
   flex:1;
   display:flex;
   flex-direction:column;
-  justify-content:flex-end;
+  /* flex-start, а не flex-end: секция тянется на 100vh, свободная высота
+     колонки достаётся этому блоку (flex:1), и при flex-end маршрут уезжал
+     к низу — между лид-текстом и заголовком «Маршрут контроля» зияло 431px
+     на 1839×1288. Ту же ловушку уже выключали для ≤1024 (блок #4 ниже). */
+  justify-content:flex-start;
 }
 .s8-route-header {
   font-family:'DINPro',monospace;
@@ -3143,7 +3149,7 @@ img { display:block; }
   flex-direction:column;
   position:relative;
   overflow:hidden;
-  transition:background .15s;
+  isolation:isolate;
 }
 /* Left accent strip — colour-coded by category */
 .s9-card::before {
@@ -3156,7 +3162,22 @@ img { display:block; }
 .s9-card[data-cat="smk"]::before   { background:var(--blue); }
 .s9-card[data-cat="decl"]::before  { background:var(--g1); }
 .s9-card[data-cat="tu"]::before    { background:var(--g2); }
-.s9-card:hover { background:#fff; }
+/* Направленная проливка ховера — порт с нормативов (.nb-card): белый слой
+   втекает со стороны входа курсора и вытекает в сторону выхода (--flow-x/y
+   ставит front.js). Слой — ::after (::before занят цветной полосой; полоса
+   с z-index:auto остаётся поверх проливки). Прежний .s9-card:hover
+   {background:#fff} снят — мгновенная смена фона прятала бы проливку.
+   На таче механики нет: JS-обработчики гейтятся matchMedia(hover/pointer). */
+.s9-card::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:var(--white);
+  transform:translate3d(var(--flow-x,0%),var(--flow-y,-100%),0);
+  transition:transform .5s var(--ease-flow);
+}
+.s9-card.flow-instant::after { transition:none; }
 
 /* Card top row: type badge + optional meta */
 .s9-card-top {
