@@ -1419,18 +1419,136 @@ document.addEventListener('DOMContentLoaded', function(){
 
 (function(){
   var btns = document.querySelectorAll('.s9-filter-btn');
-  var cards = document.querySelectorAll('.s9-card');
+  var cards = [].slice.call(document.querySelectorAll('.s9-card'));
+  var s9grid = document.querySelector('.s9-grid');
+  var reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var revealTimers = [];
+
+  /* ── FLIP-хореография фильтрации ──
+     Один проход, три роли: уходящие гаснут вниз на своём месте (absolute
+     на время ухода), выжившие съезжают в новые ячейки (First-Last-Invert-
+     Play), новые подлетают снизу лесенкой, полоса категории прочерчивается
+     после посадки (CSS: .s9-move/.s9-leave/.s9-enter в front.css).
+     У кнопок фильтра ДВА слушателя (фильтр здесь + сброс «Показать все»
+     ниже) — их мутации коалесцируются микротаской в один замер, иначе
+     хореография гонялась бы дважды за клик. */
+  var gen = 0, pendingFns = [], scheduled = false;
+  function visibleNow(c){ return c.style.display !== 'none' && !c.classList.contains('s9-extra'); }
+  function runFlip(mutate){
+    if(!s9grid || reduceMq.matches){ mutate(); return; }
+    gen++;
+    var myGen = gen;
+    revealTimers.forEach(clearTimeout); revealTimers.length = 0;
+    /* Срез «до»: чистим хвосты прошлых проходов и скролл-ривила (инлайновые
+       transition с задержками заражали бы FLIP), затем замер. Прерывание:
+       getBoundingClientRect учитывает transform — карточка в полёте
+       ретаргетится из текущей визуальной позиции. */
+    cards.forEach(function(c){
+      c.classList.remove('s9-move','s9-enter','s9-leave','s9-leave-go');
+      c.style.transition='none';
+      c.style.transform=''; c.style.opacity='';
+      c.style.removeProperty('--s9d');
+      if(c._s9abs){ c.style.position=''; c.style.left=''; c.style.top=''; c.style.width=''; c._s9abs=false; }
+    });
+    var before = [];
+    cards.forEach(function(c){ if(visibleNow(c)) before.push({el:c, r:c.getBoundingClientRect()}); });
+    var beforeEls = before.map(function(b){ return b.el; });
+    var gridH0 = s9grid.offsetHeight;
+
+    mutate();
+
+    var gridRect = s9grid.getBoundingClientRect();
+    var gridH1 = s9grid.offsetHeight;
+    var moves = [];
+    var enterIdx = 0;
+
+    /* Уходящие: вернуть на экран absolute'ом в старой ячейке и погасить. */
+    before.forEach(function(b){
+      var c = b.el;
+      if(visibleNow(c)) return;
+      var wasExtra = c.classList.contains('s9-extra');
+      var wasHidden = c.style.display === 'none';
+      c.classList.remove('s9-extra'); c.style.display='';
+      c.classList.add('s9-leave'); c._s9abs = true;
+      c.style.position='absolute';
+      c.style.left=(b.r.left-gridRect.left)+'px';
+      c.style.top=(b.r.top-gridRect.top)+'px';
+      c.style.width=b.r.width+'px';
+      setTimeout(function(){
+        if(gen !== myGen) return;
+        c.classList.remove('s9-leave','s9-leave-go');
+        c.style.position=''; c.style.left=''; c.style.top=''; c.style.width=''; c._s9abs=false;
+        if(wasExtra) c.classList.add('s9-extra');
+        c.style.display = wasHidden ? 'none' : '';
+      }, 220);
+    });
+
+    /* Выжившие: инверт без перехода; новые: вход лесенкой (потолок 5). */
+    cards.forEach(function(c){
+      if(!visibleNow(c)) return;
+      var idx = beforeEls.indexOf(c);
+      if(idx !== -1){
+        var now = c.getBoundingClientRect();
+        var dx = before[idx].r.left - now.left;
+        var dy = before[idx].r.top - now.top;
+        if(dx || dy){
+          c.classList.add('s9-move');
+          c.style.transform='translate('+dx+'px,'+dy+'px)';
+          moves.push(c);
+        }
+      } else {
+        c.style.setProperty('--s9d', (Math.min(enterIdx++, 5) * 40)+'ms');
+        c.classList.add('s9-enter');
+        setTimeout(function(){
+          if(gen !== myGen) return;
+          c.classList.remove('s9-enter');
+          c.style.removeProperty('--s9d');
+        }, 1000);
+      }
+    });
+
+    if(gridH0 !== gridH1) s9grid.style.height = gridH0+'px';
+
+    /* Play: инлайновый transition:none снят — классовые переходы едут. */
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      if(gen !== myGen) return;
+      cards.forEach(function(c){ c.style.transition=''; });
+      moves.forEach(function(c){ c.style.transform=''; });
+      before.forEach(function(b){ if(b.el.classList.contains('s9-leave')) b.el.classList.add('s9-leave-go'); });
+      if(gridH0 !== gridH1){
+        s9grid.classList.add('s9-hanim');
+        s9grid.style.height = gridH1+'px';
+      }
+    });});
+    /* Страховочная уборка — таймером, не в rAF: в скрытой вкладке rAF
+       молчит, и без неё остались бы инлайновые transform/height. */
+    setTimeout(function(){
+      if(gen !== myGen) return;
+      moves.forEach(function(c){ c.classList.remove('s9-move'); c.style.transform=''; });
+      cards.forEach(function(c){ c.style.transition=''; });
+      s9grid.classList.remove('s9-hanim'); s9grid.style.height='';
+    }, 400);
+  }
+  window._promenS9Mutate = function(fn){
+    pendingFns.push(fn);
+    if(scheduled) return;
+    scheduled = true;
+    Promise.resolve().then(function(){
+      scheduled = false;
+      var fns = pendingFns.slice(); pendingFns.length = 0;
+      runFlip(function(){ fns.forEach(function(f){ f(); }); });
+    });
+  };
+
   btns.forEach(function(btn){
     btn.addEventListener('click', function(){
       btns.forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
       var cat = btn.dataset.cat;
-      cards.forEach(function(card){
-        if(cat === 'all' || card.dataset.cat === cat){
-          card.style.display='';
-        } else {
-          card.style.display='none';
-        }
+      window._promenS9Mutate(function(){
+        cards.forEach(function(card){
+          card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+        });
       });
     });
   });
@@ -1443,14 +1561,18 @@ document.addEventListener('DOMContentLoaded', function(){
           cards.forEach(function(c,i){
             c.style.opacity='0'; c.style.transform='translateY(12px)';
             c.style.transition='opacity .4s ease '+(i*70)+'ms,transform .4s ease '+(i*70)+'ms';
-            setTimeout(function(){ c.style.opacity='1'; c.style.transform='translateY(0)'; }, i*70+30);
+            revealTimers.push(setTimeout(function(){ c.style.opacity='1'; c.style.transform='translateY(0)'; }, i*70+30));
           });
+          /* Хвост ривила: инлайновые transition с задержками до ~0.8s
+             остаться не должны — их унаследовала бы фильтрация. */
+          revealTimers.push(setTimeout(function(){
+            cards.forEach(function(c){ c.style.transition=''; c.style.opacity=''; c.style.transform=''; });
+          }, cards.length*70+520));
           io.unobserve(e.target);
         }
       });
     },{threshold:0.05});
-    var grid = document.querySelector('.s9-grid');
-    if(grid) io.observe(grid);
+    if(s9grid) io.observe(s9grid);
   }
 
   /* Направленная проливка карточек — порт из nb.js (нормативы): белое
@@ -1546,9 +1668,13 @@ document.addEventListener('DOMContentLoaded', function(){
           s9btn.classList.add('hide');
         }
       };
-      s9btn.addEventListener('click', function(){ s9expanded = !s9expanded; s9apply(); });
+      /* Через FLIP-коалесцер (см. фильтр выше): клик по чипу дёргает и
+         фильтр, и этот сброс — обе мутации играются одним проходом.
+         Инициализация — напрямую, без хореографии. */
+      var s9run = window._promenS9Mutate || function(f){ f(); };
+      s9btn.addEventListener('click', function(){ s9expanded = !s9expanded; s9run(s9apply); });
       [].forEach.call(document.querySelectorAll('.s9-filter-btn'), function(fb){
-        fb.addEventListener('click', function(){ s9expanded = false; s9apply(); });
+        fb.addEventListener('click', function(){ s9expanded = false; s9run(s9apply); });
       });
       s9apply();
     }
