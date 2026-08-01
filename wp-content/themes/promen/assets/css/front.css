@@ -54,7 +54,8 @@ img { display:block; }
   gap:18px;
   margin-bottom:28px;
   opacity:0;
-  animation:revealUp .6s .1s forwards;
+  transform:translateY(14px);
+  animation:revealUp .5s var(--ease-out) .06s forwards;
 }
 .ey-num {
   font-family:'DINPro',monospace;
@@ -94,7 +95,7 @@ img { display:block; }
   position:relative;
   opacity:0;
   transform:translateY(18px);
-  animation:revealUp .8s var(--ease-out) .2s forwards;
+  animation:revealUp .7s var(--ease-out) .12s forwards;
 }
 .h1-l2 { color:var(--g1); }
 
@@ -107,7 +108,8 @@ img { display:block; }
   color:var(--g1);
   margin-bottom:28px;
   opacity:0;
-  animation:revealUp .6s .42s forwards;
+  transform:translateY(14px);
+  animation:revealUp .5s var(--ease-out) .2s forwards;
 }
 .tagline .sep { color:var(--g1); margin:0 2px; }
 
@@ -119,7 +121,7 @@ img { display:block; }
   margin-bottom:28px;
   position:relative;
   opacity:0;
-  animation:revealUp .5s .52s forwards;
+  animation:revealUp .5s var(--ease-out) .26s forwards; /* линия — чистый фейд, без подъёма */
 }
 .rule::after {
   content:attr(data-label);
@@ -144,7 +146,8 @@ img { display:block; }
   max-width:440px;
   margin-bottom:44px;
   opacity:0;
-  animation:revealUp .6s .6s forwards;
+  transform:translateY(14px);
+  animation:revealUp .5s var(--ease-out) .32s forwards;
 }
 
 /* CTAs — matches reference layout */
@@ -154,7 +157,10 @@ img { display:block; }
   gap:12px;
   flex-wrap:wrap;
   opacity:0;
-  animation:revealUp .6s .72s forwards;
+  transform:translateY(14px);
+  /* Лесенка ужата до шагов 60-80мс: CTA — главное действие героя — раньше
+     сидел скрытым 720мс и досаживался только к 1.3с. */
+  animation:revealUp .5s var(--ease-out) .38s forwards;
 }
 .btn-fill {
   display:inline-flex;
@@ -421,6 +427,8 @@ img { display:block; }
   91% { opacity:0; }
 }
 /* Pixel float animations */
+/* Вне вьюпорта 40 вечных циклов облака ставятся на паузу (IO в front.js) */
+.pixel-cloud.is-off rect { animation-play-state: paused !important; }
 @keyframes pf1 { 0%,100% { transform:translate(0,0); } 50% { transform:translate(3px,-5px); } }
 @keyframes pf2 { 0%,100% { transform:translate(0,0); } 50% { transform:translate(-4px,4px); } }
 @keyframes pf3 { 0%,100% { transform:translate(0,0); } 50% { transform:translate(2px,6px); } }
@@ -655,7 +663,7 @@ img { display:block; }
   grid-template-columns: 1fr 1px 1fr;
   max-height: 0;
   overflow: hidden;
-  transition: max-height .45s var(--ease-std);
+  transition: max-height .32s var(--ease-out);
   border-top: 1px solid transparent;
 }
 .s2-row.active .sr-panel {
@@ -958,7 +966,8 @@ img { display:block; }
   opacity: 0;
   transform: translateY(10px) scale(.97);
   transform-origin: left center;
-  transition: opacity .32s var(--ease-out), transform .38s var(--ease-out);
+  /* Бюджет тултипа 125-200мс: дёргается rAF-циклом на каждом наведении */
+  transition: opacity .16s var(--ease-out), transform .18s var(--ease-out);
   will-change: opacity, transform;
 }
 .s4-tooltip:not(.visible) { pointer-events: none; }
@@ -1879,8 +1888,10 @@ img { display:block; }
   flex: 1;
   min-height: 0;
   opacity: 0;
-  transition: opacity .5s ease .2s;
+  transform: translateY(12px);
+  transition: opacity .5s var(--ease-out) .2s, transform .6s var(--ease-out) .2s;
 }
+.s5.s5-visible .s5-content { transform: none; }
 .s5.s5-visible .s5-content { opacity: 1; }
 .s5-htrack {
   display: flex;
@@ -1914,7 +1925,7 @@ img { display:block; }
   inset: 0;
   opacity: 0;
   visibility: hidden;
-  transition: opacity .5s var(--ease-std), visibility .5s;
+  transition: opacity .3s var(--ease-out), visibility .3s;
   pointer-events: none;
 }
 .s5:not(.s5-hmode) .s5-slide.active {
@@ -1922,6 +1933,13 @@ img { display:block; }
   visibility: visible;
   pointer-events: auto;
 }
+/* Направление жеста в движении: входящий слайд доезжает 14px со стороны
+   листания (dir-класс ставит goToStep), а не одинаковый кроссфейд в обе
+   стороны. Keyframe поверх opacity-транзишена, replay на каждый шаг. */
+.s5:not(.s5-hmode).s5-dir-next .s5-slide.active { animation: s5SlideNext .3s var(--ease-out); }
+.s5:not(.s5-hmode).s5-dir-prev .s5-slide.active { animation: s5SlidePrev .3s var(--ease-out); }
+@keyframes s5SlideNext { from { transform: translateX(14px); } }
+@keyframes s5SlidePrev { from { transform: translateX(-14px); } }
 .s5:not(.s5-hmode) .s5-htrack {
   position: relative;
   display: block;
@@ -2081,10 +2099,12 @@ img { display:block; }
   width: 12px; height: 12px;
   border-color: var(--g1);
   border-style: solid;
-  opacity: .4;
   z-index: 3;
-  transform: scale(0);
-  transition: transform 0s;
+  /* scale(.6), не scale(0) — из ничего ничего не появляется (см. production
+     s1-reg); сброс тоже переходом, чтобы быстрое листание не хлопало. */
+  transform: scale(.6);
+  opacity: 0;
+  transition: transform .2s ease, opacity .2s ease;
 }
 .s5-desc-corner.tl { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
 .s5-desc-corner.tr { top: 10px; right: 10px; border-width: 1px 1px 0 0; }
@@ -2092,7 +2112,8 @@ img { display:block; }
 .s5-desc-corner.br { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
 .s5-slide.active .s5-desc-corner {
   transform: scale(1);
-  transition: transform .45s var(--ease-out) var(--cd, .08s);
+  opacity: .4;
+  transition: transform .45s var(--ease-out) var(--cd, .08s), opacity .3s ease var(--cd, .08s);
 }
 .s5-slide.active .s5-desc-corner.tl { --cd: .06s; }
 .s5-slide.active .s5-desc-corner.tr { --cd: .14s; }
@@ -2382,10 +2403,12 @@ img { display:block; }
   width:100%;
   max-width:460px;
   filter:grayscale(1);
-  transition:filter 1s var(--ease-std);
+  transition:filter .4s var(--ease-out);
 }
-.s6-drawing-panel:hover .s6-drawing,
 .s6-drawing.metal { filter:grayscale(0); }
+@media (hover: hover) and (pointer: fine) {
+  .s6-drawing-panel:hover .s6-drawing { filter:grayscale(0); }
+}
 
 /* Shimmer */
 .s6-shimmer {
@@ -2397,10 +2420,15 @@ img { display:block; }
   pointer-events:none;
   z-index:2;
   opacity:0;
-  transition:opacity .3s;
+  /* Transition вместо keyframe: ховер — самое перезапускаемое состояние,
+     keyframe при каждом входе курсора стартовал с нуля и замирал на 350мс
+     задержки; транзишен ретаргетится из текущего положения. */
+  transition:opacity .3s, background-position 1.1s ease .15s;
 }
-.s6-drawing-panel:hover .s6-shimmer { opacity:1; animation:s6shimmer 1.3s ease .35s 1 both; }
-.s6-drawing-panel.drawing-active .s6-shimmer { opacity:1; animation:s6shimmer 1.3s ease .6s 1 both; }
+@media (hover: hover) and (pointer: fine) {
+  .s6-drawing-panel:hover .s6-shimmer { opacity:1; background-position:-200% 0; }
+}
+.s6-drawing-panel.drawing-active .s6-shimmer { opacity:1; background-position:-200% 0; }
 @keyframes s6shimmer {
   from { background-position:200% 0; }
   to { background-position:-200% 0; }
@@ -3187,7 +3215,7 @@ img { display:block; }
   z-index:-1;
   background:var(--white);
   transform:translate3d(var(--flow-x,0%),var(--flow-y,-100%),0);
-  transition:transform .5s var(--ease-flow);
+  transition:transform .35s var(--ease-out-lg);
 }
 .s9-card.flow-instant::after { transition:none; }
 
@@ -3617,10 +3645,12 @@ img { display:block; }
 .sidenav-dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--ln2); flex-shrink: 0;
+  /* .2s ease-out вместо .4s overshoot: скролл-индикатор дёргается на каждом
+     пересечении секции — пружина тут была единственной в чертёжной системе */
   transition:
-    background .4s ease,
-    transform .4s var(--ease-overshoot),
-    box-shadow .4s ease;
+    background .2s ease,
+    transform .2s var(--ease-out),
+    box-shadow .2s ease;
 }
 .sidenav-item:hover .sidenav-dot {
   background: var(--g1);
@@ -3641,7 +3671,7 @@ img { display:block; }
   background: var(--bg); border: 1px solid var(--ln);
   padding: 4px 10px; line-height: 1.5;
   opacity: 0; pointer-events: none;
-  transition: opacity .3s ease, transform .3s ease;
+  transition: opacity .15s ease, transform .15s var(--ease-out);
 }
 /* при наведении — любой элемент; гейт hover-media как у трёх страничных
    копий (product/category/production) — на таче ярлык залипал после тапа */

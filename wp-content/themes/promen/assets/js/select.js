@@ -60,7 +60,9 @@
       el.textContent = o.text;
       el.dataset.index = i;
       // Индекс для лесенки появления пунктов (см. transition-delay в CSS).
-      el.style.setProperty('--i', i);
+      // Потолок 4: без него длинный список открывался (N-1)*22мс + 180мс —
+      // 30 опций давали 818мс при бюджете селекта 150–250мс.
+      el.style.setProperty('--i', Math.min(i, 4));
       menu.appendChild(el);
       return el;
     });

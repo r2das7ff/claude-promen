@@ -441,10 +441,16 @@
 
   function updateCount(total) {
     if (!count) return;
-    count.textContent = Number(total).toLocaleString('ru-RU') + ' позиций';
+    var next = Number(total).toLocaleString('ru-RU') + ' позиций';
+    // Не изменилось — не мигаем: pop только когда есть что сообщить.
+    if (count.textContent === next) return;
+    count.textContent = next;
     count.classList.remove('pop');
-    void count.offsetWidth;
-    count.classList.add('pop');
+    // Двойной rAF вместо void offsetWidth: тот же рестарт класса, но без
+    // принудительного синхронного layout сразу после трёх innerHTML.
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { count.classList.add('pop'); });
+    });
   }
 
   var sidebarParentActive = {

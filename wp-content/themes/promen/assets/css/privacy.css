@@ -13,7 +13,10 @@ html{scroll-behavior:smooth;}
 
 /* ── Reading progress (top hairline) ── */
 .read-bar{position:fixed;top:64px;left:44px;right:0;height:2px;background:transparent;z-index:190;}
-.read-bar-fill{height:100%;width:0%;background:var(--g1);transition:width .1s linear;}
+/* scaleX, не width: width — layout+paint на каждом кадре скролла, scaleX
+   считает композитор; перехода нет — полоса привязана к скроллу 1:1
+   (тот же приём, что .scroll-progress в base.css). */
+.read-bar-fill{height:100%;width:100%;background:var(--g1);transform:scaleX(0);transform-origin:left;}
 
 /* ── HERO ── */
 .pol-hero{
@@ -122,7 +125,7 @@ html{scroll-behavior:smooth;}
   display:flex;align-items:center;justify-content:space-between;gap:8px;
 }
 .pol-toc-progress{height:2px;background:var(--ln);position:relative;}
-.pol-toc-progress-fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:var(--g1);transition:width .12s linear;}
+.pol-toc-progress-fill{position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--g1);transform:scaleX(0);transform-origin:left;}
 .pol-toc-list{list-style:none;max-height:calc(100vh - 64px - 210px);overflow-y:auto;}
 .pol-toc-item{border-bottom:1px solid var(--ln);}
 .pol-toc-item:last-child{border-bottom:none;}

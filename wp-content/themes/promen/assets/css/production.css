@@ -1067,11 +1067,13 @@ img{display:block;max-width:100%;}
   transition:color .3s;
 }
 .stg-p:hover .stg-spine-t{color:rgba(240,246,251,.94);}
+/* Рост маркера — scaleX, не width: width релэйаутит колонку корешка в том же
+   жесте, где уже едет flex-basis рейки. 26/16 = 1.625, визуально то же. */
 .stg-spine::after{
   content:'';position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
-  width:16px;height:2px;background:var(--stg-acc);opacity:.5;transition:opacity .3s,width .3s;
+  width:16px;height:2px;background:var(--stg-acc);opacity:.5;transition:opacity .3s,transform .3s;
 }
-@media(hover:hover) and (pointer:fine){.stg-p:hover .stg-spine::after{opacity:1;width:26px;}}
+@media(hover:hover) and (pointer:fine){.stg-p:hover .stg-spine::after{opacity:1;transform:translateX(-50%) scaleX(1.625);}}
 
 /* ── Карточка участка ──
    Появляется с задержкой: пока ламель разъезжается, текст ещё скрыт,

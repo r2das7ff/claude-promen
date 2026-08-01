@@ -58,7 +58,7 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
 .nb-grid-wrap{padding:32px 52px 24px var(--head-x);flex:1;}
 .nb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bg2);}
 .nb-card{background:var(--bg);padding:26px 26px 22px;display:flex;flex-direction:column;animation:cardIn .25s ease both;position:relative;isolation:isolate;overflow:hidden;}
-.nb-card::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--white);transform:translate3d(var(--flow-x,0%),var(--flow-y,-100%),0);transition:transform .5s var(--ease-flow);}
+.nb-card::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--white);transform:translate3d(var(--flow-x,0%),var(--flow-y,-100%),0);transition:transform .35s var(--ease-out-lg);}
 .nb-card.flow-instant::before{transition:none;}
 .nb-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
 .nb-type{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--white);background:var(--g1);padding:3px 8px;display:inline-block;line-height:1.5;}
@@ -73,7 +73,7 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
 .nb-super{margin:-6px 0 14px;padding:8px 10px;background:var(--g1b);border-left:2px solid var(--g1);font-family:'DINPro',monospace;font-size:11px;line-height:1.5;letter-spacing:.01em;color:var(--blue);}
 .nb-foot{display:flex;align-items:center;gap:8px;padding-top:14px;border-top:1px solid var(--ln);flex-wrap:wrap;}
 .nb-status{display:flex;align-items:center;gap:6px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1);white-space:nowrap;margin-right:auto;}
-.nb-status-dot{width:6px;height:6px;border-radius:50%;background:#5C8F6A;flex-shrink:0;animation:blink 2.4s step-end infinite;}
+.nb-status-dot{width:6px;height:6px;border-radius:50%;background:#5C8F6A;flex-shrink:0;animation:nbBlink 2.4s step-end infinite;}
 .nb-btn{font-family:'DINPro',sans-serif;font-size:12.5px;letter-spacing:.06em;padding:8px 13px;border:1px solid var(--ln2);white-space:nowrap;transition:background .15s,color .15s,border-color .15s,transform var(--dur-press) var(--ease-out);cursor:pointer;}
 .nb-btn--dl{background:var(--blue);color:var(--white);border-color:var(--blue);font-weight:700;}
 .nb-btn--dl:hover{background:var(--dark);border-color:var(--dark);}
@@ -102,7 +102,7 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
 /* ── DETAIL PANEL ── */
 .nb-overlay{position:fixed;inset:0;background:rgba(15,42,68,.15);z-index:240;opacity:0;pointer-events:none;transition:opacity .3s;}
 .nb-overlay.show{opacity:1;pointer-events:auto;}
-.nb-panel{position:fixed;top:0;right:0;bottom:0;width:460px;background:var(--bg);border-left:1px solid var(--ln2);z-index:250;transform:translateX(100%);transition:transform .32s var(--ease-std);display:flex;flex-direction:column;box-shadow:-6px 0 32px rgba(15,42,68,.1);}
+.nb-panel{position:fixed;top:0;right:0;bottom:0;width:460px;background:var(--bg);border-left:1px solid var(--ln2);z-index:250;transform:translateX(100%);transition:transform .32s var(--ease-out);display:flex;flex-direction:column;box-shadow:-6px 0 32px rgba(15,42,68,.1);}
 .nb-panel.open{transform:translateX(0);}
 .nb-panel-hd{padding:18px 22px;border-bottom:1px solid var(--ln2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .nb-panel-lbl{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);}
@@ -131,7 +131,10 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
 .nb-toast{position:fixed;left:50%;bottom:32px;transform:translate(-50%,16px);background:var(--dark);color:var(--bg);padding:14px 22px;font-family:'DINPro',sans-serif;font-size:13.5px;letter-spacing:.02em;z-index:300;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:420px;text-align:center;line-height:1.5;box-shadow:0 8px 28px rgba(15,42,68,.28);}
 .nb-toast.show{opacity:1;transform:translate(-50%,0);}
 
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+/* nbBlink, не blink: одноимённый keyframe с телом 50%→.25 тихо перебивал
+   глобальный blink из base.css (50%→0) — strip-pulse и точки формы мигали
+   иначе только на этой странице. Своё имя = никакой коллизии каскада. */
+@keyframes nbBlink{0%,100%{opacity:1;}50%{opacity:.25;}}
 @keyframes cardIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 /* Вход «∅ не найдено»: у грида, в отличие от каталога, нет моста-притухания,
    и раньше пустота вставала телепортом. Работает в паре с debounce в nb.js. */

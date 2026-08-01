@@ -251,7 +251,7 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
 /* ── DETAIL PANEL ── */
 .pdp-overlay{position:fixed;inset:0;background:rgba(15,42,68,.15);z-index:140;opacity:0;pointer-events:none;transition:opacity .3s;}
 .pdp-overlay.show{opacity:1;pointer-events:auto;}
-.pdp{position:fixed;top:var(--nav-h);right:0;bottom:0;width:500px;background:var(--bg);border-left:1px solid var(--ln2);z-index:150;transform:translateX(100%);transition:transform .32s var(--ease-std);display:flex;flex-direction:column;box-shadow:-6px 0 32px rgba(15,42,68,.1);}
+.pdp{position:fixed;top:var(--nav-h);right:0;bottom:0;width:500px;background:var(--bg);border-left:1px solid var(--ln2);z-index:150;transform:translateX(100%);transition:transform .32s var(--ease-out);display:flex;flex-direction:column;box-shadow:-6px 0 32px rgba(15,42,68,.1);}
 .pdp.open{transform:translateX(0);}
 .pdp-hd{
   padding:18px 22px;border-bottom:1px solid var(--ln2);
@@ -702,7 +702,7 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
 .fq-t{font-size:14px;font-weight:500;color:var(--dark);line-height:1.4;flex:1;}
 .fq-arr{width:26px;height:26px;border:1px solid var(--ln2);display:flex;align-items:center;justify-content:center;color:var(--g1);font-size:13px;flex-shrink:0;transition:transform .2s,background .15s;}
 .fq.open .fq-arr{transform:rotate(180deg);background:var(--dark);color:var(--white);border-color:var(--dark);}
-.fq-a{max-height:0;overflow:hidden;transition:max-height .32s ease;}
+.fq-a{max-height:0;overflow:hidden;transition:max-height .25s var(--ease-out);}
 /* Потолок раскрытия — с запасом: текст ответов стал крупнее и выше. */
 .fq.open .fq-a{max-height:700px;}
 .fq-a-in{padding:0 30px 20px 66px;font-size:14px;font-weight:300;line-height:1.78;color:var(--blue);border-top:1px solid var(--ln);}
@@ -823,7 +823,7 @@ a.sbn-filter{cursor:pointer;}
 .sbn-toggle:hover{color:var(--dark);}
 .sbn-toggle svg{transition:transform .2s ease;}
 .sbn-group:not(.open) .sbn-toggle svg{transform:rotate(-90deg);}
-.sbn-children{overflow:hidden;max-height:340px;transition:max-height .25s ease;border-bottom:1px solid var(--ln);background:var(--g1b);}
+.sbn-children{overflow:hidden;max-height:340px;transition:max-height .25s var(--ease-out);border-bottom:1px solid var(--ln);background:var(--g1b);}
 .sbn-group:not(.open) .sbn-children{max-height:0;border-bottom:none;}
 .sbn-child{
   display:flex;align-items:center;gap:10px;
@@ -1054,7 +1054,7 @@ button.c-chip--more:hover{color:var(--dark);border-color:var(--g1);}
   .cat-sb{
     display:flex;position:static;top:auto;height:auto;
     border-right:none;border-bottom:1px solid var(--ln2);
-    max-height:0;overflow:hidden;transition:max-height .28s ease;
+    max-height:0;overflow:hidden;transition:max-height .28s var(--ease-out);
   }
   /* Без внутреннего скролла: страница должна прокручиваться целиком.
      Точную высоту ставит catalog.js (panel.scrollHeight), а после анимации

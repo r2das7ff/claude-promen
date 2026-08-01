@@ -119,8 +119,11 @@
   var CSS = ''
     + '.rm-overlay{position:fixed;inset:0;z-index:9990;background:rgba(15,42,68,.72);'
     + 'display:flex;align-items:center;justify-content:center;padding:32px;'
-    + 'opacity:0;visibility:hidden;transition:opacity .2s ease;}'
-    + '.rm-overlay.show{opacity:1;visibility:visible;}'
+    /* visibility с задержкой = длительности фейда: без неё авторская
+       анимация закрытия не рендерилась вовсе (оверлей скрывался в тот же
+       кадр). Образец — .pm-select-menu в base.css. */
+    + 'opacity:0;visibility:hidden;transition:opacity .2s ease,visibility 0s linear .2s;}'
+    + '.rm-overlay.show{opacity:1;visibility:visible;transition-delay:0s;}'
     + '.rm-modal{position:relative;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;'
     + 'background:var(--white);border:1px solid var(--g1);padding:48px 44px 36px;'
     + 'transform:translateY(16px);transition:transform .22s var(--ease-out,ease);}'
@@ -129,7 +132,7 @@
        сдвиг убираем. */
     + '@media (prefers-reduced-motion:reduce){'
     + '.rm-modal{transform:none;transition:none;}'
-    + '.rm-overlay{transition:none;}'
+    /* оверлей: фейд остаётся — как и обещает комментарий выше про reduce */
     /* исход заявки: fade остаётся (понять смену контекста), подъём — нет */
     + '.rm-success{transform:none;}'
     + '}'
@@ -419,7 +422,9 @@
     document.getElementById('rmOverlay').classList.add('show');
     document.body.style.overflow = 'hidden';
     var firstInput = fieldsEl.querySelector('input:not([readonly]), textarea');
-    if (firstInput) setTimeout(function () { firstInput.focus(); }, 200);
+    /* Сразу, не по таймеру: 200мс ожидания входа модалки запирали клавиатуру
+       и скринридер; preventScroll гасит прыжок прокрутки при фокусе. */
+    if (firstInput) firstInput.focus({ preventScroll: true });
   };
 
   window.closeRequestModal = function () {

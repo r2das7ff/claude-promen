@@ -584,7 +584,7 @@ promenHideEmptyCols(document.querySelector('.series-full'));
         ? 'Укажите город и количество — покажем ориентировочную стоимость по тарифам «Деловых Линий». Для точного расчёта и КП отправьте заявку.'
         : subOrder;
       var f = modal.querySelector(deliveryMode ? (calc ? '#dc-city' : '#om-city') : '#om-qty');
-      if (f) setTimeout(function () { f.focus(); }, 220);
+      if (f) f.focus({ preventScroll: true });
     }
   }
   function prefillFromSelection() {

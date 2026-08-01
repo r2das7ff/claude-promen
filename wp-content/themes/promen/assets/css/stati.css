@@ -59,7 +59,7 @@
 .bl-featured{position:relative;overflow:hidden;border:1px solid var(--ln2);margin-bottom:44px;min-height:460px;display:flex;align-items:flex-end;background:var(--blue);transition:border-color .2s;}
 .bl-featured:hover{border-color:var(--g1);}
 .bl-featured-media{position:absolute;inset:0;z-index:0;}
-.bl-featured-media img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.15) contrast(1.05);transition:transform .5s;}
+.bl-featured-media img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.15) contrast(1.05);transition:transform .3s ease;}
 @media(hover:hover) and (pointer:fine){.bl-featured:hover .bl-featured-media img{transform:scale(1.04);}}
 .bl-featured-media::after{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(15,42,68,.94) 0%,rgba(15,42,68,.62) 40%,rgba(15,42,68,.06) 72%);}
 .bl-featured-badge{position:absolute;top:22px;left:22px;z-index:2;padding:6px 12px;background:var(--g1);font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--white);}
@@ -76,7 +76,7 @@
 .bl-card{background:var(--white);border:1px solid var(--ln2);display:flex;flex-direction:column;transition:border-color .2s,transform .2s,box-shadow .2s;}
 @media(hover:hover) and (pointer:fine){.bl-card:hover{border-color:var(--g1);transform:translateY(-4px);box-shadow:0 16px 32px -16px rgba(15,42,68,.22);}}
 .bl-card-media{aspect-ratio:4/3;overflow:hidden;border-bottom:1px solid var(--ln2);background:var(--blue);position:relative;}
-.bl-card-media img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.2) contrast(1.05);transition:transform .4s;}
+.bl-card-media img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.2) contrast(1.05);transition:transform .3s ease;}
 @media(hover:hover) and (pointer:fine){.bl-card:hover .bl-card-media img{transform:scale(1.06);}}
 .bl-card-cat{position:absolute;top:12px;left:12px;padding:5px 10px;background:rgba(15,42,68,.85);font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--white);}
 .bl-card-body{padding:24px 26px 26px;display:flex;flex-direction:column;gap:13px;flex:1;}

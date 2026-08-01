@@ -257,7 +257,7 @@ a.s10-contact-v:hover{color:var(--blue);}
   width:8px;height:8px;flex:0 0 auto;margin-bottom:3px;
   border-right:1.5px solid var(--g1);border-bottom:1.5px solid var(--g1);
   transform:rotate(45deg);transform-origin:60% 60%;
-  transition:transform .28s var(--ease-out-sm),border-color .15s;
+  transition:transform .22s var(--ease-out-sm),border-color .15s;
 }
 .pm-select-trigger:hover .pm-select-arrow{border-color:var(--dark);}
 .pm-select.is-open .pm-select-arrow{transform:rotate(-135deg);border-color:var(--dark);}

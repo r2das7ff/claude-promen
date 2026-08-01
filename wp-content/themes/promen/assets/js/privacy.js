@@ -46,30 +46,39 @@
     tocSubLinks.forEach(a=>a.classList.toggle('is-active', a.getAttribute('data-target')===id));
   }
 
-  function onScroll(){
+  /* rAF-гейт + чтения до записей: хендлер висит на трёх целях (window/
+     document/body — скроллер зависит от responsive-правил), без гейта одно
+     событие обрабатывалось дважды, а offsetTop читался после записи width —
+     forced layout. Паттерн — chrome.js (.scroll-progress). */
+  let ticking = false;
+  function update(){
+    ticking = false;
     /* скроллер может быть body (responsive-rules §7) — читаем оба */
     const scrollY = document.body.scrollTop || document.documentElement.scrollTop || window.scrollY || 0;
     const docH = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) - window.innerHeight;
-    const pct = docH>0 ? Math.min(100, Math.max(0,(scrollY/docH)*100)) : 0;
-    readFill.style.width = pct+'%';
-    tocProgress.style.width = pct+'%';
+    const pct = docH>0 ? Math.min(1, Math.max(0, scrollY/docH)) : 0;
 
+    /* Сначала все чтения… */
     const probeY = scrollY + 140;
     let currentCh = chapters[0] ? chapters[0].id : null;
     for(const ch of chapters){
       if(ch.offsetTop <= probeY) currentCh = ch.id; else break;
     }
-    if(currentCh) setActiveChapter(currentCh);
-
     let currentSub = null;
     for(const h of subHeads){
       if(h.offsetTop <= probeY) currentSub = h.id; else break;
     }
+
+    /* …потом записи. scaleX вместо width — см. .read-bar-fill в privacy.css */
+    readFill.style.transform = 'scaleX('+pct+')';
+    tocProgress.style.transform = 'scaleX('+pct+')';
+    if(currentCh) setActiveChapter(currentCh);
     if(currentSub) setActiveSub(currentSub);
   }
+  function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
   window.addEventListener('scroll', onScroll, {passive:true});
   document.addEventListener('scroll', onScroll, {passive:true});
   document.body.addEventListener('scroll', onScroll, {passive:true});
   window.addEventListener('resize', onScroll);
-  onScroll();
+  update();
 })();

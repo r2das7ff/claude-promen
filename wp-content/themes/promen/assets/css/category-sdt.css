@@ -29,10 +29,10 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 /* ── SIDE NAV ── */
 .sidenav{position:fixed;left:0;top:0;bottom:0;width:44px;z-index:200;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:20px;pointer-events:none;}
 .sidenav-item{position:relative;width:44px;display:flex;align-items:center;justify-content:center;pointer-events:all;cursor:pointer;text-decoration:none;}
-.sidenav-dot{width:7px;height:7px;border-radius:50%;background:var(--ln2);flex-shrink:0;transition:background .4s ease,transform .4s var(--ease-overshoot),box-shadow .4s ease;}
+.sidenav-dot{width:7px;height:7px;border-radius:50%;background:var(--ln2);flex-shrink:0;transition:background .2s ease,transform .2s var(--ease-out),box-shadow .2s ease;}
 .sidenav-item:hover .sidenav-dot{background:var(--g1);}
 .sidenav-item.sn-active .sidenav-dot{background:var(--dark);transform:scale(1.6);box-shadow:0 0 0 3px rgba(15,42,68,.12);}
-.sidenav-label{position:absolute;left:52px;top:50%;transform:translateY(-50%) translateX(-10px);font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;color:var(--dark);text-transform:uppercase;white-space:nowrap;background:var(--bg);border:1px solid var(--ln);padding:4px 10px;line-height:1.5;opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;}
+.sidenav-label{position:absolute;left:52px;top:50%;transform:translateY(-50%) translateX(-10px);font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;color:var(--dark);text-transform:uppercase;white-space:nowrap;background:var(--bg);border:1px solid var(--ln);padding:4px 10px;line-height:1.5;opacity:0;pointer-events:none;transition:opacity .15s ease,transform .15s var(--ease-out);}
 @media(hover:hover) and (pointer:fine){.sidenav-item:hover .sidenav-label{opacity:1;transform:translateY(-50%) translateX(0);}}
 .sidenav-item.sn-active .sidenav-label{opacity:1;transform:translateY(-50%) translateX(0);}
 @media(max-width:1100px){.sidenav{display:none;}}
@@ -194,7 +194,7 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 .mr-apps{display:flex;flex-wrap:wrap;gap:3px;}
 .mr-app-t{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:2px 5px;border:1px solid var(--ln2);color:var(--blue);}
 .mr-app-t.hi{border-color:rgba(109,140,166,.5);color:var(--g1);}
-.mat-expand{padding:0 24px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .2s ease;}
+.mat-expand{padding:0 24px;max-height:0;overflow:hidden;transition:max-height .25s var(--ease-out),padding .25s var(--ease-out);}
 .mat-r.exp + .mat-expand{max-height:160px;padding:16px 24px 20px;}
 .me-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
 .me-item{padding:10px 14px;border:1px solid var(--ln2);background:var(--bg2);}
@@ -220,7 +220,11 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 
 /* ── S07: QC ── */
 .qc-wrap{position:relative;}
-.qc-scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(109,140,166,.1),transparent);animation:scan 5s linear infinite;pointer-events:none;z-index:0;}
+/* Ход — transform, а не top: top пересчитывает layout каждый кадр вечного
+   цикла (образец — .s8-scanline в front.css; линия — ::before). */
+.qc-scanline{position:absolute;left:0;right:0;top:0;bottom:0;animation:qcScan 5s linear infinite;pointer-events:none;z-index:0;}
+.qc-scanline::before{content:'';position:absolute;left:0;right:0;top:-2px;height:2px;background:linear-gradient(90deg,transparent,rgba(109,140,166,.1),transparent);}
+@keyframes qcScan{from{transform:translateY(0);}to{transform:translateY(calc(100% + 4px));}}
 @keyframes scan{from{top:-2px;}to{top:100%;}}
 .qc-grid{display:grid;grid-template-columns:var(--split-even);gap:48px;padding:40px 56px 52px;position:relative;z-index:1;}
 .qc-stages{display:flex;flex-direction:column;gap:0;}
@@ -275,7 +279,7 @@ a.nc.sg-link:hover{border-color:var(--blue);}
    77px. Четыре строки из 25 вылезали из колонки поверх «Наименования»
    (overflow:visible, и переносить внутри номера нечего). 1fr у названия при
    этом остаётся 510px на 1440 — запас есть. */
-.reg-r{display:grid;grid-template-columns:104px 1fr 78px 78px 160px 160px 100px 28px;padding:0 40px;gap:0 14px;border-bottom:1px solid var(--ln);cursor:pointer;align-items:center;min-height:50px;transition:background .1s;animation:rowIn .25s ease both;}
+.reg-r{display:grid;grid-template-columns:104px 1fr 78px 78px 160px 160px 100px 28px;padding:0 40px;gap:0 14px;border-bottom:1px solid var(--ln);cursor:pointer;align-items:center;min-height:50px;transition:background .1s;animation:regRowIn .25s var(--ease-out) both;}
 .reg-r:hover{background:var(--g1b);}
 .reg-r.is-active{background:rgba(109,140,166,.12);}
 .reg-r.is-active .rr-g{color:var(--blue);border-left-color:var(--dark);}
@@ -318,7 +322,7 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 .fq-t{font-size:14px;font-weight:500;color:var(--dark);line-height:1.4;flex:1;}
 .fq-arr{width:26px;height:26px;border:1px solid var(--ln2);display:flex;align-items:center;justify-content:center;color:var(--g1);font-size:13px;flex-shrink:0;transition:transform .2s,background .15s;}
 .fq.open .fq-arr{transform:rotate(180deg);background:var(--dark);color:var(--white);border-color:var(--dark);}
-.fq-a{max-height:0;overflow:hidden;transition:max-height .32s ease;}
+.fq-a{max-height:0;overflow:hidden;transition:max-height .25s var(--ease-out);}
 .fq.open .fq-a{max-height:400px;}
 .fq-a-in{padding:0 30px 20px 66px;font-size:13px;font-weight:300;line-height:1.78;color:var(--blue);border-top:1px solid var(--ln);}
 .fq-a-in strong{font-weight:700;color:var(--dark);}
@@ -384,7 +388,9 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 
 /* ANIMATIONS */
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-@keyframes rowIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+/* regRowIn, не rowIn: одноимённый keyframe перебивал base.css-версию (6px)
+   в каскаде — своё имя вместо тихого переопределения. */
+@keyframes regRowIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
 @keyframes revealUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
 .reveal.in{opacity:1;transform:translateY(0);}
@@ -747,7 +753,7 @@ a.nc.sg-link:hover{border-color:var(--blue);}
    (55px + перенос названия) в самой большой группе крепежа это обрезало бы
    хвост списка без всякого признака обрезки, поэтому на узких экранах
    потолок снят — см. медиазапрос ниже. */
-.reg-group-body{max-height:600px;overflow:hidden;transition:max-height .3s ease;}
+.reg-group-body{max-height:600px;overflow:hidden;transition:max-height .25s var(--ease-out);}
 .reg-group:not(.open) .reg-group-body{max-height:0;}
 @media(max-width:900px){
   /* .rg-cnt возвращаем: группы теперь приходят свёрнутыми (category-sdt.js),

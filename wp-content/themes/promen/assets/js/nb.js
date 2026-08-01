@@ -324,10 +324,18 @@ function renderActiveFilters(){
   if(clearBtn)clearBtn.addEventListener('click',resetFilters);
 }
 
+/* Как анимировать следующий рендер грида: 'all' — первый показ (лесенка у
+   всех), 'append' — «Показать ещё» (лесенка только у добавленных), 'none' —
+   любой рефильтр/поиск: innerHTML пересоздаёт карточки, и без гейта cardIn
+   переигрывал вход на каждой смене выборки. */
+let nbAnimateNext='all';
+let nbPrevShown=0;
 function renderGrid(){
   const grid=document.getElementById('nbGrid');
   const list=filteredDocs();
   const shown=list.slice(0,visibleCount);
+  const animMode=nbAnimateNext;
+  nbAnimateNext='none';
   document.getElementById('nbCount').innerHTML=list.length
     ? `Показано <b>${shown.length}</b> из <b>${list.length}</b> (всего в базе ${DOCS.length})`
     : `Ничего не найдено — всего в базе ${DOCS.length} документов`;
@@ -347,7 +355,10 @@ function renderGrid(){
     const catLink=cat?`<a class="nb-cat-link" href="${NB_CATALOG(cat)}">Каталог: ${d.sub?SUBTYPE_META[d.sub].label:cm.label} →</a>`:'';
     const superNote=d.replacedBy?`<div class="nb-super">Заменён на ${d.replacedBy} — при проектировании используйте актуальную редакцию</div>`:'';
     const status=d.replacedBy?'Заменён':'Действует';
-    return `<article class="nb-card" style="animation-delay:${(i%PAGE_SIZE)*0.02}s" data-idx="${DOCS.indexOf(d)}">
+    const anim=animMode==='all'?`animation-delay:${(i%PAGE_SIZE)*0.02}s`
+      :(animMode==='append'&&i>=nbPrevShown)?`animation-delay:${((i-nbPrevShown)%PAGE_SIZE)*0.02}s`
+      :'animation:none';
+    return `<article class="nb-card" style="${anim}" data-idx="${DOCS.indexOf(d)}">
       <div class="nb-card-top">
         <span class="nb-type" style="background:${t.color}">${t.short}</span>
         <span class="nb-cat-label">${subLabel}</span>
@@ -364,12 +375,14 @@ function renderGrid(){
       ${catLink}
     </article>`;
   }).join('');
+  nbPrevShown=shown.length;
 
   document.getElementById('nbMoreWrap').style.display=(visibleCount<list.length)?'flex':'none';
 }
 
 document.getElementById('nbMore').addEventListener('click',()=>{
   visibleCount+=PAGE_SIZE;
+  nbAnimateNext='append';
   renderGrid();
 });
 
@@ -411,6 +424,14 @@ const nbGridEl=document.getElementById('nbGrid');
 nbGridEl.addEventListener('mouseover',(e)=>{
   const card=e.target.closest('.nb-card');
   if(!card||card.contains(e.relatedTarget))return;
+  /* Повторный вход, пока вытекание не доехало (<500мс) — не телепортируем
+     слой к грани входа (это давало белую вспышку через flow-instant), а
+     даём транзишену ретаргетнуться из текущего положения. */
+  if(card._pmFlowT&&Date.now()-card._pmFlowT<500){
+    card.style.setProperty('--flow-x','0%');
+    card.style.setProperty('--flow-y','0%');
+    return;
+  }
   const off=CARD_FLOW_OFFSET[cardFlowEdge(e,card)];
   card.classList.add('flow-instant');
   card.style.setProperty('--flow-x',off.x);
@@ -423,6 +444,7 @@ nbGridEl.addEventListener('mouseover',(e)=>{
 nbGridEl.addEventListener('mouseout',(e)=>{
   const card=e.target.closest('.nb-card');
   if(!card||card.contains(e.relatedTarget))return;
+  card._pmFlowT=Date.now();
   const off=CARD_FLOW_OFFSET[cardFlowEdge(e,card)];
   card.style.setProperty('--flow-x',off.x);
   card.style.setProperty('--flow-y',off.y);

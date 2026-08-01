@@ -185,7 +185,7 @@
       document.body.classList.toggle('modal-locked', show);
       if (show) {
         var f = orderModal.querySelector('input[name="standard"]');
-        if (f) setTimeout(function () { f.focus(); }, 220);
+        if (f) f.focus({ preventScroll: true });
       }
     };
     orderOpen.addEventListener('click', function () { toggleOrder(true); });

@@ -129,6 +129,17 @@ document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.s2-row.active').forEach(setOpen);
 })();
 
+// 40 вечных циклов пиксельного облака — на паузу вне вьюпорта
+// (сами циклы остаются, см. .pixel-cloud.is-off в front.css)
+(function pixelCloudGate() {
+  const pc = document.querySelector('.pixel-cloud');
+  if (!pc || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(entries => {
+    pc.classList.toggle('is-off', !entries[0].isIntersecting);
+  }, { rootMargin: '120px' });
+  io.observe(pc);
+})();
+
 // Cursor parallax on the right visual panel
 (function parallax() {
   const right = document.querySelector('.right');
@@ -452,6 +463,11 @@ document.addEventListener('DOMContentLoaded', function(){
   };
   let shownId = null;
 
+  /* Габариты и последняя позиция тултипа: мерить offsetWidth/Height и писать
+     left/top каждый кадр rAF-цикла — лишний layout; точка назначения
+     статична, пока ховер не сменился. */
+  var ttW = 388, ttH = 190, ttLastLeft = null, ttLastTop = null;
+
   function renderTooltip(dest, info) {
     tooltipEl.style.setProperty('--tt-accent', info.accent);
     const badgeCls = dest.international ? '' : ' local';
@@ -481,6 +497,10 @@ document.addEventListener('DOMContentLoaded', function(){
           `</div>` +
         `</div>` +
       `</div>`;
+    ttW = tooltipEl.offsetWidth || 388;
+    ttH = tooltipEl.offsetHeight || 190;
+    ttLastLeft = null;
+    ttLastTop = null;
   }
 
   function renderMobileList() {
@@ -510,12 +530,15 @@ document.addEventListener('DOMContentLoaded', function(){
   renderMobileList();
 
   function positionTooltip(dx, dy, w, h) {
-    const tw = tooltipEl.offsetWidth || 388, th = tooltipEl.offsetHeight || 190;
+    const tw = ttW, th = ttH;
     let left = dx + 26, top = dy - th / 2;
     if (left + tw > w - 12) left = dx - tw - 26;
     if (left < 12) left = 12;
     if (top < 12) top = 12;
     if (top + th > h - 12) top = h - th - 12;
+    if (left === ttLastLeft && top === ttLastTop) return; // точка не сместилась — не пишем layout
+    ttLastLeft = left;
+    ttLastTop = top;
     tooltipEl.style.left = `${left}px`;
     tooltipEl.style.top = `${top}px`;
   }
@@ -1077,6 +1100,10 @@ document.addEventListener('DOMContentLoaded', function(){
   function goToStep(idx) {
     idx = clamp(idx, 0, LAST);
     if (!isHMode()) {
+      /* Направление листания — в dir-класс: CSS доводит входящий слайд
+         14px со стороны жеста (см. s5SlideNext/Prev в front.css). */
+      s5.classList.toggle('s5-dir-prev', idx < current);
+      s5.classList.toggle('s5-dir-next', idx >= current);
       renderIndex(idx);
       return;
     }
@@ -1103,7 +1130,9 @@ document.addEventListener('DOMContentLoaded', function(){
     trig.disable(false, false);
     stepTween = gsap.to(pos, {
       k: 1,
-      duration: 0.9,
+      /* 0.45, не 0.9: шаг вешается на ArrowLeft/Right и клики — 900мс были
+         3× бюджета UI, серия нажатий вставала в очередь заметно надолго. */
+      duration: 0.45,
       ease: 'power1.inOut',
       onUpdate: function() {
         var prog = p0 + (p - p0) * pos.k;
@@ -1196,12 +1225,13 @@ document.addEventListener('DOMContentLoaded', function(){
      alone since vertical scroll already drives it there. */
   var s5ContentEl = s5.querySelector('.s5-content');
   if (s5ContentEl) {
-    var touchStartX = 0, touchStartY = 0, touching = false;
+    var touchStartX = 0, touchStartY = 0, touchStartT = 0, touching = false;
     s5ContentEl.addEventListener('touchstart', function(e) {
       if (isHMode() || !e.touches[0]) return;
       touching = true;
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
+      touchStartT = Date.now();
     }, { passive: true });
     s5ContentEl.addEventListener('touchend', function(e) {
       if (!touching) return;
@@ -1210,7 +1240,11 @@ document.addEventListener('DOMContentLoaded', function(){
       if (!t) return;
       var dx = t.clientX - touchStartX;
       var dy = t.clientY - touchStartY;
-      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      /* Порог по дистанции ИЛИ по скорости: быстрый короткий флик (24-48px,
+         >0.3 px/мс) — однозначное намерение, раньше он молча игнорировался. */
+      var v = Math.abs(dx) / Math.max(1, Date.now() - touchStartT);
+      var horiz = Math.abs(dx) > Math.abs(dy) * 1.5;
+      if (horiz && (Math.abs(dx) > 48 || (Math.abs(dx) > 24 && v > 0.3))) {
         goToStep(current + (dx < 0 ? 1 : -1));
       }
     }, { passive: true });
@@ -1437,6 +1471,14 @@ document.addEventListener('DOMContentLoaded', function(){
     s9FlowGrid.addEventListener('mouseover', function(e){
       var card = e.target.closest('.s9-card');
       if (!card || card.contains(e.relatedTarget)) return;
+      /* Повторный вход, пока вытекание не доехало (<500мс): не телепортируем
+         слой к грани входа (белая вспышка), а даём транзишену ретаргетнуться
+         из текущего положения. */
+      if (card._pmFlowT && Date.now() - card._pmFlowT < 500) {
+        card.style.setProperty('--flow-x', '0%');
+        card.style.setProperty('--flow-y', '0%');
+        return;
+      }
       var off = S9_FLOW_OFFSET[s9FlowEdge(e, card)];
       /* прыжком ставим слой за грань входа, затем плавно вливаем */
       card.classList.add('flow-instant');
@@ -1450,6 +1492,7 @@ document.addEventListener('DOMContentLoaded', function(){
     s9FlowGrid.addEventListener('mouseout', function(e){
       var card = e.target.closest('.s9-card');
       if (!card || card.contains(e.relatedTarget)) return;
+      card._pmFlowT = Date.now();
       var off = S9_FLOW_OFFSET[s9FlowEdge(e, card)];
       card.style.setProperty('--flow-x', off.x);
       card.style.setProperty('--flow-y', off.y);
@@ -1558,15 +1601,18 @@ document.addEventListener('DOMContentLoaded', function(){
     if(tlBtns.length >= 2){
       var prevBtn = tlBtns[0], nextBtn = tlBtns[1];
       var zone = s5sec.querySelector('.s5-inner') || s5sec;
-      var sx = null, sy = null;
+      var sx = null, sy = null, st = 0;
       zone.addEventListener('touchstart', function(e){
-        var t = e.changedTouches[0]; sx = t.clientX; sy = t.clientY;
+        var t = e.changedTouches[0]; sx = t.clientX; sy = t.clientY; st = Date.now();
       }, { passive:true });
       zone.addEventListener('touchend', function(e){
         if(sx === null) return;
         var t = e.changedTouches[0];
         var dx = t.clientX - sx, dy = t.clientY - sy;
-        if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4){
+        var v = Math.abs(dx) / Math.max(1, Date.now() - st);
+        var horiz = Math.abs(dx) > Math.abs(dy) * 1.4;
+        /* дистанция ИЛИ скорость — быстрый флик тоже листает */
+        if(horiz && (Math.abs(dx) > 45 || (Math.abs(dx) > 24 && v > 0.3))){
           if(dx < 0) nextBtn.click(); else prevBtn.click();
         }
         sx = null; sy = null;

@@ -115,9 +115,13 @@
   }
 
   /* Cache absolute doc-coord top — immune to sticky/transform quirks */
-  var absTop=0;
+  var absTop=0,secH=1;
+  /* MQL один раз: window.matchMedia в update() создавал новый объект каждый
+     кадр; offsetHeight секции меняется только на ресайзе — тоже в кэш. */
+  var mqMob=window.matchMedia('(max-width:900px)');
   function recache(){
     absTop=section.getBoundingClientRect().top+scrollY_();
+    secH=section.offsetHeight;
   }
   recache();
   window.addEventListener('resize',recache,{passive:true});
@@ -127,7 +131,7 @@
   function update(){
     var sy=scrollY_();
     var scrolled=Math.max(0,sy-absTop);
-    var travel=Math.max(1,section.offsetHeight-window.innerHeight);
+    var travel=Math.max(1,secH-window.innerHeight);
     var raw=clamp(scrolled/travel,0,1);
 
     /* — Phase 0: intro frame fades out 0→0.38 — */
@@ -136,7 +140,7 @@
     /* — Phase 1: clip iris opens 0→0.52 — */
     /* ≤900: стартовое окно почти во всю ширину (34%/6%), чтобы спеки интро
        не прятались под видео — синхронно с CSS .prf-clip в @media ≤900 */
-    var mob=window.matchMedia('(max-width:900px)').matches;
+    var mob=mqMob.matches;
     var clipP=phase(raw,0,0.52);
     var iV=lerp(mob?34:28,0,clipP);
     var iH=lerp(mob?6:20,0,clipP);
@@ -224,9 +228,27 @@
     if(items.length>1)return items[1].offsetLeft-items[0].offsetLeft;
     return items[0].offsetWidth+16;
   }
-  function maxX(){return -(items.length-1)*itemW();}
+  function maxX(){return -(items.length-1)*galIw;}
   function clamp(v,lo,hi){return v<lo?lo:v>hi?hi:v;}
-  function snapTarget(){var iw=itemW();var idx=Math.max(0,Math.min(items.length-1,Math.round(-x/iw)));return -idx*iw;}
+  function snapTarget(){var iw=galIw;var idx=Math.max(0,Math.min(items.length-1,Math.round(-x/iw)));return -idx*iw;}
+  /* Кэш геометрии: offsetLeft/offsetWidth и getComputedStyle в updateScales
+     дёргались каждый кадр драга сразу после записи transform — forced layout
+     ~10 раз/кадр. Размеры меняются только на ресайзе. */
+  var galPadL=56,galSw=0,galIw=400,galOffs=[];
+  function measureGal(){
+    galPadL=parseFloat(getComputedStyle(stage).paddingLeft)||56;
+    galSw=stage.offsetWidth;
+    galIw=items.length>1?(items[1].offsetLeft-items[0].offsetLeft):(items[0]?items[0].offsetWidth+16:400);
+    galOffs=items.map(function(it){return {l:it.offsetLeft,w:it.offsetWidth};});
+  }
+  /* Мягкая граница вместо жёсткого clamp: за пределами трека палец тянет
+     с сопротивлением 0.3 (максимум +80px), отпускание доводит snap. */
+  function soft(v){
+    var lo=maxX(),hi=0;
+    if(v>hi)return Math.min(hi+(v-hi)*0.3,hi+80);
+    if(v<lo)return Math.max(lo+(v-lo)*0.3,lo-80);
+    return v;
+  }
   function setActive(idx){
     if(idx===activeIdx)return;
     activeIdx=idx;
@@ -237,22 +259,19 @@
      Кадры равновесные, активный отмечается точками под лентой. */
   var galMob=window.matchMedia('(max-width:640px)');
   function updateScales(){
-    /* item.offsetLeft is relative to stage (offsetParent=stage, which has padding).
+    /* Геометрия из кэша measureGal(): ни одного чтения layout в кадре.
        cx anchors at the left-edge slot center so item 0 at x=0 gets scale=1.0,
        which visually aligns the active card with the section heading. */
-    var padL=parseFloat(getComputedStyle(stage).paddingLeft)||56;
-    var iw=itemW();
-    var sw=stage.offsetWidth;
-    var cx=padL+iw/2;
+    var cx=galPadL+galIw/2;
     var mob=galMob.matches;
     var closestD=Infinity,closestI=0;
     items.forEach(function(item,i){
-      var left=item.offsetLeft+x;
-      var center=left+item.offsetWidth/2;
+      var g=galOffs[i]||{l:0,w:0};
+      var center=g.l+x+g.w/2;
       var dist=Math.abs(center-cx);
       if(dist<closestD){closestD=dist;closestI=i;}
       if(mob){item.style.transform='none';item.style.opacity='1';return;}
-      var t=Math.max(0,1-dist/(sw*0.55));
+      var t=Math.max(0,1-dist/(galSw*0.55));
       item.style.transform='scale('+(0.88+0.12*t).toFixed(3)+')';
       item.style.opacity=(0.42+0.58*t).toFixed(3);
     });
@@ -275,12 +294,17 @@
         } else {x+=velX;x=clamp(x,maxX()-60,60);}
       }
     }
-    x=clamp(x,maxX()-40,40);
+    /* Во время драга границу держит soft() с сопротивлением — жёсткий clamp
+       здесь схлопывал бы податливость в скачок. */
+    if(!isDragging&&targetX===null)x=clamp(x,maxX()-40,40);
     track.style.transform='translateX('+x.toFixed(2)+'px)';
     updateScales();
     raf=requestAnimationFrame(tick);
   }
   function startRaf(){if(!raf)raf=requestAnimationFrame(tick);}
+  measureGal();
+  window.addEventListener('resize',measureGal,{passive:true});
+  window.addEventListener('load',measureGal);
   stage.addEventListener('mousedown',function(e){
     targetX=null;
     isDragging=true;startMouseX=e.clientX;startX=x;lastMouseX=e.clientX;velX=0;
@@ -290,12 +314,15 @@
   window.addEventListener('mousemove',function(e){
     if(!isDragging)return;
     velX=e.clientX-lastMouseX;lastMouseX=e.clientX;
-    x=clamp(startX+(e.clientX-startMouseX),maxX()-100,100);
-    track.style.transform='translateX('+x.toFixed(2)+'px)';updateScales();
+    /* Только состояние: рендер (transform+updateScales) делает tick по rAF —
+       mousemove на 240Гц-мыши рисовал по нескольку раз за кадр. */
+    x=soft(startX+(e.clientX-startMouseX));
   });
   window.addEventListener('mouseup',function(){
     if(!isDragging)return;
-    isDragging=false;stage.classList.remove('is-dragging');document.body.style.userSelect='';startRaf();
+    isDragging=false;stage.classList.remove('is-dragging');document.body.style.userSelect='';
+    if(x>0||x<maxX())targetX=snapTarget(); /* из-за мягкой границы — плавный возврат */
+    startRaf();
   });
   stage.addEventListener('touchstart',function(e){
     targetX=null;
@@ -305,10 +332,13 @@
     if(!isDragging)return;
     var cx=e.touches[0].clientX;
     velX=cx-lastMouseX;lastMouseX=cx;
-    x=clamp(startX+(cx-startMouseX),maxX()-60,60);
-    track.style.transform='translateX('+x.toFixed(2)+'px)';updateScales();
+    x=soft(startX+(cx-startMouseX));
   },{passive:true});
-  stage.addEventListener('touchend',function(){isDragging=false;startRaf();});
+  stage.addEventListener('touchend',function(){
+    isDragging=false;
+    if(x>0||x<maxX())targetX=snapTarget(); /* из-за мягкой границы — плавный возврат */
+    startRaf();
+  });
   /* wheel: accumulate velocity only — no direct x jump — gives smooth trackpad feel */
   stage.addEventListener('wheel',function(e){
     if(Math.abs(e.deltaY)>Math.abs(e.deltaX))return;
