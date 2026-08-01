@@ -1486,15 +1486,20 @@ document.addEventListener('DOMContentLoaded', function(){
       }, 1000*S9K);
     }, 150*S9K);
   }
+  /* Макротаска, НЕ микротаска: у настоящих (trusted) кликов браузер
+     дренирует микротаски МЕЖДУ слушателями одного события — Promise-барьер
+     срабатывал после первого слушателя, второй запускал отдельный проход,
+     и его gen++ убивал фазу-2 первого вместе с мутацией фильтра («анимация
+     есть, фильтра нет»). setTimeout(0) выполняется после всех слушателей. */
   window._promenS9Mutate = function(fn){
     pendingFns.push(fn);
     if(scheduled) return;
     scheduled = true;
-    Promise.resolve().then(function(){
+    setTimeout(function(){
       scheduled = false;
       var fns = pendingFns.slice(); pendingFns.length = 0;
       runSwap(function(){ fns.forEach(function(f){ f(); }); });
-    });
+    }, 0);
   };
 
   btns.forEach(function(btn){
