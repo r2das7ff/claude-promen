@@ -3224,24 +3224,18 @@ img { display:block; }
 }
 .s9-card.flow-instant::after { transition:none; }
 
-/* ── S9: хореография фильтрации (front.js runFlip) ──
-   Роли одного прохода: .s9-leave — уходящая гаснет вниз на своём месте
-   (position:absolute ставит JS), .s9-move — выжившая съезжает в новую
-   ячейку (FLIP), .s9-enter — новая подлетает снизу; полоса категории
-   (::before) прочерчивается после посадки — «документ встал на учёт».
-   Лесенка входа — var(--s9d), потолок задаёт JS. */
-/* Слои: уходящие ПОД живыми (гаснут на заднем плане), а не поверх — иначе
-   съезжающие карточки ныряли под полупрозрачные призраки: каша. */
-.s9-card.s9-move,.s9-card.s9-enter{z-index:2;}
-.s9-card.s9-move{transition:transform .26s var(--ease-out-lg);}
-.s9-card.s9-leave{pointer-events:none;z-index:1;transition:opacity .16s ease,transform .16s ease;}
-.s9-card.s9-leave-go{opacity:0;transform:translateY(8px) scale(.99);}
+/* ── S9: двухфазная хореография фильтрации (front.js runSwap) ──
+   Фаза 1: текущий набор гаснет в потоке (.s9-out, 140мс). Фаза 2: фильтр
+   применяется, новый набор подлетает снизу лесенкой (.s9-enter, var(--s9d)),
+   полоса категории (::before) прочерчивается после посадки — «документ
+   встал на учёт». Никаких absolute/FLIP — ряды сетки не искажаются. */
+.s9-card.s9-out{opacity:0;transform:translateY(6px);transition:opacity .14s ease,transform .14s ease;pointer-events:none;}
 .s9-card.s9-enter{animation:s9CardIn .28s var(--ease-out) var(--s9d,0ms) both;}
 @keyframes s9CardIn{from{opacity:0;transform:translateY(14px);}}
 .s9-card.s9-enter::before{transform-origin:top;animation:s9BarIn .2s var(--ease-out) calc(var(--s9d,0ms) + .26s) both;}
 @keyframes s9BarIn{from{transform:scaleY(0);}}
 @media(prefers-reduced-motion:reduce){
-  .s9-card.s9-move,.s9-card.s9-leave{transition:none !important;}
+  .s9-card.s9-out{transition:none !important;}
   .s9-card.s9-enter,.s9-card.s9-enter::before{animation:none !important;}
 }
 

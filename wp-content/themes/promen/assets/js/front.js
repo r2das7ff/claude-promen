@@ -1424,20 +1424,21 @@ document.addEventListener('DOMContentLoaded', function(){
   var reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
   var revealTimers = [];
 
-  /* ── FLIP-хореография фильтрации ──
-     Один проход, три роли: уходящие гаснут вниз на своём месте (absolute
-     на время ухода), выжившие съезжают в новые ячейки (First-Last-Invert-
-     Play), новые подлетают снизу лесенкой, полоса категории прочерчивается
-     после посадки (CSS: .s9-move/.s9-leave/.s9-enter в front.css).
+  /* ── Двухфазная хореография фильтрации ──
+     Фаза 1: весь текущий набор тихо гаснет в потоке (140мс). Фаза 2: фильтр
+     применяется, новый набор подлетает снизу лесенкой, полоса категории
+     прочерчивается после посадки (CSS: .s9-out/.s9-enter в front.css).
+     Сознательно НЕ FLIP («двигать только изменившееся»): категории в данных
+     лежат сплошными блоками, и для главных переходов (ВСЕ↔СТАНДАРТЫ) все
+     изменения происходили за нижней кромкой экрана — хореография играла
+     невидимой. Видимый отклик на клик важнее минимальности движения.
      У кнопок фильтра ДВА слушателя (фильтр здесь + сброс «Показать все»
-     ниже) — их мутации коалесцируются микротаской в один замер, иначе
-     хореография гонялась бы дважды за клик. */
+     ниже) — их мутации коалесцируются микротаской в один проход. */
   /* Отладка хореографии: ?s9slow замедляет фазы в 6 раз (таймеры + CSS). */
   var S9K = /s9slow/.test(location.search) ? 6 : 1;
   if (S9K > 1) {
     var dbg = document.createElement('style');
-    dbg.textContent = '.s9-card.s9-move{transition-duration:' + (0.26*S9K) + 's !important;}'
-      + '.s9-card.s9-leave{transition-duration:' + (0.16*S9K) + 's !important;}'
+    dbg.textContent = '.s9-card.s9-out{transition-duration:' + (0.14*S9K) + 's !important;}'
       + '.s9-card.s9-enter{animation-duration:' + (0.28*S9K) + 's !important;}';
     document.head.appendChild(dbg);
   }
@@ -1446,113 +1447,44 @@ document.addEventListener('DOMContentLoaded', function(){
      (front.css) — на десктопе класс висит, но карточка видима, и проверка
      по классу назначала бы роли неверно (наблюдалось как хаос при фильтре). */
   function visibleNow(c){ return getComputedStyle(c).display !== 'none'; }
-  function runFlip(mutate){
+  function runSwap(mutate){
     if(!s9grid || reduceMq.matches){ mutate(); return; }
     gen++;
     var myGen = gen;
     revealTimers.forEach(clearTimeout); revealTimers.length = 0;
-    /* На время прохода глушим scroll anchoring на документе целиком:
-       overflow-anchor:none на сетке не спасает, если браузер выбрал якорь
-       ниже неё — страница «доводилась» за анимируемой высотой и прыгала. */
+    /* На время прохода глушим scroll anchoring на документе: сетка меняет
+       высоту мгновенно, и якорение «доводило» бы скролл — страница прыгала. */
     document.documentElement.style.overflowAnchor = 'none';
     document.body.style.overflowAnchor = 'none';
-    /* Срез «до»: чистим хвосты прошлых проходов и скролл-ривила (инлайновые
-       transition с задержками заражали бы FLIP), затем замер. Прерывание:
-       getBoundingClientRect учитывает transform — карточка в полёте
-       ретаргетится из текущей визуальной позиции. */
+    /* Хвосты прошлых проходов и скролл-ривила снимаем; transition ухода
+       ретаргетится из текущей прозрачности — перебивки не мигают. */
     cards.forEach(function(c){
-      c.classList.remove('s9-move','s9-enter','s9-leave','s9-leave-go');
-      c.style.transition='none';
-      c.style.transform=''; c.style.opacity='';
+      c.classList.remove('s9-enter','s9-out');
+      c.style.transition=''; c.style.transform=''; c.style.opacity='';
       c.style.removeProperty('--s9d');
-      /* Прерванный уход (его рестор-таймер заглушён сменой gen) довершаем
-         досрочно: вернуть скрытое состояние, иначе карточка-фантом осталась
-         бы видимой в потоке и испортила замер «до». */
-      if(c._s9restore){
-        if(c._s9restore.wasExtra) c.classList.add('s9-extra');
-        c.style.display = c._s9restore.wasHidden ? 'none' : '';
-        c._s9restore = null;
-      }
-      if(c._s9abs){ c.style.position=''; c.style.left=''; c.style.top=''; c.style.width=''; c._s9abs=false; }
     });
-    var before = [];
-    cards.forEach(function(c){ if(visibleNow(c)) before.push({el:c, r:c.getBoundingClientRect()}); });
-    var beforeEls = before.map(function(b){ return b.el; });
-
-    mutate();
-
-    var gridRect = s9grid.getBoundingClientRect();
-    var moves = [];
-    var enterIdx = 0;
-
-    /* Уходящие: вернуть на экран absolute'ом в старой ячейке и погасить. */
-    before.forEach(function(b){
-      var c = b.el;
-      if(visibleNow(c)) return;
-      var wasExtra = c.classList.contains('s9-extra');
-      var wasHidden = c.style.display === 'none';
-      c.classList.remove('s9-extra'); c.style.display='';
-      c.classList.add('s9-leave'); c._s9abs = true;
-      c._s9restore = { wasExtra: wasExtra, wasHidden: wasHidden };
-      c.style.position='absolute';
-      c.style.left=(b.r.left-gridRect.left)+'px';
-      c.style.top=(b.r.top-gridRect.top)+'px';
-      c.style.width=b.r.width+'px';
-      setTimeout(function(){
-        if(gen !== myGen || !c._s9restore) return;
-        c.classList.remove('s9-leave','s9-leave-go');
-        c.style.position=''; c.style.left=''; c.style.top=''; c.style.width=''; c._s9abs=false;
-        if(c._s9restore.wasExtra) c.classList.add('s9-extra');
-        c.style.display = c._s9restore.wasHidden ? 'none' : '';
-        c._s9restore = null;
-      }, 220*S9K);
-    });
-
-    /* Выжившие: инверт без перехода; новые: вход лесенкой (потолок 5). */
-    cards.forEach(function(c){
-      if(!visibleNow(c)) return;
-      var idx = beforeEls.indexOf(c);
-      if(idx !== -1){
-        var now = c.getBoundingClientRect();
-        var dx = before[idx].r.left - now.left;
-        var dy = before[idx].r.top - now.top;
-        if(dx || dy){
-          c.classList.add('s9-move');
-          c.style.transform='translate('+dx+'px,'+dy+'px)';
-          moves.push(c);
-        }
-      } else {
-        c.style.setProperty('--s9d', (Math.min(enterIdx++, 5) * 40)+'ms');
-        c.classList.add('s9-enter');
-        setTimeout(function(){
-          if(gen !== myGen) return;
-          c.classList.remove('s9-enter');
-          c.style.removeProperty('--s9d');
-        }, 1000*S9K);
-      }
-    });
-
-    /* Высоту сетки НЕ анимируем: фиксированная height у грида растягивала/
-       сжимала авто-ряды (align-content:stretch) — карточки становились
-       гигантскими или сплюснутыми на время перехода. Высота меняется
-       мгновенно; прыжок страницы при этом гасит заглушенное якорение. */
-
-    /* Play: инлайновый transition:none снят — классовые переходы едут. */
-    requestAnimationFrame(function(){ requestAnimationFrame(function(){
-      if(gen !== myGen) return;
-      cards.forEach(function(c){ c.style.transition=''; });
-      moves.forEach(function(c){ c.style.transform=''; });
-      before.forEach(function(b){ if(b.el.classList.contains('s9-leave')) b.el.classList.add('s9-leave-go'); });
-    });});
-    /* Страховочная уборка — таймером, не в rAF: в скрытой вкладке rAF
-       молчит, и без неё остались бы инлайновые transform. */
+    /* Фаза 1: текущий набор тихо гаснет в потоке — сетка не трогается,
+       ряды стабильны, никаких absolute. */
+    cards.forEach(function(c){ if(visibleNow(c)) c.classList.add('s9-out'); });
+    /* Фаза 2: фильтр применяется, новый набор подлетает лесенкой. */
     setTimeout(function(){
       if(gen !== myGen) return;
-      moves.forEach(function(c){ c.classList.remove('s9-move'); c.style.transform=''; });
-      cards.forEach(function(c){ c.style.transition=''; });
-      document.documentElement.style.overflowAnchor = '';
-      document.body.style.overflowAnchor = '';
-    }, 400*S9K);
+      mutate();
+      var idx = 0;
+      cards.forEach(function(c){
+        c.classList.remove('s9-out');
+        if(!visibleNow(c)) return;
+        c.style.setProperty('--s9d', (Math.min(idx++, 5) * 40)+'ms');
+        c.classList.add('s9-enter');
+      });
+      /* Уборка (таймером, не rAF — работает и в скрытой вкладке). */
+      setTimeout(function(){
+        if(gen !== myGen) return;
+        cards.forEach(function(c){ c.classList.remove('s9-enter'); c.style.removeProperty('--s9d'); });
+        document.documentElement.style.overflowAnchor = '';
+        document.body.style.overflowAnchor = '';
+      }, 1000*S9K);
+    }, 150*S9K);
   }
   window._promenS9Mutate = function(fn){
     pendingFns.push(fn);
@@ -1561,7 +1493,7 @@ document.addEventListener('DOMContentLoaded', function(){
     Promise.resolve().then(function(){
       scheduled = false;
       var fns = pendingFns.slice(); pendingFns.length = 0;
-      runFlip(function(){ fns.forEach(function(f){ f(); }); });
+      runSwap(function(){ fns.forEach(function(f){ f(); }); });
     });
   };
 
