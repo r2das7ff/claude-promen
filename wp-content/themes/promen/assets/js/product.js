@@ -783,7 +783,10 @@ promenHideEmptyCols(document.querySelector('.series-full'));
     var ar = active.getBoundingClientRect();
     if (d > 0) { d = Math.min(d, ar.left - rr.left); }
     else { d = Math.max(d, ar.right - rr.right); }
-    if (d) { row.scrollBy({ left: d, behavior: 'smooth' }); }
+    if (d) {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      row.scrollBy({ left: d, behavior: reduce ? 'auto' : 'smooth' });
+    }
   }
 
   tabs.forEach(function (btn) {
@@ -924,7 +927,8 @@ promenHideEmptyCols(document.querySelector('.series-full'));
       d.className = 'pq-dot-nav' + (i === 0 ? ' on' : '');
       d.setAttribute('aria-label', 'Страница ' + (i + 1) + ' из ' + pages.length);
       d.addEventListener('click', function () {
-        body.scrollTo({ left: i * body.clientWidth, behavior: 'smooth' });
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        body.scrollTo({ left: i * body.clientWidth, behavior: reduce ? 'auto' : 'smooth' });
       });
       dots.appendChild(d);
     });
@@ -941,7 +945,8 @@ promenHideEmptyCols(document.querySelector('.series-full'));
       var row = e.detail && e.detail.row;
       if (!row) return;
       var i = pageOf(row);
-      if (i >= 0) body.scrollTo({ left: i * body.clientWidth, behavior: 'smooth' });
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (i >= 0) body.scrollTo({ left: i * body.clientWidth, behavior: reduce ? 'auto' : 'smooth' });
     });
   }
 

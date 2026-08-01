@@ -377,11 +377,19 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
 .reveal.in{opacity:1;transform:translateY(0);}
 
+/* Адресно, без *{transition-duration:.001ms}: универсальный селектор гасил
+   осмысленные фейды (притухание списка, панель), а вечные animation-циклы
+   при этом продолжали крутиться. Движение убираем, opacity-подсказки живут. */
 @media(prefers-reduced-motion:reduce){
-  .qc-scanline{animation:none !important;}
+  .qc-scanline,.pq-scan,.pq-pulse,.pass-status::before{animation:none !important;}
   .reg-r{animation:none !important;}
-  .reveal,.fq-a,.mat-expand,.pdp{transition:none !important;}
-  *{transition-duration:.001ms !important;}
+  .dc-res{animation:none !important;}
+  .reveal,.fq-a,.mat-expand{transition:none !important;}
+  .sidenav-dot,.sidenav-label{transition:none !important;}
+  /* Панель: позиция мгновенно, но фейд остаётся — видно, что появилась
+     новая поверхность (reduce — «мягче», а не «ничего»). */
+  .pdp{transition:opacity .2s ease;opacity:0;}
+  .pdp.open{opacity:1;}
 }
 
 /* RESPONSIVE */

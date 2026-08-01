@@ -165,3 +165,12 @@
 
 /* ── Футер = один экран на телефоне (компоновка statement как на главной) ── */
 
+
+/* Reduce: ховер-моушен карточек убираем (цвет/рамка остаются) — до этого
+   файл был одним из двух вовсе без reduce-блока. */
+@media(prefers-reduced-motion:reduce){
+  .bl-card{transition:border-color .2s;}
+  .bl-card:hover{transform:none;box-shadow:none;}
+  .bl-featured-media img,.bl-card-media img{transition:none;}
+  .bl-featured:hover .bl-featured-media img,.bl-card:hover .bl-card-media img{transform:none;}
+}

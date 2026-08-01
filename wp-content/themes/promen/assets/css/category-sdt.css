@@ -389,11 +389,16 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s ease;}
 .reveal.in{opacity:1;transform:translateY(0);}
 
+/* Адресно, без *{transition-duration:.001ms}: универсальный селектор гасил
+   осмысленные фейды, а вечные animation-циклы продолжали крутиться. */
 @media(prefers-reduced-motion:reduce){
   .qc-scanline{animation:none !important;}
   .reg-r{animation:none !important;}
-  .reveal,.fq-a,.mat-expand,.pdp{transition:none !important;}
-  *{transition-duration:.001ms !important;}
+  .reveal,.fq-a,.mat-expand{transition:none !important;}
+  .sidenav-dot,.sidenav-label{transition:none !important;}
+  /* Панель: позиция мгновенно, фейд остаётся — reduce «мягче», не «ничего». */
+  .pdp{transition:opacity .2s ease;opacity:0;}
+  .pdp.open{opacity:1;}
 }
 
 /* RESPONSIVE */

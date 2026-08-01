@@ -450,6 +450,15 @@ img { display:block; }
   .s8-scanline { animation:none !important; opacity:0; }
   /* Проливка s9: карточка белеет мгновенно вместо направленного втекания */
   .s9-card::after { transition:none !important; }
+  /* Пропуски первой ревизии: пульсы точек, s6-ховер, мобильный слайдер s5,
+     сайднав, тултип карты — движение убираем, opacity-подсказки живут. */
+  .s4-tt-dot.pulse,.s4-ml-dot.pulse,.s8-pulse{animation:none !important;}
+  .s6-drawing{transition:none !important;}
+  .s6-shimmer{transition:none !important;opacity:0 !important;}
+  .s5:not(.s5-hmode) .s5-slide{transition:opacity .2s ease,visibility .2s;animation:none !important;}
+  .s5-content{transition:opacity .2s ease;transform:none !important;}
+  .sidenav-dot,.sidenav-label{transition:none !important;}
+  .s4-tooltip{transition:opacity .2s ease !important;transform:none !important;}
 }
 
 /* ── RESPONSIVE — HERO ──────────────────────────────────────────
@@ -3634,9 +3643,12 @@ img { display:block; }
   opacity: 0; pointer-events: none;
   transition: opacity .3s ease, transform .3s ease;
 }
-/* при наведении — любой элемент */
-.sidenav-item:hover .sidenav-label {
-  opacity: 1; transform: translateY(-50%) translateX(0);
+/* при наведении — любой элемент; гейт hover-media как у трёх страничных
+   копий (product/category/production) — на таче ярлык залипал после тапа */
+@media (hover: hover) and (pointer: fine) {
+  .sidenav-item:hover .sidenav-label {
+    opacity: 1; transform: translateY(-50%) translateX(0);
+  }
 }
 /* при переходе в новую активную секцию — подпись показывается кратко,
    затем гаснет сама (через JS), чтобы не перекрывать контент надолго */

@@ -38,7 +38,10 @@
     var ar = active.getBoundingClientRect();
     if (d > 0) { d = Math.min(d, ar.left - rr.left); }
     else { d = Math.max(d, ar.right - rr.right); }
-    if (d) { row.scrollBy({ left: d, behavior: 'smooth' }); }
+    if (d) {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      row.scrollBy({ left: d, behavior: reduce ? 'auto' : 'smooth' });
+    }
   }
 
   tabs.forEach(function (btn) {

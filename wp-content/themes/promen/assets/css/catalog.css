@@ -467,8 +467,11 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
 #productList{transition:opacity .12s ease;}
 
 @media(prefers-reduced-motion:reduce){
-  .pdp{transition:none !important;}
+  /* Панель: позиция мгновенно, фейд остаётся — reduce «мягче», не «ничего». */
+  .pdp{transition:opacity .2s ease;opacity:0;}
+  .pdp.open{opacity:1;}
   #productList{transition:none;}
+  .chips-count.pop{animation:none;}
 }
 
 /* ── RESPONSIVE ── */

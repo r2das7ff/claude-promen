@@ -138,7 +138,17 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
 @keyframes nbEmptyIn{from{opacity:0;transform:scale(.985);}}
 /* Press feedback: см. блок в base.css */
 .nb-btn:active,.nb-more:active,.ne-reset:active,.btn-pnl:active{transform:scale(.97);}
-@media(prefers-reduced-motion:reduce){.nb-status-dot{animation:none !important;}.nb-card{animation:none !important;}.nb-card::before{transition:none !important;}.nb-panel{transition:none !important;}.nb-empty{animation:none !important;}}
+@media(prefers-reduced-motion:reduce){
+  .nb-status-dot{animation:none !important;}
+  .nb-card{animation:none !important;}
+  .nb-card::before{transition:none !important;}
+  .nb-empty{animation:none !important;}
+  /* Панель: позиция мгновенно, фейд остаётся — reduce «мягче», не «ничего». */
+  .nb-panel{transition:opacity .2s ease;opacity:0;}
+  .nb-panel.open{opacity:1;}
+  /* Тост: подъём убираем, фейд живёт. */
+  .nb-toast{transform:translate(-50%,0);transition:opacity .25s;}
+}
 
 /* ── RESPONSIVE ── */
 @media(max-width:1366px){

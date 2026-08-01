@@ -154,3 +154,8 @@
 /* 116px: «Номенклатура» на 12px не влезала в 100. Это правило перекрывает
    одноимённое выше (строка ~50) — правим именно его. */
 .pd-phase-row{display:grid;grid-template-columns:116px 1fr;gap:14px;padding:10px 0;border-bottom:1px solid var(--ln);}
+
+/* Reduce: единственный вечный цикл страницы — пульс статуса «строится». */
+@media(prefers-reduced-motion:reduce){
+  .pd-badge.status.building .dot{animation:none;}
+}

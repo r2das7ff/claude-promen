@@ -328,7 +328,12 @@ a.s10-contact-v:hover{color:var(--blue);}
 
 @media(prefers-reduced-motion:reduce){
   .strip-pulse{animation:none !important;}
+  .s10-promise-dot{animation:none !important;}
   .s10-success{animation:none !important;}
+  /* Drawer: позиция мгновенно (сдвиг на 340px убираем), фейд остаётся —
+     оверлей и сама панель сообщают о смене контекста без движения. */
+  .nav-drawer{transition:opacity .25s ease;opacity:0;}
+  .nav-drawer.is-open{opacity:1;}
 }
 
 /* ════════════════════════════════════════════════════════════

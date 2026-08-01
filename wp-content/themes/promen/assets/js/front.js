@@ -807,6 +807,9 @@ document.addEventListener('DOMContentLoaded', function(){
   var current   = 0;
   var NAV_H     = 64;
   var mqDesktop = window.matchMedia('(min-width: 1025px)');   /* hmode только на десктопе; ≤1024 — tap-слайдер (телефон+планшет) */
+  /* reduce: скролл-джек с горизонтальным треком — самый вестибулярно-рисковый
+     паттерн на сайте; вместо него готовый тап-режим (isHMode → false). */
+  var reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
   var scrollRoot = null;
   var s5Timeline = null;
   var s5ScrollTrigger = null;
@@ -830,7 +833,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   function isHMode() {
-    return mqDesktop.matches;
+    return mqDesktop.matches && !reduceMq.matches;
   }
 
   function viewportH() {
@@ -1215,6 +1218,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   window.addEventListener('resize', onResize);
   mqDesktop.addEventListener('change', onResize);
+  reduceMq.addEventListener('change', onResize);
 
   if ('ResizeObserver' in window) {
     var ro = new ResizeObserver(function() { onResize(); });
