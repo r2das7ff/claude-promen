@@ -90,7 +90,7 @@ img{display:block;max-width:100%;}
   padding:0 20px 0 56px;height:34px;
   border-bottom:1px solid rgba(109,140,166,.1);
   font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:rgba(109,140,166,.45);
-  animation:s1FadeUp .5s ease .15s both;
+  animation:s1FadeUp .5s ease var(--dur-fast) both;
 }
 @keyframes s1FadeUp{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
 
@@ -857,7 +857,7 @@ img{display:block;max-width:100%;}
 .jrn-side{padding:30px 24px;}
 .jrn-slbl{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:rgba(109,140,166,.62);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .jrn-slbl::before{content:'';width:10px;height:1px;background:var(--g1);}
-.ji{border:1px solid var(--ln2);padding:12px 14px;margin-bottom:5px;cursor:default;background:rgba(255,255,255,.65);transition:background .15s,border-color .15s;}
+.ji{border:1px solid var(--ln2);padding:12px 14px;margin-bottom:5px;cursor:default;background:rgba(255,255,255,.65);transition:background var(--dur-fast),border-color var(--dur-fast);}
 .ji:hover,.ji.act{background:#fff;border-color:var(--g1);}
 .ji-code{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.12em;color:var(--g1);margin-bottom:4px;}
 .ji-name{font-size:14px;color:rgba(30,61,92,.82);line-height:1.38;margin-bottom:5px;}
@@ -1050,7 +1050,7 @@ img{display:block;max-width:100%;}
 .stg-spine{
   position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
   gap:16px;padding:18px 4px 24px;
-  opacity:1;transition:opacity .3s ease .22s;
+  opacity:1;transition:opacity .3s ease var(--dur-ui);
 }
 .stg-p.is-open .stg-spine{opacity:0;transition:opacity .16s ease;pointer-events:none;}
 .stg-spine-n{
@@ -1083,7 +1083,7 @@ img{display:block;max-width:100%;}
   padding:clamp(22px,2.3vw,40px);
   opacity:0;pointer-events:none;transition:opacity .2s ease;
 }
-.stg-p.is-open .stg-card{opacity:1;pointer-events:auto;transition:opacity .3s ease .22s;}
+.stg-p.is-open .stg-card{opacity:1;pointer-events:auto;transition:opacity .3s ease var(--dur-ui);}
 /* Содержимое въезжает ступенями после того, как ламель разъехалась */
 .stg-card-top,.stg-card-mid,.stg-foot{
   opacity:0;transform:translateY(15px);
@@ -1591,7 +1591,7 @@ img{display:block;max-width:100%;}
   font-family:'DINPro',monospace; font-size:13px; letter-spacing:.16em;
   text-transform:uppercase; color:var(--blue); cursor:pointer;
   position:relative; z-index:1;
-  -webkit-tap-highlight-color:transparent; transition:background .15s;
+  -webkit-tap-highlight-color:transparent; transition:background var(--dur-fast);
 }
 .grades-showall::after{ content:'↓'; font-size:13.5px; color:var(--g1); }
 .grades-showall.open::after{ content:'↑'; }
@@ -1784,7 +1784,7 @@ img{display:block;max-width:100%;}
   .gal-arrow{ width:44px; height:44px; display:flex; align-items:center; justify-content:center;
     background:transparent; border:1px solid rgba(109,140,166,.4); color:rgba(169,183,198,.9);
     font-size:16px; line-height:1; cursor:pointer; -webkit-tap-highlight-color:transparent;
-    transition:background .15s,border-color .15s; }
+    transition:background var(--dur-fast),border-color var(--dur-fast); }
   .gal-arrow:active{ background:rgba(109,140,166,.18); border-color:rgba(169,183,198,.7); }
   .gal-dots{ gap:2px; }
   .gal-dot{ width:8px; height:8px; padding:18px; box-sizing:content-box; background-clip:content-box; }

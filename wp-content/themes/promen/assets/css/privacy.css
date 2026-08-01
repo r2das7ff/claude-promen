@@ -131,7 +131,7 @@ html{scroll-behavior:smooth;}
 .pol-toc-item:last-child{border-bottom:none;}
 .pol-toc-link{
   display:flex;align-items:baseline;gap:10px;padding:12px 18px;
-  transition:background .15s,color .15s;
+  transition:background var(--dur-fast),color var(--dur-fast);
 }
 .pol-toc-num{font-family:'DINPro',monospace;font-size:12px;color:var(--g1);flex-shrink:0;}
 .pol-toc-txt{font-size:13px;line-height:1.35;color:var(--blue);letter-spacing:.01em;}
@@ -143,14 +143,14 @@ html{scroll-behavior:smooth;}
 .pol-toc-item.is-active .pol-toc-sub{max-height:600px;}
 .pol-toc-sub a{
   display:block;padding:7px 18px 7px 42px;font-size:12.5px;line-height:1.4;color:var(--g1);
-  border-top:1px solid var(--ln);transition:color .15s,background .15s;
+  border-top:1px solid var(--ln);transition:color var(--dur-fast),background var(--dur-fast);
 }
 .pol-toc-sub a:hover{background:var(--bg2);color:var(--blue);}
 .pol-toc-sub a.is-active{color:var(--dark);font-weight:700;}
 .pol-toc-foot{padding:14px 18px;border-top:1px solid var(--ln2);}
 .pol-top-btn{
   display:flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:12px;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--g1);transition:color .15s;
+  text-transform:uppercase;color:var(--g1);transition:color var(--dur-fast);
 }
 .pol-top-btn:hover{color:var(--dark);}
 

@@ -111,7 +111,7 @@
 .nf-search button{
   height:100%;padding:0 18px;background:var(--dark);color:var(--white);
   font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;
-  flex-shrink:0;transition:background .15s;
+  flex-shrink:0;transition:background var(--dur-fast);
 }
 .nf-search button:hover{background:var(--blue);}
 
@@ -139,7 +139,7 @@
 .nf-qn{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.1em;color:var(--g1);opacity:.6;}
 .nf-qt{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:17px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);}
 .nf-qd{font-size:13.5px;color:var(--blue);line-height:1.5;}
-.nf-qarrow{font-size:15px;color:var(--g1);transition:transform .15s,color .15s;justify-self:end;}
+.nf-qarrow{font-size:15px;color:var(--g1);transition:transform var(--dur-fast),color var(--dur-fast);justify-self:end;}
 
 /* ── FOOTER BAR ── */
 .nf-bar{
@@ -148,7 +148,7 @@
 }
 .nf-bar-copy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g1);opacity:.7;}
 .nf-bar-idx{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g1);opacity:.5;}
-.nf-bar-policy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g1);opacity:.7;text-decoration:none;transition:opacity .15s,color .15s;}
+.nf-bar-policy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g1);opacity:.7;text-decoration:none;transition:opacity var(--dur-fast),color var(--dur-fast);}
 .nf-bar-policy:hover{opacity:1;color:var(--dark);}
 
 /* ── ANIMATIONS ── */
