@@ -373,11 +373,18 @@ document.getElementById('nbMore').addEventListener('click',()=>{
   renderGrid();
 });
 
+/* Debounce: каждый рендер пересоздаёт грид через innerHTML, и без паузы
+   cardIn/nbEmptyIn рестартовали на каждом символе (карточки не успевали
+   проявиться). 200мс: фильтрация локальная, сеть не ждём. */
+let nbQTimer=null;
 document.getElementById('nbSearch').addEventListener('input',(e)=>{
-  state.q=e.target.value.trim();
-  visibleCount=PAGE_SIZE;
-  renderActiveFilters();
-  renderGrid();
+  clearTimeout(nbQTimer);
+  nbQTimer=setTimeout(()=>{
+    state.q=e.target.value.trim();
+    visibleCount=PAGE_SIZE;
+    renderActiveFilters();
+    renderGrid();
+  },200);
 });
 
 /* CARD ACTIONS (event delegation) */

@@ -74,7 +74,7 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
 .nb-foot{display:flex;align-items:center;gap:8px;padding-top:14px;border-top:1px solid var(--ln);flex-wrap:wrap;}
 .nb-status{display:flex;align-items:center;gap:6px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1);white-space:nowrap;margin-right:auto;}
 .nb-status-dot{width:6px;height:6px;border-radius:50%;background:#5C8F6A;flex-shrink:0;animation:blink 2.4s step-end infinite;}
-.nb-btn{font-family:'DINPro',sans-serif;font-size:12.5px;letter-spacing:.06em;padding:8px 13px;border:1px solid var(--ln2);white-space:nowrap;transition:background .15s,color .15s,border-color .15s;cursor:pointer;}
+.nb-btn{font-family:'DINPro',sans-serif;font-size:12.5px;letter-spacing:.06em;padding:8px 13px;border:1px solid var(--ln2);white-space:nowrap;transition:background .15s,color .15s,border-color .15s,transform var(--dur-press) var(--ease-out);cursor:pointer;}
 .nb-btn--dl{background:var(--blue);color:var(--white);border-color:var(--blue);font-weight:700;}
 .nb-btn--dl:hover{background:var(--dark);border-color:var(--dark);}
 .nb-btn--view{background:transparent;color:var(--dark);}
@@ -83,13 +83,13 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
 .nb-cat-link:hover{color:var(--dark);border-color:var(--g1);}
 
 .nb-more-wrap{display:flex;justify-content:center;padding:8px 0 8px;}
-.nb-more{padding:13px 30px;border:1px solid var(--ln2);font-family:'DINPro',monospace;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);background:transparent;transition:background .15s,color .15s,border-color .15s;}
+.nb-more{padding:13px 30px;border:1px solid var(--ln2);font-family:'DINPro',monospace;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);background:transparent;transition:background .15s,color .15s,border-color .15s,transform var(--dur-press) var(--ease-out);}
 .nb-more:hover{border-color:var(--g1);color:var(--dark);}
 
-.nb-empty{padding:80px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;grid-column:1/-1;}
+.nb-empty{padding:80px 40px;display:flex;flex-direction:column;align-items:center;gap:12px;grid-column:1/-1;animation:nbEmptyIn .2s var(--ease-out) both;}
 .ne-code{font-family:'DINProCond',monospace;font-weight:900;font-size:70px;color:var(--ln);line-height:1;letter-spacing:-.04em;}
 .ne-msg{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--g2);}
-.ne-reset{margin-top:6px;padding:12px 26px;border:1px solid var(--ln2);font-family:'DINPro',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);background:var(--white);cursor:pointer;transition:background .15s,color .15s,border-color .15s;}
+.ne-reset{margin-top:6px;padding:12px 26px;border:1px solid var(--ln2);font-family:'DINPro',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);background:var(--white);cursor:pointer;transition:background .15s,color .15s,border-color .15s,transform var(--dur-press) var(--ease-out);}
 .ne-reset:hover{border-color:var(--g1);color:var(--dark);background:var(--bg2);}
 
 /* ── FOOTER BAR ── */
@@ -121,7 +121,7 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
 .nb-panel-v{font-size:13.5px;color:var(--dark);line-height:1.5;}
 .nb-panel-desc{font-size:13px;line-height:1.75;color:var(--blue);font-weight:300;}
 .nb-panel-cta{padding:16px 22px;display:flex;flex-direction:column;gap:8px;flex-shrink:0;border-top:1px solid var(--ln2);}
-.btn-pnl{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;font-family:'DINPro',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .15s,color .15s,border-color .15s;width:100%;}
+.btn-pnl{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;font-family:'DINPro',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .15s,color .15s,border-color .15s,transform var(--dur-press) var(--ease-out);width:100%;}
 .btn-pnl.fill{background:var(--dark);color:var(--white);border:1px solid var(--dark);}
 .btn-pnl.fill:hover{background:var(--blue);border-color:var(--blue);}
 .btn-pnl.out{background:transparent;color:var(--g1);border:1px solid var(--ln2);}
@@ -133,7 +133,12 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
 
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
 @keyframes cardIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-@media(prefers-reduced-motion:reduce){.nb-status-dot{animation:none !important;}.nb-card{animation:none !important;}.nb-card::before{transition:none !important;}.nb-panel{transition:none !important;}}
+/* Вход «∅ не найдено»: у грида, в отличие от каталога, нет моста-притухания,
+   и раньше пустота вставала телепортом. Работает в паре с debounce в nb.js. */
+@keyframes nbEmptyIn{from{opacity:0;transform:scale(.985);}}
+/* Press feedback: см. блок в base.css */
+.nb-btn:active,.nb-more:active,.ne-reset:active,.btn-pnl:active{transform:scale(.97);}
+@media(prefers-reduced-motion:reduce){.nb-status-dot{animation:none !important;}.nb-card{animation:none !important;}.nb-card::before{transition:none !important;}.nb-panel{transition:none !important;}.nb-empty{animation:none !important;}}
 
 /* ── RESPONSIVE ── */
 @media(max-width:1366px){

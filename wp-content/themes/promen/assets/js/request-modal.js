@@ -130,10 +130,12 @@
     + '@media (prefers-reduced-motion:reduce){'
     + '.rm-modal{transform:none;transition:none;}'
     + '.rm-overlay{transition:none;}'
+    /* исход заявки: fade остаётся (понять смену контекста), подъём — нет */
+    + '.rm-success{transform:none;}'
     + '}'
     + '.rm-close{position:absolute;top:20px;right:20px;width:32px;height:32px;'
     + 'display:flex;align-items:center;justify-content:center;border:1px solid var(--g1);'
-    + 'background:none;color:var(--dark);font-size:14px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;}'
+    + 'background:none;color:var(--dark);font-size:14px;cursor:pointer;transition:background .12s,color .12s,border-color .12s,transform var(--dur-press,160ms) var(--ease-out,ease);}'
     + '.rm-close:hover{background:var(--dark);color:var(--white);}'
     + '.rm-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:22px;}'
     + '.rm-eye-num{font-family:"DINPro",monospace;font-size:11px;letter-spacing:.2em;'
@@ -164,27 +166,39 @@
     + 'text-transform:uppercase;color:var(--g1);opacity:.6;}'
     + '.rm-file-btn{display:inline-flex;align-items:center;gap:8px;font-family:"DINPro",monospace;'
     + 'font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);'
-    + 'border:1px solid var(--g1);padding:8px 14px;cursor:pointer;transition:background .12s,color .12s,border-color .12s;background:var(--white);}'
+    + 'border:1px solid var(--g1);padding:8px 14px;cursor:pointer;transition:background .12s,color .12s,border-color .12s,transform var(--dur-press,160ms) var(--ease-out,ease);background:var(--white);}'
     + '.rm-file-btn:hover{background:var(--bg);color:var(--dark);border-color:var(--g1);}'
     + '.rm-file-name{font-family:"DINPro",monospace;font-size:12px;color:var(--g1);opacity:.7;}'
     + '.rm-actions{display:flex;align-items:center;gap:16px;margin-top:24px;flex-wrap:wrap;}'
     + '.rm-submit{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;'
     + 'background:var(--dark);color:var(--white);border:1px solid var(--dark);'
     + 'font-family:"DINPro",sans-serif;font-weight:700;font-size:13.5px;letter-spacing:.08em;'
-    + 'text-transform:uppercase;cursor:pointer;transition:background .15s,color .15s,border-color .15s,opacity .15s;}'
+    + 'text-transform:uppercase;cursor:pointer;transition:background .15s,color .15s,border-color .15s,opacity .15s,transform var(--dur-press,160ms) var(--ease-out,ease);}'
     + '.rm-submit:hover{background:var(--blue);border-color:var(--blue);}'
+    /* Press feedback: см. блок в base.css */
+    + '.rm-submit:active,.rm-file-btn:active,.rm-close:active{transform:scale(.97);}'
     + '.rm-submit[disabled]{opacity:.55;cursor:default;}'
     + '.rm-ghost-link{font-family:"DINPro",monospace;font-size:12px;letter-spacing:.1em;'
     + 'text-transform:uppercase;color:var(--g1);text-decoration:none;border-bottom:1px solid transparent;}'
     + '.rm-ghost-link:hover{color:var(--dark);border-color:var(--g1);}'
     + '.rm-note{font-family:"DINPro",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--g1);'
     + 'opacity:.6;margin:12px 0 0;}'
+    /* Исходы показываются классом .show, вход — через @starting-style:
+       display переключился, транзишен стартует из первого кадра. Без
+       поддержки — мгновенно, как раньше. Ошибка — только fade, без
+       подъёма: подъём празднует, ошибке он не к лицу. */
     + '.rm-error{display:none;margin-top:14px;padding:12px 16px;border:1px solid var(--g1);'
     + 'font-family:"DINPro",monospace;font-size:12px;letter-spacing:.04em;line-height:1.5;color:var(--dark);'
-    + 'background:rgba(109,140,166,.12);}'
+    + 'background:rgba(109,140,166,.12);opacity:0;transition:opacity .2s ease;}'
+    + '.rm-error.show{display:block;opacity:1;}'
+    + '@starting-style{.rm-error.show{opacity:0;}}'
     + '.rm-success{display:none;padding:22px 24px;background:rgba(109,140,166,.08);'
     + 'border:1px solid var(--g1);font-family:"DINPro",monospace;font-size:13px;'
-    + 'letter-spacing:.03em;line-height:1.6;color:var(--dark);}'
+    + 'letter-spacing:.03em;line-height:1.6;color:var(--dark);'
+    + 'opacity:0;transform:translateY(8px);'
+    + 'transition:opacity .35s var(--ease-out,ease),transform .35s var(--ease-out,ease);}'
+    + '.rm-success.show{display:block;opacity:1;transform:none;}'
+    + '@starting-style{.rm-success.show{opacity:0;transform:translateY(8px);}}'
     + '.rm-consent{display:flex;align-items:flex-start;gap:10px;margin-top:16px;cursor:pointer;}'
     + '.rm-consent input{width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--dark);cursor:pointer;}'
     + '.rm-consent-txt{font-family:"DINPro",sans-serif;font-size:13px;line-height:1.5;color:var(--blue);}'
@@ -289,7 +303,7 @@
   function showError(msg) {
     var el = document.getElementById('rmError');
     el.textContent = msg;
-    el.style.display = 'block';
+    el.classList.add('show');
   }
 
   function submitForm(e) {
@@ -301,7 +315,7 @@
       consent.focus();
       return;
     }
-    document.getElementById('rmError').style.display = 'none';
+    document.getElementById('rmError').classList.remove('show');
 
     var preset = PRESETS[currentPreset] || PRESETS.contact;
     var fd = new FormData();
@@ -332,7 +346,7 @@
       .then(function (json) {
         if (json && json.success) {
           document.getElementById('rmForm').style.display = 'none';
-          document.getElementById('rmSuccess').style.display = 'block';
+          document.getElementById('rmSuccess').classList.add('show');
         } else {
           showError((json && json.data && json.data.message) || 'Не удалось отправить запрос. Напишите нам напрямую: ' + (CFG.email || 'zakaz@prom-en.com'));
         }
@@ -397,8 +411,8 @@
 
     var form = document.getElementById('rmForm');
     form.style.display = 'block';
-    document.getElementById('rmSuccess').style.display = 'none';
-    document.getElementById('rmError').style.display = 'none';
+    document.getElementById('rmSuccess').classList.remove('show');
+    document.getElementById('rmError').classList.remove('show');
     var consent = document.getElementById('rmConsent');
     if (consent) { consent.checked = false; var cl = consent.closest('.rm-consent'); if (cl) cl.classList.remove('err'); }
 
