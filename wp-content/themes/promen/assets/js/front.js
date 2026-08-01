@@ -1451,6 +1451,14 @@ document.addEventListener('DOMContentLoaded', function(){
       c.style.transition='none';
       c.style.transform=''; c.style.opacity='';
       c.style.removeProperty('--s9d');
+      /* Прерванный уход (его рестор-таймер заглушён сменой gen) довершаем
+         досрочно: вернуть скрытое состояние, иначе карточка-фантом осталась
+         бы видимой в потоке и испортила замер «до». */
+      if(c._s9restore){
+        if(c._s9restore.wasExtra) c.classList.add('s9-extra');
+        c.style.display = c._s9restore.wasHidden ? 'none' : '';
+        c._s9restore = null;
+      }
       if(c._s9abs){ c.style.position=''; c.style.left=''; c.style.top=''; c.style.width=''; c._s9abs=false; }
     });
     var before = [];
@@ -1473,16 +1481,18 @@ document.addEventListener('DOMContentLoaded', function(){
       var wasHidden = c.style.display === 'none';
       c.classList.remove('s9-extra'); c.style.display='';
       c.classList.add('s9-leave'); c._s9abs = true;
+      c._s9restore = { wasExtra: wasExtra, wasHidden: wasHidden };
       c.style.position='absolute';
       c.style.left=(b.r.left-gridRect.left)+'px';
       c.style.top=(b.r.top-gridRect.top)+'px';
       c.style.width=b.r.width+'px';
       setTimeout(function(){
-        if(gen !== myGen) return;
+        if(gen !== myGen || !c._s9restore) return;
         c.classList.remove('s9-leave','s9-leave-go');
         c.style.position=''; c.style.left=''; c.style.top=''; c.style.width=''; c._s9abs=false;
-        if(wasExtra) c.classList.add('s9-extra');
-        c.style.display = wasHidden ? 'none' : '';
+        if(c._s9restore.wasExtra) c.classList.add('s9-extra');
+        c.style.display = c._s9restore.wasHidden ? 'none' : '';
+        c._s9restore = null;
       }, 220);
     });
 
