@@ -5,7 +5,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PROMEN_VERSION', '0.97.82' );
+define( 'PROMEN_VERSION', '0.97.84' );
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );
@@ -33,6 +33,7 @@ require_once __DIR__ . '/inc/steel-reference.php';
 require_once __DIR__ . '/inc/catalog-filters.php';
 require_once __DIR__ . '/inc/category-page.php';
 require_once __DIR__ . '/inc/catalog-api.php';
+require_once __DIR__ . '/inc/delivery-calc.php';
 require_once __DIR__ . '/inc/seo.php';
 require_once __DIR__ . '/inc/pilot-otvody.php';
 

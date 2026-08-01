@@ -874,6 +874,25 @@ a.nc{display:block;}
 .om-note{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.1em;color:var(--g1);opacity:.7;}
 @media(max-width:640px){.om-grid{grid-template-columns:1fr;}.om-field--wide{grid-column:span 1;}}
 
+/* ── Калькулятор доставки в модале (режим «Рассчитать доставку») ── */
+.om-dc{margin-bottom:18px;}
+.om-dc-city{position:relative;}
+.dc-sug{position:absolute;left:-1px;right:-1px;top:100%;z-index:6;background:#fff;border:1px solid var(--ln2);box-shadow:0 14px 30px rgba(15,42,68,.18);max-height:262px;overflow-y:auto;}
+.dc-sug-i{display:flex;flex-direction:column;gap:2px;width:100%;text-align:left;padding:9px 16px;background:none;border:none;border-bottom:1px solid var(--ln2);cursor:pointer;}
+.dc-sug-i:last-child{border-bottom:none;}
+.dc-sug-i:hover{background:var(--bg2);}
+.dc-sug-n{font-family:'DINPro',sans-serif;font-size:14px;font-weight:500;color:var(--dark);}
+.dc-sug-r{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--g1);}
+.om-dc-actions{padding-top:16px;}
+.om-dc .s10-submit:disabled{opacity:.45;cursor:default;}
+.dc-res{margin:14px 24px 0;padding:14px 16px 12px;border:1px solid var(--ln2);background:var(--bg2);}
+.dc-price{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:27px;letter-spacing:-.01em;color:var(--dark);}
+.dc-price:empty{display:none;}
+.dc-meta{font-size:13px;font-weight:400;line-height:1.5;color:var(--blue);margin-top:2px;}
+.dc-note{font-size:11.5px;font-weight:300;line-height:1.5;color:var(--g1);margin-top:8px;}
+.dc-res--err .dc-meta{color:var(--dark);font-weight:500;}
+.dc-res--err .dc-note{display:none;}
+
 /* Связанные позиции: название в одну строку */
 .rel-c .rel-h{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:100%;}
 /* Конфигуратор: кнопка текущего DN (не фильтр) */

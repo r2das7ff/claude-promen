@@ -51,6 +51,8 @@ services:
       WORDPRESS_DB_PASSWORD: wp
       PROMEN_MEILI_URL: http://meilisearch:7700
       PROMEN_MEILI_KEY: promen_dev_key
+      # Ключ API «Деловых Линий» — из .env рядом с compose-файлом (в git не попадает).
+      PROMEN_DELLIN_APPKEY: ${PROMEN_DELLIN_APPKEY:-}
       WORDPRESS_CONFIG_EXTRA: |
         define('WP_MEMORY_LIMIT', '512M');
         define('WP_ENVIRONMENT_TYPE', 'local');
@@ -77,6 +79,7 @@ services:
       WORDPRESS_DB_PASSWORD: wp
       PROMEN_MEILI_URL: http://meilisearch:7700
       PROMEN_MEILI_KEY: promen_dev_key
+      PROMEN_DELLIN_APPKEY: ${PROMEN_DELLIN_APPKEY:-}
     volumes:
       - wpcore:/var/www/html
       - ./wp-content/themes/promen:/var/www/html/wp-content/themes/promen

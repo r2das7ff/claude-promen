@@ -810,6 +810,11 @@ while ( have_posts() ) :
 		'variations' => $var_map,
 		'steels'     => $steels,
 		'sups'       => $sups,
+		'delivery'   => [
+			'enabled' => promen_delivery_available( $product->get_id() ),
+			'rest'    => esc_url_raw( rest_url( 'promen/v1/delivery' ) ),
+			'pid'     => $product->get_id(),
+		],
 	] );
 endwhile;
 ?>
@@ -822,6 +827,29 @@ endwhile;
   </div>
   <div class="om-title" id="omTitle">Заказать позицию</div>
   <p class="om-sub" id="omSub">Проверьте параметры позиции и оставьте контакт — инженер подготовит КП в течение рабочего дня.</p>
+  <!-- Режим «Расчёт доставки»: онлайн-калькулятор по тарифам «Деловых Линий» (inc/delivery-calc.php). -->
+  <div class="om-dc" id="omDc" style="display:none;">
+    <div class="om-grid">
+      <div class="om-field om-dc-city">
+        <label class="om-lbl" for="dc-city">Город доставки</label>
+        <input id="dc-city" type="text" placeholder="Начните вводить: Екатеринбург…" autocomplete="off">
+        <div class="dc-sug" id="dcSug" hidden></div>
+      </div>
+      <div class="om-field">
+        <label class="om-lbl" for="dc-qty">Количество, шт</label>
+        <input id="dc-qty" type="text" inputmode="numeric" value="1" autocomplete="off">
+      </div>
+    </div>
+    <div class="om-actions om-dc-actions">
+      <button type="button" class="s10-submit" id="dcGo" disabled>Рассчитать</button>
+      <span class="om-note" id="dcHint">Сборный груз «Деловые Линии» · отгрузка: Челябинск</span>
+    </div>
+    <div class="dc-res" id="dcRes" hidden>
+      <div class="dc-price" id="dcPrice"></div>
+      <div class="dc-meta" id="dcMeta"></div>
+      <div class="dc-note">Ориентировочно: тариф «Деловых Линий» для сборного груза без скидок, не оферта. Точную стоимость подтвердит менеджер — отправьте заявку ниже.</div>
+    </div>
+  </div>
   <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
     <input type="hidden" name="action" value="promen_request">
     <?php wp_nonce_field( 'promen_request', 'promen_nonce' ); ?>

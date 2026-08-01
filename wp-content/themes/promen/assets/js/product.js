@@ -561,6 +561,12 @@ promenHideEmptyCols(document.querySelector('.series-full'));
   var cityField = document.getElementById('omCityField');
   var deliveryInput = document.getElementById('omDelivery');
   var title = document.getElementById('omTitle');
+  var sub = document.getElementById('omSub');
+  var subOrder = sub ? sub.textContent : '';
+  // Онлайн-калькулятор доступен не всегда: у крепежа масса недостоверна,
+  // у труб она в кг/м — там режим доставки остаётся просто формой.
+  var dcBox = document.getElementById('omDc');
+  var dcOk = !!(dcBox && window.PROMEN_PRODUCT && PROMEN_PRODUCT.delivery && PROMEN_PRODUCT.delivery.enabled);
 
   function toggle(show, deliveryMode) {
     modal.classList.toggle('open', show);
@@ -569,10 +575,15 @@ promenHideEmptyCols(document.querySelector('.series-full'));
     // модалки запроса (request-modal.js).
     document.body.classList.toggle('modal-locked', show);
     if (show) {
+      var calc = deliveryMode && dcOk;
+      if (dcBox) dcBox.style.display = calc ? '' : 'none';
       if (cityField) cityField.style.display = deliveryMode ? '' : 'none';
       if (deliveryInput) deliveryInput.value = deliveryMode ? 'да' : '';
       if (title) title.textContent = deliveryMode ? 'Расчёт доставки' : 'Заказать позицию';
-      var f = modal.querySelector(deliveryMode ? '#om-city' : '#om-qty');
+      if (sub) sub.textContent = calc
+        ? 'Укажите город и количество — покажем ориентировочную стоимость по тарифам «Деловых Линий». Для точного расчёта и КП отправьте заявку.'
+        : subOrder;
+      var f = modal.querySelector(deliveryMode ? (calc ? '#dc-city' : '#om-city') : '#om-qty');
       if (f) setTimeout(function () { f.focus(); }, 220);
     }
   }
@@ -614,6 +625,135 @@ promenHideEmptyCols(document.querySelector('.series-full'));
   document.getElementById('orderClose').addEventListener('click', function () { toggle(false); });
   overlay.addEventListener('click', function () { toggle(false); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') toggle(false); });
+})();
+
+/* Калькулятор доставки в модале: подсказки городов и расчёт через
+   promen/v1/delivery (серверный прокси к API «Деловых Линий»). */
+(function () {
+  var cfg = (window.PROMEN_PRODUCT || {}).delivery;
+  var box = document.getElementById('omDc');
+  if (!box || !cfg || !cfg.enabled || !window.fetch) return;
+
+  var cityIn = document.getElementById('dc-city');
+  var qtyIn = document.getElementById('dc-qty');
+  var sug = document.getElementById('dcSug');
+  var go = document.getElementById('dcGo');
+  var res = document.getElementById('dcRes');
+  var hint = document.getElementById('dcHint');
+  var hint0 = hint.textContent;
+  var picked = null;
+  var timer = 0;
+  var seq = 0;
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+  function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function closeSug() { sug.hidden = true; sug.innerHTML = ''; }
+
+  function pick(c) {
+    picked = c;
+    cityIn.value = c.name;
+    closeSug();
+    res.hidden = true;
+    go.disabled = false;
+    // Города без терминала калькулятор ДЛ считает до ближайшего терминала —
+    // предупреждаем заранее, а фактический город терминала покажет результат.
+    hint.textContent = c.terminal
+      ? hint0
+      : 'Терминала ДЛ здесь нет — посчитаем до ближайшего терминала.';
+    // Выбранный город сразу в форму заявки: расчёт и заявка не расходятся.
+    var omCity = document.getElementById('om-city');
+    if (omCity) omCity.value = c.full || c.name;
+  }
+
+  function renderSug(list) {
+    if (!list.length) { closeSug(); return; }
+    sug.innerHTML = list.map(function (c, i) {
+      return '<button type="button" class="dc-sug-i" data-i="' + i + '">'
+        + '<span class="dc-sug-n">' + esc(c.name) + '</span>'
+        + '<span class="dc-sug-r">' + esc(c.region || '') + (c.terminal ? '' : ' · нет терминала') + '</span>'
+        + '</button>';
+    }).join('');
+    sug.hidden = false;
+    Array.prototype.forEach.call(sug.querySelectorAll('.dc-sug-i'), function (b) {
+      b.addEventListener('click', function () { pick(list[+b.dataset.i]); });
+    });
+  }
+
+  cityIn.addEventListener('input', function () {
+    picked = null;
+    go.disabled = true;
+    hint.textContent = hint0;
+    res.hidden = true;
+    var q = cityIn.value.trim();
+    clearTimeout(timer);
+    if (q.length < 2) { closeSug(); return; }
+    timer = setTimeout(function () {
+      var my = ++seq;
+      fetch(cfg.rest + '/cities?q=' + encodeURIComponent(q))
+        .then(function (r) { return r.json(); })
+        .then(function (j) { if (my === seq) renderSug((j && j.cities) || []); })
+        .catch(function () { if (my === seq) closeSug(); });
+    }, 250);
+  });
+  cityIn.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var b = sug.querySelector('.dc-sug-i');
+      if (b) b.click();
+    }
+    if (e.key === 'Escape' && !sug.hidden) { e.stopPropagation(); closeSug(); }
+  });
+  document.addEventListener('click', function (e) { if (!box.contains(e.target)) closeSug(); });
+
+  go.addEventListener('click', function () {
+    if (!picked || go.disabled) return;
+    var qty = Math.max(1, parseInt(qtyIn.value, 10) || 1);
+    var omQty = document.getElementById('om-qty');
+    if (omQty && !omQty.value) omQty.value = String(qty);
+    go.disabled = true;
+    go.textContent = 'Считаем…';
+    res.hidden = true;
+    fetch(cfg.rest + '/quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_id: cfg.pid, qty: qty, city_code: picked.code })
+    })
+      .then(function (r) { return r.json(); })
+      .then(show)
+      .catch(function (e) { console.error('delivery calc:', e); show({}); })
+      .then(function () { go.textContent = 'Рассчитать'; go.disabled = false; });
+  });
+
+  function show(j) {
+    j = j || {};
+    var price = document.getElementById('dcPrice');
+    var meta = document.getElementById('dcMeta');
+    if (j.ok) {
+      var term = j.terminal || picked.name;
+      var near = j.terminal && picked.name && j.terminal.toLowerCase() !== picked.name.toLowerCase();
+      // Лёгкие партии не округляем в ноль: до 10 кг показываем десятые.
+      var w = j.weight >= 10 ? fmt(j.weight) : String(Math.round(j.weight * 10) / 10).replace('.', ',');
+      price.textContent = '≈ ' + fmt(j.price) + ' ₽';
+      meta.textContent = (near ? 'до ближайшего терминала: ' : 'до терминала: ') + term
+        + (j.eta ? ' · выдача с ' + j.eta : '')
+        + ' · груз ' + w + ' кг';
+      res.classList.remove('dc-res--err');
+      // Итог расчёта — в скрытое поле заявки: менеджер видит контекст.
+      var del = document.getElementById('omDelivery');
+      var qty = Math.max(1, parseInt(qtyIn.value, 10) || 1);
+      if (del) del.value = 'да; ' + picked.name + '; ' + qty + ' шт; ~' + fmt(j.price) + ' ₽';
+    } else {
+      var msg = {
+        no_terminal: 'В выбранном городе нет терминала «Деловых Линий». Отправьте заявку — менеджер рассчитает доставку до адреса.',
+        too_heavy: 'Партия тяжелее 20 т — это уже выделенная машина. Отправьте заявку, менеджер подберёт транспорт и цену.',
+        rate_limited: 'Слишком много расчётов подряд. Подождите минуту и попробуйте ещё раз.'
+      }[j.error] || 'Не получилось рассчитать онлайн. Отправьте заявку — менеджер посчитает точно.';
+      price.textContent = '';
+      meta.textContent = msg;
+      res.classList.add('dc-res--err');
+    }
+    res.hidden = false;
+  }
 })();
 
 /* База знаний: переключение табов (как в оригинальной верстке). */
