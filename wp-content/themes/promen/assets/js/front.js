@@ -1438,8 +1438,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var dbg = document.createElement('style');
     dbg.textContent = '.s9-card.s9-move{transition-duration:' + (0.26*S9K) + 's !important;}'
       + '.s9-card.s9-leave{transition-duration:' + (0.16*S9K) + 's !important;}'
-      + '.s9-card.s9-enter{animation-duration:' + (0.28*S9K) + 's !important;}'
-      + '.s9-grid.s9-hanim{transition-duration:' + (0.28*S9K) + 's !important;}';
+      + '.s9-card.s9-enter{animation-duration:' + (0.28*S9K) + 's !important;}';
     document.head.appendChild(dbg);
   }
   var gen = 0, pendingFns = [], scheduled = false;
@@ -1479,12 +1478,10 @@ document.addEventListener('DOMContentLoaded', function(){
     var before = [];
     cards.forEach(function(c){ if(visibleNow(c)) before.push({el:c, r:c.getBoundingClientRect()}); });
     var beforeEls = before.map(function(b){ return b.el; });
-    var gridH0 = s9grid.offsetHeight;
 
     mutate();
 
     var gridRect = s9grid.getBoundingClientRect();
-    var gridH1 = s9grid.offsetHeight;
     var moves = [];
     var enterIdx = 0;
 
@@ -1535,7 +1532,10 @@ document.addEventListener('DOMContentLoaded', function(){
       }
     });
 
-    if(gridH0 !== gridH1) s9grid.style.height = gridH0+'px';
+    /* Высоту сетки НЕ анимируем: фиксированная height у грида растягивала/
+       сжимала авто-ряды (align-content:stretch) — карточки становились
+       гигантскими или сплюснутыми на время перехода. Высота меняется
+       мгновенно; прыжок страницы при этом гасит заглушенное якорение. */
 
     /* Play: инлайновый transition:none снят — классовые переходы едут. */
     requestAnimationFrame(function(){ requestAnimationFrame(function(){
@@ -1543,18 +1543,13 @@ document.addEventListener('DOMContentLoaded', function(){
       cards.forEach(function(c){ c.style.transition=''; });
       moves.forEach(function(c){ c.style.transform=''; });
       before.forEach(function(b){ if(b.el.classList.contains('s9-leave')) b.el.classList.add('s9-leave-go'); });
-      if(gridH0 !== gridH1){
-        s9grid.classList.add('s9-hanim');
-        s9grid.style.height = gridH1+'px';
-      }
     });});
     /* Страховочная уборка — таймером, не в rAF: в скрытой вкладке rAF
-       молчит, и без неё остались бы инлайновые transform/height. */
+       молчит, и без неё остались бы инлайновые transform. */
     setTimeout(function(){
       if(gen !== myGen) return;
       moves.forEach(function(c){ c.classList.remove('s9-move'); c.style.transform=''; });
       cards.forEach(function(c){ c.style.transition=''; });
-      s9grid.classList.remove('s9-hanim'); s9grid.style.height='';
       document.documentElement.style.overflowAnchor = '';
       document.body.style.overflowAnchor = '';
     }, 400*S9K);

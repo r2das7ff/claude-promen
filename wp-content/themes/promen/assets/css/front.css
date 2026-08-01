@@ -3240,9 +3240,8 @@ img { display:block; }
 @keyframes s9CardIn{from{opacity:0;transform:translateY(14px);}}
 .s9-card.s9-enter::before{transform-origin:top;animation:s9BarIn .2s var(--ease-out) calc(var(--s9d,0ms) + .26s) both;}
 @keyframes s9BarIn{from{transform:scaleY(0);}}
-.s9-grid.s9-hanim{transition:height .28s var(--ease-out-lg);}
 @media(prefers-reduced-motion:reduce){
-  .s9-card.s9-move,.s9-card.s9-leave,.s9-grid.s9-hanim{transition:none !important;}
+  .s9-card.s9-move,.s9-card.s9-leave{transition:none !important;}
   .s9-card.s9-enter,.s9-card.s9-enter::before{animation:none !important;}
 }
 
