@@ -1432,6 +1432,16 @@ document.addEventListener('DOMContentLoaded', function(){
      У кнопок фильтра ДВА слушателя (фильтр здесь + сброс «Показать все»
      ниже) — их мутации коалесцируются микротаской в один замер, иначе
      хореография гонялась бы дважды за клик. */
+  /* Отладка хореографии: ?s9slow замедляет фазы в 6 раз (таймеры + CSS). */
+  var S9K = /s9slow/.test(location.search) ? 6 : 1;
+  if (S9K > 1) {
+    var dbg = document.createElement('style');
+    dbg.textContent = '.s9-card.s9-move{transition-duration:' + (0.26*S9K) + 's !important;}'
+      + '.s9-card.s9-leave{transition-duration:' + (0.16*S9K) + 's !important;}'
+      + '.s9-card.s9-enter{animation-duration:' + (0.28*S9K) + 's !important;}'
+      + '.s9-grid.s9-hanim{transition-duration:' + (0.28*S9K) + 's !important;}';
+    document.head.appendChild(dbg);
+  }
   var gen = 0, pendingFns = [], scheduled = false;
   /* Computed, а не классы: .s9-extra прячет карточку только ≤640px
      (front.css) — на десктопе класс висит, но карточка видима, и проверка
@@ -1442,6 +1452,11 @@ document.addEventListener('DOMContentLoaded', function(){
     gen++;
     var myGen = gen;
     revealTimers.forEach(clearTimeout); revealTimers.length = 0;
+    /* На время прохода глушим scroll anchoring на документе целиком:
+       overflow-anchor:none на сетке не спасает, если браузер выбрал якорь
+       ниже неё — страница «доводилась» за анимируемой высотой и прыгала. */
+    document.documentElement.style.overflowAnchor = 'none';
+    document.body.style.overflowAnchor = 'none';
     /* Срез «до»: чистим хвосты прошлых проходов и скролл-ривила (инлайновые
        transition с задержками заражали бы FLIP), затем замер. Прерывание:
        getBoundingClientRect учитывает transform — карточка в полёте
@@ -1493,7 +1508,7 @@ document.addEventListener('DOMContentLoaded', function(){
         if(c._s9restore.wasExtra) c.classList.add('s9-extra');
         c.style.display = c._s9restore.wasHidden ? 'none' : '';
         c._s9restore = null;
-      }, 220);
+      }, 220*S9K);
     });
 
     /* Выжившие: инверт без перехода; новые: вход лесенкой (потолок 5). */
@@ -1516,7 +1531,7 @@ document.addEventListener('DOMContentLoaded', function(){
           if(gen !== myGen) return;
           c.classList.remove('s9-enter');
           c.style.removeProperty('--s9d');
-        }, 1000);
+        }, 1000*S9K);
       }
     });
 
@@ -1540,7 +1555,9 @@ document.addEventListener('DOMContentLoaded', function(){
       moves.forEach(function(c){ c.classList.remove('s9-move'); c.style.transform=''; });
       cards.forEach(function(c){ c.style.transition=''; });
       s9grid.classList.remove('s9-hanim'); s9grid.style.height='';
-    }, 400);
+      document.documentElement.style.overflowAnchor = '';
+      document.body.style.overflowAnchor = '';
+    }, 400*S9K);
   }
   window._promenS9Mutate = function(fn){
     pendingFns.push(fn);
