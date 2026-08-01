@@ -1433,7 +1433,10 @@ document.addEventListener('DOMContentLoaded', function(){
      ниже) — их мутации коалесцируются микротаской в один замер, иначе
      хореография гонялась бы дважды за клик. */
   var gen = 0, pendingFns = [], scheduled = false;
-  function visibleNow(c){ return c.style.display !== 'none' && !c.classList.contains('s9-extra'); }
+  /* Computed, а не классы: .s9-extra прячет карточку только ≤640px
+     (front.css) — на десктопе класс висит, но карточка видима, и проверка
+     по классу назначала бы роли неверно (наблюдалось как хаос при фильтре). */
+  function visibleNow(c){ return getComputedStyle(c).display !== 'none'; }
   function runFlip(mutate){
     if(!s9grid || reduceMq.matches){ mutate(); return; }
     gen++;
