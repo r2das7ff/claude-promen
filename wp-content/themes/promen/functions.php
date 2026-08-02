@@ -5,7 +5,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PROMEN_VERSION', '0.97.97' );
+define( 'PROMEN_VERSION', '0.97.98' );
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );
