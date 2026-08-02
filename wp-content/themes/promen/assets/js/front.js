@@ -1771,14 +1771,15 @@ document.addEventListener('DOMContentLoaded', function(){
   var CFG = {
     cell: 80,          /* шаг фоновой сетки (= body::before в base.css) */
     dash: 16,          /* длина штриха, px */
+    thick: 3,          /* толщина штриха, px (сидит по центру 1px-линии) */
     speed: 100,        /* px/с */
-    alpha: DEMO ? 0.5 : 0.28, /* яркость головы (цвет --g1) */
+    alpha: DEMO ? 0.5 : 0.28, /* яркость головы */
     segMin: 2, segMax: 4,     /* сегментов на маршрут */
     cellMin: 1, cellMax: 3,   /* длина сегмента, клеток */
     idleMin: DEMO ? 1800 : 9000, idleMax: DEMO ? 3200 : 14000, /* пауза, мс */
     firstDelay: 1200   /* первый пакет — быстро, чтобы тест не ждал */
   };
-  var G1 = '109,140,166'; /* --g1: тот же rgb, что в фонах/рамках темы */
+  var G1 = '15,42,68'; /* --dark: цвет заголовка героя (было --g1 109,140,166 — терялся) */
   var el = document.createElement('div');
   el.style.cssText = 'position:fixed;left:0;top:0;z-index:0;pointer-events:none;opacity:0;';
   document.body.appendChild(el);
@@ -1828,13 +1829,14 @@ document.addEventListener('DOMContentLoaded', function(){
 
   function orient(dx, dy) {
     /* Голова — яркий край градиента по ходу движения, хвост гаснет позади. */
-    if (dx > 0) { el.style.width = CFG.dash + 'px'; el.style.height = '1px';
+    var t = CFG.thick + 'px';
+    if (dx > 0) { el.style.width = CFG.dash + 'px'; el.style.height = t;
       el.style.background = 'linear-gradient(to left, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
-    else if (dx < 0) { el.style.width = CFG.dash + 'px'; el.style.height = '1px';
+    else if (dx < 0) { el.style.width = CFG.dash + 'px'; el.style.height = t;
       el.style.background = 'linear-gradient(to right, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
-    else if (dy > 0) { el.style.width = '1px'; el.style.height = CFG.dash + 'px';
+    else if (dy > 0) { el.style.width = t; el.style.height = CFG.dash + 'px';
       el.style.background = 'linear-gradient(to top, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
-    else { el.style.width = '1px'; el.style.height = CFG.dash + 'px';
+    else { el.style.width = t; el.style.height = CFG.dash + 'px';
       el.style.background = 'linear-gradient(to bottom, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
   }
 
@@ -1858,9 +1860,11 @@ document.addEventListener('DOMContentLoaded', function(){
       var dx = b[0] - a[0], dy = b[1] - a[1];
       if (si !== curSeg) { curSeg = si; orient(dx, dy); }
       var hx = a[0] + dx * f, hy = a[1] + dy * f;
-      /* якорь элемента — задний край штриха относительно направления */
-      var tx = dx > 0 ? hx - CFG.dash : hx;
-      var ty = dy > 0 ? hy - CFG.dash : hy;
+      /* якорь — задний край штриха по ходу; поперёк — центрируем на линии */
+      var off = (CFG.thick - 1) / 2;
+      var tx, ty;
+      if (dx !== 0) { tx = dx > 0 ? hx - CFG.dash : hx; ty = hy - off; }
+      else { tx = hx - off; ty = dy > 0 ? hy - CFG.dash : hy; }
       el.style.transform = 'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px)';
       /* конверт прозрачности: вход первые 20px, выход последние 28px */
       el.style.opacity = (Math.min(1, dist / 20, (total - dist) / 28) * CFG.alpha).toFixed(3);
