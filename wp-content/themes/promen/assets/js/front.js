@@ -1756,43 +1756,55 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 
 /* ── ТЕСТОВЫЙ АМБИЕНТ ?gridtrace: «пакет сигнала» по граням фоновой сетки ──
-   Эпизодически (раз в ~9-14с) штрих 16×1px с гаснущим хвостом пробегает
-   2-4 сегмента по линиям сетки 80px (повороты — только на узлах, как в
-   «Змейке») и растворяется. Слой z-index:0: над сеткой body::before, под
-   контентом (.pg z-index:1) — виден ровно там, где видна сетка.
-   Только за флагом ?gridtrace (посетители не видят); prefers-reduced-motion
-   выключает целиком; в скрытой вкладке rAF сам замирает. Ручки — в CFG. */
+   Эпизодически штрих с гаснущим хвостом пробегает 2-4 сегмента по линиям
+   сетки 80px (повороты — на узлах) и растворяется. Рендер — canvas: хвост
+   из микро-сегментов с убывающей прозрачностью ИЗГИБАЕТСЯ за угол (голова
+   уже на новой грани — хвост дотекает по старой), скруглённые стыки.
+   Слой z-index:0: над сеткой body::before, под контентом (.pg z-index:1).
+   Спавн — только в точках, где сетка видна (проверка непрозрачных фонов).
+   Только за флагом ?gridtrace; =demo — частый и яркий режим осмотра.
+   prefers-reduced-motion выключает целиком; в скрытой вкладке rAF замирает.
+   Ручки — в CFG. */
 (function gridTrace() {
   if (!/gridtrace/.test(location.search)) return;
   var reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
-  /* ?gridtrace=demo — режим осмотра: часто и ярко, чтобы оценить механику;
-     ?gridtrace — согласованный «боевой» темп (редко и тихо). */
   var DEMO = /gridtrace=demo/.test(location.search);
   var CFG = {
     cell: 80,          /* шаг фоновой сетки (= body::before в base.css) */
-    dash: 16,          /* длина штриха, px */
-    thick: 3,          /* толщина штриха, px (сидит по центру 1px-линии) */
-    speed: 100,        /* px/с */
-    alpha: DEMO ? 0.5 : 0.28, /* яркость головы */
-    segMin: 2, segMax: 4,     /* сегментов на маршрут */
-    cellMin: 1, cellMax: 3,   /* длина сегмента, клеток */
-    idleMin: DEMO ? 1800 : 9000, idleMax: DEMO ? 3200 : 14000, /* пауза, мс */
-    firstDelay: 1200   /* первый пакет — быстро, чтобы тест не ждал */
+    dash: 32,          /* длина штриха с хвостом, px */
+    thick: 3,          /* толщина, px */
+    speed: 67,         /* px/с (100 / 1.5 — «медленнее в полтора раза») */
+    alpha: DEMO ? 0.5 : 0.28,
+    segMin: 2, segMax: 4,
+    cellMin: 1, cellMax: 3,
+    idleMin: DEMO ? 1800 : 9000, idleMax: DEMO ? 3200 : 14000,
+    firstDelay: 1200,
+    tailSteps: 10      /* микро-сегментов в хвосте (плавность изгиба и фейда) */
   };
-  var G1 = '15,42,68'; /* --dark: цвет заголовка героя (было --g1 109,140,166 — терялся) */
-  var el = document.createElement('div');
-  el.style.cssText = 'position:fixed;left:0;top:0;z-index:0;pointer-events:none;opacity:0;';
-  document.body.appendChild(el);
+  var RGB = '15,42,68'; /* --dark: цвет заголовка героя */
 
-  /* Точка годится, если фоновая сетка в ней реально видна: поднимаемся от
-     elementFromPoint к корню — если по пути есть непрозрачный background
-     (секции с var(--bg), nav и т.п.), пакет родился бы под контентом и жил
-     невидимкой (~2/3 вьюпорта закрыто). До 12 проб на спавн. */
+  var canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;left:0;top:0;z-index:0;pointer-events:none;';
+  document.body.appendChild(canvas);
+  var ctx = canvas.getContext('2d');
+  var dpr = 1;
+  function sizeCanvas() {
+    dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(window.innerWidth * dpr);
+    canvas.height = Math.round(window.innerHeight * dpr);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  sizeCanvas();
+  window.addEventListener('resize', sizeCanvas, { passive: true });
+
+  /* Точка годится, если сетка в ней реально видна: от elementFromPoint
+     вверх до body (НЕ включая: фон body лежит ПОД сеткой body::before) —
+     непрозрачный background по пути значит «накрыто контентом». */
   function gridVisibleAt(x, y) {
     var n = document.elementFromPoint(x, y);
     if (!n) return false;
-    /* до body, НЕ включая его: фон body лежит ПОД сеткой (body::before),
-       так что сам body сетку не прячет */
     while (n && n !== document.body && n !== document.documentElement) {
       var bg = getComputedStyle(n).backgroundColor;
       if (bg && bg !== 'transparent' && !/rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*0\s*\)/.test(bg)) return false;
@@ -1811,7 +1823,7 @@ document.addEventListener('DOMContentLoaded', function(){
       y = (1 + Math.floor(Math.random() * (rows - 2))) * c;
       ok = gridVisibleAt(x + 2, y + 2);
     }
-    if (!ok) return null; /* весь вьюпорт закрыт контентом — пропускаем такт */
+    if (!ok) return null;
     var dirs = [[1,0],[-1,0],[0,1],[0,-1]];
     var d = dirs[Math.floor(Math.random() * 4)];
     var pts = [[x, y]];
@@ -1827,17 +1839,13 @@ document.addEventListener('DOMContentLoaded', function(){
     return pts;
   }
 
-  function orient(dx, dy) {
-    /* Голова — яркий край градиента по ходу движения, хвост гаснет позади. */
-    var t = CFG.thick + 'px';
-    if (dx > 0) { el.style.width = CFG.dash + 'px'; el.style.height = t;
-      el.style.background = 'linear-gradient(to left, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
-    else if (dx < 0) { el.style.width = CFG.dash + 'px'; el.style.height = t;
-      el.style.background = 'linear-gradient(to right, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
-    else if (dy > 0) { el.style.width = t; el.style.height = CFG.dash + 'px';
-      el.style.background = 'linear-gradient(to top, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
-    else { el.style.width = t; el.style.height = CFG.dash + 'px';
-      el.style.background = 'linear-gradient(to bottom, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
+  /* Точка на ломаной по дистанции от старта. */
+  function pointAt(pts, segLen, dist) {
+    var acc = 0, si = 0;
+    while (si < segLen.length - 1 && acc + segLen[si] <= dist) { acc += segLen[si]; si++; }
+    var a = pts[si], b = pts[si + 1];
+    var f = segLen[si] ? Math.min(1, Math.max(0, (dist - acc) / segLen[si])) : 1;
+    return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
   }
 
   function run() {
@@ -1849,25 +1857,32 @@ document.addEventListener('DOMContentLoaded', function(){
       segLen.push(L); total += L;
     }
     var t0 = performance.now();
-    var curSeg = -1;
     function frame(now) {
-      var dist = (now - t0) / 1000 * CFG.speed;
-      if (dist >= total) { el.style.opacity = '0'; schedule(); return; }
-      var acc = 0, si = 0;
-      while (si < segLen.length - 1 && acc + segLen[si] <= dist) { acc += segLen[si]; si++; }
-      var a = pts[si], b = pts[si + 1];
-      var f = segLen[si] ? (dist - acc) / segLen[si] : 1;
-      var dx = b[0] - a[0], dy = b[1] - a[1];
-      if (si !== curSeg) { curSeg = si; orient(dx, dy); }
-      var hx = a[0] + dx * f, hy = a[1] + dy * f;
-      /* якорь — задний край штриха по ходу; поперёк — центрируем на линии */
-      var off = (CFG.thick - 1) / 2;
-      var tx, ty;
-      if (dx !== 0) { tx = dx > 0 ? hx - CFG.dash : hx; ty = hy - off; }
-      else { tx = hx - off; ty = dy > 0 ? hy - CFG.dash : hy; }
-      el.style.transform = 'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px)';
-      /* конверт прозрачности: вход первые 20px, выход последние 28px */
-      el.style.opacity = (Math.min(1, dist / 20, (total - dist) / 28) * CFG.alpha).toFixed(3);
+      var head = (now - t0) / 1000 * CFG.speed;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (head >= total + CFG.dash) { schedule(); return; } /* хвост дотёк до конца */
+      /* конверт: вход первые 24px, выход — пока хвост дотекает за край */
+      var env = Math.min(1, head / 24, Math.max(0, (total + CFG.dash - head) / CFG.dash)) * CFG.alpha;
+      ctx.lineWidth = CFG.thick;
+      ctx.lineCap = 'round';
+      /* Хвост микро-сегментами от головы назад: идёт ПО ломаной — на узле
+         изгибается за угол; альфа гаснет к концу хвоста. */
+      var hd = Math.min(head, total);
+      var step = CFG.dash / CFG.tailSteps;
+      var prev = pointAt(pts, segLen, hd);
+      for (var k = 0; k < CFG.tailSteps; k++) {
+        var d1 = hd - step * (k + 1);
+        if (d1 <= head - CFG.dash) d1 = Math.max(0, head - CFG.dash);
+        if (d1 < 0) break;
+        var p = pointAt(pts, segLen, d1);
+        ctx.strokeStyle = 'rgba(' + RGB + ',' + (env * (1 - k / CFG.tailSteps)).toFixed(3) + ')';
+        ctx.beginPath();
+        ctx.moveTo(prev[0], prev[1]);
+        ctx.lineTo(p[0], p[1]);
+        ctx.stroke();
+        prev = p;
+        if (d1 === 0) break;
+      }
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
