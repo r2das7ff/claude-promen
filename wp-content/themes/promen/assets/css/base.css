@@ -77,7 +77,7 @@ body::before{
    пунктом, при ховере/фокусе едет к цели и возвращается. Transform-only:
    translateX по рельсе + scaleX от базовых 100px под ширину пункта.
    Без JS класс nav--line не ставится — работает старый ::after. */
-.nav-line{position:absolute;left:0;bottom:0;width:100px;height:2px;background:var(--g1);transform-origin:left;transform:scaleX(0);opacity:0;pointer-events:none;transition:transform .24s var(--ease-out),opacity .15s ease;}
+.nav-line{position:absolute;left:0;bottom:0;width:100px;height:2px;background:var(--g1);transform-origin:left;transform:scaleX(0);opacity:0;pointer-events:none;transition:transform .34s var(--ease-out-lg),opacity .2s ease;}
 .nav-line--snap{transition:none !important;}
 .nav--line .nav-links a::after{content:none;}
 /* Боковые отступы 16, а не 20: шрифт вырос с 12 до 13.5px. Ширины тиров
