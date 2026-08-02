@@ -1765,27 +1765,52 @@ document.addEventListener('DOMContentLoaded', function(){
 (function gridTrace() {
   if (!/gridtrace/.test(location.search)) return;
   var reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  /* ?gridtrace=demo — режим осмотра: часто и ярко, чтобы оценить механику;
+     ?gridtrace — согласованный «боевой» темп (редко и тихо). */
+  var DEMO = /gridtrace=demo/.test(location.search);
   var CFG = {
     cell: 80,          /* шаг фоновой сетки (= body::before в base.css) */
     dash: 16,          /* длина штриха, px */
     speed: 100,        /* px/с */
-    alpha: 0.28,       /* яркость головы (цвет --g1) */
+    alpha: DEMO ? 0.5 : 0.28, /* яркость головы (цвет --g1) */
     segMin: 2, segMax: 4,     /* сегментов на маршрут */
     cellMin: 1, cellMax: 3,   /* длина сегмента, клеток */
-    idleMin: 9000, idleMax: 14000, /* пауза между пакетами, мс */
-    firstDelay: 1500   /* первый пакет — быстро, чтобы тест не ждал */
+    idleMin: DEMO ? 1800 : 9000, idleMax: DEMO ? 3200 : 14000, /* пауза, мс */
+    firstDelay: 1200   /* первый пакет — быстро, чтобы тест не ждал */
   };
   var G1 = '109,140,166'; /* --g1: тот же rgb, что в фонах/рамках темы */
   var el = document.createElement('div');
   el.style.cssText = 'position:fixed;left:0;top:0;z-index:0;pointer-events:none;opacity:0;';
   document.body.appendChild(el);
 
+  /* Точка годится, если фоновая сетка в ней реально видна: поднимаемся от
+     elementFromPoint к корню — если по пути есть непрозрачный background
+     (секции с var(--bg), nav и т.п.), пакет родился бы под контентом и жил
+     невидимкой (~2/3 вьюпорта закрыто). До 12 проб на спавн. */
+  function gridVisibleAt(x, y) {
+    var n = document.elementFromPoint(x, y);
+    if (!n) return false;
+    /* до body, НЕ включая его: фон body лежит ПОД сеткой (body::before),
+       так что сам body сетку не прячет */
+    while (n && n !== document.body && n !== document.documentElement) {
+      var bg = getComputedStyle(n).backgroundColor;
+      if (bg && bg !== 'transparent' && !/rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*0\s*\)/.test(bg)) return false;
+      n = n.parentElement;
+    }
+    return true;
+  }
+
   function buildPath() {
     var c = CFG.cell;
     var cols = Math.max(4, Math.floor(window.innerWidth / c));
     var rows = Math.max(4, Math.floor(window.innerHeight / c));
-    var x = (1 + Math.floor(Math.random() * (cols - 2))) * c;
-    var y = (1 + Math.floor(Math.random() * (rows - 2))) * c;
+    var x = 0, y = 0, ok = false;
+    for (var tries = 0; tries < 12 && !ok; tries++) {
+      x = (1 + Math.floor(Math.random() * (cols - 2))) * c;
+      y = (1 + Math.floor(Math.random() * (rows - 2))) * c;
+      ok = gridVisibleAt(x + 2, y + 2);
+    }
+    if (!ok) return null; /* весь вьюпорт закрыт контентом — пропускаем такт */
     var dirs = [[1,0],[-1,0],[0,1],[0,-1]];
     var d = dirs[Math.floor(Math.random() * 4)];
     var pts = [[x, y]];
@@ -1815,7 +1840,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   function run() {
     var pts = buildPath();
-    if (pts.length < 2) { schedule(); return; }
+    if (!pts || pts.length < 2) { schedule(); return; }
     var segLen = [], total = 0;
     for (var i = 1; i < pts.length; i++) {
       var L = Math.abs(pts[i][0] - pts[i-1][0]) + Math.abs(pts[i][1] - pts[i-1][1]);
