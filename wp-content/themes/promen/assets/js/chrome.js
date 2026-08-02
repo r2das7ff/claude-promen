@@ -48,6 +48,27 @@
     update();
   })();
 
+  /* ПЛАВНЫЕ ЯКОРНЫЕ ПЕРЕХОДЫ — делегированный перехват кликов по a[href^="#"]:
+     вместо нативного телепорта — scrollIntoView smooth (reduce → auto).
+     Глобальный CSS scroll-behavior:smooth не используется сознательно: он
+     сделал бы плавными и программные скроллы — setScrollY s5-пина на главной
+     обязан быть мгновенным, а reduce-ветки шлют behavior:'auto'.
+     href="#" (служебные кнопки) и несуществующие цели не трогаем. */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var id = a.getAttribute('href').slice(1);
+    if (!id) return;
+    var target = document.getElementById(id);
+    if (!target) return;
+    e.preventDefault();
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    } catch (err) { target.scrollIntoView(true); }
+    if (history.pushState) history.pushState(null, '', '#' + id);
+  });
+
   /* «БЕГУЩЕЕ» ПОДЧЁРКИВАНИЕ МЕНЮ — один индикатор под активным пунктом:
      при ховере/фокусе едет к цели (240мс, --ease-out), при уходе
      возвращается домой. При загрузке прочерчивается из нуля на месте

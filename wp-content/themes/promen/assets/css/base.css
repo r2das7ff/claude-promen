@@ -49,6 +49,9 @@
   --dur-panel:.32s;   /* drawer, PDP, боковые панели */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+/* Прокрутка к якорю не ныряет под фиксированную шапку (нативные прыжки и
+   плавные переходы chrome.js). Страничные scroll-margin (privacy) главнее. */
+[id]{scroll-margin-top:calc(var(--nav-h,64px) + 8px);}
 html,body{height:100%;font-family:'DINPro','Arial Narrow',Arial,sans-serif;background:var(--bg);color:var(--dark);overflow-x:hidden;}
 a{text-decoration:none;color:inherit;}
 button{background:none;border:none;cursor:pointer;font-family:inherit;}
