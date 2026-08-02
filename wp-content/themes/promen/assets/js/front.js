@@ -1754,3 +1754,102 @@ document.addEventListener('DOMContentLoaded', function(){
     window.addEventListener('load', setStickyTop);
   })();
 })();
+
+/* ── ТЕСТОВЫЙ АМБИЕНТ ?gridtrace: «пакет сигнала» по граням фоновой сетки ──
+   Эпизодически (раз в ~9-14с) штрих 16×1px с гаснущим хвостом пробегает
+   2-4 сегмента по линиям сетки 80px (повороты — только на узлах, как в
+   «Змейке») и растворяется. Слой z-index:0: над сеткой body::before, под
+   контентом (.pg z-index:1) — виден ровно там, где видна сетка.
+   Только за флагом ?gridtrace (посетители не видят); prefers-reduced-motion
+   выключает целиком; в скрытой вкладке rAF сам замирает. Ручки — в CFG. */
+(function gridTrace() {
+  if (!/gridtrace/.test(location.search)) return;
+  var reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var CFG = {
+    cell: 80,          /* шаг фоновой сетки (= body::before в base.css) */
+    dash: 16,          /* длина штриха, px */
+    speed: 100,        /* px/с */
+    alpha: 0.28,       /* яркость головы (цвет --g1) */
+    segMin: 2, segMax: 4,     /* сегментов на маршрут */
+    cellMin: 1, cellMax: 3,   /* длина сегмента, клеток */
+    idleMin: 9000, idleMax: 14000, /* пауза между пакетами, мс */
+    firstDelay: 1500   /* первый пакет — быстро, чтобы тест не ждал */
+  };
+  var G1 = '109,140,166'; /* --g1: тот же rgb, что в фонах/рамках темы */
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;left:0;top:0;z-index:0;pointer-events:none;opacity:0;';
+  document.body.appendChild(el);
+
+  function buildPath() {
+    var c = CFG.cell;
+    var cols = Math.max(4, Math.floor(window.innerWidth / c));
+    var rows = Math.max(4, Math.floor(window.innerHeight / c));
+    var x = (1 + Math.floor(Math.random() * (cols - 2))) * c;
+    var y = (1 + Math.floor(Math.random() * (rows - 2))) * c;
+    var dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+    var d = dirs[Math.floor(Math.random() * 4)];
+    var pts = [[x, y]];
+    var n = CFG.segMin + Math.floor(Math.random() * (CFG.segMax - CFG.segMin + 1));
+    for (var i = 0; i < n; i++) {
+      var len = (CFG.cellMin + Math.floor(Math.random() * (CFG.cellMax - CFG.cellMin + 1))) * c;
+      var nx = Math.max(c, Math.min((cols - 1) * c, x + d[0] * len));
+      var ny = Math.max(c, Math.min((rows - 1) * c, y + d[1] * len));
+      if (nx !== x || ny !== y) { pts.push([nx, ny]); x = nx; y = ny; }
+      var turn = Math.random() < 0.5 ? 1 : -1;
+      d = d[0] !== 0 ? [0, turn] : [turn, 0];
+    }
+    return pts;
+  }
+
+  function orient(dx, dy) {
+    /* Голова — яркий край градиента по ходу движения, хвост гаснет позади. */
+    if (dx > 0) { el.style.width = CFG.dash + 'px'; el.style.height = '1px';
+      el.style.background = 'linear-gradient(to left, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
+    else if (dx < 0) { el.style.width = CFG.dash + 'px'; el.style.height = '1px';
+      el.style.background = 'linear-gradient(to right, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
+    else if (dy > 0) { el.style.width = '1px'; el.style.height = CFG.dash + 'px';
+      el.style.background = 'linear-gradient(to top, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
+    else { el.style.width = '1px'; el.style.height = CFG.dash + 'px';
+      el.style.background = 'linear-gradient(to bottom, rgba(' + G1 + ',1), rgba(' + G1 + ',0))'; }
+  }
+
+  function run() {
+    var pts = buildPath();
+    if (pts.length < 2) { schedule(); return; }
+    var segLen = [], total = 0;
+    for (var i = 1; i < pts.length; i++) {
+      var L = Math.abs(pts[i][0] - pts[i-1][0]) + Math.abs(pts[i][1] - pts[i-1][1]);
+      segLen.push(L); total += L;
+    }
+    var t0 = performance.now();
+    var curSeg = -1;
+    function frame(now) {
+      var dist = (now - t0) / 1000 * CFG.speed;
+      if (dist >= total) { el.style.opacity = '0'; schedule(); return; }
+      var acc = 0, si = 0;
+      while (si < segLen.length - 1 && acc + segLen[si] <= dist) { acc += segLen[si]; si++; }
+      var a = pts[si], b = pts[si + 1];
+      var f = segLen[si] ? (dist - acc) / segLen[si] : 1;
+      var dx = b[0] - a[0], dy = b[1] - a[1];
+      if (si !== curSeg) { curSeg = si; orient(dx, dy); }
+      var hx = a[0] + dx * f, hy = a[1] + dy * f;
+      /* якорь элемента — задний край штриха относительно направления */
+      var tx = dx > 0 ? hx - CFG.dash : hx;
+      var ty = dy > 0 ? hy - CFG.dash : hy;
+      el.style.transform = 'translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px)';
+      /* конверт прозрачности: вход первые 20px, выход последние 28px */
+      el.style.opacity = (Math.min(1, dist / 20, (total - dist) / 28) * CFG.alpha).toFixed(3);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function schedule(first) {
+    var wait = first ? CFG.firstDelay : CFG.idleMin + Math.random() * (CFG.idleMax - CFG.idleMin);
+    setTimeout(function () {
+      if (document.hidden || reduceMq.matches) { schedule(); return; }
+      run();
+    }, wait);
+  }
+  schedule(true);
+})();
