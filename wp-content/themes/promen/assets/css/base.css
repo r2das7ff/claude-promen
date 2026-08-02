@@ -65,10 +65,21 @@ body::before{
   display:flex;align-items:center;padding:0 28px 0 var(--rail-w);
   border-bottom:1px solid var(--ln2);background:rgba(232,236,240,.97);
   backdrop-filter:blur(6px);
+  transition:box-shadow .2s ease;
 }
+/* Прокрученная страница «скользит под» шапкой — лёгкий подъём тенью
+   (класс ставит chrome.js в том же rAF, что и полоса прогресса). */
+.nav.is-scrolled{box-shadow:0 6px 24px rgba(15,42,68,.08);}
 .nav-brand{display:flex;align-items:center;gap:14px;border-right:1px solid var(--ln2);padding-right:24px;margin-right:24px;}
 .nav-logo img{height:34px;width:auto;display:block;}
-.nav-links{display:flex;list-style:none;}
+.nav-links{display:flex;list-style:none;position:relative;}
+/* «Бегущее» подчёркивание (chrome.js): один индикатор живёт под активным
+   пунктом, при ховере/фокусе едет к цели и возвращается. Transform-only:
+   translateX по рельсе + scaleX от базовых 100px под ширину пункта.
+   Без JS класс nav--line не ставится — работает старый ::after. */
+.nav-line{position:absolute;left:0;bottom:0;width:100px;height:2px;background:var(--g1);transform-origin:left;transform:scaleX(0);opacity:0;pointer-events:none;transition:transform .24s var(--ease-out),opacity .15s ease;}
+.nav-line--snap{transition:none !important;}
+.nav--line .nav-links a::after{content:none;}
 /* Боковые отступы 16, а не 20: шрифт вырос с 12 до 13.5px. Ширины тиров
    считаны от этих 16 — см. блок «АДАПТИВ ХРОМА» ниже. */
 .nav-links a{
@@ -88,6 +99,9 @@ body::before{
 .nav-meta{display:flex;align-items:center;margin-left:auto;min-width:0;overflow:hidden;white-space:nowrap;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;color:var(--g1);opacity:.55;border-left:1px solid var(--ln2);padding-left:20px;}
 .nav-cta{margin-left:16px;flex-shrink:0;display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:var(--blue);border:1px solid var(--g1);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--white);cursor:pointer;transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),transform var(--dur-press) var(--ease-out);}
 .nav-cta:hover{background:var(--g1);color:var(--bg);}
+/* Стрелка CTA: микрожест «действие ведёт дальше» */
+.nav-cta-arr{display:inline-block;transition:transform var(--dur-fast) var(--ease-out);}
+@media(hover:hover) and (pointer:fine){.nav-cta:hover .nav-cta-arr{transform:translateX(3px);}}
 
 /* ── МОБИЛЬНОЕ МЕНЮ (бургер + drawer), ревизия 2026-07-22 ── */
 .nav-burger{display:none;width:44px;height:44px;margin-left:auto;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:none;border:1px solid var(--ln2);cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
@@ -330,6 +344,8 @@ a.s10-contact-v:hover{color:var(--blue);}
   .strip-pulse{animation:none !important;}
   .s10-promise-dot{animation:none !important;}
   .s10-success{animation:none !important;}
+  .nav-line{transition:none !important;}
+  .nav-cta-arr{transition:none !important;}
   /* Drawer: позиция мгновенно (сдвиг на 340px убираем), фейд остаётся —
      оверлей и сама панель сообщают о смене контекста без движения. */
   .nav-drawer{transition:opacity .25s ease;opacity:0;}

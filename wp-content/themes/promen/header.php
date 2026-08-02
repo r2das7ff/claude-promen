@@ -29,7 +29,7 @@ $promen_nav = promen_nav_items();
     <?php endforeach; ?>
   </ul>
   <div class="nav-meta" id="navClock"></div>
-  <button type="button" class="nav-cta" onclick="openRequestModal('tz')">Отправить ТЗ →</button>
+  <button type="button" class="nav-cta" onclick="openRequestModal('tz')">Отправить ТЗ <span class="nav-cta-arr" aria-hidden="true">→</span></button>
   <button type="button" class="nav-burger" id="navBurger" aria-label="Открыть меню" aria-expanded="false" aria-controls="navDrawer">
     <span></span><span></span><span></span>
   </button>
