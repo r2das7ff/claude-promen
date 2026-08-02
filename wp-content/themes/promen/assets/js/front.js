@@ -1755,14 +1755,13 @@ document.addEventListener('DOMContentLoaded', function(){
   })();
 })();
 
-/* ── ТЕСТОВЫЙ АМБИЕНТ ?gridtrace: «пакет сигнала» по граням фоновой сетки ──
-   Эпизодически штрих с гаснущим хвостом пробегает 2-4 сегмента по линиям
-   сетки 80px (повороты — на узлах) и растворяется. Рендер — canvas: хвост
-   из микро-сегментов с убывающей прозрачностью ИЗГИБАЕТСЯ за угол (голова
-   уже на новой грани — хвост дотекает по старой), скруглённые стыки.
-   Слой z-index:0: над сеткой body::before, под контентом (.pg z-index:1).
-   Спавн — только в точках, где сетка видна (проверка непрозрачных фонов).
-   Только за флагом ?gridtrace; =demo — частый и яркий режим осмотра.
+/* ── ТЕСТОВЫЙ АМБИЕНТ ?gridtrace: «сигнал» блуждает по граням фоновой сетки ──
+   Сплошной штрих 32×3px (--dark) ползёт по линиям сетки 80px как змейка:
+   маршрут ~минута случайных блужданий, повороты на узлах, хвост — одна
+   непрерывная ломаная (без затухания), плавно изгибается за угол.
+   Рендер — canvas. Слой z-index:0: над сеткой body::before, под контентом.
+   Спавн — в точке, где сетка видна; дальше маршрут волен нырять под секции
+   и выныривать. Только за флагом ?gridtrace (=demo — короткие паузы и ярче);
    prefers-reduced-motion выключает целиком; в скрытой вкладке rAF замирает.
    Ручки — в CFG. */
 (function gridTrace() {
@@ -1771,15 +1770,15 @@ document.addEventListener('DOMContentLoaded', function(){
   var DEMO = /gridtrace=demo/.test(location.search);
   var CFG = {
     cell: 80,          /* шаг фоновой сетки (= body::before в base.css) */
-    dash: 32,          /* длина штриха с хвостом, px */
+    dash: 32,          /* длина штриха, px */
     thick: 3,          /* толщина, px */
-    speed: 67,         /* px/с (100 / 1.5 — «медленнее в полтора раза») */
+    speed: 67,         /* px/с */
     alpha: DEMO ? 0.5 : 0.28,
-    segMin: 2, segMax: 4,
-    cellMin: 1, cellMax: 3,
+    journeySec: 60,    /* длительность маршрута, с */
+    maxSegs: 220,      /* предохранитель генератора пути */
+    cellMin: 1, cellMax: 3,   /* длина сегмента, клеток */
     idleMin: DEMO ? 1800 : 9000, idleMax: DEMO ? 3200 : 14000,
-    firstDelay: 1200,
-    tailSteps: 10      /* микро-сегментов в хвосте (плавность изгиба и фейда) */
+    firstDelay: 1200
   };
   var RGB = '15,42,68'; /* --dark: цвет заголовка героя */
 
@@ -1787,9 +1786,8 @@ document.addEventListener('DOMContentLoaded', function(){
   canvas.style.cssText = 'position:fixed;left:0;top:0;z-index:0;pointer-events:none;';
   document.body.appendChild(canvas);
   var ctx = canvas.getContext('2d');
-  var dpr = 1;
   function sizeCanvas() {
-    dpr = window.devicePixelRatio || 1;
+    var dpr = window.devicePixelRatio || 1;
     canvas.width = Math.round(window.innerWidth * dpr);
     canvas.height = Math.round(window.innerHeight * dpr);
     canvas.style.width = window.innerWidth + 'px';
@@ -1813,6 +1811,7 @@ document.addEventListener('DOMContentLoaded', function(){
     return true;
   }
 
+  /* Случайное блуждание по узлам до длины ~journeySec секунд пути. */
   function buildPath() {
     var c = CFG.cell;
     var cols = Math.max(4, Math.floor(window.innerWidth / c));
@@ -1824,65 +1823,65 @@ document.addEventListener('DOMContentLoaded', function(){
       ok = gridVisibleAt(x + 2, y + 2);
     }
     if (!ok) return null;
+    var target = CFG.speed * CFG.journeySec;
     var dirs = [[1,0],[-1,0],[0,1],[0,-1]];
     var d = dirs[Math.floor(Math.random() * 4)];
-    var pts = [[x, y]];
-    var n = CFG.segMin + Math.floor(Math.random() * (CFG.segMax - CFG.segMin + 1));
-    for (var i = 0; i < n; i++) {
+    var pts = [[x, y]], total = 0;
+    for (var i = 0; i < CFG.maxSegs && total < target; i++) {
       var len = (CFG.cellMin + Math.floor(Math.random() * (CFG.cellMax - CFG.cellMin + 1))) * c;
       var nx = Math.max(c, Math.min((cols - 1) * c, x + d[0] * len));
       var ny = Math.max(c, Math.min((rows - 1) * c, y + d[1] * len));
-      if (nx !== x || ny !== y) { pts.push([nx, ny]); x = nx; y = ny; }
+      if (nx !== x || ny !== y) {
+        total += Math.abs(nx - x) + Math.abs(ny - y);
+        pts.push([nx, ny]); x = nx; y = ny;
+      }
       var turn = Math.random() < 0.5 ? 1 : -1;
       d = d[0] !== 0 ? [0, turn] : [turn, 0];
     }
     return pts;
   }
 
-  /* Точка на ломаной по дистанции от старта. */
-  function pointAt(pts, segLen, dist) {
-    var acc = 0, si = 0;
-    while (si < segLen.length - 1 && acc + segLen[si] <= dist) { acc += segLen[si]; si++; }
+  /* Точка на ломаной по дистанции от старта (для головы и конца хвоста). */
+  function pointAt(pts, segEnd, dist) {
+    var si = 0;
+    while (si < segEnd.length - 1 && segEnd[si] <= dist) si++;
+    var start = si === 0 ? 0 : segEnd[si - 1];
     var a = pts[si], b = pts[si + 1];
-    var f = segLen[si] ? Math.min(1, Math.max(0, (dist - acc) / segLen[si])) : 1;
-    return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+    var L = segEnd[si] - start;
+    var f = L ? Math.min(1, Math.max(0, (dist - start) / L)) : 1;
+    return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, si];
   }
 
   function run() {
     var pts = buildPath();
     if (!pts || pts.length < 2) { schedule(); return; }
-    var segLen = [], total = 0;
+    var segEnd = [], total = 0;
     for (var i = 1; i < pts.length; i++) {
-      var L = Math.abs(pts[i][0] - pts[i-1][0]) + Math.abs(pts[i][1] - pts[i-1][1]);
-      segLen.push(L); total += L;
+      total += Math.abs(pts[i][0] - pts[i-1][0]) + Math.abs(pts[i][1] - pts[i-1][1]);
+      segEnd.push(total);
     }
     var t0 = performance.now();
     function frame(now) {
       var head = (now - t0) / 1000 * CFG.speed;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (head >= total + CFG.dash) { schedule(); return; } /* хвост дотёк до конца */
-      /* конверт: вход первые 24px, выход — пока хвост дотекает за край */
-      var env = Math.min(1, head / 24, Math.max(0, (total + CFG.dash - head) / CFG.dash)) * CFG.alpha;
+      if (head >= total + CFG.dash) { schedule(); return; } /* хвост дотёк */
+      /* конверт: плавный вход первые 24px и растворение на выходе */
+      var env = Math.min(1, head / 24, Math.max(0.001, (total + CFG.dash - head) / CFG.dash)) * CFG.alpha;
+      var hd = Math.min(head, total);
+      var tl = Math.max(0, head - CFG.dash);
+      var hp = pointAt(pts, segEnd, hd);
+      var tp = pointAt(pts, segEnd, tl);
+      /* Хвост — ОДНА ломаная (сплошной цвет; отдельные сегменты наложились
+         бы тёмными стыками): конец хвоста → узлы между → голова. */
       ctx.lineWidth = CFG.thick;
       ctx.lineCap = 'round';
-      /* Хвост микро-сегментами от головы назад: идёт ПО ломаной — на узле
-         изгибается за угол; альфа гаснет к концу хвоста. */
-      var hd = Math.min(head, total);
-      var step = CFG.dash / CFG.tailSteps;
-      var prev = pointAt(pts, segLen, hd);
-      for (var k = 0; k < CFG.tailSteps; k++) {
-        var d1 = hd - step * (k + 1);
-        if (d1 <= head - CFG.dash) d1 = Math.max(0, head - CFG.dash);
-        if (d1 < 0) break;
-        var p = pointAt(pts, segLen, d1);
-        ctx.strokeStyle = 'rgba(' + RGB + ',' + (env * (1 - k / CFG.tailSteps)).toFixed(3) + ')';
-        ctx.beginPath();
-        ctx.moveTo(prev[0], prev[1]);
-        ctx.lineTo(p[0], p[1]);
-        ctx.stroke();
-        prev = p;
-        if (d1 === 0) break;
-      }
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = 'rgba(' + RGB + ',' + env.toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.moveTo(tp[0], tp[1]);
+      for (var si = tp[2] + 1; si <= hp[2]; si++) ctx.lineTo(pts[si][0], pts[si][1]);
+      ctx.lineTo(hp[0], hp[1]);
+      ctx.stroke();
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
