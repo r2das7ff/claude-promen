@@ -1,0 +1,191 @@
+/* ════════════════════════════════════════════════════════════
+   PROM-EN calc: раздел «Калькуляторы» — хаб и страницы инструментов.
+   Токены и идиомы — base.css (rm-fields/s10): моношрифтовые ярлыки,
+   сетки с 1px-швами на var(--g1), белые панели на фоне чертёжной сетки.
+   ════════════════════════════════════════════════════════════ */
+
+.pg{position:relative;z-index:1;padding:calc(var(--nav-h) + 40px) 40px 72px var(--head-x);max-width:1480px;}
+
+/* ── HERO ── */
+.clc-hero{margin-bottom:36px;max-width:920px;}
+.clc-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:18px;
+  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--g1);}
+.clc-eyebrow::before{content:'';width:26px;height:1px;background:var(--g1);}
+.clc-h1{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(34px,5vw,58px);line-height:.98;letter-spacing:-.01em;
+  text-transform:uppercase;color:var(--dark);margin:0 0 16px;}
+.clc-h1 em{font-style:normal;color:var(--g1);}
+.clc-desc{font-size:15px;font-weight:300;line-height:1.65;color:var(--blue);max-width:640px;}
+
+/* ── ХАБ: карточки инструментов ── */
+.clc-hub{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--ln2);border:1px solid var(--ln2);}
+.clc-card{display:flex;flex-direction:column;gap:14px;background:var(--white);padding:26px 24px 22px;
+  position:relative;transition:background var(--dur-fast);}
+.clc-card:hover{background:var(--bg2);}
+.clc-card-num{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;color:var(--g1);
+  border:1px solid var(--g1);align-self:flex-start;padding:3px 8px;line-height:1;}
+.clc-card-t{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:24px;line-height:1.02;
+  text-transform:uppercase;color:var(--dark);}
+.clc-card-d{font-size:13.5px;font-weight:300;line-height:1.55;color:var(--blue);flex:1;}
+.clc-card-tag{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.14em;color:var(--g1);opacity:.75;}
+.clc-card-arr{position:absolute;top:24px;right:22px;font-size:15px;color:var(--g1);
+  transition:transform var(--dur-ui) var(--ease-out-sm),color var(--dur-fast);}
+.clc-card:hover .clc-card-arr{transform:translateX(4px);color:var(--dark);}
+
+/* ── РАБОЧАЯ ЗОНА: форма + результат ── */
+.clc-wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(380px,.95fr);gap:32px;align-items:start;}
+.clc-panel{background:var(--white);border:1px solid var(--ln2);}
+.clc-panel-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 18px;border-bottom:1px solid var(--ln);}
+.clc-panel-t{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);}
+
+/* Табы типа детали / вида крепежа / направления расчёта. */
+.clc-tabs{display:flex;flex-wrap:wrap;gap:1px;background:var(--ln);border-bottom:1px solid var(--ln);}
+.clc-tab{flex:1 0 auto;min-height:46px;padding:10px 14px;background:var(--bg);border:none;cursor:pointer;
+  font-family:'DINPro',sans-serif;font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--blue);transition:background var(--dur-fast),color var(--dur-fast),transform var(--dur-press) var(--ease-out);}
+.clc-tab:hover{background:var(--bg2);color:var(--dark);}
+.clc-tab:active{transform:scale(.97);}
+.clc-tab.is-on{background:var(--dark);color:var(--white);font-weight:700;}
+
+/* Поля: сетка с 1px-швами (идиома rm-fields). */
+.clc-fields{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--ln);}
+.clc-field{display:flex;flex-direction:column;background:var(--bg);padding:13px 16px 11px;min-width:0;
+  transition:background var(--dur-fast),opacity var(--dur-fast);}
+.clc-field:focus-within{background:var(--white);}
+.clc-field--wide{grid-column:1/-1;}
+.clc-field.is-off{opacity:.45;pointer-events:none;}
+.clc-field-label{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--g1);margin-bottom:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.clc-field select,.clc-field input{border:none;background:transparent;width:100%;
+  font-family:'DINPro',sans-serif;font-size:14.5px;font-weight:500;color:var(--dark);outline:none;padding:0;
+  font-variant-numeric:tabular-nums;}
+.clc-field input::placeholder{color:var(--g2);font-weight:300;}
+/* number без крутилок: значения здесь табличные, стрелки только шумят */
+.clc-field input[type=number]{-moz-appearance:textfield;appearance:textfield;}
+.clc-field input[type=number]::-webkit-outer-spin-button,
+.clc-field input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+
+/* ── РЕЗУЛЬТАТ ── */
+.clc-out{position:sticky;top:calc(var(--nav-h) + 20px);}
+.clc-res{padding:22px 22px 18px;}
+.clc-res-num{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;color:var(--dark);
+  font-size:clamp(38px,4.6vw,56px);line-height:1;letter-spacing:-.01em;font-variant-numeric:tabular-nums;
+  display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.clc-res-num .u{font-size:.42em;color:var(--g1);letter-spacing:.06em;}
+.clc-res-sub{font-family:'DINPro',monospace;font-size:11.5px;letter-spacing:.08em;color:var(--g1);margin-top:8px;line-height:1.6;}
+.clc-res-rows{margin-top:16px;border-top:1px solid var(--ln);}
+/* Блоки, добавленные в корень результата (мимо .clc-res), получают
+   боковые поля панели — иначе строки прилипают к рамке. */
+[data-result]>.clc-res-rows{margin:0 22px;}
+[data-result]>.clc-actions{margin:18px 22px;}
+[data-result]>.clc-res{padding-bottom:4px;}
+.clc-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding:9px 0;border-bottom:1px solid var(--ln);}
+.clc-row-k{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);}
+.clc-row-v{font-size:14px;font-weight:700;color:var(--dark);font-variant-numeric:tabular-nums;text-align:right;}
+.clc-row-v small{font-weight:400;color:var(--g1);}
+.clc-row-v a{color:var(--dark);border-bottom:1px solid var(--g2);transition:border-color var(--dur-fast);}
+.clc-row-v a:hover{border-color:var(--dark);}
+
+/* Таблица комплекта (фланцевый) и результатов подбора. */
+.clc-kit{border-top:1px solid var(--ln);}
+.clc-kit-r{display:grid;grid-template-columns:minmax(0,1.4fr) auto auto;gap:6px 14px;align-items:baseline;
+  padding:10px 0;border-bottom:1px solid var(--ln);}
+.clc-kit-name{font-size:13.5px;font-weight:500;color:var(--dark);line-height:1.4;}
+.clc-kit-name a{color:var(--dark);border-bottom:1px solid var(--g2);}
+.clc-kit-name a:hover{border-color:var(--dark);}
+.clc-kit-name .mut{color:var(--g1);font-weight:300;}
+.clc-kit-q{font-family:'DINPro',monospace;font-size:12.5px;color:var(--blue);white-space:nowrap;}
+.clc-kit-m{font-size:13.5px;font-weight:700;color:var(--dark);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right;}
+
+/* Кнопки. */
+.clc-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px;}
+.clc-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;
+  background:var(--dark);color:var(--white);border:1px solid var(--dark);cursor:pointer;
+  font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+  transition:background var(--dur-fast),border-color var(--dur-fast),transform var(--dur-press) var(--ease-out);}
+.clc-btn:hover{background:var(--blue);border-color:var(--blue);}
+.clc-btn:active{transform:scale(.97);}
+.clc-btn--ghost{background:var(--white);color:var(--dark);border-color:var(--g1);}
+.clc-btn--ghost:hover{background:var(--bg);color:var(--dark);border-color:var(--dark);}
+.clc-btn[disabled]{opacity:.5;pointer-events:none;}
+
+.clc-note{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.08em;line-height:1.7;color:var(--g1);
+  opacity:.75;margin-top:14px;}
+.clc-empty{padding:26px 22px;font-size:13.5px;font-weight:300;color:var(--g1);line-height:1.6;}
+
+/* ── Доставка партии ── */
+.clc-dlv{border-top:1px solid var(--ln);padding:16px 22px 20px;}
+.clc-dlv-t{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1);margin-bottom:10px;}
+.clc-dlv-form{display:flex;gap:8px;align-items:stretch;position:relative;}
+.clc-dlv-city{flex:1;min-width:0;border:1px solid var(--ln2);background:var(--bg);padding:10px 12px;
+  font-family:'DINPro',sans-serif;font-size:14px;font-weight:500;color:var(--dark);outline:none;
+  transition:background var(--dur-fast),border-color var(--dur-fast);}
+.clc-dlv-city:focus{background:var(--white);border-color:var(--g1);}
+.clc-dlv-go{padding:0 18px;}
+.clc-dlv-list{position:absolute;top:100%;left:0;right:0;z-index:30;background:var(--white);
+  border:1px solid var(--ln2);border-top:none;max-height:240px;overflow-y:auto;display:none;}
+.clc-dlv-list.show{display:block;}
+.clc-dlv-opt{display:block;width:100%;text-align:left;padding:10px 12px;border:none;background:none;cursor:pointer;
+  font-size:13.5px;color:var(--dark);border-bottom:1px solid var(--ln);transition:background var(--dur-fast);}
+.clc-dlv-opt:hover{background:var(--bg);}
+.clc-dlv-opt small{display:block;color:var(--g1);font-size:11px;margin-top:2px;}
+.clc-dlv-res{margin-top:12px;font-size:13.5px;line-height:1.6;color:var(--dark);}
+.clc-dlv-res b{font-size:16px;}
+.clc-dlv-res .mut{color:var(--g1);font-size:12px;}
+
+/* ── Справочные таблицы (DN/дюймы, стали) ── */
+.clc-search{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--ln);}
+.clc-search input{flex:1;border:none;background:transparent;outline:none;padding:6px 0;
+  font-family:'DINPro',sans-serif;font-size:15px;font-weight:500;color:var(--dark);}
+.clc-search input::placeholder{color:var(--g2);font-weight:300;}
+.clc-search-ic{color:var(--g1);font-family:'DINPro',monospace;font-size:12px;letter-spacing:.14em;}
+.clc-tbl{width:100%;border-collapse:collapse;}
+.clc-tbl th{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--g1);font-weight:400;text-align:left;padding:10px 14px;border-bottom:1px solid var(--ln2);white-space:nowrap;}
+.clc-tbl td{font-size:13.5px;color:var(--dark);padding:9px 14px;border-bottom:1px solid var(--ln);
+  font-variant-numeric:tabular-nums;vertical-align:top;}
+.clc-tbl td.mut{color:var(--g1);font-weight:300;}
+.clc-tbl tr.hl td{background:var(--g1b);}
+.clc-tbl-wrap{overflow-x:auto;}
+.clc-tbl .clc-tag{display:inline-block;font-family:'DINPro',monospace;font-size:10px;letter-spacing:.1em;
+  color:var(--g1);border:1px solid var(--ln2);padding:2px 6px;margin:1px 4px 1px 0;white-space:nowrap;}
+
+/* ── SEO-блок под инструментом ── */
+.clc-seo{margin-top:56px;max-width:820px;}
+.clc-seo h2{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:24px;
+  text-transform:uppercase;color:var(--dark);margin:0 0 14px;}
+.clc-seo p{font-size:14.5px;font-weight:300;line-height:1.7;color:var(--blue);margin:0 0 12px;}
+.clc-seo a{color:var(--dark);border-bottom:1px solid var(--g2);}
+.clc-seo a:hover{border-color:var(--dark);}
+.clc-seo ul{margin:0 0 12px 18px;}
+.clc-seo li{font-size:14.5px;font-weight:300;line-height:1.7;color:var(--blue);}
+
+/* Хлебная строка раздела. */
+.clc-crumbs{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:22px;
+  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);}
+.clc-crumbs a{color:var(--g1);border-bottom:1px solid transparent;transition:color var(--dur-fast),border-color var(--dur-fast);}
+.clc-crumbs a:hover{color:var(--dark);border-color:var(--g1);}
+.clc-crumbs .sep{opacity:.5;}
+
+/* ── АДАПТИВ ── */
+@media(max-width:1100px){
+  .clc-wrap{grid-template-columns:1fr;}
+  .clc-out{position:static;}
+  .clc-hub{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:640px){
+  .pg{padding:calc(var(--nav-h) + 24px) 16px 48px calc(var(--rail-w) + 12px);}
+  .clc-hub{grid-template-columns:1fr;}
+  .clc-fields{grid-template-columns:1fr;}
+  .clc-tab{font-size:13px;}
+  .clc-field-label{font-size:11px;}
+  .clc-field select,.clc-field input{font-size:16px;} /* 16px — iOS без зума при фокусе */
+  .clc-dlv-form{flex-direction:column;}
+  .clc-dlv-go{min-height:46px;}
+  .clc-btn{width:100%;min-height:48px;}
+  .clc-kit-r{grid-template-columns:1fr auto;}
+  .clc-kit-m{grid-column:2;}
+  .clc-search input{font-size:16px;}
+}

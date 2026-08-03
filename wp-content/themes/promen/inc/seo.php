@@ -48,6 +48,9 @@ add_action( 'wp_head', function () {
 		}
 	} elseif ( function_exists( 'is_shop' ) && is_shop() ) {
 		$desc = 'Каталог соединительных деталей трубопроводов, фланцев и крепежа. Запрос коммерческого предложения без корзины.';
+	} elseif ( is_page() && has_excerpt() ) {
+		// Страницы с заданным экцерптом (калькуляторы и т.п.) — он и есть description.
+		$desc = wp_strip_all_tags( get_the_excerpt() );
 	}
 
 	$desc = trim( preg_replace( '/\s+/', ' ', $desc ) );

@@ -5,7 +5,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PROMEN_VERSION', '0.97.99' );
+define( 'PROMEN_VERSION', '0.98.0' );
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );
@@ -34,6 +34,7 @@ require_once __DIR__ . '/inc/catalog-filters.php';
 require_once __DIR__ . '/inc/category-page.php';
 require_once __DIR__ . '/inc/catalog-api.php';
 require_once __DIR__ . '/inc/delivery-calc.php';
+require_once __DIR__ . '/inc/calculators.php';
 require_once __DIR__ . '/inc/seo.php';
 require_once __DIR__ . '/inc/pilot-otvody.php';
 
@@ -182,6 +183,30 @@ add_action( 'wp_enqueue_scripts', function () {
 		] );
 	}
 
+	// Калькуляторы: хаб и все страницы раздела — общие стили/скрипт + REST-конфиг.
+	$calc_slug = function_exists( 'promen_calc_current_slug' ) ? promen_calc_current_slug() : '';
+	if ( $calc_slug !== '' ) {
+		wp_enqueue_style( 'promen-calc', get_theme_file_uri( 'assets/css/calc.css' ), [ 'promen-base' ], PROMEN_VERSION );
+		wp_enqueue_script( 'promen-calc', get_theme_file_uri( 'assets/js/calc.js' ), [], PROMEN_VERSION, [ 'in_footer' => true ] );
+		// Без footer-pin: он для страниц БЕЗ s10-формы (наезд футера поверх
+		// контента), а у калькуляторов s10 есть и высота меняется асинхронно —
+		// зона наезжала на форму и поля (скрин 2026-08-03).
+		$calc_pages = [];
+		foreach ( array_keys( promen_calc_pages() ) as $cslug ) {
+			$url = promen_calc_url( $cslug );
+			if ( $url ) {
+				$calc_pages[ $cslug ] = $url;
+			}
+		}
+		wp_localize_script( 'promen-calc', 'promenCalc', [
+			'api'         => rest_url( 'promen/v1/calc' ),
+			'deliveryApi' => rest_url( 'promen/v1/delivery' ),
+			'delivery'    => function_exists( 'promen_dellin_appkey' ) && promen_dellin_appkey() !== '',
+			'catalogUrl'  => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' ),
+			'pages'       => $calc_pages,
+		] );
+	}
+
 	// Контакты / 404 / политика ПДн: страничные стили и скрипты.
 	if ( is_page( 'contacts' ) ) {
 		wp_enqueue_style( 'promen-contacts', get_theme_file_uri( 'assets/css/contacts.css' ), [ 'promen-base' ], PROMEN_VERSION );
@@ -275,16 +300,20 @@ function promen_nav_items(): array {
 		'production'         => 'Производство',
 		'proekty'            => 'Проекты',
 		'normativnaya-baza'  => 'Нормативы',
+		'kalkulyatory'       => 'Калькуляторы',
 		'stati'              => 'Статьи',
 		'contacts'           => 'Контакты',
 	];
 	foreach ( $pages as $slug => $label ) {
 		$page = promen_page( $slug );
 		if ( $page ) {
+			// Хаб калькуляторов активен и на дочерних страницах раздела.
+			$active = is_page( $page->ID )
+				|| ( $slug === 'kalkulyatory' && function_exists( 'promen_calc_current_slug' ) && promen_calc_current_slug() !== '' );
 			$items[] = [
 				'label'  => $label,
 				'url'    => get_permalink( $page ),
-				'active' => is_page( $page->ID ),
+				'active' => $active,
 			];
 		}
 	}
@@ -311,6 +340,7 @@ function promen_footer_nav_items(): array {
 		'production'        => 'Производство',
 		'proekty'           => 'Проекты',
 		'normativnaya-baza' => 'Нормативы',
+		'kalkulyatory'      => 'Калькуляторы',
 		'stati'             => 'Статьи',
 		'contacts'          => 'Контакты',
 	] as $slug => $label ) {
