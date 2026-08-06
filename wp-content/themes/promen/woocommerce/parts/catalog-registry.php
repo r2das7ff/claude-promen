@@ -187,7 +187,7 @@ $embedded      = ! empty( $promen_registry_embedded );
       <div id="productList" aria-live="polite" aria-busy="false">
         <?php if ( $catalog->hits ) : ?>
           <?php foreach ( $catalog->hits as $i => $hit ) : ?>
-            <?php promen_render_catalog_row( $hit, $grid_tpl, (int) $i ); ?>
+            <?php promen_render_catalog_row( $hit, $grid_tpl, (int) $i, $cat_cols ); ?>
           <?php endforeach; ?>
         <?php else : ?>
           <div class="cat-empty">

@@ -187,7 +187,11 @@ a.s10-contact-v:hover{color:var(--blue);}
 .s10-consent{display:flex;align-items:flex-start;gap:10px;margin-top:16px;cursor:pointer;}
 .s10-consent input{width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--dark);cursor:pointer;}
 .s10-consent-txt{font-family:'DINPro',sans-serif;font-size:13px;line-height:1.5;color:var(--blue);}
-.s10-consent-txt a{color:var(--dark);text-decoration:underline;text-underline-offset:2px;}
+/* padding-bottom + позиция 100% = геометрия прежнего border-bottom (линия с воздухом под выносными) */
+.s10-consent-txt a{color:var(--dark);text-decoration:none;padding-bottom:1px;background-image:linear-gradient(var(--g1),var(--g1));background-repeat:no-repeat;background-size:100% 1px;background-position:0 100%;}
+@media(hover:hover) and (pointer:fine){
+  .s10-consent-txt a:hover{background-image:linear-gradient(var(--dark),var(--dark));animation:linkRedraw .55s var(--ease-flow) both;}
+}
 .s10-consent.err input{outline:2px solid var(--g1);outline-offset:2px;}
 .s10-actions{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap;}
 .s10-submit{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--dark);color:var(--white);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--dark);cursor:pointer;transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),transform var(--dur-press) var(--ease-out);}
@@ -211,7 +215,11 @@ a.s10-contact-v:hover{color:var(--blue);}
    съедает min-height), поэтому на коротких страницах — контакты на высоком
    экране — из-под контента выглядывал верх футера. Явный min-height дотягивает
    контент до низа вьюпорта: до начала наезда футер полностью скрыт. */
-.pg-sticky-content{min-height:calc(100vh - var(--nav-h,64px));}
+.pg-sticky-content{min-height:calc(100vh - var(--nav-h,64px));
+  /* Воздух после хвоста контента: slide-over съедает сначала пустоту,
+     и последний блок (CTA, конец реестра, финал статьи) успевает жить
+     до наката. Класс существует только на страницах footer-pin. */
+  padding-bottom:16vh;}
 .site-footer{
   position:relative;z-index:10;background:var(--dark);
   padding-left:var(--rail-w);min-height:100vh;display:flex;flex-direction:column;
@@ -336,8 +344,30 @@ a.s10-contact-v:hover{color:var(--blue);}
    существует (тач). Страничные копии кнопок — в catalog/front/nb CSS. */
 .nav-cta:active,.nav-drawer-cta:active,.ft-cta:active,.s10-submit:active,.s10-file-btn:active{transform:scale(.97);}
 
+/* ── CTA GROW ──
+   Ховер главных CTA: фон «вырастает» на 3px за границу кнопки. Слой —
+   ::before цвета ХОВЕР-фона кнопки (--grow-bg): в покое clip-path прячет
+   его точно под кнопкой, на ховере раскрывается только внешнее кольцо —
+   сама кнопка и её hover-перекраска не трогаются. clip-path вместо
+   inset/размера — анимацию считает композитор, без layout. */
+.cta-grow{position:relative;isolation:isolate;}
+.cta-grow::before{
+  content:'';position:absolute;inset:-3px;z-index:-1;
+  background:var(--grow-bg,var(--dark));
+  clip-path:inset(3px);
+  transition:clip-path .45s var(--ease-out);
+}
+.cta-grow:hover::before,.cta-grow:focus-visible::before{clip-path:inset(0);}
+.nav-cta.cta-grow{--grow-bg:var(--g1);}
+.s10-submit.cta-grow{--grow-bg:var(--blue);}
+
 /* ── ANIMATIONS ── */
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+/* Перерисовка подчёркивания ссылки слева направо (ховер): линия — фоновый
+   градиент 1px, анимируется background-size. Общая для согласия s10 (здесь)
+   и ссылок в прозе статей (.ar-content a — statya.css); keyframes один,
+   base.css грузится везде. */
+@keyframes linkRedraw{0%{background-size:0 1px;}100%{background-size:100% 1px;}}
 @keyframes rowIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 /* Вход «заявка отправлена»: footer.php после POST-редиректа рендерит блок
    с display:block — только тогда анимация и играет (на display:none не идёт). */
@@ -349,6 +379,10 @@ a.s10-contact-v:hover{color:var(--blue);}
   .s10-success{animation:none !important;}
   .nav-line{transition:none !important;}
   .nav-cta-arr{transition:none !important;}
+  /* Кольцо cta-grow появляется мгновенно — состояние остаётся, движение нет */
+  .cta-grow::before{transition:none !important;}
+  /* Подчёркивание не перерисовывается — линия просто темнеет */
+  .s10-consent-txt a:hover{animation:none !important;}
   /* Drawer: позиция мгновенно (сдвиг на 340px убираем), фейд остаётся —
      оверлей и сама панель сообщают о смене контекста без движения. */
   .nav-drawer{transition:opacity .25s ease;opacity:0;}

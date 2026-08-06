@@ -841,6 +841,9 @@ document.addEventListener('DOMContentLoaded', function(){
   var wheelAnimating = false;
   var wheelAcc = 0;
   var wheelLast = 0;
+  var wheelPrevAbs = 0;     /* |дельта| прошлого тика — для детекта щелчка мыши и хвоста */
+  var wheelDecayRun = 0;    /* сколько тиков подряд дельта не растёт: устоявшийся хвост */
+  var wheelStepped = false; /* жест уже листнул год: его хвост глотаем целиком */
   var pendingStep = 0;
   var metrics   = {
     scrollDistance: 0,
@@ -1007,6 +1010,9 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     wheelAnimating = false;
     pendingStep = 0;
+    wheelStepped = false;
+    wheelPrevAbs = 0;
+    wheelDecayRun = 0;
     if (s5Timeline) {
       s5Timeline.kill();
       s5Timeline = null;
@@ -1207,15 +1213,45 @@ document.addEventListener('DOMContentLoaded', function(){
        Считаем «внутри пина» по границам сами. */
     var sy = getScrollY();
     if (sy < s5ScrollTrigger.start - 1 || sy > s5ScrollTrigger.end + 1) return;
+    var dy  = (e.deltaMode === 1 ? e.deltaY * 40 : e.deltaY);
+    var ady = Math.abs(dy);
+    var now = performance.now();
+    var gap = now - wheelLast;
+    /* «Одно проведение пальцев — один год». Жест жив, пока события идут без
+       паузы. Активная фаза тачпада джиттерит (3,1,15,8,60…) — рост дельты
+       внутри проведения НЕ признак нового жеста (первая версия фикса на этом
+       и двоила). Ре-арм только по трём надёжным сигналам:
+       — пауза >250мс (жест кончился);
+       — щелчок мыши: крупная дельта той же величины с редким шагом — плотные
+         тачпадные потоки так не выглядят (серия тиков мыши листает подряд);
+       — новый свайп поверх устоявшегося хвоста инерции: 5+ тиков без роста,
+         затухание до ≤12px, затем всплеск ≥25px — это новые пальцы. */
+    var notch    = e.deltaMode === 1 || (ady >= 50 && gap > 80 && Math.abs(ady - wheelPrevAbs) <= 1);
+    var tailJump = wheelDecayRun >= 5 && wheelPrevAbs <= 12 && ady >= 25;
+    var fresh    = gap > 250 || notch || tailJump;
+    if (fresh) {
+      wheelAcc = 0;
+      wheelStepped = false;
+      wheelDecayRun = 0;
+    } else if (ady <= wheelPrevAbs + 1) {
+      wheelDecayRun++;
+    } else {
+      wheelDecayRun = 0;
+    }
+    wheelLast = now;
+    wheelPrevAbs = ady;
     var dir = e.deltaY > 0 ? 1 : -1;
-    if (wheelAnimating) { e.preventDefault(); pendingStep = dir; return; }
+    if (wheelAnimating) {
+      e.preventDefault();
+      if (!wheelStepped) { pendingStep = dir; wheelStepped = true; }
+      return;
+    }
     if ((current === 0 && dir < 0) || (current === LAST && dir > 0)) return;
     e.preventDefault();
-    var now = performance.now();
-    if (now - wheelLast > 250) wheelAcc = 0;
-    wheelLast = now;
-    wheelAcc += (e.deltaMode === 1 ? e.deltaY * 40 : e.deltaY);
+    if (wheelStepped) return;
+    wheelAcc += dy;
     if (Math.abs(wheelAcc) < 24) return;
+    wheelStepped = true;
     goToStep(current + (wheelAcc > 0 ? 1 : -1));
     wheelAcc = 0;
   }, { passive: false });
@@ -1753,4 +1789,92 @@ document.addEventListener('DOMContentLoaded', function(){
     window.addEventListener('resize', setStickyTop, { passive:true });
     window.addEventListener('load', setStickyTop);
   })();
+})();
+
+/* ── H2 секций · построчный вход ──────────────────────────────────
+   Сплит по авторским <br>: каждый сегмент оборачивается в
+   .hl-line (маска) > .hl-in (строка, --i — индекс каскада), сами <br>
+   убираются — block-строки дают тот же перенос. Измерений нет, поэтому
+   поздняя догрузка DINPro сплит не ломает. При reduce-motion и без
+   IntersectionObserver не запускается вовсе — заголовки статичны. */
+(function () {
+  var hs = document.querySelectorAll('h2.js-lines');
+  if (!hs.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+
+  hs.forEach(function (h) {
+    var segs = [[]];
+    Array.prototype.slice.call(h.childNodes).forEach(function (node) {
+      if (node.nodeName === 'BR') { segs.push([]); h.removeChild(node); }
+      else segs[segs.length - 1].push(node);
+    });
+    var lineIdx = 0;
+    segs.forEach(function (nodes) {
+      var hasText = nodes.some(function (n) { return (n.textContent || '').trim() !== ''; });
+      if (!hasText) return;
+      var line = document.createElement('span');
+      line.className = 'hl-line';
+      var inner = document.createElement('span');
+      inner.className = 'hl-in';
+      inner.style.setProperty('--i', lineIdx++);
+      nodes.forEach(function (n) { inner.appendChild(n); });
+      line.appendChild(inner);
+      h.appendChild(line);
+    });
+  });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.5 });
+  hs.forEach(function (h) { io.observe(h); });
+})();
+
+/* ── Тикер объектов · пауза вне вьюпорта ──────────────────────────
+   Бесконечный translateX гоняем только в кадре (как пиксельное облако
+   hero и цикл карты s4). Ховер/фокус-паузы — в CSS. */
+(function () {
+  var tkr = document.querySelector('.tkr');
+  if (!tkr || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    tkr.classList.toggle('tkr-run', entries[0].isIntersecting);
+  }, { rootMargin: '80px 0px' });
+  io.observe(tkr);
+})();
+
+/* ── Манифест s3 · слова зажигаются скроллом ──────────────────────
+   Текст тёмной CTA-полосы режется на слова-спаны; каждому JS считает
+   готовый диапазон [--a, --b] прогресса cover-таймлайна — CSS-анимация
+   с animation-timeline: view() подсвечивает слова волной по мере
+   прохождения полосы через вьюпорт (front.css, @supports-гейт).
+   Скраб двунаправленный: обратный скролл гасит. Без поддержки
+   таймлайнов, без JS и при reduce-motion сплита нет — текст обычный. */
+(function () {
+  var p = document.querySelector('.js-words');
+  if (!p) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!(window.CSS && CSS.supports && CSS.supports('animation-timeline: view()'))) return;
+
+  var tokens = (p.textContent || '').split(/(\s+)/).filter(Boolean);
+  var words = tokens.filter(function (t) { return !/^\s+$/.test(t); }).length;
+  if (!words) return;
+  p.textContent = '';
+  var i = 0;
+  tokens.forEach(function (t) {
+    if (/^\s+$/.test(t)) { p.appendChild(document.createTextNode(t)); return; }
+    var w = document.createElement('span');
+    w.className = 'mw';
+    /* волна: старт 10%→48% cover, окно слова 10% — соседи перекрываются */
+    var a = 10 + (i / words) * 38;
+    w.style.setProperty('--a', a.toFixed(2) + '%');
+    w.style.setProperty('--b', (a + 10).toFixed(2) + '%');
+    w.textContent = t;
+    p.appendChild(w);
+    i++;
+  });
+  p.classList.add('mw-on');
 })();

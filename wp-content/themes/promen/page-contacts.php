@@ -139,5 +139,8 @@ get_header();
       </div>
     </div>
   </div>
+
+  <?php // Менеджеры направлений — общая часть с главной; ось rail даёт сам .pg. ?>
+  <?php get_template_part( 'parts/managers', null, [ 'num' => 'ОП', 'flush' => true ] ); ?>
 </div><!-- /.pg -->
 <?php get_footer(); ?>

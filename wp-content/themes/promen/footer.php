@@ -115,7 +115,7 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
           <span class="s10-consent-txt">Соглашаюсь на обработку персональных данных<?php if ( $promen_privacy_url ) : ?> согласно <a href="<?php echo esc_url( $promen_privacy_url ); ?>" target="_blank" rel="noopener">Политике обработки ПДн</a><?php endif; ?>.</span>
         </label>
         <div class="s10-actions">
-          <button type="submit" class="s10-submit">ОТПРАВИТЬ ЗАПРОС →</button>
+          <button type="submit" class="s10-submit cta-grow">ОТПРАВИТЬ ЗАПРОС →</button>
           <a class="s10-ghost-link" href="mailto:zakaz@prom-en.com">Написать напрямую</a>
         </div>
       </form>

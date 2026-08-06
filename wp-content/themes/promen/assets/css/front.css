@@ -181,6 +181,7 @@ img { display:block; }
   transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),transform var(--dur-press) var(--ease-out);
 }
 .btn-fill:hover { background:var(--dark); border-color:var(--dark); }
+.btn-fill.cta-grow { --grow-bg:var(--dark); } /* кольцо = hover-фон (см. base.css) */
 .btn-fill .ic { font-size:1em; line-height:1; }
 
 .btn-ghost {
@@ -4291,3 +4292,122 @@ img { display:block; }
   
 }
 
+
+/* ── H2 · ПОСТРОЧНЫЙ ВХОД (.js-lines) ────────────────────────────
+   Заголовки секций режутся front.js по авторским <br> на строки-маски:
+   .hl-line — окно (clip-path вместо overflow:hidden — отрицательные
+   inset дают глифам поле: выносные у/р/Д при lh .88 и «Ё» не бреются
+   в покое), .hl-in — строка, выезжающая снизу с каскадом 110мс.
+   Без JS и при reduce-motion сплита нет — заголовок просто стоит. */
+.js-lines .hl-line{
+  display:block;
+  clip-path:inset(-0.15em -0.08em -0.2em);
+}
+.js-lines .hl-in{
+  display:block;
+  transform:translateY(140%);
+  opacity:0;
+}
+.js-lines.in .hl-in{
+  transform:translateY(0);
+  opacity:1;
+  transition:
+    transform .8s var(--ease-out) calc(var(--i)*110ms),
+    opacity .3s ease calc(var(--i)*110ms);
+}
+@media(prefers-reduced-motion:reduce){
+  /* Страховка на смену настройки посреди сессии — сплит уже в DOM */
+  .js-lines .hl-in{transition:none !important;transform:none !important;opacity:1 !important;}
+}
+
+/* ── TKR · БЕГУЩАЯ СТРОКА ОБЪЕКТОВ ───────────────────────────────
+   Между s4 (карта географии) и s5: те же 5 объектов, что на карте,
+   но ссылками в /proekty/. Двойной .tkr-set + translateX(-50%) —
+   бесшовный цикл; transform считает композитор. Пауза: вне вьюпорта
+   (front.js вешает .tkr-run только в кадре), при ховере и когда
+   фокус внутри (клавиатура не догоняет уезжающую ссылку). */
+.tkr{
+  position:relative;z-index:1;
+  overflow:hidden;
+  background:var(--bg);
+  border-bottom:1px solid var(--ln2);
+}
+.tkr-track{
+  display:flex;
+  width:max-content;
+  animation:tkrMove 36s linear infinite;
+  animation-play-state:paused;
+}
+.tkr.tkr-run .tkr-track{animation-play-state:running;}
+.tkr:hover .tkr-track,
+.tkr:focus-within .tkr-track{animation-play-state:paused;}
+.tkr-set{display:flex;list-style:none;margin:0;padding:0;}
+.tkr-item{display:flex;align-items:center;}
+/* Квадратный маркер перед КАЖДЫМ пунктом — на стыке дублей ленты
+   ритм «маркер·пункт» не сбивается. */
+.tkr-item::before{
+  content:'';flex:0 0 auto;
+  width:5px;height:5px;
+  background:var(--g2);
+  transition:background var(--dur-fast);
+}
+.tkr-link{
+  display:inline-flex;
+  align-items:baseline;
+  gap:10px;
+  padding:21px 30px;
+  text-decoration:none;
+}
+.tkr-name{
+  font-family:'DINPro',sans-serif;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:.14em;
+  line-height:1;
+  text-transform:uppercase;
+  color:var(--dark);
+  white-space:nowrap;
+  transition:color var(--dur-fast);
+}
+.tkr-geo{
+  font-size:12px;
+  font-weight:300;
+  line-height:1;
+  color:var(--g1);
+  white-space:nowrap;
+}
+.tkr-link:hover .tkr-name,
+.tkr-link:focus-visible .tkr-name{color:var(--blue);}
+.tkr-item:has(.tkr-link:hover)::before{background:var(--blue);}
+.tkr-item-all .tkr-name{color:var(--blue);}
+@keyframes tkrMove{to{transform:translateX(-50%);}}
+@media(prefers-reduced-motion:reduce){
+  /* Лента стоит; клон прячем, остаток прокручивается пальцем/колесом */
+  .tkr-track{animation:none !important;}
+  .tkr{overflow-x:auto;}
+  .tkr-set[aria-hidden="true"]{display:none;}
+}
+
+/* ── МАНИФЕСТ S3 · ЗАЖИГАНИЕ СЛОВ СКРОЛЛОМ ───────────────────────
+   Слова CTA-полосы (сплит — front.js, .js-words) гаснут до ~28% g2
+   и «зажигаются» до var(--bg) волной, привязанной к прогрессу
+   прохождения полосы через вьюпорт: чистый CSS scroll-driven,
+   JS на кадр не тратится. Диапазоны [--a,--b] на слове считает
+   сплиттер. Вне @supports спанов нет (JS-гейт зеркальный) — текст
+   стоит штатным g2. Финал — var(--bg), не белый: белая кнопка
+   «Подобрать решение» остаётся самым ярким пятном полосы.
+   ВАЖНО: animation-timeline/-range идут ПОСЛЕ шортхенда animation —
+   шортхенд сбрасывает их в auto. */
+@supports (animation-timeline: view()) {
+  .s3-cta-text.mw-on { view-timeline: --mfst block; }
+  .s3-cta-text.mw-on .mw {
+    color: rgba(169,183,198,.28);
+    animation: mwLit linear both;
+    animation-timeline: --mfst;
+    animation-range: cover var(--a) cover var(--b);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .s3-cta-text.mw-on .mw { animation: none; color: inherit; }
+  }
+}
+@keyframes mwLit { to { color: var(--bg); } }

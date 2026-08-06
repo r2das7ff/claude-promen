@@ -1,0 +1,201 @@
+/* ════════════════════════════════════════════════════════════
+   PROM-EN managers: секция «Отдел продаж» (parts/managers.php) —
+   главная (перед футер-зоной) и «Контакты» (внутри .pg, --flush).
+   Грамматика — секции главной (front.css s9): rail-ось, eyebrow,
+   DINProCond-заголовок, реестровая сетка карточек.
+   Хром (.pg/.strip/.s10) не трогать — только свой префикс .smgr.
+   ════════════════════════════════════════════════════════════ */
+
+.smgr{
+  position:relative;z-index:1;
+  padding-left:var(--rail-w);
+  border-top:1px solid var(--ln2);
+}
+/* Внутри .pg ось rail уже дана обёрткой (base.css .pg); буфер против
+   наката футера теперь общий — .pg-sticky-content в base.css */
+.smgr--flush{padding-left:0;}
+
+/* ── HEAD ── */
+.smgr-head{
+  padding:72px var(--head-x) 48px;
+  border-bottom:1px solid var(--ln2);
+}
+.smgr-eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:24px;}
+.smgr-eye-num{
+  font-family:'DINPro',monospace;font-size:12px;letter-spacing:.2em;
+  color:var(--g1);border:1px solid var(--g1);padding:3px 8px;line-height:1;
+}
+.smgr-eye-label{
+  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--g1);opacity:.6;
+  display:flex;align-items:center;gap:10px;
+}
+.smgr-eye-label::before{content:'';width:28px;height:1px;background:var(--g1);flex-shrink:0;}
+.smgr-h2{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:clamp(34px,4vw,64px);line-height:.88;letter-spacing:-.015em;
+  text-transform:uppercase;color:var(--dark);
+}
+.smgr-desc{
+  margin-top:20px;max-width:56ch;
+  font-size:15px;line-height:1.6;color:var(--blue);
+}
+
+/* ── GROUPS ── */
+.smgr-groups{padding:48px var(--head-x) 88px;}
+.smgr-group + .smgr-group{margin-top:56px;}
+.smgr-group-bar{
+  display:flex;align-items:baseline;gap:18px;
+  margin-bottom:20px;
+}
+.smgr-group-name{
+  font-family:'DINPro',monospace;font-size:12px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--dark);font-weight:700;
+  flex-shrink:0;
+}
+.smgr-group-bar::after{content:'';flex:1;height:1px;background:var(--ln2);align-self:center;}
+.smgr-group-count{
+  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;
+  color:var(--g1);flex-shrink:0;order:3;
+}
+
+/* ── CARD GRID ── */
+.smgr-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(216px,1fr));
+  gap:24px 20px;
+}
+.smgr-card{
+  display:flex;flex-direction:column;min-width:0;
+  background:var(--white);border:1px solid var(--ln2);
+  transition:border-color var(--dur-fast),transform .3s var(--ease-out),box-shadow .3s var(--ease-out);
+}
+.smgr-card:hover{
+  border-color:var(--g1);
+  transform:translateY(-3px);
+  box-shadow:0 14px 28px rgba(15,42,68,.10);
+}
+.smgr-photo{
+  position:relative;aspect-ratio:2/3;overflow:hidden;
+  border-bottom:1px solid var(--ln);
+  background:var(--bg2);
+}
+.smgr-photo img{
+  width:100%;height:100%;object-fit:cover;object-position:top center;display:block;
+  transition:transform .45s var(--ease-out);
+}
+.smgr-card:hover .smgr-photo img{transform:scale(1.03);}
+.smgr-idx{
+  position:absolute;top:10px;left:10px;
+  font-family:'DINPro',monospace;font-size:10px;letter-spacing:.18em;
+  color:var(--blue);background:rgba(255,255,255,.88);
+  border:1px solid var(--ln2);padding:3px 7px;line-height:1;
+}
+.smgr-body{
+  display:flex;flex-direction:column;flex:1;
+  padding:16px 14px 14px;
+}
+.smgr-name{
+  font-size:16.5px;font-weight:700;color:var(--dark);
+  letter-spacing:-.01em;line-height:1.2;
+}
+.smgr-role{
+  margin:6px 0 14px;font-size:12.5px;line-height:1.45;color:var(--blue);
+}
+.smgr-lines{
+  margin-top:auto;padding-top:12px;
+  border-top:1px solid var(--ln);
+}
+/* Строка контакта: иконка + значение (ссылка) и кнопка копирования справа.
+   Значение одной строкой на любой ширине карточки ≥216px */
+.smgr-line{display:flex;align-items:center;gap:4px;}
+.smgr-line + .smgr-line{border-top:1px dashed var(--ln);}
+.smgr-line-link{
+  display:flex;align-items:flex-start;gap:9px;flex:1;min-width:0;
+  padding:9px 0;
+}
+.smgr-ic{width:15px;height:15px;flex-shrink:0;margin-top:1px;color:var(--g1);transition:color var(--dur-fast);}
+.smgr-line-v{
+  display:block;min-width:0;
+  font-family:'DINPro',monospace;font-size:12.5px;color:var(--dark);
+  white-space:nowrap;line-height:1.35;
+  transition:color var(--dur-fast);
+}
+.smgr-ext{display:block;font-style:normal;color:var(--g1);font-size:11px;margin-top:1px;}
+.smgr-line-link:hover .smgr-line-v,
+.smgr-line-link:hover .smgr-ic{color:var(--g1);}
+.smgr-line-link:focus-visible{outline:2px solid var(--dark);outline-offset:2px;}
+
+/* Кнопка копирования: copy и check одна поверх другой, is-copied меняет */
+.smgr-copy{
+  width:30px;height:30px;flex-shrink:0;
+  display:grid;place-items:center;
+  color:var(--g1);border:1px solid transparent;
+  transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast);
+}
+.smgr-copy-ic{width:14px;height:14px;grid-area:1/1;transition:opacity var(--dur-ui) var(--ease-out-sm),transform var(--dur-ui) var(--ease-out-sm);}
+.smgr-copy-ic--check{opacity:0;transform:scale(.6);color:var(--dark);}
+.smgr-copy:hover{color:var(--dark);border-color:var(--ln2);background:var(--bg2);}
+.smgr-copy:focus-visible{outline:2px solid var(--dark);outline-offset:2px;}
+.smgr-copy.is-copied .smgr-copy-ic--copy{opacity:0;transform:scale(.6);}
+.smgr-copy.is-copied .smgr-copy-ic--check{opacity:1;transform:scale(1);}
+
+/* Скрытый aria-live статус «Скопировано» */
+.smgr-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+
+/* ── FOOT: общая линия ── */
+.smgr-foot{
+  margin-top:64px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px 40px;flex-wrap:wrap;
+  border:1px solid var(--ln2);background:var(--form-bg);
+  padding:22px 28px;
+}
+.smgr-foot-q{display:flex;flex-direction:column;gap:4px;}
+.smgr-foot-t{
+  font-family:'DINProCond','DINPro',sans-serif;font-weight:900;
+  font-size:20px;letter-spacing:.01em;text-transform:uppercase;color:var(--dark);
+}
+.smgr-foot-s{font-size:13px;color:var(--blue);}
+.smgr-foot-lines{
+  display:flex;align-items:baseline;gap:28px;flex-wrap:wrap;
+  font-family:'DINPro',monospace;font-size:14px;color:var(--dark);
+}
+.smgr-foot-lines a{border-bottom:1px solid var(--ln2);padding-bottom:2px;transition:border-color var(--dur-fast),color var(--dur-fast);}
+.smgr-foot-lines a:hover{color:var(--g1);border-color:var(--g1);}
+.smgr-foot-lines a:focus-visible{outline:2px solid var(--dark);outline-offset:3px;}
+.smgr-foot-lines span{color:var(--blue);font-size:12.5px;}
+
+/* ── АДАПТИВ ──
+   Тиры — responsive-rules: ≤1024 rail скрыт (ось гасим), ≤639 телефон:
+   карточка перекомпонуется в горизонтальную строку — из секции звонят. */
+@media (max-width:1024px){
+  .smgr{padding-left:0;}
+  .smgr-head{padding:52px 24px 36px;}
+  .smgr-groups{padding:36px 24px 64px;}
+}
+@media (max-width:639px){
+  /* Длинное имя группы: разрешаем перенос, линия+счётчик уходят строкой ниже */
+  .smgr-group-bar{flex-wrap:wrap;row-gap:8px;}
+  .smgr-group-name{flex-shrink:1;line-height:1.5;}
+  .smgr-grid{grid-template-columns:1fr;gap:12px;}
+  .smgr-card{flex-direction:row;}
+  .smgr-card:hover{transform:none;box-shadow:none;}
+  .smgr-photo{
+    width:104px;flex-shrink:0;aspect-ratio:auto;
+    border-bottom:none;border-right:1px solid var(--ln);
+  }
+  .smgr-idx{display:none;}
+  .smgr-body{padding:12px 14px;}
+  .smgr-name{font-size:15.5px;}
+  .smgr-role{font-size:12px;margin-bottom:10px;}
+  /* Звонок — главное действие: тап-таргеты ≥44px */
+  .smgr-line-link{padding:12px 0;}
+  .smgr-copy{width:40px;height:40px;}
+  .smgr-foot{padding:18px;margin-top:44px;}
+  .smgr-foot-lines{gap:14px 22px;font-size:13.5px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .smgr-card,.smgr-photo img{transition:none;}
+  .smgr-card:hover{transform:none;}
+  .smgr-card:hover .smgr-photo img{transform:none;}
+}

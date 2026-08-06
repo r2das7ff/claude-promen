@@ -180,8 +180,15 @@ function promen_steel_cell_html( array $hit ): string {
 		. esc_attr( implode( ', ', $labels ) ) . '">' . esc_html( $m[2] ) . '</span>';
 }
 
-/** HTML одной строки реестра из канон-документа. */
-function promen_render_catalog_row( array $hit, string $grid_tpl, int $index = 0 ): void {
+/**
+ * HTML одной строки реестра из канон-документа.
+ *
+ * $cols — колонки СТРАНИЦЫ (те же, что в шапке и grid_tpl). Без них ячейки
+ * берутся по категории самого товара: на странице категории это одно и то же,
+ * но в общем реестре широкий тип (отводы — 6 ячеек) разъезжается мимо шапки.
+ * JS-собрат (renderRow в catalog.js) всегда маппит data.columns страницы.
+ */
+function promen_render_catalog_row( array $hit, string $grid_tpl, int $index = 0, ?array $cols = null ): void {
 	$url    = esc_url( (string) ( $hit['url'] ?? '#' ) );
 	$norm   = esc_html( (string) ( $hit['norm'] ?? '—' ) );
 	$title  = esc_html( (string) ( $hit['title'] ?? '' ) );
@@ -204,7 +211,7 @@ function promen_render_catalog_row( array $hit, string $grid_tpl, int $index = 0
 		echo '<small>' . $family . '</small>';
 	}
 	echo '</span>';
-	foreach ( promen_catalog_columns( (string) ( $hit['category'] ?? '' ) ) as $col ) {
+	foreach ( $cols ?? promen_catalog_columns( (string) ( $hit['category'] ?? '' ) ) as $col ) {
 		$val   = $cells[ $col['key'] ] ?? '—';
 		$empty = ( $val === '—' || $val === '' );
 		echo '<span class="pr-' . esc_attr( $col['key'] ) . ( $empty ? ' is-empty' : '' ) . '">' . esc_html( (string) $val ) . '</span>';

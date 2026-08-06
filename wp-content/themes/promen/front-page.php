@@ -12,7 +12,7 @@ $promen_nb_url      = ( $p = promen_page( 'normativnaya-baza' ) ) ? get_permalin
 $promen_prod_url    = ( $p = promen_page( 'production' ) ) ? get_permalink( $p ) : home_url( '/production/' );
 
 add_filter( 'promen_footer_idx', fn () => 'ПЭ-00.FTR / REV.1' );
-add_filter( 'promen_s10_eyebrow_num', fn () => '10' );
+add_filter( 'promen_s10_eyebrow_num', fn () => '11' ); // 10 занят секцией «Отдел продаж»
 
 get_header();
 ?>
@@ -27,6 +27,7 @@ get_header();
   <a class="sidenav-item" href="#parameters"><span class="sidenav-dot"></span><span class="sidenav-label">ПАРАМЕТРЫ</span></a>
   <a class="sidenav-item" href="#quality"><span class="sidenav-dot"></span><span class="sidenav-label">КОНТРОЛЬ</span></a>
   <a class="sidenav-item" href="#documents"><span class="sidenav-dot"></span><span class="sidenav-label">ДОКУМЕНТЫ</span></a>
+  <a class="sidenav-item" href="#managers"><span class="sidenav-dot"></span><span class="sidenav-label">ОТДЕЛ ПРОДАЖ</span></a>
   <a class="sidenav-item" href="#request"><span class="sidenav-dot"></span><span class="sidenav-label">ЗАПРОС</span></a>
 </nav>
 
@@ -64,7 +65,7 @@ get_header();
 
     <!-- CTAs — "EXPLORE WORK ↗  [VIEW MANIFESTO]" structure -->
     <div class="ctas">
-      <a href="#" class="btn-fill" onclick="openRequestModal('calc');return false;">Запросить расчёт <span class="ic">↗</span></a>
+      <a href="#" class="btn-fill cta-grow" onclick="openRequestModal('calc');return false;">Запросить расчёт <span class="ic">↗</span></a>
       <a href="<?php echo esc_url( $promen_catalog_url ); ?>" class="btn-ghost">
         <span class="bk">[</span>&nbsp;Каталог продукции&nbsp;<span class="bk">]</span>
       </a>
@@ -197,7 +198,7 @@ get_header();
         <span class="sfk-eye-num">→</span>
         <span class="sfk-eye-label">ОТРАСЛЕВЫЕ ЗАДАЧИ</span>
       </div>
-      <h2 class="sfk-h2">Детали трубопроводов под<br>требования АЭС и ТЭС</h2>
+      <h2 class="sfk-h2 js-lines">Детали трубопроводов под<br>требования АЭС и ТЭС</h2>
     </div>
     <p class="sfk-lead">Исполнение изделия определяется не только типоразмером, но и условиями эксплуатации: средой, давлением, температурой, маркой стали, нормативным документом и требованиями к контролю.</p>
   </div>
@@ -305,7 +306,7 @@ get_header();
 
   <header class="s2-head">
     <p class="s2-kicker">Комплексный цикл</p>
-    <h2 class="s2-h2">Берём на себя путь от чертежа<br>до готовой поставки</h2>
+    <h2 class="s2-h2 js-lines">Берём на себя путь от чертежа<br>до готовой поставки</h2>
     <p class="s2-lead">От анализа технического задания и подбора исполнения до изготовления, контроля, комплектации документации и отгрузки продукции на объект.</p>
   </header>
 
@@ -446,7 +447,7 @@ get_header();
 
   <header class="s3-head">
     <p class="s3-kicker">Производственные направления</p>
-    <h2 class="s3-h2">Изделия и комплектация<br>по техническому заданию</h2>
+    <h2 class="s3-h2 js-lines">Изделия и комплектация<br>по техническому заданию</h2>
     <p class="s3-lead">Производим и комплектуем трубопроводные изделия под проектные требования — от стандартных деталей до нестандартных элементов по чертежам заказчика, с учётом давления, температуры, среды, материала и нормативной базы.</p>
   </header>
 
@@ -647,7 +648,7 @@ get_header();
     <!-- ── CTA panel ──────────────────────────────────────── -->
     <div class="s3-cta">
       <div class="s3-cta-inner">
-        <p class="s3-cta-text">Готовы обсудить параметры вашего трубопровода. Подготовим технико-коммерческое предложение на основе технического задания, чертежей или проектной документации — в рабочие сроки.</p>
+        <p class="s3-cta-text js-words">Готовы обсудить параметры вашего трубопровода. Подготовим технико-коммерческое предложение на основе технического задания, чертежей или проектной документации — в рабочие сроки.</p>
         <div class="s3-cta-actions">
           <button class="s3-btn" onclick="openRequestModal('solution')">Подобрать решение по ТЗ ↗</button>
           <a class="s3-btn-alt" href="<?php echo esc_url( $promen_prod_url ); ?>">Все направления производства</a>
@@ -666,7 +667,7 @@ get_header();
 
   <header class="s4-head">
     <p class="s4-kicker">География поставок</p>
-    <h2 class="s4-h2">Подтверждённые<br>объекты поставок</h2>
+    <h2 class="s4-h2 js-lines">Подтверждённые<br>объекты поставок</h2>
     <div class="s4-right">
       <p class="s4-lead">Производим и отгружаем детали трубопроводов для российских и зарубежных энергетических объектов. Работаем по требованиям объекта: нормативная база, материал, комплект документов.</p>
       <div class="s4-stats">
@@ -700,6 +701,51 @@ get_header();
   <div class="s4-mobile-list" id="s4MobileList"></div>
 
 </section>
+
+<?php
+// ── Бегущая строка объектов — живая навигация в опубликованные /proekty/<slug>/.
+// Имена и география — как на детальных страницах (pd-h1 / pd-loc).
+$promen_tkr_items = [];
+foreach ( [
+	[ 'kurskaya-aes',              'Курская АЭС‑2',   'Курчатов · Россия' ],
+	[ 'aes-akkuyu',                'АЭС «Аккую»',      'Мерсин · Турция' ],
+	[ 'aes-ruppur',                'АЭС «Руппур»',     'Пабна · Бангладеш' ],
+	[ 'cherepetskaya-gres',        'Черепетская ГРЭС', 'Суворов · Россия' ],
+	[ 'teploelektrocentral-tec-3', 'Омская ТЭЦ‑3',     'Омск · Россия' ],
+] as [ $promen_tkr_slug, $promen_tkr_name, $promen_tkr_geo ] ) {
+	$promen_tkr_url = promen_project_url( $promen_tkr_slug );
+	if ( $promen_tkr_url ) {
+		$promen_tkr_items[] = [ $promen_tkr_url, $promen_tkr_name, $promen_tkr_geo ];
+	}
+}
+$promen_tkr_hub = promen_page( 'proekty' );
+?>
+<?php if ( $promen_tkr_items ) : ?>
+<!-- Дубль ленты — бесшовный цикл translateX(-50%); клон скрыт от AT и таба. -->
+<div class="tkr" aria-label="Объекты поставок">
+  <div class="tkr-track">
+    <?php for ( $promen_tkr_copy = 0; $promen_tkr_copy < 2; $promen_tkr_copy++ ) : ?>
+    <ul class="tkr-set"<?php echo $promen_tkr_copy ? ' aria-hidden="true"' : ''; ?>>
+      <?php foreach ( $promen_tkr_items as [ $promen_tkr_url, $promen_tkr_name, $promen_tkr_geo ] ) : ?>
+      <li class="tkr-item">
+        <a class="tkr-link" href="<?php echo esc_url( $promen_tkr_url ); ?>"<?php echo $promen_tkr_copy ? ' tabindex="-1"' : ''; ?>>
+          <span class="tkr-name"><?php echo esc_html( $promen_tkr_name ); ?></span>
+          <span class="tkr-geo"><?php echo esc_html( $promen_tkr_geo ); ?></span>
+        </a>
+      </li>
+      <?php endforeach; ?>
+      <?php if ( $promen_tkr_hub ) : ?>
+      <li class="tkr-item tkr-item-all">
+        <a class="tkr-link" href="<?php echo esc_url( get_permalink( $promen_tkr_hub ) ); ?>"<?php echo $promen_tkr_copy ? ' tabindex="-1"' : ''; ?>>
+          <span class="tkr-name">Все проекты <span aria-hidden="true">→</span></span>
+        </a>
+      </li>
+      <?php endif; ?>
+    </ul>
+    <?php endfor; ?>
+  </div>
+</div>
+<?php endif; ?>
 
 <!-- ══════════════════════════════════════════════════════════════
      S5 — ЗАВОД В ЦИФРАХ
@@ -1026,7 +1072,7 @@ get_header();
 
   <header class="s6-head">
     <p class="s6-kicker">Изготовление по документации</p>
-    <h2 class="s6-h2">Из чертежа<br>в металл</h2>
+    <h2 class="s6-h2 js-lines">Из чертежа<br>в металл</h2>
     <p class="s6-lead">Работаем по конструкторской документации заказчика — от единичного изделия до серийной партии.</p>
   </header>
 
@@ -1269,7 +1315,7 @@ get_header();
         <span class="s7-eye-num">07</span>
         <span class="s7-eye-label">ВОЗМОЖНОСТИ</span>
       </div>
-      <h2 class="s7-h2">Параметры<br>производства</h2>
+      <h2 class="s7-h2 js-lines">Параметры<br>производства</h2>
       <p class="s7-desc">Полный диапазон диаметров и давлений для объектов
         атомной и тепловой энергетики. Изготовление в единичном
         и серийном исполнении по ГОСТ, ОСТ, СТО, ТУ и КД заказчика.</p>
@@ -1332,7 +1378,7 @@ get_header();
           <span class="s8-eye-num">08</span>
           <span class="s8-eye-label">ПРОСЛЕЖИВАЕМОСТЬ</span>
         </div>
-        <h2 class="s8-h2">КАЖДОЕ ИЗДЕЛИЕ<br>ИМЕЕТ ИСТОРИЮ</h2>
+        <h2 class="s8-h2 js-lines">КАЖДОЕ ИЗДЕЛИЕ<br>ИМЕЕТ ИСТОРИЮ</h2>
         <p class="s8-lead">От сертификата металла и номера плавки до ОТК, неразрушающего контроля и комплекта сопроводительной документации.</p>
       </div>
       <div class="s8-route-block">
@@ -1489,7 +1535,7 @@ get_header();
         <span class="s9-eye-num">09</span>
         <span class="s9-eye-label">ДОКУМЕНТЫ</span>
       </div>
-      <h2 class="s9-h2">Нормативная<br>база</h2>
+      <h2 class="s9-h2 js-lines">Нормативная<br>база</h2>
     </div>
     <div class="s9-filter" role="group" aria-label="Фильтр документов">
       <button class="s9-filter-btn active" data-cat="all">ВСЕ</button>
@@ -1625,6 +1671,11 @@ get_header();
   </div>
   <p class="s9-note">Полный реестр действующих ГОСТ, ОСТ, СТО и ТУ с фильтрами по типу детали и виду документа — на странице <a href="<?php echo esc_url( $promen_nb_url ); ?>">«Нормативная база»</a>.</p>
 </section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     S10-К — ОТДЕЛ ПРОДАЖ: менеджеры направлений (parts/managers.php)
+     ════════════════════════════════════════════════════════════ -->
+<?php get_template_part( 'parts/managers', null, [ 'num' => '10', 'lines' => true ] ); ?>
 
 <!-- ═══════════════════════════════════════════════════════════════
      FOOTER ZONE — S10 sticky + footer slides over it

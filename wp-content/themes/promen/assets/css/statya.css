@@ -220,3 +220,32 @@
 .ar-proj-v{font-size:13px;color:var(--blue);font-weight:500;border-top:1px solid var(--ln);padding-top:6px;margin-top:2px;}
 @media(max-width:640px){.ar-cmp{grid-template-columns:1fr;}}
 @media(max-width:1024px){.ar-proj .ar-proj-l{font-size:12px;}}
+
+/* ── ССЫЛКИ В ПРОЗЕ СТАТЬИ ───────────────────────────────────────
+   До 2026-08-03 каждая ссылка в тексте несла инлайновый style
+   (color + border-bottom) — 18 копий по 6 шаблонам. Теперь общее
+   правило: линия — фоновый градиент 1px (g1), на ховере линия
+   темнеет и перерисовывается слева направо (keyframes linkRedraw —
+   base.css). border-bottom не используется сознательно: он двигает
+   строку при смене толщины и не умеет «перерисовку». */
+.ar-content a{
+  color:var(--dark);
+  font-weight:500;
+  /* padding-bottom + позиция 100% кладут линию ровно туда, где стоял
+     прежний border-bottom:1px — с воздухом под выносными (у инлайна
+     фон не рисуется ниже content-box, паддинг расширяет зону). */
+  padding-bottom:1px;
+  background-image:linear-gradient(var(--g1),var(--g1));
+  background-repeat:no-repeat;
+  background-size:100% 1px;
+  background-position:0 100%;
+}
+@media(hover:hover) and (pointer:fine){
+  .ar-content a:hover{
+    background-image:linear-gradient(var(--dark),var(--dark));
+    animation:linkRedraw .55s var(--ease-flow) both;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .ar-content a:hover{animation:none !important;}
+}

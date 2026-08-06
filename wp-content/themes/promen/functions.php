@@ -5,7 +5,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PROMEN_VERSION', '0.98.0' );
+define( 'PROMEN_VERSION', '0.99.6' );
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );
@@ -79,6 +79,12 @@ add_action( 'wp_enqueue_scripts', function () {
 	if ( $is_cat_page ) {
 		wp_enqueue_style( 'promen-category', get_theme_file_uri( 'assets/css/category-sdt.css' ), [ 'promen-base', 'promen-catalog' ], PROMEN_VERSION );
 		wp_enqueue_script( 'promen-category-sdt', get_theme_file_uri( 'assets/js/category-sdt.js' ), [], PROMEN_VERSION, [ 'in_footer' => true ] );
+	}
+
+	// Секция «Отдел продаж» (parts/managers.php) — главная и «Контакты».
+	if ( is_front_page() || is_page( 'contacts' ) ) {
+		wp_enqueue_style( 'promen-managers', get_theme_file_uri( 'assets/css/managers.css' ), [ 'promen-base' ], PROMEN_VERSION );
+		wp_enqueue_script( 'promen-managers', get_theme_file_uri( 'assets/js/managers.js' ), [], PROMEN_VERSION, [ 'in_footer' => true ] );
 	}
 
 	// Главная: страничные стили/скрипты + GSAP ScrollTrigger (self-hosted).
