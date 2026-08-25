@@ -83,48 +83,97 @@ $schem_labels = [
           <div class="bp-schematic">
             <div class="bp-schematic-lbl"><?php echo esc_html( $schem_labels[ $bp_type ] ?? $schem_labels['section'] ); ?></div>
             <?php echo $svg_open; // phpcs:ignore ?>
-            <?php if ( $bp_type === 'bend' ) : ?>
-              <path d="M 232 130 L 232 176 A 148 148 0 0 0 132 30 L 72 30 L 72 2 L 148 2 A 92 92 0 0 1 260 118 L 288 118 L 288 150 L 260 150 A 120 120 0 0 0 380 30 L 430 30 L 430 58 L 380 58 A 148 148 0 0 1 288 176 Z" transform="translate(0,40)" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></path>
-              <text x="90" y="90" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="11" transform="rotate(-90 90 90)">D<?php echo $D ? ' ' . $e( $D ) : ''; ?></text>
-              <text x="300" y="120" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="11"><?php echo $e( $angle_txt ); ?></text>
-              <?php if ( $R ) : ?><text x="300" y="200" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10">R <?php echo $e( $R ); ?></text><?php endif; ?>
+            <?php
+            // Контуры считаются из реальных размеров изделия — inc/blueprint-geometry.php.
+            $n  = fn( $k, $alt = '' ) => promen_bp_num( $dims[ $k ] ?? ( $alt !== '' ? ( $dims[ $alt ] ?? 0 ) : 0 ) );
+            $dO = $n( 'outer_diameter' );
+            $sW = $n( 'wall_thickness' );
+            ?>
+            <?php if ( $bp_type === 'bend' ) :
+              $g = promen_bp_bend_geometry( $dO, $n( 'radius_mm', 'radius' ), $n( 'angle' ) ?: 90 );
+              ?>
+              <path d="<?php echo $g['path']; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></path>
+              <path d="<?php echo $g['axis']; ?>" fill="none" stroke="<?php echo $axis; ?>" stroke-width="1" stroke-dasharray="10 3 2 3"></path>
+              <line x1="<?php echo $g['center'][0]; ?>" y1="<?php echo $g['center'][1]; ?>" x2="<?php echo $g['arc0'][0]; ?>" y2="<?php echo $g['arc0'][1]; ?>" stroke="<?php echo $axis; ?>" stroke-width=".75" stroke-dasharray="4 4"></line>
+              <line x1="<?php echo $g['center'][0]; ?>" y1="<?php echo $g['center'][1]; ?>" x2="<?php echo $g['arc1'][0]; ?>" y2="<?php echo $g['arc1'][1]; ?>" stroke="<?php echo $axis; ?>" stroke-width=".75" stroke-dasharray="4 4"></line>
+              <path d="M <?php echo $g['mark']['p0'][0] . ' ' . $g['mark']['p0'][1]; ?> A <?php printf( '%.1f %.1f 0 0 0 ', $g['mark']['r'], $g['mark']['r'] ); echo $g['mark']['p1'][0] . ' ' . $g['mark']['p1'][1]; ?>" fill="none" stroke="<?php echo $dim; ?>" stroke-width=".75"></path>
+              <text x="<?php echo $g['mark']['txt'][0]; ?>" y="<?php echo $g['mark']['txt'][1]; ?>" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="11" text-anchor="middle"><?php echo $e( $angle_txt ); ?></text>
+              <?php echo promen_bp_dim( $g['ends']['in_out'], $g['ends']['in_in'], $D ? 'D ' . $D : 'D', $dim, $lbl, -10 ); ?>
+              <?php if ( $g['r_known'] && $R ) : ?>
+                <line x1="<?php echo $g['center'][0]; ?>" y1="<?php echo $g['center'][1]; ?>" x2="<?php echo $g['ends']['mid_arc'][0]; ?>" y2="<?php echo $g['ends']['mid_arc'][1]; ?>" stroke="<?php echo $dim; ?>" stroke-width=".75"></line>
+                <?php // Подпись радиуса — у самой дуги: рядом с центром она сталкивалась с меткой угла. ?>
+                <text x="<?php echo $g['center'][0] + ( $g['ends']['mid_arc'][0] - $g['center'][0] ) * 0.84; ?>" y="<?php echo $g['center'][1] + ( $g['ends']['mid_arc'][1] - $g['center'][1] ) * 0.84 - 6; ?>" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" text-anchor="middle">R <?php echo $e( $R ); ?></text>
+              <?php endif; ?>
 
-            <?php elseif ( $bp_type === 'tee' ) : ?>
-              <rect x="40" y="110" width="320" height="60" rx="4" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></rect>
-              <rect x="170" y="30" width="60" height="90" rx="4" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></rect>
-              <line x1="40" y1="140" x2="360" y2="140" stroke="<?php echo $axis; ?>" stroke-width="1" stroke-dasharray="6 5"></line>
-              <line x1="200" y1="30" x2="200" y2="140" stroke="<?php echo $axis; ?>" stroke-width="1" stroke-dasharray="6 5"></line>
-              <line x1="40" y1="182" x2="360" y2="182" stroke="<?php echo $dim; ?>" stroke-width=".75"></line>
-              <text x="200" y="176" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" text-anchor="middle">D<?php echo ( $D && $S ) ? ' ' . $e( $D . '×' . $S ) : ''; ?></text>
-              <text x="245" y="70" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10">d<?php echo ( $D2 && $S2 ) ? ' ' . $e( $D2 . '×' . $S2 ) : ' (ответвление)'; ?></text>
+            <?php elseif ( $bp_type === 'tee' ) :
+              $g = promen_bp_tee_geometry( $dO, $n( 'outer_d_branch' ), $n( 'length_mm', 'length' ), 0 );
+              ?>
+              <path d="<?php echo $g['body']; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></path>
+              <?php echo promen_bp_axis( $g['axis_h'][0], $g['axis_h'][1], $axis ); ?>
+              <?php echo promen_bp_axis( $g['axis_v'][0], $g['axis_v'][1], $axis ); ?>
+              <?php echo promen_bp_dim( $g['run_dim'][0], $g['run_dim'][1], $L ? 'L ' . $L : '', $dim, $lbl, 14 ); ?>
+              <text x="<?php echo $g['br_top'][0]; ?>" y="<?php echo $g['br_top'][1] - 8; ?>" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" text-anchor="middle">d<?php echo ( $D2 && $S2 ) ? ' ' . $e( $D2 . '×' . $S2 ) : ''; ?></text>
+              <text x="<?php echo $g['axis_h'][0][0] + 4; ?>" y="<?php echo $g['axis_h'][0][1] - 8; ?>" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10">D<?php echo ( $D && $S ) ? ' ' . $e( $D . '×' . $S ) : ''; ?></text>
 
-            <?php elseif ( $bp_type === 'reducer' ) : ?>
-              <path d="M 60 70 L 200 95 L 340 110 L 340 130 L 200 145 L 60 170 Z" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></path>
-              <line x1="60" y1="120" x2="360" y2="120" stroke="<?php echo $axis; ?>" stroke-width="1" stroke-dasharray="6 5"></line>
-              <line x1="48" y1="70" x2="48" y2="170" stroke="<?php echo $dim; ?>" stroke-width=".75"></line>
-              <text x="30" y="124" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" transform="rotate(-90 30 124)">D₁<?php echo $D ? ' ' . $e( $D ) : ''; ?></text>
-              <line x1="356" y1="110" x2="356" y2="130" stroke="<?php echo $dim; ?>" stroke-width=".75"></line>
-              <text x="372" y="124" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" transform="rotate(-90 372 124)">D₂<?php echo $D2 ? ' ' . $e( $D2 ) : ''; ?></text>
-              <?php if ( $L ) : ?><text x="200" y="200" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" text-anchor="middle">L <?php echo $e( $L ); ?></text><?php endif; ?>
+            <?php elseif ( $bp_type === 'reducer' ) :
+              $g = promen_bp_reducer_geometry( $dO, $n( 'outer_d_branch' ), $n( 'length_mm', 'length' ) );
+              ?>
+              <path d="<?php echo $g['path']; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></path>
+              <?php echo promen_bp_axis( $g['axis'][0], $g['axis'][1], $axis ); ?>
+              <?php echo promen_bp_dim( $g['big'][0], $g['big'][1], $D ? 'D₁ ' . $D : 'D₁', $dim, $lbl, -12 ); ?>
+              <?php echo promen_bp_dim( $g['small'][0], $g['small'][1], $D2 ? 'D₂ ' . $D2 : 'D₂', $dim, $lbl, 12 ); ?>
+              <?php echo promen_bp_dim( $g['len'][0], $g['len'][1], $L ? 'L ' . $L : '', $dim, $lbl, 16 ); ?>
 
-            <?php elseif ( $bp_type === 'head' ) : ?>
-              <path d="M 90 150 A 110 90 0 0 1 310 150 L 310 190 L 90 190 Z" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></path>
-              <path d="M 100 150 A 100 82 0 0 1 300 150" fill="none" stroke="<?php echo $fill2; ?>" stroke-width="1.5"></path>
-              <line x1="90" y1="196" x2="310" y2="196" stroke="<?php echo $dim; ?>" stroke-width=".75"></line>
-              <text x="200" y="212" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" text-anchor="middle">D<?php echo $D ? ' ' . $e( $D ) : ''; ?></text>
-              <line x1="330" y1="60" x2="330" y2="150" stroke="<?php echo $dim; ?>" stroke-width=".75"></line>
-              <text x="346" y="110" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" transform="rotate(-90 346 110)">H<?php echo $H ? ' ' . $e( $H ) : ''; ?></text>
+            <?php elseif ( $bp_type === 'head' ) :
+              $g = promen_bp_head_geometry( $dO, $n( 'height_mm', 'h_mm' ), $n( 'skirt_mm' ), $sW );
+              ?>
+              <path d="<?php echo $g['outer']; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></path>
+              <path d="<?php echo $g['inner']; ?>" fill="none" stroke="<?php echo $fill2; ?>" stroke-width="1.2"></path>
+              <?php echo promen_bp_axis( $g['axis'][0], $g['axis'][1], $axis ); ?>
+              <?php echo promen_bp_dim( $g['d_dim'][0], $g['d_dim'][1], $D ? 'D ' . $D : 'D', $dim, $lbl, 16 ); ?>
+              <?php if ( $g['h_known'] && $H ) { echo promen_bp_dim( $g['h_dim'][0], $g['h_dim'][1], 'H ' . $H, $dim, $lbl, -12 ); } ?>
 
-            <?php elseif ( $bp_type === 'flange' ) : ?>
-              <circle cx="120" cy="120" r="82" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></circle>
-              <circle cx="120" cy="120" r="34" fill="<?php echo $fill2; ?>" stroke="<?php echo $stroke; ?>" stroke-width="1.5"></circle>
-              <circle cx="120" cy="120" r="62" fill="none" stroke="<?php echo $axis; ?>" stroke-width="1" stroke-dasharray="4 4"></circle>
-              <?php for ( $i = 0; $i < 8; $i++ ) { $a = $i * M_PI / 4; printf( '<circle cx="%.1f" cy="%.1f" r="5" fill="none" stroke="%s" stroke-width="1"></circle>', 120 + 62 * cos( $a ), 120 + 62 * sin( $a ), $stroke ); } ?>
-              <text x="120" y="118" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="9" text-anchor="middle">Dб<?php echo $Dbolt ? ' ' . $e( $Dbolt ) : ''; ?></text>
-              <text x="120" y="220" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" text-anchor="middle">D нар<?php echo $D ? ' ' . $e( $D ) : ''; ?></text>
-              <rect x="250" y="70" width="26" height="100" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></rect>
-              <rect x="276" y="95" width="60" height="50" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></rect>
-              <text x="263" y="200" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="9" text-anchor="middle">b<?php echo $Th ? ' ' . $e( $Th ) : ''; ?></text>
+            <?php elseif ( $bp_type === 'flange' ) :
+              $g = promen_bp_flange_geometry(
+                $dO, $n( 'bolt_circle_d' ), $n( 'bolt_d' ), (int) ( $dims['stud_count'] ?? 0 ),
+                $n( 'flange_thickness' ), $n( 'bore_d' ) ?: $n( 'dn' ), (string) ( $dims['flange_type'] ?? '' ) === '11'
+              );
+              ?>
+              <circle cx="<?php echo $g['face_c'][0]; ?>" cy="<?php echo $g['face_c'][1]; ?>" r="<?php echo $g['face_r']; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></circle>
+              <circle cx="<?php echo $g['face_c'][0]; ?>" cy="<?php echo $g['face_c'][1]; ?>" r="<?php echo $g['bolt_r']; ?>" fill="none" stroke="<?php echo $axis; ?>" stroke-width="1" stroke-dasharray="6 4"></circle>
+              <circle cx="<?php echo $g['face_c'][0]; ?>" cy="<?php echo $g['face_c'][1]; ?>" r="<?php echo $g['bore_r']; ?>" fill="<?php echo $fill2; ?>" stroke="<?php echo $stroke; ?>" stroke-width="1.5"></circle>
+              <?php foreach ( $g['holes'] as $h ) : ?>
+                <circle cx="<?php echo $h[0][0]; ?>" cy="<?php echo $h[0][1]; ?>" r="<?php echo max( 2.0, $h[1] ); ?>" fill="none" stroke="<?php echo $stroke; ?>" stroke-width="1.2"></circle>
+              <?php endforeach; ?>
+              <?php foreach ( $g['section'] as $sp ) : ?>
+                <path d="<?php echo $sp; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="1.8"></path>
+              <?php endforeach; ?>
+              <?php echo promen_bp_axis( $g['sec_axis'][0], $g['sec_axis'][1], $axis ); ?>
+              <?php echo promen_bp_axis( $g['face_axis_h'][0], $g['face_axis_h'][1], $axis ); ?>
+              <?php echo promen_bp_axis( $g['face_axis_v'][0], $g['face_axis_v'][1], $axis ); ?>
+              <?php echo promen_bp_dim( $g['d_dim'][0], $g['d_dim'][1], $D ? 'D ' . $D : 'D', $dim, $lbl, 16 ); ?>
+              <?php echo promen_bp_dim( $g['sec_dim'][0], $g['sec_dim'][1], $Th ? 'b ' . $Th : 'b', $dim, $lbl, 16 ); ?>
+              <text x="<?php echo $g['face_c'][0]; ?>" y="<?php echo $g['face_c'][1] - $g['face_r'] - 8; ?>" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" text-anchor="middle"><?php echo (int) $g['holes_n']; ?> отв.<?php echo $boltD ? ' ⌀' . $e( $boltD ) : ''; ?></text>
+
+            <?php elseif ( $bp_type === 'pipe' ) :
+              $g = promen_bp_pipe_geometry( $dO, $sW, $n( 'length_mm', 'length' ) );
+              ?>
+              <path d="<?php echo $g['body']; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></path>
+              <line x1="<?php echo $g['wall_top'][0][0]; ?>" y1="<?php echo $g['wall_top'][0][1]; ?>" x2="<?php echo $g['wall_top'][1][0]; ?>" y2="<?php echo $g['wall_top'][1][1]; ?>" stroke="<?php echo $fill2; ?>" stroke-width="1.2"></line>
+              <line x1="<?php echo $g['wall_bottom'][0][0]; ?>" y1="<?php echo $g['wall_bottom'][0][1]; ?>" x2="<?php echo $g['wall_bottom'][1][0]; ?>" y2="<?php echo $g['wall_bottom'][1][1]; ?>" stroke="<?php echo $fill2; ?>" stroke-width="1.2"></line>
+              <?php echo promen_bp_dim( $g['d_dim'][0], $g['d_dim'][1], $D ? 'D ' . $D : 'D', $dim, $lbl, -12 ); ?>
+              <?php echo promen_bp_dim( $g['s_dim'][0], $g['s_dim'][1], $S ? 's ' . $S : 's', $dim, $lbl, 14 ); ?>
+
+            <?php elseif ( $bp_type === 'washer' ) :
+              $g = promen_bp_washer_geometry( $dO ?: promen_bp_num( $dims['outer_d'] ?? 0 ), promen_bp_num( $dims['nominal_d_mm'] ?? $dims['dn'] ?? 0 ), $sW );
+              ?>
+              <circle cx="<?php echo $g['c'][0]; ?>" cy="<?php echo $g['c'][1]; ?>" r="<?php echo $g['r_out']; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></circle>
+              <circle cx="<?php echo $g['c'][0]; ?>" cy="<?php echo $g['c'][1]; ?>" r="<?php echo $g['r_in']; ?>" fill="<?php echo $fill2; ?>" stroke="<?php echo $stroke; ?>" stroke-width="1.5"></circle>
+              <?php foreach ( $g['sec'] as $sp ) : ?>
+                <path d="<?php echo $sp; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="1.8"></path>
+              <?php endforeach; ?>
+              <?php // Подпись уводим за окружность: в центре она ложилась на отверстие. ?>
+              <?php echo promen_bp_dim( $g['d_dim'][0], $g['d_dim'][1], $wd ? 'd ' . $wd : 'd', $dim, $lbl, -( (int) $g['r_out'] + 16 ) ); ?>
 
             <?php elseif ( $bp_type === 'bolt' ) : ?>
               <polygon points="40,95 52,80 76,80 88,95 76,110 52,110" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></polygon>
@@ -148,21 +197,6 @@ $schem_labels = [
               <polygon points="<?php echo implode( ' ', $pts ); ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></polygon>
               <circle cx="<?php echo $cx; ?>" cy="<?php echo $cy; ?>" r="34" fill="<?php echo $fill2; ?>" stroke="<?php echo $stroke; ?>" stroke-width="1.5"></circle>
               <text x="<?php echo $cx; ?>" y="<?php echo $cy + 4; ?>" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="12" text-anchor="middle"><?php echo $M ? $e( $M ) : ''; ?></text>
-
-            <?php elseif ( $bp_type === 'washer' ) : ?>
-              <circle cx="200" cy="120" r="78" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></circle>
-              <circle cx="200" cy="120" r="40" fill="<?php echo $fill2; ?>" stroke="<?php echo $stroke; ?>" stroke-width="1.5"></circle>
-              <line x1="122" y1="120" x2="278" y2="120" stroke="<?php echo $dim; ?>" stroke-width=".75"></line>
-              <text x="200" y="112" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="11" text-anchor="middle">d<?php echo $wd ? ' ' . $e( $wd ) : ''; ?></text>
-
-            <?php elseif ( $bp_type === 'pipe' ) : ?>
-              <rect x="40" y="90" width="320" height="60" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></rect>
-              <line x1="40" y1="98" x2="360" y2="98" stroke="<?php echo $fill2; ?>" stroke-width="1"></line>
-              <line x1="40" y1="142" x2="360" y2="142" stroke="<?php echo $fill2; ?>" stroke-width="1"></line>
-              <line x1="26" y1="90" x2="26" y2="150" stroke="<?php echo $dim; ?>" stroke-width=".75"></line>
-              <text x="14" y="124" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" transform="rotate(-90 14 124)">D<?php echo $D ? ' ' . $e( $D ) : ''; ?></text>
-              <line x1="360" y1="90" x2="386" y2="98" stroke="<?php echo $dim; ?>" stroke-width=".6"></line>
-              <text x="374" y="80" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10">s<?php echo $S ? ' ' . $e( $S ) : ''; ?></text>
 
             <?php else : /* section (fallback) */ ?>
               <circle cx="150" cy="120" r="78" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></circle>

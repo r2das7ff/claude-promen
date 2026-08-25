@@ -48,6 +48,7 @@ add_filter( 'number_format_i18n', function ( $formatted, $number, $decimals ) {
 
 require_once __DIR__ . '/inc/projects-registry.php';
 require_once __DIR__ . '/inc/product-data.php';
+require_once __DIR__ . '/inc/blueprint-geometry.php';
 require_once __DIR__ . '/inc/catalog-terms.php';
 require_once __DIR__ . '/inc/catalog-schema.php';
 require_once __DIR__ . '/inc/catalog-document.php';
