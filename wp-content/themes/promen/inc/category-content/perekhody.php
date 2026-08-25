@@ -19,7 +19,7 @@ return [
       </nav>
       <div class="hero-eyebrow">СДТ · Семейство изделий — изготовление под заказ</div>
       <h1 class="hero-h1">Переходы<br><em>стальные</em><br>приварные</h1>
-      <p class="hero-desc">Концентрические и эксцентрические переходы для стыковки участков трубопровода разных диаметров: бесшовные по ГОСТ 17378-2001, на Ру до 100 МПа по ГОСТ 22826-83, сварные по ОСТ 36-22-77 и ОСТ 34-10-753/754-97, точёные по СТО 318.01. Шесть серий, DN 15–1600. Полный пакет технической документации.</p>
+      <p class="hero-desc">Концентрические и эксцентрические переходы для стыковки участков трубопровода разных диаметров: бесшовные по ГОСТ 17378-2001, на Ру до 100 МПа по ГОСТ 22826-83, сварные по ОСТ 36-22-77 и ОСТ 34-10-753-97/754-97, точёные по СТО ЦКТИ 318.01. Шесть серий, DN 15–1600. Полный пакет технической документации.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">DN 15–1600</span><span class="hp-k">Диапазон</span></div>
@@ -41,7 +41,7 @@ return [
         <div class="hud-label">Нормативный статус</div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 17378-2001</span><span class="hud-rv live">Бесшовные</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 22826-83</span><span class="hud-rv live">Ру до 100 МПа</span></div>
-        <div class="hud-row"><span class="hud-rk">ОСТ 36-22 / 34-10</span><span class="hud-rv live">Сварные</span></div>
+        <div class="hud-row"><span class="hud-rk">ОСТ 36-22-77 / 34-10</span><span class="hud-rv live">Сварные</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
@@ -93,8 +93,8 @@ return [
           <div class="mg-hd"><div class="mg-code">ПТ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'perekhody', 'pt' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Точёные и мелкий DN</div>
           <div class="mg-items">
-            <div class="mg-item">Точёные ЦКТИ<span class="mg-norm">СТО 318.01</span></div>
-            <div class="mg-item">Сварные мелкий DN<span class="mg-norm">ОСТ 34.10.754-97</span></div>
+            <div class="mg-item">Точёные ЦКТИ<span class="mg-norm">СТО ЦКТИ 318.01</span></div>
+            <div class="mg-item">Сварные мелкий DN<span class="mg-norm">ОСТ 34-10-754-97</span></div>
             <div class="mg-item">Котельные и обвязка<span class="mg-norm">DN 15–65</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">DN 15–65</span><span class="mg-ftag">ТЭС</span></div>
@@ -141,7 +141,7 @@ return [
             <div class="sg-task-h">Нужен дренаж / смещение оси потока (эксцентрик)</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Переходы эксцентрические — бесшовные по ГОСТ 17378</div>
+            <div class="sg-prod-name">Переходы эксцентрические — бесшовные по ГОСТ 17378-2001</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17378-2001</span><span class="sg-tag">тип ПЭ</span><span class="sg-tag">эксцентрические</span>
             </div>
@@ -179,7 +179,7 @@ return [
           <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Переходы сварные — ОСТ 36-22-77 и ОСТ 34-10-753-97</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ОСТ 36-22-77</span><span class="sg-tag hi">ОСТ 34-10-753</span><span class="sg-tag">DN 300–1600</span>
+              <span class="sg-tag hi">ОСТ 36-22-77</span><span class="sg-tag hi">ОСТ 34-10-753-97</span><span class="sg-tag">DN 300–1600</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-36-22-77', $ctx['url'] ) ); ?>">К сварным в реестре →</a>
           </div>
@@ -230,7 +230,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Переход" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 17378, ГОСТ 22826…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 17378-2001, ГОСТ 22826-83…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">DN / D×s, мм</label><input id="om-dn" name="dn" type="text" placeholder="DN 100×80 / 108×4–89×4" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Давление, МПа</label><input id="om-pn" name="pn" type="text" placeholder="PN 16" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка стали</label><input id="om-mat" name="material" type="text" placeholder="09Г2С, 12Х1МФ…" autocomplete="off"></div>

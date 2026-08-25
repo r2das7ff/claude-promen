@@ -7,7 +7,7 @@
 defined( 'ABSPATH' ) || exit;
 
 return [
-	's08_weld' => 'Трубы БШ и ЭС, ВГП для внутренних сетей. ГОСТ 8732 / 10704 / 3262; плети в ППУ — раздел «Изоляция и покрытия».',
+	's08_weld' => 'Трубы БШ и ЭС, ВГП для внутренних сетей. ГОСТ 8732-78 / 10704-91 / 3262-75; плети в ППУ — раздел «Изоляция и покрытия».',
 	'hero' => static function ( array $ctx ): void { ?>
 <div class="sdt-hero" id="hero">
     <div class="hero-left">
@@ -20,7 +20,7 @@ return [
       </nav>
       <div class="hero-eyebrow">ТР · Семейство изделий — поставка под заказ</div>
       <h1 class="hero-h1">Трубы<br><em>стальные</em><br>бесшовные и сварные</h1>
-      <p class="hero-desc">Бесшовные (БШ), электросварные (ЭС) и водогазопроводные (ВГП): ГОСТ 8732 / 8734, ГОСТ 10704 / 10705, ГОСТ 3262. Три типа, DN от 15; трубы в ППУ-изоляции — в разделе «Изоляция и покрытия». Полный пакет документации.</p>
+      <p class="hero-desc">Бесшовные (БШ), электросварные (ЭС) и водогазопроводные (ВГП): ГОСТ 8732-78 / 8734-75, ГОСТ 10704-91 / 10705-80, ГОСТ 3262. Три типа, DN от 15; трубы в ППУ-изоляции — в разделе «Изоляция и покрытия». Полный пакет документации.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">DN 15–1400</span><span class="hp-k">Диапазон</span></div>
@@ -40,8 +40,8 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 8732-1978</span><span class="hud-rv live">БШ · 595</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 10704-1991</span><span class="hud-rv live">ЭС · 522</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 8732-78</span><span class="hud-rv live">БШ · 595</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 10704-91</span><span class="hud-rv live">ЭС · 522</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
@@ -58,13 +58,13 @@ return [
       <div class="map-root"><div class="map-root-label">Трубы — типоисполнения семейства</div></div>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(3,1fr);">
         <div class="mg"><div class="mg-hd"><div class="mg-code">БШ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'bs' ) ) ); ?> поз.</div></div><div class="mg-name">Бесшовные</div>
-          <div class="mg-items"><div class="mg-item">Гор. деформ.<span class="mg-norm">ГОСТ 8732</span></div><div class="mg-item">Хол. деформ.<span class="mg-norm">ГОСТ 8734</span></div></div>
+          <div class="mg-items"><div class="mg-item">Гор. деформ.<span class="mg-norm">ГОСТ 8732-78</span></div><div class="mg-item">Хол. деформ.<span class="mg-norm">ГОСТ 8734-75</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">БШ</span></div></div>
         <div class="mg"><div class="mg-hd"><div class="mg-code">ЭС</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'es' ) ) ); ?> поз.</div></div><div class="mg-name">Электросварные</div>
-          <div class="mg-items"><div class="mg-item">Сортамент<span class="mg-norm">ГОСТ 10704</span></div><div class="mg-item">ТУ<span class="mg-norm">ГОСТ 10705</span></div></div>
+          <div class="mg-items"><div class="mg-item">Сортамент<span class="mg-norm">ГОСТ 10704-91</span></div><div class="mg-item">ТУ<span class="mg-norm">ГОСТ 10705-80</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">ЭС</span></div></div>
         <div class="mg"><div class="mg-hd"><div class="mg-code">ВГП</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'vgp' ) ) ); ?> поз.</div></div><div class="mg-name">Водогазопроводные</div>
-          <div class="mg-items"><div class="mg-item">ГОСТ 3262<span class="mg-norm"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'truby', 'gost-3262-1975' ) ) ); ?> поз.</span></div></div>
+          <div class="mg-items"><div class="mg-item">ГОСТ 3262-75<span class="mg-norm"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'truby', 'gost-3262-1975' ) ) ); ?> поз.</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">ВГП</span></div></div>
       </div>
     </div>
@@ -83,14 +83,14 @@ return [
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 01</div><div class="sg-task-h">Бесшовная труба под давление / пар</div></div>
-          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Трубы БШ ГОСТ 8732 / 8734</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Трубы БШ ГОСТ 8732-78 / 8734-75</div>
             <div class="sg-tags"><span class="sg-tag hi">БШ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'bs' ) ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-8732-1978', $ctx['url'] ) ); ?>">К бесшовным →</a></div>
           <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">D×s или DN</div><div class="sg-param">Марка стали</div><div class="sg-param">Длина / партия</div></div></div>
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 02</div><div class="sg-task-h">Электросварная труба / теплосеть</div></div>
-          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Трубы ЭС ГОСТ 10704 / 10705</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Трубы ЭС ГОСТ 10704-91 / 10705-80</div>
             <div class="sg-tags"><span class="sg-tag hi">ЭС</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'es' ) ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-10704-1991', $ctx['url'] ) ); ?>">К электросварным →</a></div>
           <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">D×s</div><div class="sg-param">Сталь</div><div class="sg-param">Количество</div></div></div>
@@ -104,7 +104,7 @@ return [
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 04</div><div class="sg-task-h">Водогазопроводная труба</div></div>
-          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Трубы ВГП ГОСТ 3262-1975</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Трубы ВГП ГОСТ 3262-75</div>
             <div class="sg-tags"><span class="sg-tag hi">ВГП</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'truby', 'vgp' ) ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-3262-1975', $ctx['url'] ) ); ?>">К ВГП →</a></div>
           <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">Условный проход</div><div class="sg-param">Лёгкая/обычная/усиленная</div><div class="sg-param">Количество</div></div></div>
@@ -139,7 +139,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Труба" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 8732, ГОСТ 10704…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 8732-78, ГОСТ 10704-91…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">DN / D×s, мм</label><input id="om-dn" name="dn" type="text" placeholder="DN 100×80 / 108×4–89×4" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Давление, МПа</label><input id="om-pn" name="pn" type="text" placeholder="PN 16" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка стали</label><input id="om-mat" name="material" type="text" placeholder="09Г2С, 12Х1МФ…" autocomplete="off"></div>

@@ -19,7 +19,7 @@ get_header();
       конкретной позицией и заявкой, а не таблицей в Excel.</p>
   </div>
 
-  <div class="clc-hub">
+  <div class="clc-hub" data-reveal-group>
     <?php foreach ( promen_calc_pages() as $slug => $card ) : ?>
       <?php
       $url = promen_calc_url( $slug );
@@ -37,7 +37,7 @@ get_header();
     <?php endforeach; ?>
   </div>
 
-  <div class="clc-seo">
+  <div class="clc-seo" data-reveal>
     <h2>Зачем эти инструменты</h2>
     <p>Калькуляторы построены на данных каталога PROM-EN: масса и геометрия каждой позиции —
       те же, что в паспорте изделия. Посчитали партию — сразу видно, какая это позиция каталога,

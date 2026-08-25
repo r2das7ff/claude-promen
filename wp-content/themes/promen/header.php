@@ -16,11 +16,14 @@ $promen_nav = promen_nav_items();
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
+<!-- Пропуск навигации: первая остановка Tab, видима только при фокусе. -->
+<a class="skip-link" href="#main">Перейти к содержимому</a>
+
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-brand">
     <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="nav-logo">
-      <img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/PE_logo_black.png' ) ); ?>" alt="Промышленная Энергетика">
+      <img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/PE_logo_black.png' ) ); ?>" alt="Промышленная Энергетика" width="2000" height="414" fetchpriority="high" decoding="async">
     </a>
   </div>
   <ul class="nav-links">
@@ -56,3 +59,5 @@ $promen_nav = promen_nav_items();
   <div class="strip-pulse"></div>
   <span class="strip-txt"><?php echo esc_html( promen_strip_text() ); ?></span>
 </div>
+
+<main id="main" class="site-main">

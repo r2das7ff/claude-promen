@@ -84,13 +84,20 @@ function renderList(){
 
   document.getElementById('blFilterCount').textContent = `${String(list.length).padStart(2,'0')} ${list.length===1?'МАТЕРИАЛ':'МАТЕРИАЛОВ'}`;
 
+  /* Карточка реестра показывает снимок в 370×277, а в папке лежат кадры
+     с камеры. Полноразмерный файл браузер держит в памяти распакованным и
+     пересэмплирует при каждой перерисовке — на прокрутке это давало
+     провалы кадров. Для карточек берём уменьшённую копию (суффикс -sm),
+     крупные блоки остаются на полном файле. */
+  const smImg = (src) => src.replace(/\.jpg$/i, '-sm.jpg');
+
   const featuredEl = document.getElementById('blFeatured');
   if(featured){
     featuredEl.innerHTML = `
       <a class="bl-featured" href="${featured.href}">
         <div class="bl-featured-media">
           <span class="bl-featured-badge">Рекомендуем</span>
-          <img src="${featured.img}" alt="${featured.title}" loading="lazy">
+          <img src="${featured.img}" alt="${featured.title}" loading="lazy" decoding="async">
         </div>
         <div class="bl-featured-body">
           <span class="bl-featured-tag">${featured.catLabel}</span>
@@ -108,7 +115,7 @@ function renderList(){
     <a class="bl-card" href="${a.href}">
       <div class="bl-card-media">
         <span class="bl-card-cat">${a.catLabel}</span>
-        <img src="${a.img}" alt="${a.title}" loading="lazy">
+        <img src="${smImg(a.img)}" alt="${a.title}" loading="lazy" decoding="async">
       </div>
       <div class="bl-card-body">
         <h3 class="bl-card-title">${a.title}</h3>

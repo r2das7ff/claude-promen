@@ -43,7 +43,7 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-card">
             <div class="kb-card-badge">ДЭ-М</div>
             <div class="kb-card-title">Средний DN · 600–1400</div>
-            <p class="kb-card-body">Днища среднего диаметра для сосудов, котлов и технологических аппаратов. Толщина стенки — строго по таблице ГОСТ 6533 под расчётное давление и температуру. Монтаж и стыковка с обечайкой согласуются по КД аппарата. <strong>37 позиций</strong>.</p>
+            <p class="kb-card-body">Днища среднего диаметра для сосудов, котлов и технологических аппаратов. Толщина стенки — строго по таблице ГОСТ 6533-78 под расчётное давление и температуру. Монтаж и стыковка с обечайкой согласуются по КД аппарата. <strong>37 позиций</strong>.</p>
             <div class="kb-card-tags"><span class="kb-tag">ГОСТ 6533-78</span><span class="kb-tag">DN 600–1400</span><span class="kb-tag">Сосуды · котлы</span><span class="kb-tag">37 поз.</span></div>
           </div>
           <div class="kb-card">
@@ -53,7 +53,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-card-tags"><span class="kb-tag">ГОСТ 6533-78</span><span class="kb-tag">DN 1400–3800</span><span class="kb-tag">Негабарит</span><span class="kb-tag">71 поз.</span></div>
           </div>
           <div class="kb-card">
-            <div class="kb-card-badge">ГОСТ 6533</div>
+            <div class="kb-card-badge">ГОСТ 6533-78</div>
             <div class="kb-card-title">Эллиптические отбортованные · тип ДЭ</div>
             <p class="kb-card-body">Единый стандарт на эллиптические отбортованные днища из углеродистых, легированных и двухслойных сталей для сосудов, аппаратов и котлов. В каталоге завода — полный ряд DN 100–3800, s 4–90 мм; рабочее давление сосуда задаётся расчётом аппарата, не «PN перехода».</p>
             <div class="kb-card-tags"><span class="kb-tag">тип ДЭ</span><span class="kb-tag">Отбортованные</span><span class="kb-tag">250 поз.</span></div>
@@ -90,7 +90,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Чеклист заявки на днище</div>
             <div class="kb-checklist">
-              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Диаметр и толщина стенки</div><div class="kb-check-body">D по ряду ГОСТ 6533 (или внутренний/наружный диаметр обечайки из КД) и толщина s, мм. Пример: D 800 / s 10.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Диаметр и толщина стенки</div><div class="kb-check-body">D по ряду ГОСТ 6533-78 (или внутренний/наружный диаметр обечайки из КД) и толщина s, мм. Пример: D 800 / s 10.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">Марка стали</div><div class="kb-check-body">Точная марка из ряда каталога: <strong>20, 09Г2С, 13ХФА, 17Г1С, 12Х18Н10Т</strong> — или условия среды и температуры для подбора инженером.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Параметры сосуда</div><div class="kb-check-body">Расчётное давление, температура, среда, категория аппарата. Давление днища не задаётся отдельно от расчёта корпуса.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Поднадзорность и объём НК</div><div class="kb-check-body">ТР ТС 032/2013 при избыточном давлении; методы НК (ВИК, УЗК, РК) — по нормативу объекта и заказу.</div></div></div>
@@ -114,13 +114,13 @@ defined( 'ABSPATH' ) || exit;
 
       <!-- TAB 3: НОРМЫ -->
       <div class="kb-panel" id="kp-norms">
-        <p class="kb-intro-p">Каталог днищ опирается на <strong>ГОСТ 6533-1978</strong> как основной стандарт геометрии. Давление сосуда, категория аппарата и объём контроля задаются проектом и надзорными документами. Ниже — нормативы, с которыми работает поставка днищ завода.</p>
+        <p class="kb-intro-p">Каталог днищ опирается на <strong>ГОСТ 6533-78</strong> как основной стандарт геометрии. Давление сосуда, категория аппарата и объём контроля задаются проектом и надзорными документами. Ниже — нормативы, с которыми работает поставка днищ завода.</p>
         <div class="kb-norm-grid">
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">ГОСТ — геометрия днищ</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6533-1978</span><span class="kb-norm-desc">Днища эллиптические отбортованные стальные для сосудов, аппаратов и котлов. Основные размеры. Действует, взамен ГОСТ 6533-68. Область стандарта — D 133–4500 мм, s 4–120 мм; в каталоге — 250 типоразмеров, DN 100–3800, s 4–90 мм</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28759.3-1990</span><span class="kb-norm-desc">Фланцы сосудов и аппаратов стальные приварные встык — ответная часть к днищам и обечайкам, D 400–4000 мм, PN 0,6–6,3 МПа</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6533-78</span><span class="kb-norm-desc">Днища эллиптические отбортованные стальные для сосудов, аппаратов и котлов. Основные размеры. Действует, взамен ГОСТ 6533-68. Область стандарта — D 133–4500 мм, s 4–120 мм; в каталоге — 250 типоразмеров, DN 100–3800, s 4–90 мм</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28759.3-90</span><span class="kb-norm-desc">Фланцы сосудов и аппаратов стальные приварные встык — ответная часть к днищам и обечайкам, D 400–4000 мм, PN 0,6–6,3 МПа</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 26-2008-83</span><span class="kb-norm-desc">Крышки плоские люков стальных сварных сосудов и аппаратов. Конструкция — для люков и лазов в днищах</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 504.01/504.02-2009</span><span class="kb-norm-desc">Донышки приварные для трубопроводов и паропроводов тепловых станций. Конструкция и размеры</span></div>
             </div>
@@ -204,7 +204,7 @@ defined( 'ABSPATH' ) || exit;
               </div>
               <div class="kb-doc-item">
                 <div class="kb-doc-name">Протокол ВИК — 100% объём</div>
-                <div class="kb-doc-desc">Визуально-измерительный контроль по всем позициям. Подтверждает геометрическое соответствие ряду ГОСТ 6533 и качество поверхности отбортовки.</div>
+                <div class="kb-doc-desc">Визуально-измерительный контроль по всем позициям. Подтверждает геометрическое соответствие ряду ГОСТ 6533-78 и качество поверхности отбортовки.</div>
               </div>
               <div class="kb-doc-item">
                 <div class="kb-doc-name">Протоколы УЗК / РК / МПД / ПВК</div>
@@ -273,7 +273,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Частые ошибки при заказе</div>
             <div class="kb-errors">
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путать D днища и DN трубы</div><div class="kb-err-note">Ряд ГОСТ 6533 задаёт диаметр днища для обечайки сосуда. Не подставляйте DN трубопровода без сверки с КД аппарата.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путать D днища и DN трубы</div><div class="kb-err-note">Ряд ГОСТ 6533-78 задаёт диаметр днища для обечайки сосуда. Не подставляйте DN трубопровода без сверки с КД аппарата.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Забыть толщину стенки</div><div class="kb-err-note">«Днище D 800» без s — не спецификация. Толщина определяется расчётом сосуда и таблицей ГОСТ 6533.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Не указать марку стали</div><div class="kb-err-note">«Сталь» без марки недопустима для ответственных аппаратов: материал влияет на сварку обечайки и объём НК.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Игнорировать негабарит DN 1400+</div><div class="kb-err-note">Крупные днища требуют согласованной схемы перевозки и такелажа. Заказывайте логистику вместе с КП.</div></div></div>
@@ -306,7 +306,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-card-badge">УПАКОВКА</div>
             <div class="kb-card-title">Защита кромок отбортовки и маркировка</div>
             <p class="kb-card-body">Паллеты или деревянная обрешётка по массе и габариту, защита кромок отбортовки, маркировка позиций по упаковочному листу. Комплект документов — с грузом и дублируется по email.</p>
-            <div class="kb-card-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат 3.1</span></div>
+            <div class="kb-card-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат качества</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ОПЛАТА</div>

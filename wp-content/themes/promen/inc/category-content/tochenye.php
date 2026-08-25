@@ -19,7 +19,7 @@ return [
       </nav>
       <div class="hero-eyebrow">ТД · Семейство изделий — изготовление под заказ</div>
       <h1 class="hero-h1">Точеные<br><em>детали</em><br>стальные</h1>
-      <p class="hero-desc">Переходы точеные детали (тип ПТ) по ГОСТ 22826-1983 и ОСТ 34-42-664-84. Изготовление механической обработкой, исполнения 1–5. DN 10–200. Полный пакет технической документации.</p>
+      <p class="hero-desc">Переходы точеные детали (тип ПТ) по ГОСТ 22826-83 и ОСТ 34-42-664-84. Изготовление механической обработкой, исполнения 1–5. DN 10–200. Полный пакет технической документации.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">DN 10–200</span><span class="hp-k">Диапазон</span></div>
@@ -39,7 +39,7 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 22826-1983</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 22826-83</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">ОСТ 34-42-664-84</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'ost-34-42-664-84' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Марки стали</span><span class="hud-rv live">9 марок</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
@@ -61,7 +61,7 @@ return [
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(2,1fr);">
         <div class="mg" data-type="g22826">
           <div class="mg-hd"><div class="mg-code">22826</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</div></div>
-          <div class="mg-name">ГОСТ 22826-1983</div>
+          <div class="mg-name">ГОСТ 22826-83</div>
           <div class="mg-items">
             <div class="mg-item">Переходы точеные детали<span class="mg-norm">тип ПТ</span></div>
             <div class="mg-item">Исполнения 1–5<span class="mg-norm">по таблице ГОСТ</span></div>
@@ -98,14 +98,14 @@ return [
         <div class="sg-row">
           <div class="sg-task">
             <div class="sg-task-code">Задача 01</div>
-            <div class="sg-task-h">Точёный переход по ГОСТ 22826</div>
+            <div class="sg-task-h">Точёный переход по ГОСТ 22826-83</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Переход точёный ПТ · ГОСТ 22826-1983</div>
+            <div class="sg-prod-name">Переход точёный ПТ · ГОСТ 22826-83</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 22826</span><span class="sg-tag">ПТ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</span>
+              <span class="sg-tag hi">ГОСТ 22826-83</span><span class="sg-tag">ПТ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</span>
             </div>
-            <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22826-1983', $ctx['url'] ) ); ?>">К ГОСТ 22826 в реестре →</a>
+            <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22826-1983', $ctx['url'] ) ); ?>">К ГОСТ 22826-83 в реестре →</a>
           </div>
           <div class="sg-params" data-label="Что передать для расчёта">
             <div class="sg-param-list">
@@ -121,7 +121,7 @@ return [
           <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Переход точёный · ОСТ 34-42-664-84</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ОСТ 34-42-664</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'ost-34-42-664-84' ) ) ); ?> поз.</span>
+              <span class="sg-tag hi">ОСТ 34-42-664-84</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'ost-34-42-664-84' ) ) ); ?> поз.</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-34-42-664-84', $ctx['url'] ) ); ?>">К ОСТ 664 в реестре →</a>
           </div>
@@ -172,7 +172,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Переход точёный" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 22826, ОСТ 34-42-664…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 22826-83, ОСТ 34-42-664-84…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">DN / D×s, мм</label><input id="om-dn" name="dn" type="text" placeholder="DN 100×80 / 108×4–89×4" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Давление, МПа</label><input id="om-pn" name="pn" type="text" placeholder="PN 16" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка стали</label><input id="om-mat" name="material" type="text" placeholder="09Г2С, 12Х1МФ…" autocomplete="off"></div>

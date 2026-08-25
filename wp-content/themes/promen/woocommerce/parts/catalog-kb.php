@@ -50,8 +50,8 @@ defined( 'ABSPATH' ) || exit;
         <div class="kb-card">
           <div class="kb-card-badge">НГК</div>
           <div class="kb-card-title">Нефтегаз</div>
-          <p class="kb-card-body">Промысловые и магистральные трубопроводы, установки подготовки нефти и газа. Материалы с повышенной коррозионной стойкостью. Изготовление по <strong>ГОСТ 17375–17380</strong>, ОСТ 36 и ТУ предприятия.</p>
-          <div class="kb-card-tags"><span class="kb-tag">ГОСТ 17375–17380</span><span class="kb-tag">ТР ТС 032</span></div>
+          <p class="kb-card-body">Промысловые и магистральные трубопроводы, установки подготовки нефти и газа. Материалы с повышенной коррозионной стойкостью. Изготовление по <strong>ГОСТ 17375-2001, 17376-2001, 17378-2001, 17379-2001</strong>, ОСТ 36 и ТУ предприятия.</p>
+          <div class="kb-card-tags"><span class="kb-tag">ГОСТ 17380-2001</span><span class="kb-tag">ТР ТС 032</span></div>
         </div>
         <div class="kb-card">
           <div class="kb-card-badge">КД</div>
@@ -64,10 +64,10 @@ defined( 'ABSPATH' ) || exit;
       <div class="kb-groups-hd">Номенклатурные группы каталога</div>
       <div class="kb-groups">
         <div class="kb-grp"><span class="kb-grp-code">СДТ</span><span class="kb-grp-name">Соединительные детали трубопровода</span><span class="kb-grp-items">Отводы 45°/90°/180° · Тройники · Переходы · Днища · Заглушки</span></div>
-        <div class="kb-grp"><span class="kb-grp-code">ФЛ</span><span class="kb-grp-name">Фланцы трубопроводные</span><span class="kb-grp-items">Воротниковые · Плоские · Свободные на кольце · Глухие · По ГОСТ 33259</span></div>
+        <div class="kb-grp"><span class="kb-grp-code">ФЛ</span><span class="kb-grp-name">Фланцы трубопроводные</span><span class="kb-grp-items">Воротниковые · Плоские · Свободные на кольце · Глухие · По ГОСТ 33259-2015</span></div>
         <div class="kb-grp"><span class="kb-grp-code">ОП</span><span class="kb-grp-name">Опоры и подвески</span><span class="kb-grp-items">Скользящие · Неподвижные · Пружинные · По ОСТ 36 и СТО ЦКТИ</span></div>
-        <div class="kb-grp"><span class="kb-grp-code">ЗРА</span><span class="kb-grp-name">Запорно-регулирующая арматура</span><span class="kb-grp-items">Задвижки · Клапаны · Краны · По ГОСТ 33257 и НП-068-05</span></div>
-        <div class="kb-grp"><span class="kb-grp-code">ТР</span><span class="kb-grp-name">Трубы стальные бесшовные</span><span class="kb-grp-items">Горячедеформированные и холоднодеформированные по ГОСТ 8731–8734</span></div>
+        <div class="kb-grp"><span class="kb-grp-code">ЗРА</span><span class="kb-grp-name">Запорно-регулирующая арматура</span><span class="kb-grp-items">Задвижки · Клапаны · Краны · По ГОСТ 33257-2015 и НП-068-05</span></div>
+        <div class="kb-grp"><span class="kb-grp-code">ТР</span><span class="kb-grp-name">Трубы стальные бесшовные</span><span class="kb-grp-items">Горячедеформированные — ГОСТ 8731-87 / 8732-78, холоднодеформированные — ГОСТ 8733-87 / 8734-75</span></div>
         <div class="kb-grp"><span class="kb-grp-code">НМ</span><span class="kb-grp-name">Нестандартные металлоизделия</span><span class="kb-grp-items">Детали по КД заказчика · DWG / PDF / STEP</span></div>
         <div class="kb-grp"><span class="kb-grp-code">ИЗ</span><span class="kb-grp-name">Изоляция и покрытия</span><span class="kb-grp-items">Тепловая изоляция · Антикоррозионные покрытия</span></div>
         <div class="kb-grp"><span class="kb-grp-code">ТД</span><span class="kb-grp-name">Точёные крепёжные детали</span><span class="kb-grp-items">Шпильки · Гайки · Втулки · По ГОСТ и КД</span></div>
@@ -98,7 +98,7 @@ defined( 'ABSPATH' ) || exit;
             </div>
             <div class="kb-param">
               <div class="kb-param-key">Строка поиска</div>
-              <div class="kb-param-val">Ищет по коду, наименованию, ГОСТ, материалу и DN. Например: <strong>«09Г2С»</strong> или <strong>«ГОСТ 17375»</strong>. Горячая клавиша: <strong>⌘K</strong> или <strong>/</strong>.</div>
+              <div class="kb-param-val">Ищет по коду, наименованию, ГОСТ, материалу и DN. Например: <strong>«09Г2С»</strong> или <strong>«ГОСТ 17375-2001»</strong>. Горячая клавиша: <strong>⌘K</strong> или <strong>/</strong>.</div>
             </div>
             <div class="kb-param">
               <div class="kb-param-key">Карточка позиции</div>
@@ -128,7 +128,7 @@ defined( 'ABSPATH' ) || exit;
               <span class="kb-step-n">НД</span>
               <div>
                 <div class="kb-step-title">Нормативный документ</div>
-                <div class="kb-step-body">Определяет геометрию, допуски, категорию и объём НК. Для ТЭС: предпочтительны <strong>СТО ЦКТИ</strong> и <strong>ОСТ 34</strong>. Для АЭС: <strong>НП-045-18 / НП-089-15</strong>. Для НГК: <strong>ГОСТ 17375–17380</strong>.</div>
+                <div class="kb-step-body">Определяет геометрию, допуски, категорию и объём НК. Для ТЭС: предпочтительны <strong>СТО ЦКТИ</strong> и <strong>ОСТ 34</strong>. Для АЭС: <strong>НП-045-18 / НП-089-15</strong>. Для НГК: <strong>ГОСТ 17380-2001</strong>.</div>
               </div>
             </div>
             <div class="kb-step">
@@ -158,18 +158,18 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-norm-group-hd">ГОСТ — соединительные детали и фланцы</div>
           <div class="kb-norm-items">
             <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17380-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные из углеродистой и низколегированной стали. Общие технические условия — головной документ серии</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17375 / 30753</span><span class="kb-norm-desc">Отводы крутоизогнутые типа 3D (R ≈ 1,5DN) и типа 2D (R ≈ DN). Конструкция</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17376 / 17378 / 17379</span><span class="kb-norm-desc">Тройники, переходы, заглушки эллиптические. Конструкция</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6533-1978</span><span class="kb-norm-desc">Днища эллиптические отбортованные стальные для сосудов, аппаратов и котлов. D 133–4500 мм</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17375-2001 / 30753-2001</span><span class="kb-norm-desc">Отводы крутоизогнутые типа 3D (R ≈ 1,5DN) и типа 2D (R ≈ DN). Конструкция</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17376-2001 / 17378-2001 / 17379-2001</span><span class="kb-norm-desc">Тройники, переходы, заглушки эллиптические. Конструкция</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6533-78</span><span class="kb-norm-desc">Днища эллиптические отбортованные стальные для сосудов, аппаратов и котлов. D 133–4500 мм</span></div>
             <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 33259-2015</span><span class="kb-norm-desc">Фланцы арматуры, соединительных частей и трубопроводов на номинальное давление до PN 250</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 12820 / 12821</span><span class="kb-norm-desc">Фланцы стальные плоские приварные (Ру 0,1–2,5 МПа) и приварные встык (Ру 0,1–20,0 МПа)</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 12820-80 / 12821-80</span><span class="kb-norm-desc">Фланцы стальные плоские приварные (Ру 0,1–2,5 МПа) и приварные встык (Ру 0,1–20,0 МПа)</span></div>
           </div>
         </div>
         <div class="kb-norm-group">
           <div class="kb-norm-group-hd">ОСТ — энергетика, монтаж, высокое давление</div>
           <div class="kb-norm-items">
-            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.699-97 / 10.700-97</span><span class="kb-norm-desc">Отводы крутоизогнутые и переходы на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.747-97 ÷ 10.766-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС на Рраб &lt; 2,2 МПа, t ≤ 425 °C. Части I–III</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-699-97 / 10.700-97</span><span class="kb-norm-desc">Отводы крутоизогнутые и переходы на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-747-97 ÷ 10.766-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС на Рраб &lt; 2,2 МПа, t ≤ 425 °C. Части I–III</span></div>
             <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-416-90 ÷ 513-90</span><span class="kb-norm-desc">Детали трубопроводов из коррозионностойкой стали на Рраб ≤ 2,2 МПа, T ≤ 300 °C для АС</span></div>
             <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-20-77 ÷ 36-25-77</span><span class="kb-norm-desc">Детали трубопроводов Dy 500–1400 мм сварные из углеродистой стали на Ру ≤ 2,5 МПа: отводы, тройники, переходы, заглушки</span></div>
             <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-41-81 — 36-49-81</span><span class="kb-norm-desc">Детали трубопроводов из углеродистой стали сварные и гнутые Dy до 500 мм на Ру до 10 МПа</span></div>
@@ -184,7 +184,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 318.01–.06-2009</span><span class="kb-norm-desc">Переходы точёные, обжатые и штампованные для трубопроводов и паропроводов ТЭС</span></div>
             <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 462 / 504 / 530 / 313</span><span class="kb-norm-desc">Штуцера и патрубки, донышки приварные, бобышки, соединения штуцерные. Ресурс 200 000 часов</span></div>
             <div class="kb-norm-item"><span class="kb-norm-code">СТО 95 133-2013</span><span class="kb-norm-desc">Заглушки плоские приварные для трубопроводов атомных станций из сталей перлитного класса до 2,2 МПа</span></div>
-            <div class="kb-norm-item"><span class="kb-norm-code">СТО СРО-П 60542948 00010–2013</span><span class="kb-norm-desc">Детали и элементы трубопроводов групп В и С атомных станций. Соединения сварные. Типы и размеры</span></div>
+            <div class="kb-norm-item"><span class="kb-norm-code">СТО СРО-П 60542948.00010-2013</span><span class="kb-norm-desc">Детали и элементы трубопроводов групп В и С атомных станций. Соединения сварные. Типы и размеры</span></div>
           </div>
         </div>
         <div class="kb-norm-group">
@@ -248,7 +248,7 @@ defined( 'ABSPATH' ) || exit;
         <div>
           <div class="kb-col-title">Как подготовить заявку</div>
           <div class="kb-checklist">
-            <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Наименование и норматив</div><div class="kb-check-body">Тип изделия и нормативный документ: отвод 90° по <strong>ГОСТ 17375</strong>, тройник по <strong>СТО ЦКТИ 720.03</strong>. Если норматив неизвестен — укажите объект.</div></div></div>
+            <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Наименование и норматив</div><div class="kb-check-body">Тип изделия и нормативный документ: отвод 90° по <strong>ГОСТ 17375-2001</strong>, тройник по <strong>СТО ЦКТИ 720.03</strong>. Если норматив неизвестен — укажите объект.</div></div></div>
             <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">DN, PN, толщина стенки</div><div class="kb-check-body">DN (условный диаметр), PN в МПа или кгс/см², толщина стенки. Для фланцев — тип уплотнения (FF / RF / RTJ).</div></div></div>
             <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Марка стали</div><div class="kb-check-body">Точная марка или рабочие условия (t°С, среда) для подбора нашим инженером. Для АЭС — согласно программе контроля.</div></div></div>
             <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Количество и срок</div><div class="kb-check-body">Штуки и желаемая дата поставки. Для крупных комплектаций — поэтапный график.</div></div></div>

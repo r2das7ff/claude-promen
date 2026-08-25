@@ -16,6 +16,10 @@
 :root{
   --bg:#E8ECF0;--bg2:#DDE3EA;--dark:#0F2A44;--blue:#1E3D5C;
   --g1:#6D8CA6;--g2:#A9B7C6;--white:#FFFFFF;--ln:#C8D0D8;--ln2:#A0B0BC;
+  /* Приглушённый ТЕКСТ. --g1 на светлом фоне даёт контраст 2.97:1 — ниже нормы
+     4.5:1, на слабых мониторах подписи пропадают. Для текста берём затемнённый
+     тон (4.7:1), --g1 остаётся для линий, рамок и иконок. */
+  --g1-text:#4E6B84;
   --g1a:rgba(109,140,166,.18);--g1b:rgba(109,140,166,.06);
   --form-bg:#D3DCE6; /* панель формы: заметнее bg2, чтобы не сливалась с сеткой */
   /* сетка — brand-spec.md «Сетка / Layout-система» */
@@ -43,10 +47,19 @@
 
   /* Бюджеты длительностей. UI держим под 300ms; всё, что дольше,
      живёт на маркетинговых секциях и задаётся по месту. */
-  --dur-press:160ms;  /* отклик на нажатие */
-  --dur-fast:.15s;    /* цвет, границы, ховер */
-  --dur-ui:.22s;      /* меню, тултипы, мелкие входы */
-  --dur-panel:.32s;   /* drawer, PDP, боковые панели */
+  /* ── ШКАЛА ДВИЖЕНИЯ ──
+     Одна лестница на весь сайт. Страницы расходились по темпу потому, что
+     ступеней 120 и 200 мс в системе не было — их писали числом руками
+     (455 жёстких значений против 393 обращений к токенам), и каждая
+     страница набирала свой ритм. Ступени названы по назначению: */
+  --dur-tap:120ms;      /* отклик на курсор: ховер, подсветка */
+  --dur-press:160ms;    /* отклик на нажатие */
+  --dur-fast:.15s;      /* цвет, границы */
+  --dur-ui:.2s;         /* обычная смена состояния — рабочая ступень */
+  --dur-panel:.3s;      /* раскрытие, drawer, боковые панели, смена вида */
+  --dur-entrance:.55s;  /* авторский вход, только для акцентных моментов */
+  --dur-hero:.8s;       /* крупный вход первого экрана — потолок шкалы */
+  --stagger:70ms;       /* шаг между соседними элементами при появлении */
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 /* Прокрутка к якорю не ныряет под фиксированную шапку (нативные прыжки и
@@ -68,7 +81,7 @@ body::before{
   display:flex;align-items:center;padding:0 28px 0 var(--rail-w);
   border-bottom:1px solid var(--ln2);background:rgba(232,236,240,.97);
   backdrop-filter:blur(6px);
-  transition:box-shadow .2s ease;
+  transition:box-shadow var(--dur-ui) var(--ease-out);
 }
 /* Прокрученная страница «скользит под» шапкой — лёгкий подъём тенью
    (класс ставит chrome.js в том же rAF, что и полоса прогресса). */
@@ -80,7 +93,7 @@ body::before{
    пунктом, при ховере/фокусе едет к цели и возвращается. Transform-only:
    translateX по рельсе + scaleX от базовых 100px под ширину пункта.
    Без JS класс nav--line не ставится — работает старый ::after. */
-.nav-line{position:absolute;left:0;bottom:0;width:100px;height:2px;background:var(--g1);transform-origin:left;transform:scaleX(0);opacity:0;pointer-events:none;transition:transform .4s var(--ease-flow),opacity .25s ease;}
+.nav-line{position:absolute;left:0;bottom:0;width:100px;height:2px;background:var(--g1);transform-origin:left;transform:scaleX(0);opacity:0;pointer-events:none;transition:transform var(--dur-panel) var(--ease-flow),opacity var(--dur-panel) var(--ease-out);}
 .nav-line--snap{transition:none !important;}
 .nav--line .nav-links a::after{content:none;}
 /* Боковые отступы 16, а не 20: шрифт вырос с 12 до 13.5px. Ширины тиров
@@ -90,7 +103,7 @@ body::before{
   font-size:13.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);
   border-left:1px solid var(--ln);position:relative;transition:color var(--dur-fast),background var(--dur-fast);
 }
-.nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--g1);transform:scaleX(0);transform-origin:left;transition:transform .2s;}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--g1);transform:scaleX(0);transform-origin:left;transition:transform var(--dur-ui);}
 .nav-links a:hover{color:var(--dark);background:var(--bg2);}
 /* Ховер-движение — только для мыши: на таче hover «залипает» после тапа.
    Правило .is-active расщеплено от ховера — активный пункт подчёркнут везде. */
@@ -99,33 +112,93 @@ body::before{
 .nav-links a.is-active{color:var(--dark);font-weight:700;}
 /* min-width:0 + overflow — часы принимают на себя остаточный пересчёт флекса
    (кириллица/фолбэк шрифта шире расчёта): усыхают и обрезаются они, а не CTA. */
-.nav-meta{display:flex;align-items:center;margin-left:auto;min-width:0;overflow:hidden;white-space:nowrap;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;color:var(--g1);opacity:.55;border-left:1px solid var(--ln2);padding-left:20px;}
-.nav-cta{margin-left:16px;flex-shrink:0;display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:var(--blue);border:1px solid var(--g1);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--white);cursor:pointer;transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),transform var(--dur-press) var(--ease-out);}
-.nav-cta:hover{background:var(--g1);color:var(--bg);}
+.nav-meta{display:flex;align-items:center;margin-left:auto;min-width:0;overflow:hidden;white-space:nowrap;font-family:'DINPro',monospace;font-size:12px;font-weight:600;letter-spacing:.12em;color:var(--g1-text);opacity:1;border-left:1px solid var(--ln2);padding-left:20px;}
+.nav-cta{margin-left:16px;flex-shrink:0;display:inline-flex;align-items:center;gap:8px;padding:12px 21px;background:var(--blue);border:none;font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--white);cursor:pointer;transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),transform var(--dur-press) var(--ease-out);}
+.nav-cta:hover{background:var(--dark);color:var(--white);}
 /* Стрелка CTA: микрожест «действие ведёт дальше» */
-.nav-cta-arr{display:inline-block;transition:transform .4s var(--ease-flow);}
+.nav-cta-arr{display:inline-block;transition:transform var(--dur-panel) var(--ease-flow);}
 @media(hover:hover) and (pointer:fine){.nav-cta:hover .nav-cta-arr{transform:translateX(3px);}}
+
+/* Тёмные подложки: там приглушённый текст, наоборот, светлее фона.
+   --g2 на #0F2A44 даёт 7.2:1. */
+.s8, .s8-passport, .s3-visual, .s3-cta, .sfk-card-hd, .site-footer,
+.trust-strip, .nav-drawer, .p-media, .pd-hero, .s4-tt-body {
+  --g1-text: var(--g2);
+}
+
+/* Пропуск навигации — обязательная первая остановка Tab. Скрыт визуально,
+   но остаётся в потоке фокуса и выезжает поверх шапки при фокусировке. */
+.skip-link{position:fixed;top:-100px;left:16px;z-index:10000;padding:14px 22px;min-height:44px;display:inline-flex;align-items:center;background:var(--dark);color:var(--white);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:top var(--dur-ui) var(--ease-out);}
+.skip-link:focus{top:12px;outline:2px solid var(--g1);outline-offset:2px;}
+
+/* На узких экранах содержательные подписи не должны быть мельче 12px.
+   HUD-декор (координаты, метки сцены) намеренно остаётся тонким. */
+@media (max-width:639px){
+  .smgr-ext,.smgr-group-count,.smgr-eye-label,
+  .sfk-sector-full,.s5-desc-top-label,.s5-desc-meta-tag{font-size:12px;}
+}
+
+/* Аккордеоны анимируют max-height — это layout-свойство, и заменить его на
+   grid-template-rows значит просто пересчитывать раскладку иначе. Выигрыш даёт
+   не смена свойства, а contain:layout paint на самих раскрывающихся блоках
+   (см. catalog/product/category-sdt/privacy): пересчёт и перерисовка не
+   выходят за границы блока, поэтому раскрытие FAQ не трогает всю страницу. */
+
+/* ── ПОЯВЛЕНИЕ ПРИ ПРОКРУТКЕ ──
+   Деталь на чертеже не выезжает — она вычерчивается. Контент проявляется
+   развёрткой снизу вверх (clip-path) с коротким подъёмом: читается как
+   проявление отпечатка, а не как универсальный fade-and-rise, который
+   одинаково подошёл бы любому сайту.
+
+   Ни одного правила, которое прячет контент: скрывает элемент тот же
+   скрипт, который его показывает (reveal.js, inline). Не отработал
+   скрипт — страница статична, но целая.
+
+   clip-path и transform считает композитор, раскладка не пересчитывается. */
+.reveal-anim {
+  animation: revealDraw var(--dur-entrance) var(--ease-out) both;
+}
+@keyframes revealDraw {
+  /* Без clip-path. На крупной карточке с фотографией жёсткая граница
+     обрезки читается рывком, а не проявлением — тот же приём, что мягко
+     работал на строке результата, на большом блоке выглядит грубо.
+     Осталось то, что смотрится ровно в любом размере: подъём и
+     проявление, с чуть большей амплитудой, чем у мелких элементов. */
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Движение убрано, факт появления сохранён. */
+  .reveal-anim { animation: revealFade var(--dur-ui) var(--ease-out) both; }
+  @keyframes revealFade { from { opacity: 0; } to { opacity: 1; } }
+}
 
 /* ── МОБИЛЬНОЕ МЕНЮ (бургер + drawer), ревизия 2026-07-22 ── */
 .nav-burger{display:none;width:44px;height:44px;margin-left:auto;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:none;border:1px solid var(--ln2);cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
-.nav-burger span{width:18px;height:1.5px;background:var(--dark);transition:transform .25s var(--ease-out),opacity .2s ease;}
+.nav-burger span{width:18px;height:1.5px;background:var(--dark);transition:transform var(--dur-panel) var(--ease-out),opacity var(--dur-ui) var(--ease-out);}
 .nav-burger.is-open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
 .nav-burger.is-open span:nth-child(2){opacity:0;}
 .nav-burger.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
-.nav-drawer-overlay{position:fixed;inset:0;top:var(--nav-h,64px);background:rgba(15,42,68,.45);backdrop-filter:blur(2px);z-index:190;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+.nav-drawer-overlay{position:fixed;inset:0;top:var(--nav-h,64px);background:rgba(15,42,68,.45);backdrop-filter:blur(2px);z-index:190;opacity:0;pointer-events:none;transition:opacity var(--dur-panel) var(--ease-out);}
 .nav-drawer-overlay.is-open{opacity:1;pointer-events:auto;}
 .nav-drawer{position:fixed;top:var(--nav-h,64px);right:0;bottom:0;width:min(340px,86vw);background:var(--bg);border-left:1px solid var(--ln2);z-index:195;display:flex;flex-direction:column;transform:translateX(100%);transition:transform var(--dur-panel) var(--ease-out);overflow-y:auto;box-shadow:-24px 0 48px rgba(15,42,68,.14);}
 .nav-drawer.is-open{transform:translateX(0);}
 .nav-drawer-head{display:flex;align-items:center;padding:20px 20px 16px;border-bottom:1px solid var(--ln2);flex-shrink:0;}
-.nav-drawer-lbl{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1);}
+.nav-drawer-lbl{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1-text);}
 .nav-drawer-links{list-style:none;padding:8px 0;margin:0;}
 .nav-drawer-links a{display:flex;align-items:center;gap:16px;padding:15px 20px;min-height:52px;font-family:'DINPro',sans-serif;font-weight:700;font-size:17px;letter-spacing:.01em;text-transform:uppercase;color:var(--blue);border-bottom:1px solid var(--ln);text-decoration:none;transition:background var(--dur-fast),color var(--dur-fast),padding-left var(--dur-fast);}
-.nav-drawer-links a .n{font-family:'DINPro',monospace;font-size:12px;color:var(--g1);flex-shrink:0;}
+.nav-drawer-links a .n{font-family:'DINPro',monospace;font-size:12px;color:var(--g1-text);flex-shrink:0;}
 .nav-drawer-links a:active{background:var(--bg2);color:var(--dark);padding-left:26px;}
 .nav-drawer-links a.is-active{color:var(--dark);}
 .nav-drawer-links a.is-active .n{color:var(--dark);}
 .nav-drawer-foot{margin-top:auto;padding:20px;border-top:1px solid var(--ln2);display:flex;flex-direction:column;gap:14px;flex-shrink:0;}
-.nav-drawer-clock{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.12em;color:var(--g1);opacity:.6;}
+.nav-drawer-clock{font-family:'DINPro',monospace;font-size:13px;font-weight:600;letter-spacing:.1em;color:var(--dark);opacity:1;}
 .nav-drawer-cta{width:100%;padding:16px;min-height:52px;background:var(--blue);border:1px solid var(--g1);color:var(--white);font-family:'DINPro',sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform var(--dur-press) var(--ease-out);}
 .nav-drawer-cta:active{background:var(--dark);}
 body.nav-drawer-locked{overflow:hidden;}
@@ -143,12 +216,12 @@ body.modal-locked{overflow:hidden;}
   display:flex;flex-direction:column;align-items:center;justify-content:space-between;
   padding:20px 0 24px;background:var(--bg);
 }
-.strip-yr{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;color:var(--g1);writing-mode:vertical-rl;text-transform:uppercase;user-select:none;}
+.strip-yr{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;color:var(--g1-text);writing-mode:vertical-rl;text-transform:uppercase;user-select:none;}
 /* margin-bottom:auto вместо space-between: пульс прижимается к году вверху.
    По центру ленты он попадал ровно в колонку точек .sidenav (шаг 27px, тот же
    x и цвет) и читался как мигающий пункт навигации. */
 .strip-pulse{width:4px;height:4px;border-radius:50%;background:var(--g1);animation:blink 1.8s step-end infinite;margin:14px 0 auto;}
-.strip-txt{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.2em;color:var(--g1);writing-mode:vertical-rl;transform:rotate(180deg);text-transform:uppercase;opacity:.4;user-select:none;}
+.strip-txt{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.2em;color:var(--g1-text);writing-mode:vertical-rl;transform:rotate(180deg);text-transform:uppercase;opacity:.4;user-select:none;}
 
 /* ── PAGE SHELL ── */
 .pg{position:relative;z-index:1;padding-top:var(--nav-h);padding-left:var(--rail-w);min-height:100vh;display:flex;flex-direction:column;}
@@ -158,39 +231,39 @@ body.modal-locked{overflow:hidden;}
 .s10-inner{display:grid;grid-template-columns:var(--split-even);min-height:100vh;}
 .s10-left{padding:80px 56px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--ln2);background:var(--bg2);}
 .s10-eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:36px;}
-.s10-eye-num{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.2em;color:var(--g1);border:1px solid var(--g1);padding:3px 8px;line-height:1;}
-.s10-eye-label{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--g1);opacity:.6;display:flex;align-items:center;gap:10px;}
+.s10-eye-num{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.2em;color:var(--g1-text);border:1px solid var(--g1);padding:3px 8px;line-height:1;}
+.s10-eye-label{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--g1-text);opacity:.6;display:flex;align-items:center;gap:10px;}
 .s10-eye-label::before{content:'';width:28px;height:1px;background:var(--g1);flex-shrink:0;}
 .s10-h2{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(42px,5vw,82px);line-height:.88;letter-spacing:-.015em;text-transform:uppercase;color:var(--dark);margin-bottom:28px;}
 .s10-sub{font-family:'DINPro',sans-serif;font-size:14px;font-weight:300;line-height:1.72;color:var(--blue);max-width:380px;margin-bottom:40px;}
 .s10-contacts{display:flex;flex-direction:column;gap:0;border:1px solid var(--ln2);background:var(--bg);}
-.s10-contact-row{display:grid;grid-template-columns:110px 1fr;gap:0;padding:14px 20px;border-bottom:1px solid var(--ln);align-items:center;transition:background .12s;}
+.s10-contact-row{display:grid;grid-template-columns:110px 1fr;gap:0;padding:14px 20px;border-bottom:1px solid var(--ln);align-items:center;transition:background var(--dur-tap);}
 .s10-contact-row:last-child{border-bottom:none;}
 .s10-contact-row:hover{background:var(--bg2);}
-.s10-contact-k{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);}
+.s10-contact-k{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1-text);}
 .s10-contact-v{font-family:'DINPro',sans-serif;font-size:14px;font-weight:500;color:var(--dark);text-decoration:none;transition:color var(--dur-fast);}
 a.s10-contact-v:hover{color:var(--blue);}
 .s10-right{padding:64px 56px;display:flex;flex-direction:column;justify-content:center;background:var(--bg);}
-.s10-form-label{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.25em;text-transform:uppercase;color:var(--g1);margin-bottom:20px;opacity:.6;}
+.s10-form-label{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.25em;text-transform:uppercase;color:var(--g1-text);margin-bottom:20px;opacity:.6;}
 .s10-form{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--ln2);border:1px solid var(--ln2);}
-.s10-field{display:flex;flex-direction:column;background:var(--bg);padding:18px 20px 16px;position:relative;transition:background .12s;}
+.s10-field{display:flex;flex-direction:column;background:var(--bg);padding:18px 20px 16px;position:relative;transition:background var(--dur-tap);}
 .s10-field:focus-within{background:#fff;z-index:1;}
-.s10-field-label{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);margin-bottom:9px;user-select:none;cursor:text;}
+.s10-field-label{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1-text);margin-bottom:9px;user-select:none;cursor:text;}
 .s10-field input{border:none;background:transparent;font-family:'DINPro',sans-serif;font-size:14px;font-weight:500;color:var(--dark);padding:0;outline:none;width:100%;min-width:0;}
 .s10-field input::placeholder{color:var(--g2);font-weight:300;font-size:13.5px;}
 .s10-field--wide{grid-column:span 2;}
 .s10-file-row{grid-column:span 2;display:flex;align-items:center;gap:16px;background:var(--bg);padding:16px 20px;flex-wrap:wrap;}
-.s10-file-label-txt{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);min-width:80px;}
-.s10-file-btn{display:inline-flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1);border:1px solid var(--ln2);padding:7px 14px;cursor:pointer;transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),transform var(--dur-press) var(--ease-out);background:transparent;}
+.s10-file-label-txt{font-family:'DINPro',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1-text);min-width:80px;}
+.s10-file-btn{display:inline-flex;align-items:center;gap:8px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--g1-text);border:1px solid var(--ln2);padding:7px 14px;cursor:pointer;transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),transform var(--dur-press) var(--ease-out);background:transparent;}
 .s10-file-btn:hover{background:var(--bg2);color:var(--dark);border-color:var(--g1);}
-.s10-file-name{font-family:'DINPro',monospace;font-size:12px;color:var(--g1);opacity:.7;}
+.s10-file-name{font-family:'DINPro',monospace;font-size:12px;color:var(--g1-text);opacity:.7;}
 .s10-consent{display:flex;align-items:flex-start;gap:10px;margin-top:16px;cursor:pointer;}
 .s10-consent input{width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--dark);cursor:pointer;}
 .s10-consent-txt{font-family:'DINPro',sans-serif;font-size:13px;line-height:1.5;color:var(--blue);}
 /* padding-bottom + позиция 100% = геометрия прежнего border-bottom (линия с воздухом под выносными) */
 .s10-consent-txt a{color:var(--dark);text-decoration:none;padding-bottom:1px;background-image:linear-gradient(var(--g1),var(--g1));background-repeat:no-repeat;background-size:100% 1px;background-position:0 100%;}
 @media(hover:hover) and (pointer:fine){
-  .s10-consent-txt a:hover{background-image:linear-gradient(var(--dark),var(--dark));animation:linkRedraw .55s var(--ease-flow) both;}
+  .s10-consent-txt a:hover{background-image:linear-gradient(var(--dark),var(--dark));animation:linkRedraw var(--dur-entrance) var(--ease-flow) both;}
 }
 .s10-consent.err input{outline:2px solid var(--g1);outline-offset:2px;}
 .s10-actions{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap;}
@@ -198,13 +271,13 @@ a.s10-contact-v:hover{color:var(--blue);}
 .s10-submit:hover{background:var(--blue);border-color:var(--blue);}
 /* подчёркивание текстом, не рамкой бокса: на тач-целях 44px рамка
    уезжала далеко от строки — underline держится у текста при любой высоте */
-.s10-ghost-link{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1);text-decoration:underline;text-decoration-color:var(--ln2);text-decoration-thickness:1px;text-underline-offset:4px;transition:color var(--dur-fast),text-decoration-color var(--dur-fast);cursor:pointer;}
+.s10-ghost-link{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1-text);text-decoration:underline;text-decoration-color:var(--ln2);text-decoration-thickness:1px;text-underline-offset:4px;transition:color var(--dur-fast),text-decoration-color var(--dur-fast);cursor:pointer;}
 .s10-ghost-link:hover{color:var(--dark);text-decoration-color:var(--g1);}
 /* Плашки-гарантии над формой (общие для s10 на всех страницах) */
 .s10-promise{display:flex;flex-wrap:wrap;gap:10px;margin:2px 0 26px;}
 .s10-promise-item{display:inline-flex;align-items:center;gap:9px;padding:10px 15px;border:1px solid var(--g1);background:rgba(109,140,166,.08);font-family:'DINPro',sans-serif;font-weight:700;font-size:14px;letter-spacing:.01em;color:var(--dark);}
 .s10-promise-dot{width:7px;height:7px;border-radius:50%;background:var(--g1);flex-shrink:0;animation:blink 1.8s step-end infinite;}
-.s10-success{display:none;padding:20px 24px;background:rgba(109,140,166,.08);border:1px solid var(--g1);font-family:'DINPro',monospace;font-size:13px;letter-spacing:.08em;color:var(--dark);margin-top:24px;animation:s10In .35s var(--ease-out) both;}
+.s10-success{display:none;padding:20px 24px;background:rgba(109,140,166,.08);border:1px solid var(--g1);font-family:'DINPro',monospace;font-size:13px;letter-spacing:.08em;color:var(--dark);margin-top:24px;animation:s10In var(--dur-panel) var(--ease-out) both;}
 
 /* ── FOOTER ZONE ──
    Каркас: .footer-zone (sticky s10 + наезжающий футер) — вне .pg,
@@ -223,7 +296,20 @@ a.s10-contact-v:hover{color:var(--blue);}
 .site-footer{
   position:relative;z-index:10;background:var(--dark);
   padding-left:var(--rail-w);min-height:100vh;display:flex;flex-direction:column;
-  box-shadow:0 -60px 140px rgba(15,42,68,.55);
+}
+/* Тень наезда — градиентом, а не box-shadow.
+   Было: box-shadow 0 -60px 140px. Такое размытие во всю ширину экрана
+   лежит поверх контента (футер выше по z-index) и на странице footer-pin
+   ползёт вверх весь наезд, заставляя браузер каждый кадр заново
+   растеризовать гауссово размытие радиусом 140px и перерисовывать полосу
+   контента под ним. На реестре нормативов под этой полосой оказывалась
+   сетка карточек — оттуда рывки в самом низу страницы, которых нет на
+   страницах с простым хвостом. Линейный градиент даёт ту же мягкую
+   границу за долю стоимости. */
+.site-footer::after{
+  content:'';position:absolute;left:0;right:0;top:-180px;height:180px;
+  background:linear-gradient(to top,rgba(15,42,68,.55),rgba(15,42,68,0));
+  pointer-events:none;
 }
 .site-footer::before{
   content:'';position:absolute;inset:0;
@@ -232,27 +318,27 @@ a.s10-contact-v:hover{color:var(--blue);}
 }
 .ft-statement,.ft-grid,.ft-bar{position:relative;z-index:1;}
 .ft-statement{flex:1;padding:88px 56px 72px;display:flex;flex-direction:column;justify-content:flex-end;border-bottom:1px solid rgba(200,208,216,.1);}
-.ft-kicker{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);opacity:.7;margin-bottom:40px;display:flex;align-items:center;gap:16px;}
+.ft-kicker{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1-text);opacity:.7;margin-bottom:40px;display:flex;align-items:center;gap:16px;}
 .ft-kicker::before{content:'';width:36px;height:1px;background:var(--g1);opacity:.5;flex-shrink:0;}
 .ft-headline{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(72px,10vw,180px);line-height:.83;letter-spacing:-.02em;text-transform:uppercase;color:var(--white);margin-bottom:40px;}
 .ft-tagline{font-size:14px;font-weight:300;line-height:1.75;color:var(--g2);max-width:460px;margin-bottom:48px;}
-.ft-cta{display:inline-flex;align-items:center;gap:10px;padding:15px 30px;border:1px solid rgba(200,208,216,.22);color:var(--white);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;cursor:pointer;background:transparent;transition:background .18s,border-color .18s,transform var(--dur-press) var(--ease-out);align-self:flex-start;}
+.ft-cta{display:inline-flex;align-items:center;gap:10px;padding:15px 30px;border:1px solid rgba(200,208,216,.22);color:var(--white);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;cursor:pointer;background:transparent;transition:background var(--dur-ui),border-color var(--dur-ui),transform var(--dur-press) var(--ease-out);align-self:flex-start;}
 .ft-cta:hover{background:rgba(200,208,216,.07);border-color:rgba(200,208,216,.45);}
 .ft-grid{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(200,208,216,.1);}
 .ft-cell{padding:44px 56px;border-right:1px solid rgba(200,208,216,.08);}
 .ft-cell:last-child{border-right:none;}
-.ft-cell-label{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);opacity:.55;margin-bottom:18px;}
+.ft-cell-label{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1-text);opacity:.55;margin-bottom:18px;}
 .ft-cell-val{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:clamp(20px,2vw,30px);color:var(--white);line-height:1.15;letter-spacing:-.01em;}
 .ft-cell-val.mono{font-family:'DINPro',monospace;font-size:13.5px;font-weight:400;line-height:1.85;color:var(--g2);letter-spacing:.02em;}
 .ft-cell-val a{color:var(--g2);text-decoration:none;transition:color var(--dur-fast);}
 .ft-cell-val a:hover{color:var(--white);}
 .ft-nav-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:11px;}
-.ft-nav-list a{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1);text-decoration:none;transition:color var(--dur-fast);}
+.ft-nav-list a{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1-text);text-decoration:none;transition:color var(--dur-fast);}
 .ft-nav-list a:hover{color:var(--white);}
 .ft-bar{display:flex;align-items:center;justify-content:space-between;padding:22px 56px;flex-wrap:wrap;gap:12px;}
-.ft-copy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1);opacity:.5;}
-.ft-idx{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1);opacity:.22;}
-.ft-policy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1);opacity:.5;text-decoration:none;transition:opacity var(--dur-fast),color var(--dur-fast);}
+.ft-copy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1-text);opacity:.5;}
+.ft-idx{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1-text);opacity:.22;}
+.ft-policy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1-text);opacity:.5;text-decoration:none;transition:opacity var(--dur-fast),color var(--dur-fast);}
 .ft-policy:hover{opacity:1;color:var(--white);}
 /* Футер, перенесённый внутрь .pg (наезд без s10-формы, footer-pin.js):
    ось даёт сам .pg — собственный отступ футера гасим на всех тирах. */
@@ -294,7 +380,7 @@ a.s10-contact-v:hover{color:var(--blue);}
   max-height:264px;overflow-y:auto;overscroll-behavior:contain;
   padding:4px 0;
   opacity:0;visibility:hidden;transform:translateY(-8px) scaleY(.98);transform-origin:top center;
-  transition:opacity .16s ease,transform var(--dur-ui) var(--ease-out-sm),visibility 0s linear var(--dur-ui);
+  transition:opacity var(--dur-fast) var(--ease-out),transform var(--dur-ui) var(--ease-out-sm),visibility 0s linear var(--dur-ui);
 }
 .pm-select.is-up .pm-select-menu{top:auto;bottom:calc(100% + 6px);transform-origin:bottom center;transform:translateY(8px) scaleY(.98);}
 .pm-select.is-open .pm-select-menu{opacity:1;visibility:visible;transform:none;transition-delay:0s;}
@@ -305,12 +391,12 @@ a.s10-contact-v:hover{color:var(--blue);}
   position:relative;padding:10px 16px 10px 18px;cursor:pointer;
   font-family:'DINPro',sans-serif;font-size:14px;color:var(--blue);
   opacity:0;transform:translateY(-6px);
-  transition:opacity .18s ease,transform .18s ease,background .12s,color .12s;
+  transition:opacity var(--dur-ui) var(--ease-out),transform var(--dur-ui) var(--ease-out),background var(--dur-tap),color var(--dur-tap);
 }
 .pm-select.is-open .pm-select-opt{opacity:1;transform:none;transition-delay:calc(var(--i,0) * 22ms);}
 .pm-select-opt::before{
   content:'';position:absolute;left:0;top:6px;bottom:6px;width:2px;background:var(--g1);
-  transform:scaleY(0);transform-origin:center;transition:transform .18s var(--ease-out-sm);
+  transform:scaleY(0);transform-origin:center;transition:transform var(--dur-ui) var(--ease-out-sm);
 }
 .pm-select-opt.is-active{background:var(--g1b);color:var(--dark);}
 .pm-select-opt.is-selected{color:var(--dark);font-weight:700;}
@@ -355,10 +441,10 @@ a.s10-contact-v:hover{color:var(--blue);}
   content:'';position:absolute;inset:-3px;z-index:-1;
   background:var(--grow-bg,var(--dark));
   clip-path:inset(3px);
-  transition:clip-path .45s var(--ease-out);
+  transition:clip-path var(--dur-entrance) var(--ease-out);
 }
 .cta-grow:hover::before,.cta-grow:focus-visible::before{clip-path:inset(0);}
-.nav-cta.cta-grow{--grow-bg:var(--g1);}
+.nav-cta.cta-grow{--grow-bg:var(--dark);}
 .s10-submit.cta-grow{--grow-bg:var(--blue);}
 
 /* ── ANIMATIONS ── */
@@ -385,7 +471,7 @@ a.s10-contact-v:hover{color:var(--blue);}
   .s10-consent-txt a:hover{animation:none !important;}
   /* Drawer: позиция мгновенно (сдвиг на 340px убираем), фейд остаётся —
      оверлей и сама панель сообщают о смене контекста без движения. */
-  .nav-drawer{transition:opacity .25s ease;opacity:0;}
+  .nav-drawer{transition:opacity var(--dur-panel) var(--ease-out);opacity:0;}
   .nav-drawer.is-open{opacity:1;}
 }
 
@@ -449,7 +535,10 @@ a.s10-contact-v:hover{color:var(--blue);}
   .s10-left{border-right:none;border-bottom:1px solid var(--ln2);padding:60px 32px;}
   .s10-right{padding:60px 32px;}
   .s10-eye-num,.s10-eye-label,.s10-form-label,.s10-contact-k,.s10-field-label,.s10-file-label-txt,.s10-file-name{font-size:12px;}
-  .s10-field input{font-size:16px;} /* 16px — не даёт iOS зумить при фокусе */
+  /* Тач-зона поля — сам input (контейнер div, не label), поэтому высоту
+     набираем его собственным padding: 28px контента + 2x8px = 44px. */
+  .s10-field{padding:12px 20px;}
+  .s10-field input{font-size:16px;padding:8px 0;min-height:44px;} /* 16px — не даёт iOS зумить при фокусе */
   .s10-field input::placeholder{font-size:15px;}
   .s10-submit{min-height:48px;}
   .s10-ghost-link{min-height:44px;display:inline-flex;align-items:center;}

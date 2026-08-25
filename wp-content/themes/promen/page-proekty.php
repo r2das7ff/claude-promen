@@ -27,162 +27,91 @@ get_header();
         атомной и тепловой энергетики — в России и на международных стройках. Каждая позиция изготовлена
         по чертежам заказчика с полным пакетом сопроводительной документации.</p>
     </div>
-    <div class="prj-stats">
-      <div class="hs"><span class="hs-v">5</span><span class="hs-k">Реализованных проекта</span></div>
-      <div class="hs"><span class="hs-v">≈500&nbsp;т</span><span class="hs-k">Совокупный объём поставки</span></div>
-      <div class="hs"><span class="hs-v">3</span><span class="hs-k">Страны — Россия, Турция, Бангладеш</span></div>
+    <div class="prj-stats" data-reveal-group>
+      <?php
+      $promen_prj_all      = promen_projects_registry();
+      $promen_prj_countries = array_values( array_unique( array_filter( array_column( $promen_prj_all, 'country' ) ) ) );
+      $promen_prj_cnt = [
+        'all'  => count( $promen_prj_all ),
+        'aes'  => count( array_filter( $promen_prj_all, fn( $x ) => 'nuclear' === $x['kind'] ) ),
+        'tes'  => count( array_filter( $promen_prj_all, fn( $x ) => 'thermal' === $x['kind'] ) ),
+        'prom' => count( array_filter( $promen_prj_all, fn( $x ) => ! in_array( $x['kind'], [ 'nuclear', 'thermal' ], true ) ) ),
+        'ru'   => count( array_filter( $promen_prj_all, fn( $x ) => 'ru' === $x['region'] ) ),
+        'intl' => count( array_filter( $promen_prj_all, fn( $x ) => 'intl' === $x['region'] ) ),
+      ];
+      ?>
+      <div class="hs"><span class="hs-v"><?php echo (int) $promen_prj_cnt['all']; ?></span><span class="hs-k">Объектов поставки</span></div>
+      <div class="hs"><span class="hs-v"><?php echo (int) $promen_prj_cnt['aes']; ?></span><span class="hs-k">Объектов атомной энергетики</span></div>
+      <div class="hs"><span class="hs-v"><?php echo count( $promen_prj_countries ); ?></span><span class="hs-k">Страны — <?php echo esc_html( implode( ', ', $promen_prj_countries ) ); ?></span></div>
       <div class="hs"><span class="hs-v">45&nbsp;дней</span><span class="hs-k">Средний срок изготовления партии</span></div>
     </div>
   </div>
 
   <!-- FILTERS -->
-  <div class="prj-filters" id="prjFilters">
+  <div class="prj-filters" id="prjFilters" data-reveal>
     <span class="pf-label">Фильтр</span>
-    <span class="pf-chip active" data-filter="all">Все проекты<span class="pf-count">05</span></span>
-    <span class="pf-chip" data-filter="aes">АЭС<span class="pf-count">03</span></span>
-    <span class="pf-chip" data-filter="tes">ТЭС · ГРЭС<span class="pf-count">02</span></span>
-    <span class="pf-chip" data-filter="ru">Россия<span class="pf-count">03</span></span>
-    <span class="pf-chip" data-filter="intl">Экспорт<span class="pf-count">02</span></span>
+    <span class="pf-chip active" data-filter="all">Все проекты<span class="pf-count"><?php echo esc_html( sprintf( '%02d', $promen_prj_cnt['all'] ) ); ?></span></span>
+    <span class="pf-chip" data-filter="aes">АЭС<span class="pf-count"><?php echo esc_html( sprintf( '%02d', $promen_prj_cnt['aes'] ) ); ?></span></span>
+    <span class="pf-chip" data-filter="tes">ТЭС · ГРЭС<span class="pf-count"><?php echo esc_html( sprintf( '%02d', $promen_prj_cnt['tes'] ) ); ?></span></span>
+    <span class="pf-chip" data-filter="prom">Промышленность<span class="pf-count"><?php echo esc_html( sprintf( '%02d', $promen_prj_cnt['prom'] ) ); ?></span></span>
+    <span class="pf-chip" data-filter="ru">Россия<span class="pf-count"><?php echo esc_html( sprintf( '%02d', $promen_prj_cnt['ru'] ) ); ?></span></span>
+    <span class="pf-chip" data-filter="intl">Экспорт<span class="pf-count"><?php echo esc_html( sprintf( '%02d', $promen_prj_cnt['intl'] ) ); ?></span></span>
   </div>
 
   <!-- GRID -->
   <div class="prj-body">
-    <div class="prj-grid" id="prjGrid">
+    <div class="prj-grid" id="prjGrid" data-reveal-group>
 
-      <!-- Курская АЭС-2 -->
-      <a class="p-card" data-type="aes" data-region="ru" href="<?php echo esc_url( promen_project_url( 'kurskaya-aes' ) ); ?>">
+<?php
+      // Карточки объектов — из общего реестра (inc/projects-registry.php),
+      // он же питает карту на главной и бегущую строку.
+      // У объектов без детальной страницы карточка пока не кликабельна.
+      $promen_prj_svg = [
+        'nuclear'  => '<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#1E3D5C"/><rect x="30" y="120" width="140" height="150" fill="#0F2A44"/><circle cx="100" cy="110" r="46" fill="none" stroke="#6D8CA6" stroke-width="2" opacity=".5"/></svg>',
+        'thermal'  => '<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#1E3D5C"/><rect x="20" y="150" width="30" height="120" fill="#0F2A44"/><rect x="60" y="100" width="30" height="170" fill="#0F2A44"/><rect x="100" y="170" width="30" height="100" fill="#0F2A44"/></svg>',
+        'hydro'    => '<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#1E3D5C"/><rect x="0" y="170" width="200" height="100" fill="#0F2A44"/><path d="M0 175 Q50 160 100 175 T200 175" fill="none" stroke="#6D8CA6" stroke-width="2" opacity=".5"/></svg>',
+        'mining'   => '<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#1E3D5C"/><path d="M20 270 L80 150 L140 270 Z" fill="#0F2A44"/><path d="M110 270 L155 190 L195 270 Z" fill="#0F2A44" opacity=".8"/></svg>',
+        'chemical' => '<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#1E3D5C"/><rect x="35" y="120" width="45" height="150" rx="22" fill="#0F2A44"/><rect x="105" y="90" width="45" height="180" rx="22" fill="#0F2A44"/></svg>',
+      ];
+      foreach ( promen_projects_registry() as $promen_prj ) :
+        $promen_prj_url  = $promen_prj['page'] ? promen_project_url( $promen_prj['page'] ) : '';
+        $promen_prj_type = 'nuclear' === $promen_prj['kind'] ? 'aes' : ( 'thermal' === $promen_prj['kind'] ? 'tes' : 'prom' );
+        $promen_prj_tag  = $promen_prj['tag'];
+        $promen_prj_loc  = $promen_prj['city'] . ( $promen_prj['country'] ? ' · ' . $promen_prj['country'] : '' );
+        $promen_prj_soon = ! $promen_prj_url;
+        $promen_prj_el   = $promen_prj_soon ? 'div' : 'a';
+        $promen_prj_done = false === stripos( $promen_prj['status'], 'строительств' );
+        ?>
+      <<?php echo $promen_prj_el; ?> class="p-card<?php echo $promen_prj_soon ? ' p-card-soon' : ''; ?>"
+        id="<?php echo esc_attr( $promen_prj['slug'] ); ?>"
+        data-type="<?php echo esc_attr( $promen_prj_type ); ?>"
+        data-region="<?php echo esc_attr( $promen_prj['region'] ); ?>"
+        <?php echo $promen_prj_soon ? '' : 'href="' . esc_url( $promen_prj_url ) . '"'; ?>>
         <div class="p-media">
-          <img src="/wp-content/themes/promen/assets/img/projects/kursk2.png" alt="Курская АЭС-2" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-          <svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#1E3D5C"/><rect x="30" y="120" width="140" height="150" fill="#0F2A44"/><circle cx="100" cy="110" r="46" fill="none" stroke="#6D8CA6" stroke-width="2" opacity=".5"/></svg>
-          <span class="p-tag">АЭС</span>
-          <span class="p-status"><span class="p-status-dot done"></span>Завершено</span>
+          <?php if ( ! empty( $promen_prj['photo'] ) ) : ?>
+          <img src="<?php echo esc_url( get_theme_file_uri( 'assets/' . $promen_prj['photo'] ) ); ?>" alt="<?php echo esc_attr( $promen_prj['name'] ); ?>" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+          <?php endif; ?>
+          <?php echo $promen_prj_svg[ $promen_prj['kind'] ] ?? $promen_prj_svg['thermal']; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+          <span class="p-tag"><?php echo esc_html( $promen_prj_tag ); ?></span>
+          <span class="p-status"><span class="p-status-dot<?php echo $promen_prj_done ? ' done' : ''; ?>"></span><?php echo esc_html( $promen_prj_done ? 'Завершено' : 'В работе' ); ?></span>
         </div>
         <div class="p-body">
           <div>
-            <div class="p-title">Курская АЭС‑2</div>
-            <div class="p-loc">Курчатов, Курская обл. · Россия</div>
+            <div class="p-title"><?php echo esc_html( $promen_prj['name'] ); ?></div>
+            <div class="p-loc"><?php echo esc_html( $promen_prj_loc ); ?></div>
           </div>
           <div class="p-facts">
-            <div class="p-fact"><span class="p-fact-k">Материал</span><span class="p-fact-v">Сталь 08Х18Н10Т</span></div>
-            <div class="p-fact"><span class="p-fact-k">Объём</span><span class="p-fact-v">≈36 т</span></div>
-            <div class="p-fact"><span class="p-fact-k">Номенклатура</span><span class="p-fact-v">Фланцы, колена 45–90°</span></div>
+            <?php foreach ( $promen_prj['facts'] as [ $promen_prj_fk, $promen_prj_fv ] ) : ?>
+            <div class="p-fact"><span class="p-fact-k"><?php echo esc_html( $promen_prj_fk ); ?></span><span class="p-fact-v"><?php echo esc_html( $promen_prj_fv ); ?></span></div>
+            <?php endforeach; ?>
           </div>
           <div class="p-foot">
-            <span class="p-link">История поставки →</span>
+            <span class="p-link"><?php echo $promen_prj_soon ? 'История поставки готовится' : 'История поставки →'; ?></span>
           </div>
         </div>
-      </a>
-
-      <!-- Черепетская ГРЭС -->
-      <a class="p-card" data-type="tes" data-region="ru" href="<?php echo esc_url( promen_project_url( 'cherepetskaya-gres' ) ); ?>">
-        <div class="p-media">
-          <img src="/wp-content/themes/promen/assets/img/projects/tec2.png" alt="Черепетская ГРЭС" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-          <svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#1E3D5C"/><rect x="20" y="150" width="30" height="120" fill="#0F2A44"/><rect x="60" y="100" width="30" height="170" fill="#0F2A44"/><rect x="100" y="170" width="30" height="100" fill="#0F2A44"/></svg>
-          <span class="p-tag">ГРЭС</span>
-          <span class="p-status"><span class="p-status-dot done"></span>Завершено</span>
-        </div>
-        <div class="p-body">
-          <div>
-            <div class="p-title">Черепетская ГРЭС</div>
-            <div class="p-loc">Суворов, Тульская обл. · Россия</div>
-          </div>
-          <div class="p-facts">
-            <div class="p-fact"><span class="p-fact-k">Материал</span><span class="p-fact-v">Сталь 20</span></div>
-            <div class="p-fact"><span class="p-fact-k">Объём</span><span class="p-fact-v">≈157 т</span></div>
-            <div class="p-fact"><span class="p-fact-k">Диаметр</span><span class="p-fact-v">Ø25–530 мм</span></div>
-          </div>
-          <div class="p-foot">
-            <span class="p-link">История поставки →</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- АЭС Руппур -->
-      <a class="p-card" data-type="aes" data-region="intl" href="<?php echo esc_url( promen_project_url( 'aes-ruppur' ) ); ?>">
-        <div class="p-media">
-          <img src="/wp-content/themes/promen/assets/img/projects/rupp.png" alt="АЭС «Руппур»" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-          <svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#2EA8BA" opacity=".25"/><rect x="30" y="120" width="140" height="150" fill="#0F2A44"/><circle cx="100" cy="110" r="46" fill="none" stroke="#2EA8BA" stroke-width="2" opacity=".6"/></svg>
-          <span class="p-tag">АЭС</span>
-          <span class="p-status"><span class="p-status-dot on"></span>Строительство</span>
-          <span class="p-badge-intl">Экспорт</span>
-        </div>
-        <div class="p-body">
-          <div>
-            <div class="p-title">АЭС «Руппур»</div>
-            <div class="p-loc">Пабна · Бангладеш</div>
-          </div>
-          <div class="p-facts">
-            <div class="p-fact"><span class="p-fact-k">Материал</span><span class="p-fact-v">Сталь 15Х1М1Ф</span></div>
-            <div class="p-fact"><span class="p-fact-k">Объём</span><span class="p-fact-v">≈96 т</span></div>
-            <div class="p-fact"><span class="p-fact-k">Давление</span><span class="p-fact-v">До 25 МПа</span></div>
-          </div>
-          <div class="p-foot">
-            <span class="p-link">История поставки →</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- АЭС Аккую -->
-      <a class="p-card" data-type="aes" data-region="intl" href="<?php echo esc_url( promen_project_url( 'aes-akkuyu' ) ); ?>">
-        <div class="p-media">
-          <img src="/wp-content/themes/promen/assets/img/projects/turk2.png" alt="АЭС «Аккую»" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-          <svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#2EA8BA" opacity=".25"/><rect x="30" y="120" width="140" height="150" fill="#0F2A44"/><circle cx="100" cy="110" r="46" fill="none" stroke="#2EA8BA" stroke-width="2" opacity=".6"/></svg>
-          <span class="p-tag">АЭС</span>
-          <span class="p-status"><span class="p-status-dot on"></span>Строительство</span>
-          <span class="p-badge-intl">Экспорт</span>
-        </div>
-        <div class="p-body">
-          <div>
-            <div class="p-title">АЭС «Аккую»</div>
-            <div class="p-loc">Гюльнар, Мерсин · Турция</div>
-          </div>
-          <div class="p-facts">
-            <div class="p-fact"><span class="p-fact-k">Материал</span><span class="p-fact-v">Сталь 20 / 08Х18Н10Т</span></div>
-            <div class="p-fact"><span class="p-fact-k">Объём</span><span class="p-fact-v">≈148 т</span></div>
-            <div class="p-fact"><span class="p-fact-k">Номенклатура</span><span class="p-fact-v">Отводы, тройники, переходы</span></div>
-          </div>
-          <div class="p-foot">
-            <span class="p-link">История поставки →</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- ТЭЦ-3 Омск -->
-      <a class="p-card" data-type="tes" data-region="ru" href="<?php echo esc_url( promen_project_url( 'teploelektrocentral-tec-3' ) ); ?>">
-        <div class="p-media">
-          <img src="/wp-content/themes/promen/assets/img/projects/tec3.png" alt="Омская ТЭЦ-3" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-          <svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#1E3D5C"/><rect x="20" y="150" width="30" height="120" fill="#0F2A44"/><rect x="60" y="100" width="30" height="170" fill="#0F2A44"/><rect x="100" y="170" width="30" height="100" fill="#0F2A44"/></svg>
-          <span class="p-tag">ТЭЦ</span>
-          <span class="p-status"><span class="p-status-dot"></span>Действующий</span>
-        </div>
-        <div class="p-body">
-          <div>
-            <div class="p-title">Омская ТЭЦ‑3</div>
-            <div class="p-loc">Омск · Россия</div>
-          </div>
-          <div class="p-facts">
-            <div class="p-fact"><span class="p-fact-k">Материал</span><span class="p-fact-v">Сталь 15Х1М1Ф</span></div>
-            <div class="p-fact"><span class="p-fact-k">Объём</span><span class="p-fact-v">≈96 т</span></div>
-            <div class="p-fact"><span class="p-fact-k">Давление</span><span class="p-fact-v">До 25 МПа</span></div>
-          </div>
-          <div class="p-foot">
-            <span class="p-link">История поставки →</span>
-          </div>
-        </div>
-      </a>
-
-    </div>
-  </div>
-
-  <!-- CTA -->
-  <div class="prj-cta">
-    <div>
-      <div class="prj-cta-h">Готовите поставку<br>для <em>своего объекта</em>?</div>
-      <p class="prj-cta-p">Пришлите чертёж, спецификацию или техническое задание — инженер завода рассчитает
-        материал, срок изготовления и стоимость партии.</p>
-    </div>
-    <a class="prj-cta-btn" href="<?php echo esc_url( $promen_contacts_url ); ?>">Обсудить поставку →</a>
-  </div>
+      </<?php echo $promen_prj_el; ?>>
+      <?php endforeach; ?>
+</div>
 
   <!-- BAR -->
 </div><!-- /.pg -->

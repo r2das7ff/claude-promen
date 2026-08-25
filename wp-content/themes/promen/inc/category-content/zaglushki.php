@@ -23,7 +23,7 @@ return [
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">DN 6–600</span><span class="hp-k">Диапазон</span></div>
-        <div class="hp"><span class="hp-v">2 серии</span><span class="hp-k">ГОСТ 17379 / 22815</span></div>
+        <div class="hp"><span class="hp-v">2 серии</span><span class="hp-k">ГОСТ 17379-2001 / 22815-83</span></div>
       </div>
       <div class="hero-cta-row">
         <button class="nav-cta hero-order-btn" type="button" id="orderOpen">Оформить заявку →</button>
@@ -102,7 +102,7 @@ return [
             <div class="sg-task-h">Глухое закрытие торца трубы приваркой</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Заглушки эллиптические приварные — тип ЗЭ по ГОСТ 17379</div>
+            <div class="sg-prod-name">Заглушки эллиптические приварные — тип ЗЭ по ГОСТ 17379-2001</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 17379-2001</span><span class="sg-tag">тип ЗЭ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'zaglushki', 'gost-17379-2001' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'zaglushki', 'gost-17379-2001' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
@@ -120,7 +120,7 @@ return [
             <div class="sg-task-h">Временное / разъёмное закрытие на высоком давлении</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Заглушки фланцевые на Ру св. 10 до 100 МПа — ГОСТ 22815</div>
+            <div class="sg-prod-name">Заглушки фланцевые на Ру св. 10 до 100 МПа — ГОСТ 22815-83</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 22815-83</span><span class="sg-tag">тип ЗФ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'zaglushki', 'gost-22815-1983' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'zaglushki', 'gost-22815-1983' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
@@ -191,7 +191,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Заглушка" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 17379, ГОСТ 22815…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 17379-2001, ГОСТ 22815-83…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">DN / D×s, мм</label><input id="om-dn" name="dn" type="text" placeholder="DN 100 / 108×4" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Давление, МПа</label><input id="om-pn" name="pn" type="text" placeholder="PN 16 / Ру 100" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка стали</label><input id="om-mat" name="material" type="text" placeholder="09Г2С, 20Х3МВФ…" autocomplete="off"></div>

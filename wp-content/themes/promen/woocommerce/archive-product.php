@@ -40,7 +40,7 @@ foreach ( promen_catalog_nav_roots() as $root_slug ) {
 
 <div class="pg">
 
-  <div class="cat-hero">
+  <div class="cat-hero" data-reveal>
     <div>
       <nav class="hero-crumb" style="margin-bottom:18px;">
         <?php foreach ( $crumbs as $i => [ $label, $url ] ) : ?>

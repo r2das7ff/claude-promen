@@ -24,7 +24,7 @@ get_header();
   <a class="sidenav-item" href="#portal"><span class="sidenav-dot"></span><span class="sidenav-label">ДОКУМЕНТЫ</span></a>
 </nav>
 
-<main class="pg">
+<div class="pg"><?php // landmark <main> открыт в header.php ?>
 
 <!-- ══════════════════════════════════════
      СЦЕНА 1 — ТОЧНОСТЬ
@@ -56,7 +56,7 @@ get_header();
 
       <div class="s1-caption">
         <div class="s1-label">ДОПУСК НА УПЛОТНИТЕЛЬНЫХ ПОВЕРХНОСТЯХ</div>
-        <div class="s1-sub">Трубопроводная арматура АЭС и ТЭС.<br>ГОСТ 24643 · Квалитет IT7 · НАКС II уровень.</div>
+        <div class="s1-sub">Трубопроводная арматура АЭС и ТЭС.<br>ГОСТ 24643-81 · Квалитет IT7 · НАКС II уровень.</div>
       </div>
     </div>
 
@@ -239,9 +239,9 @@ get_header();
         <div class="s2-industry">ТЭС</div>
         <div class="s2-industry-full">Тепловая энергетика</div>
       </div>
-      <div class="s2-col-stake">Отказ паропровода — остановка блока мощностью 800 МВт</div>
+      <div class="s2-col-stake"><span class="s2-stake-k">Цена отказа</span>Разрушение паропровода — простой энергоблока 800 МВт</div>
       <div class="s2-cell">
-        <div class="s2-std">ГОСТ 17375</div>
+        <div class="s2-std">ГОСТ 17375-2001</div>
         <div class="s2-what">Крутоизогнутые отводы паропроводов тепловых электростанций</div>
       </div>
       <div class="s2-cell">
@@ -249,7 +249,7 @@ get_header();
         <div class="s2-what">Детали трубопроводов высокого давления паровых котлов</div>
       </div>
       <div class="s2-cell">
-        <div class="s2-std">ГОСТ 17380</div>
+        <div class="s2-std">ГОСТ 17380-2001</div>
         <div class="s2-what">Тройники, переходы, заглушки — детали трубопроводов</div>
       </div>
     </div>
@@ -260,7 +260,7 @@ get_header();
         <div class="s2-industry">АЭС</div>
         <div class="s2-industry-full">Атомная энергетика</div>
       </div>
-      <div class="s2-col-stake">Один дефект — плановый останов реактора и расследование</div>
+      <div class="s2-col-stake"><span class="s2-stake-k">Цена отказа</span>Один дефект — внеплановый останов блока и проверка надзора</div>
       <div class="s2-cell">
         <div class="s2-std">НП-045-18</div>
         <div class="s2-what">Правила устройства и безопасной эксплуатации оборудования АС</div>
@@ -281,13 +281,13 @@ get_header();
         <div class="s2-industry">НГО</div>
         <div class="s2-industry-full">Нефтегаз и химия</div>
       </div>
-      <div class="s2-col-stake">Утечка на скважине — экологическая катастрофа и штраф</div>
+      <div class="s2-col-stake"><span class="s2-stake-k">Цена отказа</span>Утечка на трубопроводе — экологический ущерб и штраф</div>
       <div class="s2-cell">
         <div class="s2-std">ОСТ 26-07</div>
         <div class="s2-what">Детали трубопроводов нефтяной и газовой промышленности</div>
       </div>
       <div class="s2-cell">
-        <div class="s2-std">ГОСТ 9941</div>
+        <div class="s2-std">ГОСТ 9941-2022</div>
         <div class="s2-what">Трубы нержавеющие холоднодеформированные для хим. отрасли</div>
       </div>
       <div class="s2-cell">
@@ -311,7 +311,7 @@ get_header();
   </div>
   <div class="grades-intro">
     <div class="gi-statement">
-      Завод работает с <strong>8 марками стали</strong> — от углеродистых Сталь 20 для стандартных паропроводов до высокохромистых сплавов для высокоэффективных ТЭС и аустенитных нержавеющих для объектов АЭС. Выбор марки определяется рабочей температурой, давлением и отраслевым регламентом — мы помогаем с подбором на этапе ТЗ.
+      Завод изготавливает детали из любой марки стали, предусмотренной проектом или КД заказчика — от углеродистой Стали 20 для стандартных паропроводов до высокохромистых сплавов для высокоэффективных ТЭС и аустенитных нержавеющих для объектов АЭС. Ниже — марки, которые заказывают чаще всего. Выбор определяется рабочей температурой, давлением и отраслевым регламентом; с подбором помогаем на этапе ТЗ.
     </div>
     <div class="gi-stats">
       <div class="gi-stat">
@@ -329,14 +329,14 @@ get_header();
     </div>
   </div>
   <div class="grades-grid">
-    <div class="ge"><span class="ge-idx">01</span><div class="ge-name">ст20</div><div class="ge-std">ГОСТ 1050 · Углеродистая</div><div class="ge-props"><div><div class="ge-pv">412</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+350°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">ТЭС · Паропроводы · Трубопроводы</div></div>
-    <div class="ge"><span class="ge-idx">02</span><div class="ge-name">09Г2С</div><div class="ge-std">ГОСТ 19281 · Низколегированная</div><div class="ge-props"><div><div class="ge-pv">490</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">−70°</div><div class="ge-pk">Мин.темп.</div></div></div><div class="ge-app">НГО · Северное исполнение</div></div>
-    <div class="ge"><span class="ge-idx">03</span><div class="ge-name" style="font-size:21px;letter-spacing:-.005em;">12Х18Н10Т</div><div class="ge-std">ГОСТ 5632 · Аустенитная</div><div class="ge-props"><div><div class="ge-pv">540</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+600°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">АЭС · Химическая промышленность</div></div>
+    <div class="ge"><span class="ge-idx">01</span><div class="ge-name">ст20</div><div class="ge-std">ГОСТ 1050-2013 · Углеродистая</div><div class="ge-props"><div><div class="ge-pv">412</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+350°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">ТЭС · Паропроводы · Трубопроводы</div></div>
+    <div class="ge"><span class="ge-idx">02</span><div class="ge-name">09Г2С</div><div class="ge-std">ГОСТ 19281-2014 · Низколегированная</div><div class="ge-props"><div><div class="ge-pv">490</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">−70°</div><div class="ge-pk">Мин.темп.</div></div></div><div class="ge-app">НГО · Северное исполнение</div></div>
+    <div class="ge"><span class="ge-idx">03</span><div class="ge-name" style="font-size:21px;letter-spacing:-.005em;">12Х18Н10Т</div><div class="ge-std">ГОСТ 5632-2014 · Аустенитная</div><div class="ge-props"><div><div class="ge-pv">540</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+600°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">АЭС · Химическая промышленность</div></div>
     <div class="ge"><span class="ge-idx">04</span><div class="ge-name">15ГС</div><div class="ge-std">ОСТ 108 · Теплоустойчивая</div><div class="ge-props"><div><div class="ge-pv">412</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+475°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">ТЭС · Паровые системы</div></div>
-    <div class="ge"><span class="ge-idx">05</span><div class="ge-name">15Х5М</div><div class="ge-std">ГОСТ 20072 · Хромомолибд.</div><div class="ge-props"><div><div class="ge-pv">412</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+550°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">НГО · Нефтехимия</div></div>
+    <div class="ge"><span class="ge-idx">05</span><div class="ge-name">15Х5М</div><div class="ge-std">ГОСТ 20072-74 · Хромомолибд.</div><div class="ge-props"><div><div class="ge-pv">412</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+550°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">НГО · Нефтехимия</div></div>
     <div class="ge"><span class="ge-idx">06</span><div class="ge-name" style="font-size:22px;">10Х9МФБ</div><div class="ge-std">ТУ 14 · Высокохромистая</div><div class="ge-props"><div><div class="ge-pv">620</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+650°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">Высокоэффективные ТЭС · ПГУ</div></div>
-    <div class="ge"><span class="ge-idx">07</span><div class="ge-name" style="font-size:21px;letter-spacing:-.005em;">08Х18Н10Т</div><div class="ge-std">ГОСТ 5632 · Нержавеющая</div><div class="ge-props"><div><div class="ge-pv">520</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+600°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">АЭС · Криогенные системы</div></div>
-    <div class="ge"><span class="ge-idx">08</span><div class="ge-name">15Х5МУ</div><div class="ge-std">ГОСТ 20072 · Жаропрочная</div><div class="ge-props"><div><div class="ge-pv">540</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+600°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">ТЭС · Реакторные системы</div></div>
+    <div class="ge"><span class="ge-idx">07</span><div class="ge-name" style="font-size:21px;letter-spacing:-.005em;">08Х18Н10Т</div><div class="ge-std">ГОСТ 5632-2014 · Нержавеющая</div><div class="ge-props"><div><div class="ge-pv">520</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+600°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">АЭС · Криогенные системы</div></div>
+    <div class="ge"><span class="ge-idx">08</span><div class="ge-name">15Х5МУ</div><div class="ge-std">ГОСТ 20072-74 · Жаропрочная</div><div class="ge-props"><div><div class="ge-pv">540</div><div class="ge-pk">σв, МПа</div></div><div><div class="ge-pv">+600°</div><div class="ge-pk">Макс.темп.</div></div></div><div class="ge-app">ТЭС · Реакторные системы</div></div>
   </div>
 </section>
 
@@ -359,7 +359,7 @@ $shm_stages = [
 		'in'   => 'Прокат от поставщика',
 		'op'   => 'Приёмка · входной контроль · сверка сертификата',
 		'out'  => 'Партия с прослеживаемостью',
-		'fact' => 'ГОСТ 1050 · 19281 · 5632', 'factk' => 'Марки проката',
+		'fact' => 'ГОСТ 1050-2013 · 19281 · 5632', 'factk' => 'Марки проката',
 	],
 	[
 		'n' => '02', 'fam' => 'base', 'badge' => 'Заготовка',
@@ -909,12 +909,12 @@ $shm_stages = [
       <div class="pdoc">
         <div class="pdoc-code">ТО</div>
         <div><div class="pdoc-name">Трассировочность плавки</div><div class="pdoc-desc">Сквозная прослеживаемость от плавки заготовки до готового изделия — номер плавки, марка стали, результаты входного контроля.</div></div>
-        <div class="pdoc-badge">ГОСТ 7566<br>По плавке</div>
+        <div class="pdoc-badge">ГОСТ 7566-2018<br>По плавке</div>
       </div>
       <div class="pdoc">
         <div class="pdoc-code">РК</div>
-        <div><div class="pdoc-name">Радиографический контроль</div><div class="pdoc-desc">Рентген сварных швов по ГОСТ 7512, 100% сварных соединений. Заключение специалиста РК II уровня. Архив снимков 5 лет.</div></div>
-        <div class="pdoc-badge">ГОСТ 7512<br>100% швов</div>
+        <div><div class="pdoc-name">Радиографический контроль</div><div class="pdoc-desc">Рентген сварных швов по ГОСТ 7512-82, 100% сварных соединений. Заключение специалиста РК II уровня. Архив снимков 5 лет.</div></div>
+        <div class="pdoc-badge">ГОСТ 7512-82<br>100% швов</div>
       </div>
       <div class="pdoc">
         <div class="pdoc-code">ГИ</div>
@@ -925,7 +925,7 @@ $shm_stages = [
   </div>
 </section>
 
-</main>
+</div><!-- /.pg -->
 
 <!-- FOOTER ZONE — sticky CTA + footer slides over -->
 <div class="footer-zone" data-od-id="path-4">

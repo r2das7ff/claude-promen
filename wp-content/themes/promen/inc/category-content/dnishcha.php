@@ -113,7 +113,7 @@ return [
             <div class="sg-task-h">Закрыть цилиндрическую обечайку стандартным днищем</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Днища эллиптические отбортованные — тип ДЭ по ГОСТ 6533</div>
+            <div class="sg-prod-name">Днища эллиптические отбортованные — тип ДЭ по ГОСТ 6533-78</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 6533-78</span><span class="sg-tag">тип ДЭ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'dnishcha', 'gost-6533-1978' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'dnishcha', 'gost-6533-1978' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>
@@ -131,7 +131,7 @@ return [
             <div class="sg-task-h">Крупный диаметр — DN свыше 1400</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Днища крупного DN — ряд ГОСТ 6533 до 3800 мм</div>
+            <div class="sg-prod-name">Днища крупного DN — ряд ГОСТ 6533-78 до 3800 мм</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 6533-78</span><span class="sg-tag">DN 1400–3800</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'dnishcha', 'gost-6533-1978' ) ) ); ?> <?php echo esc_html( promen_ru_plural( promen_category_norm_count( 'dnishcha', 'gost-6533-1978' ), 'позиция', 'позиции', 'позиций' ) ); ?></span>
             </div>

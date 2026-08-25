@@ -187,6 +187,14 @@
       return;
     }
     list.innerHTML = data.hits.map(function (h, i) { return renderRow(h, cols, tpl, i); }).join('');
+    /* Фильтр сработал молча: выдача подменялась без единого признака, что
+       она пересчиталась именно сейчас. Класс снимаем сразу после кадра —
+       так анимация перезапускается на каждом обновлении, а не только на
+       первом. Строк тут бывает под сотню, поэтому отклик отдаём списком,
+       а не каждой строкой отдельно. */
+    list.classList.remove('is-refreshed');
+    void list.offsetWidth;
+    list.classList.add('is-refreshed');
   }
 
   function chipHref(param, slug, pageUrl) {

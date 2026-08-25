@@ -22,7 +22,7 @@ get_header();
 <div class="pg">
 
   <!-- HERO -->
-  <div class="nb-hero">
+  <div class="nb-hero" data-reveal>
     <div>
       <div class="nb-eyebrow">Цифровой реестр документов</div>
       <h1 class="nb-h1">Нормативная<br><em>база</em></h1>
@@ -36,7 +36,7 @@ get_header();
   </div>
 
   <!-- TOOLBAR -->
-  <div class="nb-toolbar">
+  <div class="nb-toolbar" data-reveal>
     <div class="nb-search">
       <svg width="15" height="15" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor"/><line x1="8.8" y1="8.8" x2="12" y2="12" stroke="currentColor"/></svg>
       <input id="nbSearch" type="text" placeholder="Поиск по номеру ГОСТ, названию, категории…">

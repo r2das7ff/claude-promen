@@ -55,7 +55,7 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 17375–17380</span><span class="hud-rv live">Штампованные</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 17380-2001</span><span class="hud-rv live">Штампованные</span></div>
         <div class="hud-row"><span class="hud-rk">ОСТ 34-42-621/622/632</span><span class="hud-rv live">Сварные</span></div>
         <div class="hud-row"><span class="hud-rk">ТР ТС 032</span><span class="hud-rv live">Сосуды давления</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
@@ -84,7 +84,7 @@ return [
           <div class="sg-product" data-label="Нужное изделие">
             <div class="sg-prod-name">Отводы — крутоизогнутые, гнутые, секторные, штампосварные</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 17375</span><span class="sg-tag hi">СТО ЦКТИ 321.x</span><span class="sg-tag">ОСТ 36-21-77</span><span class="sg-tag">DN 15–1400</span>
+              <span class="sg-tag hi">ГОСТ 17375-2001</span><span class="sg-tag hi">СТО ЦКТИ 321.x</span><span class="sg-tag">ОСТ 36-21-77</span><span class="sg-tag">DN 15–1400</span>
             </div>
           </div>
           <div class="sg-params" data-label="Что передать для расчёта">
@@ -104,7 +104,7 @@ return [
           <div class="sg-product" data-label="Нужное изделие">
             <div class="sg-prod-name">Тройники — равнопроходные (d=D), переходные (d&lt;D), сварные крупного DN</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 17376</span><span class="sg-tag hi">СТО ЦКТИ 720.x</span><span class="sg-tag">ОСТ 36-24-77</span><span class="sg-tag">DN 15–1000</span>
+              <span class="sg-tag hi">ГОСТ 17376-2001</span><span class="sg-tag hi">СТО ЦКТИ 720.x</span><span class="sg-tag">ОСТ 36-24-77</span><span class="sg-tag">DN 15–1000</span>
             </div>
           </div>
           <div class="sg-params" data-label="Что передать для расчёта">
@@ -124,7 +124,7 @@ return [
           <div class="sg-product" data-label="Нужное изделие">
             <div class="sg-prod-name">Переходы — концентрические (соосные), эксцентрические (со смещением оси), сварные конусные</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 17378</span><span class="sg-tag hi">СТО ЦКТИ 318.x</span><span class="sg-tag">ОСТ 36-22-77</span><span class="sg-tag">DN 15–1400</span>
+              <span class="sg-tag hi">ГОСТ 17378-2001</span><span class="sg-tag hi">СТО ЦКТИ 318.x</span><span class="sg-tag">ОСТ 36-22-77</span><span class="sg-tag">DN 15–1400</span>
             </div>
           </div>
           <div class="sg-params" data-label="Что передать для расчёта">
@@ -143,7 +143,7 @@ return [
           <div class="sg-product" data-label="Нужное изделие">
             <div class="sg-prod-name">Днища эллиптические (a/D=0,25), заглушки эллиптические и плоские</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 17379</span><span class="sg-tag hi">ГОСТ 6533</span><span class="sg-tag">ОСТ 36-25-77</span><span class="sg-tag">DN 25–4000</span>
+              <span class="sg-tag hi">ГОСТ 17379-2001</span><span class="sg-tag hi">ГОСТ 6533-78</span><span class="sg-tag">ОСТ 36-25-77</span><span class="sg-tag">DN 25–4000</span>
             </div>
           </div>
           <div class="sg-params" data-label="Что передать для расчёта">
@@ -207,7 +207,7 @@ return [
             <div class="mg-item">Крутоизогнутые 45° / 90° / 180°<span class="mg-norm">ГОСТ 17375-2001</span></div>
             <div class="mg-item">Секторные / сварные<span class="mg-norm">ОСТ 36-21-77</span></div>
             <div class="mg-item">Гнутые из трубных заготовок<span class="mg-norm">СТО ЦКТИ 321.x</span></div>
-            <div class="mg-item">Высокое давление / колена с опорой<span class="mg-norm">ГОСТ 22793 / 22818</span></div>
+            <div class="mg-item">Высокое давление / колена с опорой<span class="mg-norm">ГОСТ 22793-83 / 22818-83</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">DN 6–1400</span><span class="mg-ftag">R=1,5–5DN</span><span class="mg-ftag">PN до 160</span></div>
         </div>
@@ -220,8 +220,8 @@ return [
           <div class="mg-name">Тройники</div>
           <div class="mg-items">
             <div class="mg-item">Равнопроходные / переходные<span class="mg-norm">ГОСТ 17376-2001</span></div>
-            <div class="mg-item">АЭС — тройники СТО<span class="mg-norm">СТО 95.127-2013</span></div>
-            <div class="mg-item">АЭС — врезки и ответвления<span class="mg-norm">СТО 79814898.125</span></div>
+            <div class="mg-item">АЭС — тройники СТО<span class="mg-norm">СТО 95 127-2013</span></div>
+            <div class="mg-item">АЭС — врезки и ответвления<span class="mg-norm">СТО 79814898.125-2009</span></div>
             <div class="mg-item">Сварные / ОСТ ТЭС<span class="mg-norm">ОСТ 34-42</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">DN 10–1600</span><span class="mg-ftag">Разветвление</span><span class="mg-ftag">ТЭС / АЭС</span></div>
@@ -247,7 +247,7 @@ return [
           <span class="mg-2-code">ДНЩ</span>
           <span class="mg-2-name">Днища и заглушки</span>
           <span class="mg-2-desc">Днища <?php echo esc_html( number_format_i18n( $map_dn ) ); ?> поз. · заглушки <?php echo esc_html( number_format_i18n( $map_zag ) ); ?> поз. Эллиптические днища и заглушки — DN 6–1600 в каталоге.</span>
-          <span class="mg-2-norm">ГОСТ 17379 · ГОСТ 6533 · ОСТ 34.10 / 24.125</span>
+          <span class="mg-2-norm">ГОСТ 17379-2001 · ГОСТ 6533-78 · ОСТ 34.10 / 24.125</span>
         </div>
         <div class="mg-2" data-type="ns">
           <span class="mg-2-code">НСТ</span>
@@ -261,11 +261,11 @@ return [
 <?php },
 	's03' => static function ( array $ctx ): void {
 		$sdt_family_meta = [
-			'otvody'    => [ 'СДТ-01', 'Отводы',   'крутоизогнутые, гнутые, секторные, колена с опорой', '6–1400', 'ГОСТ 17375 · 30753 · 22793 · СТО ЦКТИ 321' ],
-			'troyniki'  => [ 'СДТ-02', 'Тройники', 'равнопроходные, переходные, сварные, с опорой',      '10–1600', 'СТО 95.127 · 79814898.125 · ОСТ 34-42' ],
-			'perekhody' => [ 'СДТ-03', 'Переходы', 'концентрические, эксцентрические, сварные',           '10–1600', 'ГОСТ 17378 · ОСТ 34.10 · ОСТ 36-22' ],
-			'dnishcha'  => [ 'СДТ-04', 'Днища',    'эллиптические отбортованные для сосудов и аппаратов',  '10–1500', 'ГОСТ 6533 · ОСТ 24.125' ],
-			'zaglushki' => [ 'СДТ-05', 'Заглушки', 'эллиптические, плоские, на высокое давление',         '6–1600',  'ГОСТ 17379 · ОСТ 34.10' ],
+			'otvody'    => [ 'СДТ-01', 'Отводы',   'крутоизогнутые, гнутые, секторные, колена с опорой', '6–1400', 'ГОСТ 17375-2001 · 30753 · 22793 · СТО ЦКТИ 321' ],
+			'troyniki'  => [ 'СДТ-02', 'Тройники', 'равнопроходные, переходные, сварные, с опорой',      '10–1600', 'СТО 95 127-2013 · 79814898.125 · ОСТ 34-42' ],
+			'perekhody' => [ 'СДТ-03', 'Переходы', 'концентрические, эксцентрические, сварные',           '10–1600', 'ГОСТ 17378-2001 · ОСТ 34.10 · ОСТ 36-22-77' ],
+			'dnishcha'  => [ 'СДТ-04', 'Днища',    'эллиптические отбортованные для сосудов и аппаратов',  '10–1500', 'ГОСТ 6533-78 · ОСТ 24.125' ],
+			'zaglushki' => [ 'СДТ-05', 'Заглушки', 'эллиптические, плоские, на высокое давление',         '6–1600',  'ГОСТ 17379-2001 · ОСТ 34.10' ],
 		];
 		$sdt_family_total = 0;
 		foreach ( array_keys( $sdt_family_meta ) as $fk ) {
@@ -369,7 +369,7 @@ return [
                 <td><span class="pt-type">Отвод крутоизог. 90°</span></td>
                 <td><span class="pt-dn">15–500</span></td>
                 <td><span class="pt-pn">25–100</span></td>
-                <td><span class="pt-wall">По ГОСТ 8734 / 8732</span></td>
+                <td><span class="pt-wall">По ГОСТ 8734-75 / 8732-78</span></td>
                 <td>R = 1,5DN</td>
                 <td><span class="pt-norm">ГОСТ 17375-2001</span></td>
               </tr>
@@ -377,7 +377,7 @@ return [
                 <td><span class="pt-type">Отвод крутоизог. 45°</span></td>
                 <td><span class="pt-dn">15–500</span></td>
                 <td><span class="pt-pn">25–100</span></td>
-                <td><span class="pt-wall">По ГОСТ 8734 / 8732</span></td>
+                <td><span class="pt-wall">По ГОСТ 8734-75 / 8732-78</span></td>
                 <td>R = 1,5DN</td>
                 <td><span class="pt-norm">ГОСТ 17375-2001</span></td>
               </tr>
@@ -385,7 +385,7 @@ return [
                 <td><span class="pt-type">Отвод крутоизог. 180°</span></td>
                 <td><span class="pt-dn">15–300</span></td>
                 <td><span class="pt-pn">25–100</span></td>
-                <td><span class="pt-wall">По ГОСТ 8734 / 8732</span></td>
+                <td><span class="pt-wall">По ГОСТ 8734-75 / 8732-78</span></td>
                 <td>R = 1,5DN</td>
                 <td><span class="pt-norm">ГОСТ 17375-2001</span></td>
               </tr>
@@ -395,7 +395,7 @@ return [
                 <td><span class="pt-pn">6–40</span></td>
                 <td><span class="pt-wall">8–50 мм</span></td>
                 <td>15°–90°, R ≥ 1,5DN</td>
-                <td><span class="pt-norm">ОСТ 36-21-77 / ОСТ 34.10.752-97</span></td>
+                <td><span class="pt-norm">ОСТ 36-21-77 / ОСТ 34-10-752-97</span></td>
               </tr>
               <tr data-dn="s,m" data-pn="40,63,100,160" data-mat="09g2s,12x1mf,15x5m">
                 <td><span class="pt-type">Отвод гнутый из трубы</span></td>
@@ -409,7 +409,7 @@ return [
                 <td><span class="pt-type">Отвод штампосварной</span></td>
                 <td><span class="pt-dn">25–400</span></td>
                 <td><span class="pt-pn">16–100</span></td>
-                <td><span class="pt-wall">По ГОСТ 8732 / 8734</span></td>
+                <td><span class="pt-wall">По ГОСТ 8732-78 / 8734-75</span></td>
                 <td>R = 1,5DN</td>
                 <td><span class="pt-norm">ОСТ 36-20-77</span></td>
               </tr>
@@ -417,7 +417,7 @@ return [
                 <td><span class="pt-type">Тройник равнопроходной</span></td>
                 <td><span class="pt-dn">15–500</span></td>
                 <td><span class="pt-pn">16–100</span></td>
-                <td><span class="pt-wall">По ГОСТ 8732 / 8734</span></td>
+                <td><span class="pt-wall">По ГОСТ 8732-78 / 8734-75</span></td>
                 <td>Угол врезки 90°</td>
                 <td><span class="pt-norm">ГОСТ 17376-2001</span></td>
               </tr>
@@ -425,7 +425,7 @@ return [
                 <td><span class="pt-type">Тройник переходной</span></td>
                 <td><span class="pt-dn">25–500</span></td>
                 <td><span class="pt-pn">16–100</span></td>
-                <td><span class="pt-wall">По ГОСТ 8732 / 8734</span></td>
+                <td><span class="pt-wall">По ГОСТ 8732-78 / 8734-75</span></td>
                 <td>d/D = 0,25–0,8</td>
                 <td><span class="pt-norm">ГОСТ 17376-2001</span></td>
               </tr>
@@ -435,7 +435,7 @@ return [
                 <td><span class="pt-pn">6–25</span></td>
                 <td><span class="pt-wall">10–60 мм</span></td>
                 <td>Угол врезки 90°</td>
-                <td><span class="pt-norm">ОСТ 36-24-77 / ОСТ 34.10.762-97</span></td>
+                <td><span class="pt-norm">ОСТ 36-24-77 / ОСТ 34-10-762-97</span></td>
               </tr>
               <tr data-dn="s,m,l" data-pn="16,25,40,63,100,160" data-mat="st20,09g2s,12x1mf,nerj">
                 <td><span class="pt-type">Тройник по СТО ЦКТИ</span></td>
@@ -449,7 +449,7 @@ return [
                 <td><span class="pt-type">Переход концентрический</span></td>
                 <td><span class="pt-dn">25–500</span></td>
                 <td><span class="pt-pn">16–100</span></td>
-                <td><span class="pt-wall">По ГОСТ 8732 / 8734</span></td>
+                <td><span class="pt-wall">По ГОСТ 8732-78 / 8734-75</span></td>
                 <td>Соосный</td>
                 <td><span class="pt-norm">ГОСТ 17378-2001</span></td>
               </tr>
@@ -457,7 +457,7 @@ return [
                 <td><span class="pt-type">Переход эксцентрический</span></td>
                 <td><span class="pt-dn">25–500</span></td>
                 <td><span class="pt-pn">16–100</span></td>
-                <td><span class="pt-wall">По ГОСТ 8732 / 8734</span></td>
+                <td><span class="pt-wall">По ГОСТ 8732-78 / 8734-75</span></td>
                 <td>Смещение (D−d)/2</td>
                 <td><span class="pt-norm">ГОСТ 17378-2001</span></td>
               </tr>
@@ -580,8 +580,8 @@ return [
           <div class="kb-card">
             <div class="kb-card-badge">НГК</div>
             <div class="kb-card-title">Нефтегазовый комплекс</div>
-            <p class="kb-card-body">Промысловые и магистральные трубопроводы, установки подготовки нефти и газа. Требования по коррозионной стойкости к агрессивным средам (H₂S, CO₂). Изготовление по <strong>ГОСТ 17375–17380</strong>, ОСТ 36 и ТУ предприятия с возможностью учёта требований корпоративных стандартов.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 17375–17380</span><span class="kb-tag">ТР ТС 032</span><span class="kb-tag">09Г2С</span></div>
+            <p class="kb-card-body">Промысловые и магистральные трубопроводы, установки подготовки нефти и газа. Требования по коррозионной стойкости к агрессивным средам (H₂S, CO₂). Изготовление по <strong>ГОСТ 17375-2001, 17376-2001, 17378-2001, 17379-2001</strong>, ОСТ 36 и ТУ предприятия с возможностью учёта требований корпоративных стандартов.</p>
+            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 17380-2001</span><span class="kb-tag">ТР ТС 032</span><span class="kb-tag">09Г2С</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ХИМИЯ / ПП</div>
@@ -616,7 +616,7 @@ return [
           <div class="kb-grp">
             <span class="kb-grp-code">ТР</span>
             <span class="kb-grp-name">Трубы стальные бесшовные</span>
-            <span class="kb-grp-items">Горячедеформированные и холоднодеформированные по ГОСТ 8731–8734 и ГОСТ 9940–9941</span>
+            <span class="kb-grp-items">Горячедеформированные — ГОСТ 8731-87 / 8732-78, холоднодеформированные — ГОСТ 8733-87 / 8734-75, нержавеющие — ГОСТ 9940-81 / 9941-2022</span>
           </div>
           <div class="kb-grp">
             <span class="kb-grp-code">НМ</span>
@@ -708,7 +708,7 @@ return [
                 <span class="kb-step-n">05</span>
                 <div>
                   <div class="kb-step-title">Используйте строку поиска</div>
-                  <div class="kb-step-body">Поиск работает по <strong>коду, наименованию, ГОСТ, материалу, DN</strong>. Например: «09Г2С» или «ГОСТ 17375» мгновенно фильтрует весь реестр. Горячая клавиша: <strong>⌘K</strong> или <strong>/</strong>.</div>
+                  <div class="kb-step-body">Поиск работает по <strong>коду, наименованию, ГОСТ, материалу, DN</strong>. Например: «09Г2С» или «ГОСТ 17375-2001» мгновенно фильтрует весь реестр. Горячая клавиша: <strong>⌘K</strong> или <strong>/</strong>.</div>
                 </div>
               </div>
               <div class="kb-step">
@@ -736,15 +736,15 @@ return [
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17376-2001</span><span class="kb-norm-desc">Тройники равнопроходные и переходные. Конструкция</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17378-2001</span><span class="kb-norm-desc">Переходы концентрические и эксцентрические. Конструкция</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17379-2001</span><span class="kb-norm-desc">Заглушки эллиптические. Конструкция</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6533-1978</span><span class="kb-norm-desc">Днища эллиптические отбортованные стальные для сосудов, аппаратов и котлов. D 133–4500 мм</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 6533-78</span><span class="kb-norm-desc">Днища эллиптические отбортованные стальные для сосудов, аппаратов и котлов. D 133–4500 мм</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 33259-2015</span><span class="kb-norm-desc">Фланцы арматуры, соединительных частей и трубопроводов на номинальное давление до PN 250</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">ОСТ — отраслевые стандарты Минэнерго и Минмаша</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.699-97 / 10.700-97</span><span class="kb-norm-desc">Отводы крутоизогнутые и переходы стальные бесшовные приварные на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.747-97 ÷ 10.766-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС из углеродистой и низколегированной сталей, Рраб &lt; 2,2 МПа, t ≤ 425 °C. Части I–III</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-699-97 / 10.700-97</span><span class="kb-norm-desc">Отводы крутоизогнутые и переходы стальные бесшовные приварные на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-747-97 ÷ 10.766-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС из углеродистой и низколегированной сталей, Рраб &lt; 2,2 МПа, t ≤ 425 °C. Части I–III</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-416-90 ÷ 513-90</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов из коррозионностойкой стали на Рраб ≤ 2,2 МПа, T ≤ 300 °C для АС</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-20-77 ÷ 36-25-77</span><span class="kb-norm-desc">Детали трубопроводов Dy 500–1400 мм сварные из углеродистой стали на Ру ≤ 2,5 МПа: отводы штампосварные и секторные, тройники, переходы, заглушки</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-41-81 — 36-49-81</span><span class="kb-norm-desc">Детали трубопроводов из углеродистой стали сварные и гнутые Dy до 500 мм на Ру до 10 МПа</span></div>
@@ -759,7 +759,7 @@ return [
               <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 318.01–.06-2009</span><span class="kb-norm-desc">Переходы точёные, обжатые и штампованные для трубопроводов и паропроводов тепловых станций</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 462 / 504 / 530 / 313</span><span class="kb-norm-desc">Штуцера и патрубки, донышки приварные, бобышки, соединения штуцерные. Ресурс 200 000 часов</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">СТО 95 133-2013</span><span class="kb-norm-desc">Заглушки плоские приварные для трубопроводов атомных станций из сталей перлитного класса на давление до 2,2 МПа</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">СТО СРО-П 60542948 00010–2013</span><span class="kb-norm-desc">Детали и элементы трубопроводов групп В и С атомных станций. Соединения сварные. Типы и размеры</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">СТО СРО-П 60542948.00010-2013</span><span class="kb-norm-desc">Детали и элементы трубопроводов групп В и С атомных станций. Соединения сварные. Типы и размеры</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
@@ -917,7 +917,7 @@ return [
                 <span class="kb-check-n">01</span>
                 <div>
                   <div class="kb-check-title">Наименование и норматив</div>
-                  <div class="kb-check-body">Тип изделия и нормативный документ: отвод 90° по <strong>ГОСТ 17375</strong>, тройник по <strong>СТО ЦКТИ 720.03</strong> и т.д. Если норматив неизвестен — укажите тип объекта / установки.</div>
+                  <div class="kb-check-body">Тип изделия и нормативный документ: отвод 90° по <strong>ГОСТ 17375-2001</strong>, тройник по <strong>СТО ЦКТИ 720.03</strong> и т.д. Если норматив неизвестен — укажите тип объекта / установки.</div>
                 </div>
               </div>
               <div class="kb-check">
@@ -1070,7 +1070,7 @@ return [
           <div class="fq"><div class="fq-q"><span class="fq-num">04</span><span class="fq-t">Можно ли заказать нестандартные типоразмеры или исполнение по чертежам заказчика?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">Да. Завод изготавливает изделия по конструкторской документации заказчика — в том числе нестандартные диаметры, углы, толщины стенок и специальные исполнения. Для согласования — отправьте КД через форму запроса или на <strong>zakaz@prom-en.com</strong>.</div></div></div>
           <div class="fq"><div class="fq-q"><span class="fq-num">05</span><span class="fq-t">Как долго хранится прослеживаемость документации после поставки?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">Архив производственной документации (паспорта, протоколы НК, сертификаты плавок) хранится на производстве <strong>не менее 10 лет</strong>. Для объектов АЭС — в соответствии с требованиями НП-017-14 и НП-089-15. По запросу возможно предоставление дубликатов документов.</div></div></div>
           <div class="fq"><div class="fq-q"><span class="fq-num">06</span><span class="fq-t">Какие сроки изготовления для типовых позиций каталога?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">Типовые позиции из складской программы (DN 50–200, массовые марки стали) — <strong>от 3–5 рабочих дней</strong>. Серийный заказ с полным НК и паспортизацией — <strong>от 10–15 рабочих дней</strong>. Изделия DN 500+ и спецсплавы — по согласованию. Точный срок указывается в коммерческом предложении.</div></div></div>
-          <div class="fq"><div class="fq-q"><span class="fq-num">07</span><span class="fq-t">Есть ли складская программа или всё производится под заказ?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">Часть позиций номенклатуры поддерживается на складе — прежде всего <strong>отводы, тройники и переходы DN 50–200 из Ст20 и 09Г2С</strong> по ГОСТ 17375 / 17376 / 17378. Для уточнения наличия — направьте запрос: мы предоставим актуальный остаток и срок дополнительного выпуска.</div></div></div>
+          <div class="fq"><div class="fq-q"><span class="fq-num">07</span><span class="fq-t">Есть ли складская программа или всё производится под заказ?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">Часть позиций номенклатуры поддерживается на складе — прежде всего <strong>отводы, тройники и переходы DN 50–200 из Ст20 и 09Г2С</strong> по ГОСТ 17375-2001 / 17376-2001 / 17378-2001. Для уточнения наличия — направьте запрос: мы предоставим актуальный остаток и срок дополнительного выпуска.</div></div></div>
         </div>
       </div><!-- /kp-faq -->
 

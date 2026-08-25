@@ -7,7 +7,7 @@
 defined( 'ABSPATH' ) || exit;
 
 return [
-	's08_weld' => 'Опоры и подвески трассы; арматура — по спецификации объекта. ОСТ 36-17 / ГОСТ 33257.',
+	's08_weld' => 'Опоры и подвески трассы; арматура — по спецификации объекта. ОСТ 36-17-85 / ГОСТ 33257.',
 	'hero' => static function ( array $ctx ): void { ?>
 <div class="sdt-hero" id="hero">
     <div class="hero-left">
@@ -60,13 +60,13 @@ return [
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(3,1fr);">
         <div class="mg"><div class="mg-hd"><div class="mg-code">ЗД</div><div class="mg-cnt"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-zadvizhki' ) ); ?> поз.</div></div><div class="mg-name">Задвижки</div>
           <div class="mg-items"><div class="mg-item">Клиновые<span class="mg-norm">DN 50–1000</span></div></div>
-          <div class="mg-footer"><span class="mg-ftag">ГОСТ 33257</span></div></div>
+          <div class="mg-footer"><span class="mg-ftag">ГОСТ 33257-2015</span></div></div>
         <div class="mg"><div class="mg-hd"><div class="mg-code">КО</div><div class="mg-cnt"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-klapany' ) ); ?> поз.</div></div><div class="mg-name">Клапаны</div>
           <div class="mg-items"><div class="mg-item">Обратные<span class="mg-norm">DN 15–200</span></div></div>
-          <div class="mg-footer"><span class="mg-ftag">ГОСТ 33257</span></div></div>
+          <div class="mg-footer"><span class="mg-ftag">ГОСТ 33257-2015</span></div></div>
         <div class="mg"><div class="mg-hd"><div class="mg-code">КР</div><div class="mg-cnt"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-krany' ) ); ?> поз.</div></div><div class="mg-name">Краны</div>
           <div class="mg-items"><div class="mg-item">Шаровые<span class="mg-norm">DN 15–500</span></div></div>
-          <div class="mg-footer"><span class="mg-ftag">ГОСТ 33257</span></div></div>
+          <div class="mg-footer"><span class="mg-ftag">ГОСТ 33257-2015</span></div></div>
       </div>
     </div>
   </section>
@@ -131,7 +131,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Арматура" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 33257, DN, PN…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 33257-2015, DN, PN…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">DN / D×s, мм</label><input id="om-dn" name="dn" type="text" placeholder="DN 100×80 / 108×4–89×4" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Давление, МПа</label><input id="om-pn" name="pn" type="text" placeholder="PN 16" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка стали</label><input id="om-mat" name="material" type="text" placeholder="09Г2С, 12Х1МФ…" autocomplete="off"></div>

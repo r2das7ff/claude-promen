@@ -19,7 +19,7 @@ return [
       </nav>
       <div class="hero-eyebrow">КР / Шайбы · изготовление под заказ</div>
       <h1 class="hero-h1">Шайбы<br><em>пружинные</em><br>и усиленные</h1>
-      <p class="hero-desc">Шайбы ГОСТ 6402 и усиленные ГОСТ 11371 для болтовых и шпилечных соединений. В реестре — <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по номинальному диаметру резьбы M.</p>
+      <p class="hero-desc">Шайбы ГОСТ 6402-70 и усиленные ГОСТ 11371-78 для болтовых и шпилечных соединений. В реестре — <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по номинальному диаметру резьбы M.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">M × L</span><span class="hp-k">Резьба / длина</span></div>
@@ -40,8 +40,8 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 6402-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shayby', 'gost-6402-1970' ) ) ); ?> поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 11371-1978</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shayby', 'gost-11371-1978' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 6402-70</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shayby', 'gost-6402-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 11371-78</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shayby', 'gost-11371-1978' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
         <div class="hud-row"><span class="hud-rk">Комплект</span><span class="hud-rv live">с болтом / шпилькой</span></div>
       </div>
@@ -64,7 +64,7 @@ return [
           <div class="mg-hd"><div class="mg-code">Ш</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'shayby', 'main' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Шайбы</div>
           <div class="mg-items">
-            <div class="mg-item">Пружинные / плоские<span class="mg-norm">ГОСТ 6402</span></div><div class="mg-item">Усиленные<span class="mg-norm">ГОСТ 11371</span></div>
+            <div class="mg-item">Пружинные / плоские<span class="mg-norm">ГОСТ 6402-70</span></div><div class="mg-item">Усиленные<span class="mg-norm">ГОСТ 11371-78</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">Ш</span><span class="mg-ftag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'shayby', 'main' ) ) ); ?> поз.</span></div>
         </div>
@@ -91,7 +91,7 @@ return [
             <div class="sg-task-h">Шайба в комплект фланцевого крепежа</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Шайбы ГОСТ 6402</div>
+            <div class="sg-prod-name">Шайбы ГОСТ 6402-70</div>
             <div class="sg-tags">
               <span class="sg-tag hi">Ш</span><span class="sg-tag">M × L</span>
             </div>
@@ -109,7 +109,7 @@ return [
             <div class="sg-task-h">Усиленная шайба</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Шайбы ГОСТ 11371</div>
+            <div class="sg-prod-name">Шайбы ГОСТ 11371-78</div>
             <div class="sg-tags">
               <span class="sg-tag hi">Ш</span><span class="sg-tag">M × L</span>
             </div>
@@ -180,7 +180,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Шайбы" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 7798, ГОСТ 9066, ОСТ 26-2040…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 7798-70, ГОСТ 9066-75, ОСТ 26-2040-96…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">Резьба M</label><input id="om-dn" name="dn" type="text" placeholder="M16" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Длина L, мм</label><input id="om-pn" name="pn" type="text" placeholder="80" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка / класс прочности</label><input id="om-mat" name="material" type="text" placeholder="Ст20 / 5.6 / 8.8…" autocomplete="off"></div>

@@ -33,7 +33,7 @@ defined( 'ABSPATH' ) || exit;
 
         <div class="kb-type-grid">
           <div class="kb-type">
-            <div class="kb-type-badge">ГОСТ 17375</div>
+            <div class="kb-type-badge">ГОСТ 17375-2001</div>
             <div class="kb-type-title">Крутоизогнутые штампованные · R = 1.5DN</div>
             <p class="kb-type-body">Изготавливаются штамповкой из трубной заготовки. <strong>DN 15–500</strong>, радиус изгиба R = 1.5DN. Основной тип для общепромышленных трубопроводов, НГК и трубопроводов ТЭС до DN 500. Минимальные потери давления в системе. Допускают сварку непосредственно к трубе без переходных патрубков.</p>
             <div class="kb-type-tags"><span class="kb-tag">ГОСТ 17375-2001</span><span class="kb-tag">DN 15–500</span><span class="kb-tag">R = 1.5DN</span><span class="kb-tag">Штамповка</span></div>
@@ -41,7 +41,7 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-type">
             <div class="kb-type-badge">ОСТ 36-21-77</div>
             <div class="kb-type-title">Секторные сварные · DN 100–1400</div>
-            <p class="kb-type-body">Сварные отводы из сегментов (секторов). <strong>DN 100–1400</strong>, R = 1.5DN. Применяются при больших диаметрах, когда штамповка нецелесообразна. Широко используются в паровых трактах ТЭС и ГРЭС. Изготавливаются по ОСТ 36-21-77, для энергетики — по сводному тому ОСТ 34 10.747-97 ÷ 10.754-97.</p>
+            <p class="kb-type-body">Сварные отводы из сегментов (секторов). <strong>DN 100–1400</strong>, R = 1.5DN. Применяются при больших диаметрах, когда штамповка нецелесообразна. Широко используются в паровых трактах ТЭС и ГРЭС. Изготавливаются по ОСТ 36-21-77, для энергетики — по сводному тому ОСТ 34-10-747-97 ÷ 10.754-97.</p>
             <div class="kb-type-tags"><span class="kb-tag">ОСТ 36-21-77</span><span class="kb-tag">DN 100–1400</span><span class="kb-tag">Сварные секторные</span><span class="kb-tag">ТЭС / ГРЭС</span></div>
           </div>
           <div class="kb-type">
@@ -62,10 +62,10 @@ defined( 'ABSPATH' ) || exit;
         <div class="kb-compare">
           <div class="kb-compare-hd">
             <span class="kb-cmp-h">Параметр</span>
-            <span class="kb-cmp-h">Крутоизогн. (ГОСТ 17375)</span>
-            <span class="kb-cmp-h">Секторные (ОСТ 36-21)</span>
+            <span class="kb-cmp-h">Крутоизогн. (ГОСТ 17375-2001)</span>
+            <span class="kb-cmp-h">Секторные (ОСТ 36-21-77)</span>
             <span class="kb-cmp-h">Гнутые (СТО ЦКТИ 321)</span>
-            <span class="kb-cmp-h">Штампосварные (ОСТ 36-20)</span>
+            <span class="kb-cmp-h">Штампосварные (ОСТ 36-20-77)</span>
           </div>
           <div class="kb-compare-row"><span class="kb-cmp-k">DN</span><span class="kb-cmp-v">15–500</span><span class="kb-cmp-v">100–1400</span><span class="kb-cmp-v">Согласно ТУ</span><span class="kb-cmp-v">25–400</span></div>
           <div class="kb-compare-row"><span class="kb-cmp-k">Радиус R</span><span class="kb-cmp-v"><strong>1.5DN</strong></span><span class="kb-cmp-v"><strong>1.5DN</strong></span><span class="kb-cmp-v"><strong>3.5–5DN</strong></span><span class="kb-cmp-v"><strong>1.5DN</strong></span></div>
@@ -81,11 +81,11 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Ключевые параметры отвода<?php echo esc_html( $angle_sp ); ?></div>
             <div class="kb-params">
-              <div class="kb-param"><div class="kb-param-key">DN · Диаметр условный</div><div class="kb-param-val">От <strong>DN 15 до DN 1400</strong>. Соответствует условному проходу трубы. <strong>DN ≠ Dнар</strong>: DN 50 = 57 мм по ГОСТ 8732. Крутоизогнутые (ГОСТ 17375) — до DN 500. Секторные (ОСТ 36-21) — от DN 100 до DN 1400.</div></div>
+              <div class="kb-param"><div class="kb-param-key">DN · Диаметр условный</div><div class="kb-param-val">От <strong>DN 15 до DN 1400</strong>. Соответствует условному проходу трубы. <strong>DN ≠ Dнар</strong>: DN 50 = 57 мм по ГОСТ 8732. Крутоизогнутые (ГОСТ 17375-2001) — до DN 500. Секторные (ОСТ 36-21-77) — от DN 100 до DN 1400.</div></div>
               <div class="kb-param"><div class="kb-param-key">PN · Давление условное</div><div class="kb-param-val">От <strong>PN 0.6 до PN 20 МПа</strong>. Толщина стенки определяется из расчёта прочности по нормативному документу. При температурах выше 100°С допустимое давление снижается — уточняйте по таблицам норматива.</div></div>
-              <div class="kb-param"><div class="kb-param-key">Радиус изгиба R</div><div class="kb-param-val"><strong>R = 1.5DN</strong> — крутоизогнутые (ГОСТ 17375, ОСТ 36-20, ОСТ 36-21). <strong>R = 3.5–5DN</strong> — гнутые (СТО ЦКТИ 321). Больший R снижает гидравлическое сопротивление и эрозию потоком.</div></div>
+              <div class="kb-param"><div class="kb-param-key">Радиус изгиба R</div><div class="kb-param-val"><strong>R = 1.5DN</strong> — крутоизогнутые (ГОСТ 17375-2001, ОСТ 36-20-77, ОСТ 36-21-77). <strong>R = 3.5–5DN</strong> — гнутые (СТО ЦКТИ 321). Больший R снижает гидравлическое сопротивление и эрозию потоком.</div></div>
               <div class="kb-param"><div class="kb-param-key">Толщина стенки S</div><div class="kb-param-val">Определяется по нормативному документу из условия прочности при заданных DN, PN и t°С. Для ответственных объектов — дополнительный запас по прибавке на коррозию.</div></div>
-              <div class="kb-param"><div class="kb-param-key">Нормативный документ</div><div class="kb-param-val"><strong>ГОСТ 17375</strong> — DN 15–500, общепром. <strong>ОСТ 36-21-77</strong> — Dy 500–1400, ТЭС. <strong>СТО ЦКТИ 321.01–.08</strong> — гнутые и штампованные для ТЭС. <strong>НП-045-18</strong> — для АЭС (расширенный НК). Норматив определяет допуски, объём контроля и документацию.</div></div>
+              <div class="kb-param"><div class="kb-param-key">Нормативный документ</div><div class="kb-param-val"><strong>ГОСТ 17375-2001</strong> — DN 15–500, общепром. <strong>ОСТ 36-21-77</strong> — Dy 500–1400, ТЭС. <strong>СТО ЦКТИ 321.01–.08</strong> — гнутые и штампованные для ТЭС. <strong>НП-045-18</strong> — для АЭС (расширенный НК). Норматив определяет допуски, объём контроля и документацию.</div></div>
               <div class="kb-param"><div class="kb-param-key">Марка стали</div><div class="kb-param-val"><strong>Ст20</strong> — общепром., до +425°С. <strong>09Г2С</strong> — низкие температуры, НГК. <strong>12Х1МФ</strong> — паропроводы ТЭС до +570°С. <strong>15Х1М1Ф</strong> — сверхкритика +580°С. <strong>12Х18Н10Т</strong> — АЭС, агрессивные среды.</div></div>
               <div class="kb-param"><div class="kb-param-key">Объём НК</div><div class="kb-param-val">Базово: <strong>100% ВИК</strong>. По требованию заказчика: +<strong>УЗК</strong> (ГОСТ Р 55724-2013) / +<strong>РК</strong> / +<strong>МПД</strong> / +<strong>ПВК</strong>. Полный объём для АЭС — согласно НП-045-18 и программе контроля объекта.</div></div>
             </div>
@@ -93,7 +93,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Как выбрать тип отвода</div>
             <div class="kb-steps">
-              <div class="kb-step"><span class="kb-step-n">01</span><div><div class="kb-step-title">Определите DN трубопровода</div><div class="kb-step-body">DN до 500 — выбор между ГОСТ 17375 (крутоизогнутые) и СТО ЦКТИ 321 (гнутые). DN 100–1400 и ТЭС — рассмотрите секторные по ОСТ 36-21-77.</div></div></div>
+              <div class="kb-step"><span class="kb-step-n">01</span><div><div class="kb-step-title">Определите DN трубопровода</div><div class="kb-step-body">DN до 500 — выбор между ГОСТ 17375-2001 (крутоизогнутые) и СТО ЦКТИ 321 (гнутые). DN 100–1400 и ТЭС — рассмотрите секторные по ОСТ 36-21-77.</div></div></div>
               <div class="kb-step"><span class="kb-step-n">02</span><div><div class="kb-step-title">Проверьте требования объекта</div><div class="kb-step-body">АЭС — обязательно НП-089-15 и НП-045-18. Главные паропроводы ТЭС — предпочтительны гнутые СТО ЦКТИ 321 с R = 3.5–5DN. Общепромышленные — ГОСТ 17375.</div></div></div>
               <div class="kb-step"><span class="kb-step-n">03</span><div><div class="kb-step-title">Учтите гидравлику</div><div class="kb-step-body">На высокоскоростных паропроводах (v &gt; 40 м/с) рекомендуются <strong>гнутые отводы с R = 3.5–5DN</strong> — снижают эрозионный износ и турбулентность потока.</div></div></div>
               <div class="kb-step"><span class="kb-step-n">04</span><div><div class="kb-step-title">Согласуйте материал и НК</div><div class="kb-step-body">Для ответственных объектов — до начала производства согласуйте марку стали с нашим инженером и объём НК с заказчиком / представителем органа надзора.</div></div></div>
@@ -120,8 +120,8 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">ОСТ — тепловая и атомная энергетика</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.699-97</span><span class="kb-norm-desc">Отводы крутоизогнутые на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций. Конструкция и размеры</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.747-97 ÷ 10.754-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС из углеродистой и низколегированной сталей, Рраб &lt; 2,2 МПа, t ≤ 425 °C. Часть I</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-699-97</span><span class="kb-norm-desc">Отводы крутоизогнутые на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций. Конструкция и размеры</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-747-97 ÷ 10.754-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС из углеродистой и низколегированной сталей, Рраб &lt; 2,2 МПа, t ≤ 425 °C. Часть I</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-416-90 ÷ 433-90</span><span class="kb-norm-desc">Детали трубопроводов из коррозионностойкой стали на Рраб ≤ 2,2 МПа, T ≤ 300 °C для АС</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-20-77</span><span class="kb-norm-desc">Отводы штампосварные Dy 500–1400 мм из углеродистой стали на Ру ≤ 2,5 МПа</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-21-77</span><span class="kb-norm-desc">Отводы сварные секторные Dy 500–1400 мм — паровые и водяные тракты ТЭС/ГРЭС</span></div>
@@ -196,7 +196,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Чеклист заявки на отвод<?php echo esc_html( $angle_sp ); ?></div>
             <div class="kb-checklist">
-              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Тип и нормативный документ</div><div class="kb-check-body">Крутоизогнутый <strong>ГОСТ 17375</strong>; секторный <strong>ОСТ 36-21</strong>; гнутый <strong>СТО ЦКТИ 321.0X</strong>; штампосварной <strong>ОСТ 36-20</strong>. Если тип неизвестен — укажите DN, объект, рабочие параметры.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Тип и нормативный документ</div><div class="kb-check-body">Крутоизогнутый <strong>ГОСТ 17375-2001</strong>; секторный <strong>ОСТ 36-21-77</strong>; гнутый <strong>СТО ЦКТИ 321.0X</strong>; штампосварной <strong>ОСТ 36-20-77</strong>. Если тип неизвестен — укажите DN, объект, рабочие параметры.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">DN и толщина стенки</div><div class="kb-check-body">DN в мм и толщину стенки (если нестандартная). При отсутствии — указать PN и t°С для подбора нашим инженером.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Марка стали</div><div class="kb-check-body">Точная марка или условия: t°С, среда, требования объекта. Для АЭС — согласно программе контроля и категории трубопровода.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Количество и срок</div><div class="kb-check-body">Количество в штуках. Желаемая дата поставки или срок с момента подтверждения. Для крупных комплектаций — поэтапный график.</div></div></div>
@@ -207,7 +207,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Что влияет на стоимость</div>
             <div class="kb-factors">
-              <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Тип отвода</div><div class="kb-factor-note">Гнутые (СТО ЦКТИ) и секторные (ОСТ 36-21) DN 800–1400 дороже крутоизогнутых ГОСТ 17375 при тех же DN за счёт трудоёмкости изготовления.</div></div></div>
+              <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Тип отвода</div><div class="kb-factor-note">Гнутые (СТО ЦКТИ) и секторные (ОСТ 36-21-77) DN 800–1400 дороже крутоизогнутых ГОСТ 17375-2001 при тех же DN за счёт трудоёмкости изготовления.</div></div></div>
               <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Марка стали</div><div class="kb-factor-note">Жаропрочные (12Х1МФ) в 2–3 раза, нержавеющие (12Х18Н10Т) в 5–6 раз дороже углеродистой Ст20.</div></div></div>
               <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Объём НК</div><div class="kb-factor-note">Полный объём НК для АЭС (УЗК+РК+МПД+ПВК) может в 2–4 раза увеличить стоимость по сравнению с базовым ВИК.</div></div></div>
               <div class="kb-factor"><span class="kb-factor-ic">↓</span><div><div class="kb-factor-name">Тираж заказа</div><div class="kb-factor-note">Серийный заказ (от 10–20 шт.) снижает себестоимость за счёт амортизации затрат на подготовку производства.</div></div></div>
@@ -217,9 +217,9 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Частые ошибки при заказе</div>
             <div class="kb-errors">
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Указать Dнар вместо DN</div><div class="kb-err-note">DN 50 ≠ 50 мм. Наружный диаметр трубы по ГОСТ 8732 для DN 50 = 57 мм. Всегда уточняйте стандарт трубы.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Указать Dнар вместо DN</div><div class="kb-err-note">DN 50 ≠ 50 мм. Наружный диаметр трубы по ГОСТ 8732-78 для DN 50 = 57 мм. Всегда уточняйте стандарт трубы.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Не указать R/DN для гнутых</div><div class="kb-err-note">Серия СТО ЦКТИ 321 содержит 8 исполнений с разными R и назначением тракта. Если R не указан — уточняется по номеру типа или рабочим условиям.</div></div></div>
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Заказ ГОСТ 17375 для DN 600+</div><div class="kb-err-note">ГОСТ 17375 распространяется до DN 500. Для Dy 500–1400 необходим ОСТ 36-21-77 (секторные) или специсполнение по ТУ предприятия.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Заказ ГОСТ 17375-2001 для DN 600+</div><div class="kb-err-note">ГОСТ 17375-2001 распространяется до DN 500. Для Dy 500–1400 необходим ОСТ 36-21-77 (секторные) или специсполнение по ТУ предприятия.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Не учесть категорию (АЭС)</div><div class="kb-err-note">Категория I–IV по НП-089-15 определяет весь объём НК и документации. Ошибка в категории = несоответствие программе контроля.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путаница PN и рабочего давления</div><div class="kb-err-note">При t &gt; 100°С допустимое давление снижается. PN подбирается с учётом рабочей температуры по таблицам норматива.</div></div></div>
             </div>
@@ -251,7 +251,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-type-badge">УПАКОВКА</div>
             <div class="kb-type-title">Защита кромок и маркировка каждой позиции</div>
             <p class="kb-type-body">Паллеты или деревянная обрешётка по массе и габариту, защита сварочных кромок, маркировка позиций по упаковочному листу. Комплект документов — с грузом и дублируется по email.</p>
-            <div class="kb-type-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат 3.1</span></div>
+            <div class="kb-type-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат качества</span></div>
           </div>
           <div class="kb-type">
             <div class="kb-type-badge">ОПЛАТА</div>

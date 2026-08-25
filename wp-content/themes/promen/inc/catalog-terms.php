@@ -46,14 +46,14 @@ function promen_term_label( string $tax, string $slug ): string {
 	$map  = promen_term_map( $tax );
 	$name = $map[ $slug ]['name'] ?? $slug;
 	// Нормативы всегда по-русски: термин без названия/со слагом вместо имени
-	// («sto-95-127») превращаем в «СТО 95-127».
+	// («sto-95-127») превращаем в «СТО 95 127-2013».
 	if ( 'norm' === $tax && ! preg_match( '/[А-Яа-яЁё]/u', $name ) ) {
 		return promen_norm_label_from_slug( $name );
 	}
 	return $name;
 }
 
-/** «gost-17375-2001» → «ГОСТ 17375-2001», «sto-95-127» → «СТО 95-127». */
+/** «gost-17375-2001» → «ГОСТ 17375-2001», «sto-95-127» → «СТО 95 127-2013». */
 function promen_norm_label_from_slug( string $slug ): string {
 	$prefixes = [
 		'gost-r-' => 'ГОСТ Р ',

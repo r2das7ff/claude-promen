@@ -134,7 +134,7 @@ get_header();
       <div class="pd-prod">
         <span class="pd-prod-code">ФЛ</span>
         <div class="pd-prod-name">Фланцы трубопроводные</div>
-        <p class="pd-prod-desc">Приварные и свободные, DN 10–1600, сталь 08Х18Н10Т и аналоги по ГОСТ 12820‑80.</p>
+        <p class="pd-prod-desc">Приварные и свободные, DN 10–1600, сталь 08Х18Н10Т и аналоги по ГОСТ 12820-80‑80.</p>
         <a class="pd-prod-link" href="<?php echo esc_url( add_query_arg( 'group', 'flancy', $promen_catalog_url ) ); ?>">В каталоге →</a>
       </div>
       <div class="pd-prod">

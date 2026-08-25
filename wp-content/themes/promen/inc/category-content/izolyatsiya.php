@@ -7,7 +7,7 @@
 defined( 'ABSPATH' ) || exit;
 
 return [
-	's08_weld' => 'Изделия в ППУ по ГОСТ 30732: трубы-плети и тройники с оболочкой ПЭ или ОЦ. ГОСТ 30732-2020 · тепловые сети.',
+	's08_weld' => 'Изделия в ППУ по ГОСТ 30732-2020: трубы-плети и тройники с оболочкой ПЭ или ОЦ. ГОСТ 30732-2020 · тепловые сети.',
 	'hero' => static function ( array $ctx ): void { ?>
 <div class="sdt-hero" id="hero">
     <div class="hero-left">
@@ -61,14 +61,14 @@ return [
       <?php $izl = promen_izol_type_counts(); ?>
       <div class="map-groups" id="mapGroups" style="grid-template-columns:repeat(3,1fr);">
         <div class="mg"><div class="mg-hd"><div class="mg-code">ТР</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( $izl['truby'] ) ); ?> поз.</div></div><div class="mg-name">Трубы в ППУ</div>
-          <div class="mg-items"><div class="mg-item">Плети для теплосетей<span class="mg-norm">ГОСТ 30732</span></div></div>
+          <div class="mg-items"><div class="mg-item">Плети для теплосетей<span class="mg-norm">ГОСТ 30732-2020</span></div></div>
           <div class="mg-footer"><span class="mg-ftag">ТР</span></div></div>
         <div class="mg"><div class="mg-hd"><div class="mg-code">ПЭ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( $izl['pe'] ) ); ?> поз.</div></div><div class="mg-name">Тройники · оболочка ПЭ</div>
           <div class="mg-items"><div class="mg-item">Тройники ППУ<span class="mg-norm">бесканальная</span></div></div>
-          <div class="mg-footer"><span class="mg-ftag">ГОСТ 30732</span></div></div>
+          <div class="mg-footer"><span class="mg-ftag">ГОСТ 30732-2020</span></div></div>
         <div class="mg"><div class="mg-hd"><div class="mg-code">ОЦ</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( $izl['oc'] ) ); ?> поз.</div></div><div class="mg-name">Тройники · оболочка ОЦ</div>
           <div class="mg-items"><div class="mg-item">Тройники ППУ<span class="mg-norm">канальная / надзем</span></div></div>
-          <div class="mg-footer"><span class="mg-ftag">ГОСТ 30732</span></div></div>
+          <div class="mg-footer"><span class="mg-ftag">ГОСТ 30732-2020</span></div></div>
       </div>
     </div>
   </section>
@@ -94,14 +94,14 @@ return [
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 02</div><div class="sg-task-h">Тройник ППУ для бесканальной теплосети</div></div>
-          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Тройник ППУ ПЭ ГОСТ 30732</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Тройник ППУ ПЭ ГОСТ 30732-2020</div>
             <div class="sg-tags"><span class="sg-tag hi">ПЭ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( $izl3['pe'] ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'q', 'ППУ-ПЭ', $ctx['url'] ) ); ?>">К реестру →</a></div>
           <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">D×s / d×s</div><div class="sg-param">Оболочка ПЭ</div><div class="sg-param">Количество</div></div></div>
         </div>
         <div class="sg-row">
           <div class="sg-task"><div class="sg-task-code">Задача 03</div><div class="sg-task-h">Тройник ППУ канальная / надземная прокладка</div></div>
-          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Тройник ППУ ОЦ ГОСТ 30732</div>
+          <div class="sg-product" data-label="Нужное исполнение"><div class="sg-prod-name">Тройник ППУ ОЦ ГОСТ 30732-2020</div>
             <div class="sg-tags"><span class="sg-tag hi">ОЦ</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( $izl3['oc'] ) ); ?> поз.</span></div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'q', 'ППУ-ОЦ', $ctx['url'] ) ); ?>">К реестру →</a></div>
           <div class="sg-params" data-label="Что передать"><div class="sg-param-list"><div class="sg-param">D×s / d×s</div><div class="sg-param">Оболочка ОЦ</div><div class="sg-param">Количество</div></div></div>
@@ -136,7 +136,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Изоляция ППУ" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 30732, оболочка ПЭ/ОЦ…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 30732-2020, оболочка ПЭ/ОЦ…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">DN / D×s, мм</label><input id="om-dn" name="dn" type="text" placeholder="DN 100×80 / 108×4–89×4" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Давление, МПа</label><input id="om-pn" name="pn" type="text" placeholder="PN 16" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка стали</label><input id="om-mat" name="material" type="text" placeholder="09Г2С, 12Х1МФ…" autocomplete="off"></div>

@@ -49,7 +49,7 @@ defined( 'ABSPATH' ) || exit;
       </div>
     </div>
     <div class="kb-panel" id="kp-norms">
-      <p class="kb-intro-p">Опоры и подвески нормируются двумя ветками стандартов: <strong>ОСТ 24.125</strong> и <strong>ОСТ 34</strong> — для станционных трубопроводов ТЭС и АЭС, <strong>ОСТ 36</strong> и <strong>ГОСТ 16127</strong> — для технологических трубопроводов промышленных предприятий. Тип объекта определяет, какая ветка применяется.</p>
+      <p class="kb-intro-p">Опоры и подвески нормируются двумя ветками стандартов: <strong>ОСТ 24.125</strong> и <strong>ОСТ 34</strong> — для станционных трубопроводов ТЭС и АЭС, <strong>ОСТ 36</strong> и <strong>ГОСТ 16127-70</strong> — для технологических трубопроводов промышленных предприятий. Тип объекта определяет, какая ветка применяется.</p>
       <div class="kb-norm-grid">
         <div class="kb-norm-group">
           <div class="kb-norm-group-hd">ОСТ 24.125 — трубопроводы ТЭС и АЭС</div>
@@ -90,7 +90,7 @@ defined( 'ABSPATH' ) || exit;
       </div>
     </div>
     <div class="kb-panel" id="kp-materials">
-      <div class="kb-mat-grid"><div class="kb-mat"><div class="kb-mat-grade">Ст3сп</div><div class="kb-mat-std">ГОСТ 380</div><div class="kb-mat-range">Основная марка</div><div class="kb-mat-apps">Неподвижные и скользящие</div></div><div class="kb-mat"><div class="kb-mat-grade">Ст20</div><div class="kb-mat-std">ГОСТ 1050</div><div class="kb-mat-range">Пружинные / ответственные</div><div class="kb-mat-apps">По проекту</div></div></div>
+      <div class="kb-mat-grid"><div class="kb-mat"><div class="kb-mat-grade">Ст3сп</div><div class="kb-mat-std">ГОСТ 380-2005</div><div class="kb-mat-range">Основная марка</div><div class="kb-mat-apps">Неподвижные и скользящие</div></div><div class="kb-mat"><div class="kb-mat-grade">Ст20</div><div class="kb-mat-std">ГОСТ 1050-2013</div><div class="kb-mat-range">Пружинные / ответственные</div><div class="kb-mat-apps">По проекту</div></div></div>
     </div>
     <div class="kb-panel" id="kp-docs">
       <div class="kb-2col">

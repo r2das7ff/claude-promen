@@ -56,8 +56,8 @@ defined( 'ABSPATH' ) || exit;
         </div>
         <div class="kb-groups-hd">Сравнение исполнений</div>
         <div class="kb-groups">
-          <div class="kb-grp"><span class="kb-grp-code">ПЭ</span><span class="kb-grp-name">Полиэтилен · 37 поз.</span><span class="kb-grp-items">Бесканальная · ГОСТ 30732</span></div>
-          <div class="kb-grp"><span class="kb-grp-code">ОЦ</span><span class="kb-grp-name">Оцинковка · 35 поз.</span><span class="kb-grp-items">Канальная / надзем · ГОСТ 30732</span></div>
+          <div class="kb-grp"><span class="kb-grp-code">ПЭ</span><span class="kb-grp-name">Полиэтилен · 37 поз.</span><span class="kb-grp-items">Бесканальная · ГОСТ 30732-2020</span></div>
+          <div class="kb-grp"><span class="kb-grp-code">ОЦ</span><span class="kb-grp-name">Оцинковка · 35 поз.</span><span class="kb-grp-items">Канальная / надзем · ГОСТ 30732-2020</span></div>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ defined( 'ABSPATH' ) || exit;
               <div class="kb-param"><div class="kb-param-key">D×s</div><div class="kb-param-val">Основной проход: наружный диаметр × стенка стальной трубы.</div></div>
               <div class="kb-param"><div class="kb-param-key">d×s</div><div class="kb-param-val">Ответвление тройника — диаметр × стенка.</div></div>
               <div class="kb-param"><div class="kb-param-key">Оболочка</div><div class="kb-param-val"><strong>ПЭ</strong> или <strong>ОЦ</strong> — по типу прокладки теплосети.</div></div>
-              <div class="kb-param"><div class="kb-param-key">ППУ</div><div class="kb-param-val">Толщина изоляции — по ГОСТ 30732 / проекту (стандарт / усиленная).</div></div>
+              <div class="kb-param"><div class="kb-param-key">ППУ</div><div class="kb-param-val">Толщина изоляции — по ГОСТ 30732-2020 / проекту (стандарт / усиленная).</div></div>
               <div class="kb-param"><div class="kb-param-key">ОДК</div><div class="kb-param-val">Проводники контроля влажности — комплектность по КД.</div></div>
             </div>
           </div>
@@ -96,7 +96,7 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">Основной стандарт</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30732-2020</span><span class="kb-norm-desc">Трубы и фасонные изделия стальные с тепловой изоляцией из пенополиуретана с защитной оболочкой. Технические условия (EN 253:2015 / EN 448:2016, NEQ). Взамен ГОСТ 30732-2006</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30732-2020</span><span class="kb-norm-desc">Трубы и фасонные изделия стальные с тепловой изоляцией из пенополиуретана с защитной оболочкой. Технические условия (EN 253:2015 / EN 448:2016, NEQ). Взамен ГОСТ 30732-2020</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30732-2020, разд. 5</span><span class="kb-norm-desc">Защитная оболочка: полиэтиленовая (ПЭ) для подземной бесканальной прокладки, оцинкованная (ОЦ) для надземной — указывается в обозначении изделия</span></div>
             </div>
           </div>
@@ -122,7 +122,7 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-mat">
             <div class="kb-mat-grade">Сталь</div>
             <div class="kb-mat-std">По ГОСТ / проекту сети</div>
-            <div class="kb-mat-range">Сертификат 3.1</div>
+            <div class="kb-mat-range">Сертификат качества</div>
             <div class="kb-mat-apps">Несущая часть тройника · прослеживаемость плавки</div>
           </div>
           <div class="kb-mat">
@@ -180,7 +180,7 @@ defined( 'ABSPATH' ) || exit;
               </div>
               <div class="kb-doc-item">
                 <div class="kb-doc-name">Совместимость с трубами ППУ</div>
-                <div class="kb-doc-desc">Фасонные изделия согласуются с прямыми плетями того же ГОСТ 30732 (раздел «Трубы»).</div>
+                <div class="kb-doc-desc">Фасонные изделия согласуются с прямыми плетями того же ГОСТ 30732-2020 (раздел «Трубы»).</div>
               </div>
             </div>
             <div class="kb-col-title" style="margin-top:28px;">Комплексные поставки</div>

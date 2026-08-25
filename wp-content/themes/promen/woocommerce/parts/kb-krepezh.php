@@ -36,25 +36,25 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-card">
             <div class="kb-card-badge">Б</div>
             <div class="kb-card-title">Болты · 10 467 позиций</div>
-            <p class="kb-card-body">Фундаментные (ГОСТ 22032 / 22043), с шестигранной головкой (ГОСТ 7798 / 7795 / 7796), с уменьшенной головкой (ГОСТ 7805 / 7808) и высокопрочные (ГОСТ 10602). Основной объём каталога крепежа.</p>
+            <p class="kb-card-body">Фундаментные (ГОСТ 22032-76 / 22043-76), с шестигранной головкой (ГОСТ 7798-70 / 7795-70 / 7796-70), с уменьшенной головкой (ГОСТ 7805-70 / 7808-70) и высокопрочные (ГОСТ 10602-94). Основной объём каталога крепежа.</p>
             <div class="kb-card-tags"><span class="kb-tag">Б</span><span class="kb-tag">M × L</span><span class="kb-tag">10 467 поз.</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ШП</div>
             <div class="kb-card-title">Шпильки · 3 012 позиций</div>
-            <p class="kb-card-body">Шпильки общепромышленные ГОСТ 15590 / 15591, фланцевые ГОСТ 9066, шпильки ОСТ 26-2040 для сосудов и аппаратов, ряд ГОСТ 10494 (Ст20). Типовое исполнение фланцевого крепежа.</p>
+            <p class="kb-card-body">Шпильки общепромышленные ГОСТ 15590-70 / 15591-70, фланцевые ГОСТ 9066-75, шпильки ОСТ 26-2040-96 для сосудов и аппаратов, ряд ГОСТ 10494-80 (Ст20). Типовое исполнение фланцевого крепежа.</p>
             <div class="kb-card-tags"><span class="kb-tag">ШП</span><span class="kb-tag">фланцы</span><span class="kb-tag">3 012 поз.</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">Г</div>
             <div class="kb-card-title">Гайки · 168 позиций</div>
-            <p class="kb-card-body">Гайки для фланцевых соединений ГОСТ 9064, шестигранные ГОСТ 5915 / 10605, низкие ГОСТ 5916 / 10607, с уменьшенным размером под ключ и колпачковые (ГОСТ 5927 / 5929).</p>
+            <p class="kb-card-body">Гайки для фланцевых соединений ГОСТ 9064-75, шестигранные ГОСТ 5915-70 / 10605-94, низкие ГОСТ 5916-70 / 10607-94, с уменьшенным размером под ключ и колпачковые (ГОСТ 5927-70 / 5929-70).</p>
             <div class="kb-card-tags"><span class="kb-tag">Г</span><span class="kb-tag">M</span><span class="kb-tag">168 поз.</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">Ш / В</div>
             <div class="kb-card-title">Шайбы и винты · 99 позиций</div>
-            <p class="kb-card-body">Шайбы ГОСТ 6402 (80 поз.) и усиленные ГОСТ 11371 (18 поз.). Винт по ГОСТ 6958 — 1 позиция. Комплектуют болтовые и шпилечные соединения.</p>
+            <p class="kb-card-body">Шайбы ГОСТ 6402-70 (80 поз.) и усиленные ГОСТ 11371-78 (18 поз.). Винт по ГОСТ 6958 — 1 позиция. Комплектуют болтовые и шпилечные соединения.</p>
             <div class="kb-card-tags"><span class="kb-tag">Ш 98</span><span class="kb-tag">В 1</span></div>
           </div>
         </div>
@@ -69,7 +69,7 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-grp">
             <span class="kb-grp-code">ШП</span>
             <span class="kb-grp-name">Шпильки · 3 012 поз.</span>
-            <span class="kb-grp-items">15590 · 9066 · ОСТ 26-2040 · 10494</span>
+            <span class="kb-grp-items">15590 · 9066 · ОСТ 26-2040-96 · 10494</span>
           </div>
           <div class="kb-grp">
             <span class="kb-grp-code">Г</span>
@@ -95,8 +95,8 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-checklist">
               <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Тип изделия</div><div class="kb-check-body">Болт, шпилька, гайка, шайба или винт. Для фланца — обычно шпилька + две гайки + шайбы.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">Резьба M и длина L</div><div class="kb-check-body">Пример: M16 × 80. Если неизвестно — укажите DN/PN фланца или толщину пакета сжимаемых деталей.</div></div></div>
-              <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Норматив</div><div class="kb-check-body">ГОСТ 7798, 9066, 15590, ОСТ 26-2040 и др. Если норматив неизвестен — тип соединения и объект.</div></div></div>
-              <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Класс прочности / марка</div><div class="kb-check-body">5.6, 8.8, Ст20 и др. — по стандарту или условиям эксплуатации. В каталоге явно указана Ст20 для ряда ГОСТ 10494 (207 поз.).</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Норматив</div><div class="kb-check-body">ГОСТ 7798-70, 9066-75, 15590-70, ОСТ 26-2040-96 и др. Если норматив неизвестен — тип соединения и объект.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Класс прочности / марка</div><div class="kb-check-body">5.6, 8.8, Ст20 и др. — по стандарту или условиям эксплуатации. В каталоге явно указана Ст20 для ряда ГОСТ 10494-80 (207 поз.).</div></div></div>
               <div class="kb-check"><span class="kb-check-n">05</span><div><div class="kb-check-title">Покрытие и НК</div><div class="kb-check-body">Цинк, кадмий, без покрытия — по КД. Объём НК (ВИК и др.) — по требованию объекта / ТР ТС 032/2013.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">06</span><div><div class="kb-check-title">Количество и срок</div><div class="kb-check-body">Количество в штуках (часто комплектами на соединение). Желаемая дата поставки.</div></div></div>
             </div>
@@ -108,7 +108,7 @@ defined( 'ABSPATH' ) || exit;
               <div class="kb-param"><div class="kb-param-key">Длина L</div><div class="kb-param-val">Длина стержня, мм. Для болтов и шпилек в каталоге — ряд <strong>8–900 мм</strong>. Для гаек и шайб длина не задаётся.</div></div>
               <div class="kb-param"><div class="kb-param-key">Тип</div><div class="kb-param-val"><strong>Б</strong> — болт; <strong>ШП</strong> — шпилька; <strong>Г</strong> — гайка; <strong>Ш</strong> — шайба; <strong>В</strong> — винт.</div></div>
               <div class="kb-param"><div class="kb-param-key">Класс прочности</div><div class="kb-param-val">По таблице стандарта (например 5.6, 8.8 для болтов). Указывается в заявке, если не следует из выбранного ГОСТ.</div></div>
-              <div class="kb-param"><div class="kb-param-key">Марка металла</div><div class="kb-param-val">В агрегатах каталога явно зафиксирована <strong>Ст20</strong> (207 позиций шпилек ГОСТ 10494). Остальной ряд — по материалу стандарта изготовления, согласуется в КП.</div></div>
+              <div class="kb-param"><div class="kb-param-key">Марка металла</div><div class="kb-param-val">В агрегатах каталога явно зафиксирована <strong>Ст20</strong> (207 позиций шпилек ГОСТ 10494-80). Остальной ряд — по материалу стандарта изготовления, согласуется в КП.</div></div>
               <div class="kb-param"><div class="kb-param-key">Объём НК</div><div class="kb-param-val">Базовый: <strong>ВИК 100%</strong>. Расширенный — по требованию заказчика и надзорности объекта.</div></div>
             </div>
           </div>
@@ -164,13 +164,13 @@ defined( 'ABSPATH' ) || exit;
       </div>
 
       <div class="kb-panel" id="kp-materials">
-        <p class="kb-intro-p">В агрегатах каталога крепежа явно указана марка <strong>Ст20</strong> для <strong>207 позиций</strong> шпилек по ГОСТ 10494-1980. Для остального ряда (13&nbsp;539 позиций) материал и класс прочности задаются <strong>стандартом изготовления</strong> и согласуются в коммерческом предложении — без выдуманных марок. <strong>Каждая поставка сопровождается сертификатом на металл</strong> (паспорт качества 3.1 по ГОСТ ISO 10474-2016) с плавочными данными, где это применимо к выбранному нормативу.</p>
+        <p class="kb-intro-p">В агрегатах каталога крепежа явно указана марка <strong>Ст20</strong> для <strong>207 позиций</strong> шпилек по ГОСТ 10494-80. Для остального ряда (13&nbsp;539 позиций) материал и класс прочности задаются <strong>стандартом изготовления</strong> и согласуются в коммерческом предложении — без выдуманных марок. <strong>Каждая поставка сопровождается сертификатом на металл</strong> (паспорт качества 3.1 по ГОСТ ISO 10474-2016) с плавочными данными, где это применимо к выбранному нормативу.</p>
         <div class="kb-mat-grid">
           <div class="kb-mat">
             <div class="kb-mat-grade">Ст20</div>
-            <div class="kb-mat-std">ГОСТ 1050-2013 · ряд ГОСТ 10494</div>
+            <div class="kb-mat-std">ГОСТ 1050-2013 · ряд ГОСТ 10494-80</div>
             <div class="kb-mat-range">207 позиций в каталоге</div>
-            <div class="kb-mat-apps">Шпильки ГОСТ 10494-1980 · Фланцевые и общепромышленные соединения · Типовые трубопроводы</div>
+            <div class="kb-mat-apps">Шпильки ГОСТ 10494-80 · Фланцевые и общепромышленные соединения · Типовые трубопроводы</div>
           </div>
           <div class="kb-mat">
             <div class="kb-mat-grade">По стандарту изделия</div>
@@ -182,7 +182,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-mat-grade">Класс прочности</div>
             <div class="kb-mat-std">По ГОСТ на болты / шпильки</div>
             <div class="kb-mat-range">Указывается в заявке</div>
-            <div class="kb-mat-apps">Типовые классы болтов (напр. 5.6, 8.8) · Высокопрочный ряд ГОСТ 10602 · Согласование под нагрузку узла</div>
+            <div class="kb-mat-apps">Типовые классы болтов (напр. 5.6, 8.8) · Высокопрочный ряд ГОСТ 10602-94 · Согласование под нагрузку узла</div>
           </div>
           <div class="kb-mat">
             <div class="kb-mat-grade">Покрытие</div>
@@ -247,7 +247,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Как подготовить заявку на крепёж</div>
             <div class="kb-checklist">
-              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Наименование и норматив</div><div class="kb-check-body">Болт / шпилька / гайка по <strong>ГОСТ 7798</strong>, <strong>9066</strong>, <strong>15590</strong>, <strong>ОСТ 26-2040</strong> и др. Если норматив неизвестен — тип узла и DN/PN фланца.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Наименование и норматив</div><div class="kb-check-body">Болт / шпилька / гайка по <strong>ГОСТ 7798-70</strong>, <strong>9066</strong>, <strong>15590</strong>, <strong>ОСТ 26-2040-96</strong> и др. Если норматив неизвестен — тип узла и DN/PN фланца.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">M и L</div><div class="kb-check-body">Резьба и длина. При отсутствии — передайте толщину пакета или параметры фланца для подбора инженером.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Материал / класс прочности</div><div class="kb-check-body">Точная марка, класс (5.6 / 8.8…) или условия среды. Для АЭС — по программе контроля объекта.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Количество и срок</div><div class="kb-check-body">Количество в штуках (часто комплектами). Желаемая дата поставки.</div></div></div>
@@ -258,7 +258,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Что влияет на стоимость</div>
             <div class="kb-factors">
-              <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Тип и норматив</div><div class="kb-factor-note">Высокопрочные болты (ГОСТ 10602) и шпильки ОСТ для аппаратов дороже типовых общепромышленных рядов при сопоставимых M.</div></div></div>
+              <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Тип и норматив</div><div class="kb-factor-note">Высокопрочные болты (ГОСТ 10602-94) и шпильки ОСТ для аппаратов дороже типовых общепромышленных рядов при сопоставимых M.</div></div></div>
               <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Класс прочности / марка</div><div class="kb-factor-note">Повышенный класс и спецстали увеличивают стоимость относительно базового углеродистого исполнения.</div></div></div>
               <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Покрытие и НК</div><div class="kb-factor-note">Специальные покрытия и расширенный объём НК увеличивают цену относительно базового ВИК.</div></div></div>
               <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Крупный M и длина</div><div class="kb-factor-note">Крупная резьба и длинные шпильки — индивидуальная заготовка и контроль.</div></div></div>
@@ -269,8 +269,8 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-col-title">Частые ошибки при заказе</div>
             <div class="kb-errors">
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Указать только M без L</div><div class="kb-err-note">Для болта и шпильки длина обязательна. «Шпилька M16» без L — не спецификация.</div></div></div>
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путать болт и шпильку</div><div class="kb-err-note">Фланцевая пара чаще на шпильках (ГОСТ 9066) с двумя гайками. Ошибка типа = несовместимость с проектом.</div></div></div>
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Забыть гайки и шайбы</div><div class="kb-err-note">Заказ только шпилек без гаек ГОСТ 9064 / шайб — неполный комплект фланцевого соединения.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путать болт и шпильку</div><div class="kb-err-note">Фланцевая пара чаще на шпильках (ГОСТ 9066-75) с двумя гайками. Ошибка типа = несовместимость с проектом.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Забыть гайки и шайбы</div><div class="kb-err-note">Заказ только шпилек без гаек ГОСТ 9064-75 / шайб — неполный комплект фланцевого соединения.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Не указать класс прочности</div><div class="kb-err-note">При нагрузках выше типовых нужен явный класс (или ссылка на КД). Иначе подбор идёт по базовому ряду стандарта.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путать M с DN фланца</div><div class="kb-err-note">DN 100 фланца ≠ резьба M100. Резьба крепежа выбирается по таблице фланца / КД.</div></div></div>
             </div>
@@ -300,7 +300,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-card-badge">УПАКОВКА</div>
             <div class="kb-card-title">Защита кромок и маркировка каждой позиции</div>
             <p class="kb-card-body">Паллеты или деревянная обрешётка по массе и габариту, защита сварочных / уплотнительных кромок, маркировка позиций по упаковочному листу. Комплект документов — с грузом и дублируется по email.</p>
-            <div class="kb-card-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат 3.1</span></div>
+            <div class="kb-card-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат качества</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ОПЛАТА</div>

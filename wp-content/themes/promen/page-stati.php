@@ -23,7 +23,7 @@ get_header();
   </div>
 
   <!-- HEAD -->
-  <div class="bl-head">
+  <div class="bl-head" data-reveal>
     <span class="bl-head-ghost">09</span>
     <div>
       <div class="bl-eyebrow"><span class="bl-eyebrow-n">09</span><span class="bl-eyebrow-l">Знания завода</span></div>
@@ -40,8 +40,8 @@ get_header();
   </div>
 
   <!-- MEDIA BAND -->
-  <div class="bl-media">
-    <img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-2.jpg' ) ); ?>" alt="Производственная площадка завода Промышленная Энергетика" loading="eager">
+  <div class="bl-media" data-reveal>
+    <img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-2.jpg' ) ); ?>" alt="Производственная площадка завода Промышленная Энергетика" loading="eager" decoding="async">
     <span class="bl-media-idx">ПЭ-09.ART / REV.2</span>
     <span class="bl-media-tag">Производственная площадка · Челябинск</span>
   </div>
@@ -54,13 +54,13 @@ get_header();
   </div>
 
   <!-- FEATURED + GRID -->
-  <div class="bl-wrap">
+  <div class="bl-wrap" data-reveal>
     <div id="blFeatured"></div>
-    <div class="bl-grid" id="blGrid"></div>
+    <div class="bl-grid" id="blGrid" data-reveal-group></div>
   </div>
 
   <!-- CTA -->
-  <div class="pd-cta">
+  <div class="pd-cta" data-reveal>
     <div>
       <div class="pd-cta-h">Не нашли ответ<br>на <em>свой вопрос</em>?</div>
       <p class="pd-cta-p">Опишите задачу — инженер завода подберёт материал, нормативный документ и технологию изготовления под ваш проект.</p>

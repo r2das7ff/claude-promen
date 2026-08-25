@@ -98,16 +98,26 @@ while ( have_posts() ) :
 	$mass_ok   = $mass && promen_mass_is_reliable( $cat_group );
 	$mass_col  = promen_mass_is_reliable( $cat_group ); // показывать колонку «Масса» в таблицах серии
 
-	// Фото изделия: пока только отводы; на остальных категориях — заглушка.
-	// Файл кладётся в themes/promen/assets/img/products/otvod.<ext> (рендер img только если файл есть).
+	// Фото изделия: assets/img/products/<slug-категории>.<ext>.
+	// Идём от самой глубокой категории вверх по дереву — подкатегория без
+	// собственного снимка наследует родительский; нет ни одного — заглушка.
 	$deep_cat  = promen_deepest_cat( $product->get_id() );
 	$photo_url = '';
-	if ( $deep_cat && $deep_cat->slug === 'otvody' ) {
-		foreach ( [ 'png', 'jpg', 'jpeg', 'webp' ] as $ext ) {
-			$rel = 'assets/img/products/otvod.' . $ext;
-			if ( file_exists( get_theme_file_path( $rel ) ) ) {
-				$photo_url = get_theme_file_uri( $rel );
-				break;
+	if ( $deep_cat ) {
+		$photo_slugs = [ $deep_cat->slug ];
+		foreach ( get_ancestors( $deep_cat->term_id, 'product_cat', 'taxonomy' ) as $anc_id ) {
+			$anc = get_term( $anc_id, 'product_cat' );
+			if ( $anc && ! is_wp_error( $anc ) ) {
+				$photo_slugs[] = $anc->slug;
+			}
+		}
+		foreach ( $photo_slugs as $photo_slug ) {
+			foreach ( [ 'webp', 'png', 'jpg', 'jpeg' ] as $ext ) {
+				$rel = 'assets/img/products/' . $photo_slug . '.' . $ext;
+				if ( file_exists( get_theme_file_path( $rel ) ) ) {
+					$photo_url = get_theme_file_uri( $rel );
+					break 2;
+				}
 			}
 		}
 	}
@@ -402,7 +412,7 @@ while ( have_posts() ) :
                   endforeach;
                   ?>
                 </span>
-                <span class="pp-mat-cert"> · серт. 3.1</span>
+                <span class="pp-mat-cert"> · сертификат качества</span>
               </span>
                           </div>
           <?php endif; ?>
@@ -466,7 +476,7 @@ while ( have_posts() ) :
             elseif ( $is_flange ) :
               ?><span class="ec-tag">DN / PN</span><?php if ( $flange_type !== '' ) : ?><span class="ec-tag">тип <?php echo esc_html( $flange_type ); ?></span><?php endif;
             else :
-              ?><span class="ec-tag">Встык</span><span class="ec-tag">ГОСТ 16037</span><?php
+              ?><span class="ec-tag">Встык</span><span class="ec-tag">ГОСТ 16037-80</span><?php
             endif;
           ?></div>
         </div>
@@ -491,7 +501,7 @@ while ( have_posts() ) :
         </div>
         <div class="ec">
           <div class="ec-code">04 / Прослеживаемость</div>
-          <div class="ec-h">Сертификат 3.1</div>
+          <div class="ec-h">Сертификат качества</div>
           <p class="ec-p">Поставка с сертификатом на металл, номером плавки и паспортом изделия. Для поднадзорных объектов — расширенный объём НК.</p>
           <div class="ec-tags"><span class="ec-tag">3.1</span><span class="ec-tag">ОТК</span></div>
         </div>

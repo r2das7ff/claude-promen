@@ -40,7 +40,7 @@ return [
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 33259-2015</span><span class="hud-rv live">Тип 01 / 11</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 12820 / 12821</span><span class="hud-rv live">ФП / ФВ</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 12820-80 / 12821-80</span><span class="hud-rv live">ФП / ФВ</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 28759.2-2022</span><span class="hud-rv live">Сосудовые</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
@@ -73,7 +73,7 @@ return [
           <div class="mg-hd"><div class="mg-code">01</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'flancy-01' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Плоские тип 01</div>
           <div class="mg-items">
-            <div class="mg-item">Плоские по ГОСТ 33259<span class="mg-norm">ГОСТ 33259-2015</span></div>
+            <div class="mg-item">Плоские по ГОСТ 33259-2015<span class="mg-norm">ГОСТ 33259-2015</span></div>
             <div class="mg-item">PN до 250<span class="mg-norm">типоразмерный ряд</span></div>
             <div class="mg-item">Разъёмные соединения<span class="mg-norm">DN 10–2400</span></div>
           </div>
@@ -158,7 +158,7 @@ return [
             <div class="sg-task-h">Воротниковый фланец / приварка встык</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Фланцы ФВ по ГОСТ 12821 или тип 11 по ГОСТ 33259</div>
+            <div class="sg-prod-name">Фланцы ФВ по ГОСТ 12821-80 или тип 11 по ГОСТ 33259-2015</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ГОСТ 12821-80</span><span class="sg-tag">тип 11</span><span class="sg-tag">ФВ</span>
             </div>
@@ -229,7 +229,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Фланец" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 33259, ГОСТ 12820…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 33259-2015, ГОСТ 12820-80…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">DN / Dy, мм</label><input id="om-dn" name="dn" type="text" placeholder="DN 100" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Давление, МПа</label><input id="om-pn" name="pn" type="text" placeholder="PN 16 / Ру 2,5" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка стали</label><input id="om-mat" name="material" type="text" placeholder="09Г2С, 12Х18Н10Т…" autocomplete="off"></div>

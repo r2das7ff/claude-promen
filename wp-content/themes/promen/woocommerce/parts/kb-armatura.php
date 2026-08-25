@@ -26,19 +26,19 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-card-badge">ЗД</div>
             <div class="kb-card-title">Задвижки клиновые</div>
             <p class="kb-card-body">Стальные клиновые с невыдвижным шпинделем. DN 50–1000, PN 1.6–6.3.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 33257</span><span class="kb-tag">ЗД</span></div>
+            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 33257-2015</span><span class="kb-tag">ЗД</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">КО</div>
             <div class="kb-card-title">Клапаны обратные</div>
             <p class="kb-card-body">Подъёмные стальные. DN 15–200.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 33257</span><span class="kb-tag">КО</span></div>
+            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 33257-2015</span><span class="kb-tag">КО</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">КР</div>
             <div class="kb-card-title">Краны шаровые</div>
             <p class="kb-card-body">Полнопроходные. DN 15–500, PN до 10 МПа.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 33257</span><span class="kb-tag">КР</span></div>
+            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 33257-2015</span><span class="kb-tag">КР</span></div>
           </div>
       </div>
     </div>
@@ -81,7 +81,7 @@ defined( 'ABSPATH' ) || exit;
       </div>
     </div>
     <div class="kb-panel" id="kp-materials">
-      <div class="kb-mat-grid"><div class="kb-mat"><div class="kb-mat-grade">Ст20</div><div class="kb-mat-std">ГОСТ 1050</div><div class="kb-mat-range">Основная марка</div><div class="kb-mat-apps">Корпус и крышка</div></div><div class="kb-mat"><div class="kb-mat-grade">09Г2С</div><div class="kb-mat-std">ГОСТ 19281</div><div class="kb-mat-range">Хладостойкость</div><div class="kb-mat-apps">По проекту</div></div><div class="kb-mat"><div class="kb-mat-grade">12Х18Н10Т</div><div class="kb-mat-std">ГОСТ 5632</div><div class="kb-mat-range">Коррозия</div><div class="kb-mat-apps">Агрессивные среды</div></div></div>
+      <div class="kb-mat-grid"><div class="kb-mat"><div class="kb-mat-grade">Ст20</div><div class="kb-mat-std">ГОСТ 1050-2013</div><div class="kb-mat-range">Основная марка</div><div class="kb-mat-apps">Корпус и крышка</div></div><div class="kb-mat"><div class="kb-mat-grade">09Г2С</div><div class="kb-mat-std">ГОСТ 19281-2014</div><div class="kb-mat-range">Хладостойкость</div><div class="kb-mat-apps">По проекту</div></div><div class="kb-mat"><div class="kb-mat-grade">12Х18Н10Т</div><div class="kb-mat-std">ГОСТ 5632-2014</div><div class="kb-mat-range">Коррозия</div><div class="kb-mat-apps">Агрессивные среды</div></div></div>
     </div>
     <div class="kb-panel" id="kp-docs">
       <div class="kb-2col">

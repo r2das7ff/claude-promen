@@ -23,10 +23,24 @@
   wrap.style.position='sticky';
   wrap.style.zIndex='5';
   function setTop(){
-    wrap.style.top=(window.innerHeight-wrap.offsetHeight)+'px';
+    var t=(window.innerHeight-wrap.offsetHeight)+'px';
+    /* Лишняя запись — лишняя инвалидация стиля на обёртке в 20 000px. */
+    if(wrap.style.top!==t)wrap.style.top=t;
   }
   setTop();
-  window.addEventListener('resize',setTop,{passive:true});
+
+  /* На телефоне высота вьюпорта меняется сама, когда браузер прячет и
+     показывает адресную строку. Пересчёт по такому resize сдвигал точку
+     пиннинга прямо во время прокрутки — контент дёргался на ровном месте.
+     Реагируем на смену ширины (поворот, ресайз окна) и на крупные скачки
+     высоты, мелкие игнорируем: неточность в сотню пикселей незаметна,
+     рывок заметен. */
+  var lastW=window.innerWidth,lastH=window.innerHeight;
+  window.addEventListener('resize',function(){
+    if(window.innerWidth===lastW&&Math.abs(window.innerHeight-lastH)<140)return;
+    lastW=window.innerWidth;lastH=window.innerHeight;
+    setTop();
+  },{passive:true});
   window.addEventListener('load',setTop);
 
   /* top считается от высоты контента, а она меняется без изменения окна:
@@ -34,13 +48,17 @@
      картинок. Со старым top обёртка пиннилась раньше времени — контент
      замирал на пол-экрана прокрутки, а последние карточки так и оставались
      под футером. Пересчитываем по фактическому изменению размера.
-     rAF — чтобы правка top не приходила внутрь того же кадра наблюдения. */
+
+     Синхронно, без rAF. Наблюдатель будит нас после раскладки, но ДО
+     отрисовки — правка top успевает в тот же кадр. Через rAF она уезжала
+     в следующий, и один кадр обёртка стояла со старым значением: на первом
+     же «Показать ещё» это 1754px расхождения, то есть видимый скачок.
+     Зацикливания нет: top у sticky-элемента не меняет его собственную
+     высоту, а значит и повторного срабатывания наблюдателя не вызывает.
+     Отложенный вызов был вреден и вторым концом: пока вкладка в фоне, rAF
+     не выполняется, флаг pending залипал, и все изменения размера до
+     возвращения на вкладку терялись. */
   if('ResizeObserver' in window){
-    var pending=false;
-    new ResizeObserver(function(){
-      if(pending)return;
-      pending=true;
-      requestAnimationFrame(function(){pending=false;setTop();});
-    }).observe(wrap);
+    new ResizeObserver(setTop).observe(wrap);
   }
 })();

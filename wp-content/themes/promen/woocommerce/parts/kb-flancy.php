@@ -2,7 +2,7 @@
 /**
  * Секция 10 — база знаний «Фланцы» (7 табов).
  * Структура и плотность — по образцу otvody s10; классы category-sdt.css.
- * Факты — aggregates / ГОСТ 33259, 12820, 12821, 28759.2.
+ * Факты — aggregates / ГОСТ 33259-2015, 12820-80, 12821-80, 28759.2-2022.
  * ЗАПРЕТ: не сокращать тексты карточек материалов и табов 04–07.
  */
 defined( 'ABSPATH' ) || exit;
@@ -29,18 +29,18 @@ defined( 'ABSPATH' ) || exit;
       <div class="kb-panel kp-active" id="kp-types">
         <div class="kb-lead">
           <div class="kb-lead-h">Классификация фланцев</div>
-          <p class="kb-lead-p">Фланец обеспечивает <strong>разъёмное соединение</strong> труб, арматуры и аппаратов с возможностью обслуживания. В каталоге — <strong>четыре типоисполнения</strong>, <strong>655 типоразмеров</strong> по четырём сериям: тип 11 и тип 01 по ГОСТ 33259-2015, плоские ФП (ГОСТ 12820 / 28759.2) и воротниковые ФВ (ГОСТ 12821). DN 10–4000, PN 1–250.</p>
+          <p class="kb-lead-p">Фланец обеспечивает <strong>разъёмное соединение</strong> труб, арматуры и аппаратов с возможностью обслуживания. В каталоге — <strong>четыре типоисполнения</strong>, <strong>655 типоразмеров</strong> по четырём сериям: тип 11 и тип 01 по ГОСТ 33259-2015, плоские ФП (ГОСТ 12820-80 / 28759.2-2022) и воротниковые ФВ (ГОСТ 12821-80). DN 10–4000, PN 1–250.</p>
         </div>
 
         <div class="kb-cards">
           <div class="kb-card">
-            <div class="kb-card-badge">ГОСТ 33259</div>
+            <div class="kb-card-badge">ГОСТ 33259-2015</div>
             <div class="kb-card-title">Тип 11 · воротниковые · PN до 250</div>
             <p class="kb-card-body">Фланцы арматуры, соединительных частей и трубопроводов по ГОСТ 33259-2015 (ISO 7005, NEQ). <strong>Тип 11</strong> — приварные встык (воротниковые). Основной ряд каталога: <strong>273 позиции</strong>, DN 10–2400, PN до 250.</p>
             <div class="kb-card-tags"><span class="kb-tag">тип 11</span><span class="kb-tag">PN до 250</span><span class="kb-tag">273 поз.</span></div>
           </div>
           <div class="kb-card">
-            <div class="kb-card-badge">ГОСТ 33259</div>
+            <div class="kb-card-badge">ГОСТ 33259-2015</div>
             <div class="kb-card-title">Тип 01 · плоские · PN до 250</div>
             <p class="kb-card-body"><strong>Тип 01</strong> по ГОСТ 33259-2015 — плоские фланцы того же нормативного ряда. Применяются в разъёмных соединениях трубопроводов и арматуры. <strong>139 позиций</strong>.</p>
             <div class="kb-card-tags"><span class="kb-tag">тип 01</span><span class="kb-tag">PN до 250</span><span class="kb-tag">139 поз.</span></div>
@@ -49,11 +49,11 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-card-badge">ФП</div>
             <div class="kb-card-title">Плоские приварные · 12820 / 28759.2</div>
             <p class="kb-card-body">Плоские приварные фланцы: трубопроводные по ГОСТ 12820-80 (Ру 0,1–2,5 МПа, DN 10–1200, 111 поз.) и сосудовые по ГОСТ 28759.2-2022 (DN 400–4000, 100 поз.). Итого <strong>211 позиций</strong> типа ФП.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 12820</span><span class="kb-tag">ГОСТ 28759.2</span><span class="kb-tag">211 поз.</span></div>
+            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 12820-80</span><span class="kb-tag">ГОСТ 28759.2-2022</span><span class="kb-tag">211 поз.</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ФВ</div>
-            <div class="kb-card-title">Воротниковые · ГОСТ 12821</div>
+            <div class="kb-card-title">Воротниковые · ГОСТ 12821-80</div>
             <p class="kb-card-body">Стальные приварные встык фланцы по ГОСТ 12821-80 на Ру от 0,1 до 20 МПа, температура среды от −253 до +600 °C. <strong>32 позиции</strong>, DN 10–350.</p>
             <div class="kb-card-tags"><span class="kb-tag">ГОСТ 12821-80</span><span class="kb-tag">Ру до 20</span><span class="kb-tag">32 поз.</span></div>
           </div>
@@ -64,12 +64,12 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-grp">
             <span class="kb-grp-code">11</span>
             <span class="kb-grp-name">Воротниковые · 273 поз.</span>
-            <span class="kb-grp-items">ГОСТ 33259 · PN до 250 · DN 10–2400</span>
+            <span class="kb-grp-items">ГОСТ 33259-2015 · PN до 250 · DN 10–2400</span>
           </div>
           <div class="kb-grp">
             <span class="kb-grp-code">01</span>
             <span class="kb-grp-name">Плоские тип 01 · 139 поз.</span>
-            <span class="kb-grp-items">ГОСТ 33259 · PN до 250</span>
+            <span class="kb-grp-items">ГОСТ 33259-2015 · PN до 250</span>
           </div>
           <div class="kb-grp">
             <span class="kb-grp-code">ФП</span>
@@ -94,7 +94,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-col-title">Чеклист заявки на фланец</div>
             <div class="kb-checklist">
               <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">DN и PN / Ру</div><div class="kb-check-body">Условный проход и номинальное (условное) давление. Пример: DN 100 / PN 16.</div></div></div>
-              <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">Тип конструкции</div><div class="kb-check-body">Тип 11 или 01 (ГОСТ 33259), ФП (12820 / 28759.2) или ФВ (12821).</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">Тип конструкции</div><div class="kb-check-body">Тип 11 или 01 (ГОСТ 33259-2015), ФП (12820 / 28759.2) или ФВ (12821).</div></div></div>
               <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Уплотнительная поверхность</div><div class="kb-check-body">Исполнение по стандарту (B, F, E и др. — по таблице выбранного ГОСТ). Если неизвестно — укажите тип прокладки.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Марка стали и среда</div><div class="kb-check-body">20, 10, 09Г2С, 13ХФА, 17Г1С, 12Х18Н10Т, 08Х18Н10Т — или условия t°С и среды.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">05</span><div><div class="kb-check-title">Поднадзорность и НК</div><div class="kb-check-body">ТР ТС 032/2013; методы НК (ВИК, УЗК, РК) — по нормативу объекта.</div></div></div>
@@ -104,10 +104,10 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Ключевые параметры фланца</div>
             <div class="kb-params">
-              <div class="kb-param"><div class="kb-param-key">DN / Dy</div><div class="kb-param-val">Условный проход, мм. В каталоге — DN 10–4000 (сосудовые до 4000 по ГОСТ 28759.2).</div></div>
+              <div class="kb-param"><div class="kb-param-key">DN / Dy</div><div class="kb-param-val">Условный проход, мм. В каталоге — DN 10–4000 (сосудовые до 4000 по ГОСТ 28759.2-2022).</div></div>
               <div class="kb-param"><div class="kb-param-key">PN / Ру</div><div class="kb-param-val">Номинальное / условное давление. ГОСТ 33259 — до PN 250; 12820 — Ру 0,1–2,5 МПа; 12821 — до 20 МПа.</div></div>
               <div class="kb-param"><div class="kb-param-key">Тип</div><div class="kb-param-val"><strong>11</strong> — воротниковый; <strong>01</strong> — плоский (33259); <strong>ФП</strong> — плоский приварной; <strong>ФВ</strong> — воротниковый 12821.</div></div>
-              <div class="kb-param"><div class="kb-param-key">Уплотнение</div><div class="kb-param-val">Исполнение уплотнительной поверхности по таблице стандарта. Согласуйте с типом прокладки (ГОСТ 15180 и др.).</div></div>
+              <div class="kb-param"><div class="kb-param-key">Уплотнение</div><div class="kb-param-val">Исполнение уплотнительной поверхности по таблице стандарта. Согласуйте с типом прокладки (ГОСТ 15180-86 и др.).</div></div>
               <div class="kb-param"><div class="kb-param-key">Марка стали</div><div class="kb-param-val"><strong>20 / 10</strong> — типовые; <strong>09Г2С</strong> — хладостойкость; <strong>12Х18Н10Т / 08Х18Н10Т</strong> — коррозия.</div></div>
               <div class="kb-param"><div class="kb-param-key">Объём НК</div><div class="kb-param-val">Базовый: <strong>ВИК 100%</strong>. Расширенный: +УЗК / +РК / +МПД / +ПВК. Для поднадзорных — по ТР ТС 032/2013.</div></div>
             </div>
@@ -122,19 +122,19 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-norm-group-hd">ГОСТ — основной ряд</div>
             <div class="kb-norm-items">
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 33259-2015</span><span class="kb-norm-desc">Фланцы арматуры, соединительных частей и трубопроводов на номинальное давление до PN 250. Типы 01 и 11. В каталоге — 412 позиций, DN 10–2400</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 12820-1980</span><span class="kb-norm-desc">Фланцы стальные плоские приварные на Ру от 0,1 до 2,5 МПа. 111 позиций, DN 10–1200</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 12821-1980</span><span class="kb-norm-desc">Фланцы стальные приварные встык на Ру от 0,1 до 20 МПа. 32 позиции, DN 10–350</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 12820-80</span><span class="kb-norm-desc">Фланцы стальные плоские приварные на Ру от 0,1 до 2,5 МПа. 111 позиций, DN 10–1200</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 12821-80</span><span class="kb-norm-desc">Фланцы стальные приварные встык на Ру от 0,1 до 20 МПа. 32 позиции, DN 10–350</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28759.2-2022</span><span class="kb-norm-desc">Фланцы сосудов и аппаратов стальные плоские приварные. Конструкция и размеры. 100 позиций, DN 400–4000</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28759.3-1990</span><span class="kb-norm-desc">Фланцы сосудов и аппаратов стальные приварные встык. D 400–4000 мм, PN 0,6–6,3 МПа, t −70…+540 °C. 12 исполнений уплотнительной поверхности</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28759.3-90</span><span class="kb-norm-desc">Фланцы сосудов и аппаратов стальные приварные встык. D 400–4000 мм, PN 0,6–6,3 МПа, t −70…+540 °C. 12 исполнений уплотнительной поверхности</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ Р 54432-2011</span><span class="kb-norm-desc">Фланцы арматуры, соединительных частей и трубопроводов на номинальное давление от PN 1 до PN 200 (ISO 7005, NEQ)</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">Специальные исполнения</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28919-1991</span><span class="kb-norm-desc">Фланцевые соединения устьевого оборудования. Типы, основные параметры и размеры. Рабочее давление 14–140 МПа, DN 50–680</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 25660-1983</span><span class="kb-norm-desc">Фланцы изолирующие для подводных трубопроводов на Ру 10,0 МПа. Конструкция и размеры</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.747-97 ÷ 10.754-97</span><span class="kb-norm-desc">Фланцы в составе деталей и сборочных единиц трубопроводов ТЭС на Рраб &lt; 2,2 МПа, t ≤ 425 °C. Часть I</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 28919-91</span><span class="kb-norm-desc">Фланцевые соединения устьевого оборудования. Типы, основные параметры и размеры. Рабочее давление 14–140 МПа, DN 50–680</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 25660-83</span><span class="kb-norm-desc">Фланцы изолирующие для подводных трубопроводов на Ру 10,0 МПа. Конструкция и размеры</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-747-97 ÷ 10.754-97</span><span class="kb-norm-desc">Фланцы в составе деталей и сборочных единиц трубопроводов ТЭС на Рраб &lt; 2,2 МПа, t ≤ 425 °C. Часть I</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
@@ -182,7 +182,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-mat-grade">Сталь 10</div>
             <div class="kb-mat-std">ГОСТ 1050-2013</div>
             <div class="kb-mat-range">Общепромышленные трубопроводы</div>
-            <div class="kb-mat-apps">Типовые фланцы ГОСТ 12820 / 33259 · Тепловые сети · Технологические линии без агрессивной среды</div>
+            <div class="kb-mat-apps">Типовые фланцы ГОСТ 12820-80 / 33259-2015 · Тепловые сети · Технологические линии без агрессивной среды</div>
           </div>
           <div class="kb-mat">
             <div class="kb-mat-grade">09Г2С</div>
@@ -279,7 +279,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Как подготовить заявку на фланец</div>
             <div class="kb-checklist">
-              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Наименование и норматив</div><div class="kb-check-body">Фланец тип 11/01 по <strong>ГОСТ 33259</strong>, ФП по <strong>ГОСТ 12820</strong> / <strong>28759.2</strong> или ФВ по <strong>ГОСТ 12821</strong>. Если норматив неизвестен — укажите DN, PN и способ присоединения.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Наименование и норматив</div><div class="kb-check-body">Фланец тип 11/01 по <strong>ГОСТ 33259-2015</strong>, ФП по <strong>ГОСТ 12820-80</strong> / <strong>28759.2</strong> или ФВ по <strong>ГОСТ 12821-80</strong>. Если норматив неизвестен — укажите DN, PN и способ присоединения.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">DN и PN / Ру</div><div class="kb-check-body">Условный проход и давление. При отсутствии — передайте рабочие параметры для подбора инженером.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Марка стали</div><div class="kb-check-body">Точная марка или условия среды. Для АЭС — согласно программе контроля объекта.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Количество и срок</div><div class="kb-check-body">Количество в штуках (часто парами / комплектами). Желаемая дата поставки.</div></div></div>
@@ -302,7 +302,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-errors">
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путать тип 01 и тип 11</div><div class="kb-err-note">Плоский и воротниковый — разная конструкция и стыковка с трубой. Ошибка типа = несовместимость на объекте.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Не указать PN / Ру</div><div class="kb-err-note">«Фланец DN 100» без давления — не спецификация. PN определяет ряд размеров и толщину.</div></div></div>
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путать 12820 и 33259</div><div class="kb-err-note">ГОСТ 12820 — Ру до 2,5 МПа. Для PN выше нужен ряд ГОСТ 33259 или 12821.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путать 12820 и 33259</div><div class="kb-err-note">ГОСТ 12820 — Ру до 2,5 МПа. Для PN выше нужен ряд ГОСТ 33259-2015 или 12821.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Забыть исполнение уплотнения</div><div class="kb-err-note">Без исполнения уплотнительной поверхности нельзя подобрать прокладку. Укажите код из таблицы стандарта.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Забыть ТР ТС 032/2013</div><div class="kb-err-note">Изделия с PN &gt; 0.05 МПа в ЕАЭС требуют декларации. Заказывайте заблаговременно.</div></div></div>
             </div>
@@ -332,7 +332,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-card-badge">УПАКОВКА</div>
             <div class="kb-card-title">Защита кромок и маркировка каждой позиции</div>
             <p class="kb-card-body">Паллеты или деревянная обрешётка по массе и габариту, защита сварочных / уплотнительных кромок, маркировка позиций по упаковочному листу. Комплект документов — с грузом и дублируется по email.</p>
-            <div class="kb-card-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат 3.1</span></div>
+            <div class="kb-card-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат качества</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ОПЛАТА</div>

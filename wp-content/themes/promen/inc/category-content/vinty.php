@@ -35,12 +35,12 @@ return [
         <div class="hud-label">Технические диапазоны / VINTY SPECS</div>
         <div class="hud-row"><span class="hud-rk">Резьба M</span><span class="hud-rv">по типоразмеру</span></div>
         <div class="hud-row"><span class="hud-rk">Длина L</span><span class="hud-rv">по карточке</span></div>
-        <div class="hud-row"><span class="hud-rk">Семейство</span><span class="hud-rv">ГОСТ 11738</span></div>
+        <div class="hud-row"><span class="hud-rk">Семейство</span><span class="hud-rv">ГОСТ 11738-84</span></div>
         <div class="hud-row"><span class="hud-rk">В группе КР</span><span class="hud-rv"><?php echo esc_html( $ctx['parent_name'] !== '' ? $ctx['parent_name'] : 'Крепёж' ); ?></span></div>
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 11738-1984</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 11738-84</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
         <div class="hud-row"><span class="hud-rk">Документы</span><span class="hud-rv live">Паспорт 3.1</span></div>
         <div class="hud-row"><span class="hud-rk">Заказ</span><span class="hud-rv live">по заявке</span></div>
@@ -64,7 +64,7 @@ return [
           <div class="mg-hd"><div class="mg-code">В</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> поз.</div></div>
           <div class="mg-name">Винты</div>
           <div class="mg-items">
-            <div class="mg-item">По ГОСТ 11738<span class="mg-norm">ГОСТ 11738-1984</span></div>
+            <div class="mg-item">По ГОСТ 11738-84<span class="mg-norm">ГОСТ 11738-84</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">В</span><span class="mg-ftag"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> поз.</span></div>
         </div>
@@ -88,7 +88,7 @@ return [
         <div class="sg-row">
           <div class="sg-task">
             <div class="sg-task-code">Задача 01</div>
-            <div class="sg-task-h">Винт по ГОСТ 11738</div>
+            <div class="sg-task-h">Винт по ГОСТ 11738-84</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Винт ГОСТ 11738-84</div>
@@ -144,7 +144,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Винты" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 7798, ГОСТ 9066, ОСТ 26-2040…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 7798-70, ГОСТ 9066-75, ОСТ 26-2040-96…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">Резьба M</label><input id="om-dn" name="dn" type="text" placeholder="M16" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Длина L, мм</label><input id="om-pn" name="pn" type="text" placeholder="80" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка / класс прочности</label><input id="om-mat" name="material" type="text" placeholder="Ст20 / 5.6 / 8.8…" autocomplete="off"></div>

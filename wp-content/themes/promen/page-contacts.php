@@ -29,7 +29,7 @@ get_header();
     </div>
   </div>
 
-  <div class="cnt-wrap">
+  <div class="cnt-wrap" data-reveal-group>
     <!-- LEFT: registry + location -->
     <div class="cnt-left">
       <div>
@@ -64,7 +64,7 @@ get_header();
 
       <div>
         <div class="cnt-label">Расположение</div>
-        <div class="cnt-loc">
+        <div class="cnt-loc" data-reveal>
           <div class="cnt-loc-grid" aria-hidden="true"></div>
           <div class="cnt-loc-body">
             <div class="cnt-loc-mark" aria-hidden="true">
@@ -74,7 +74,7 @@ get_header();
             <div>
               <div class="cnt-loc-city">г. Челябинск</div>
               <div class="cnt-loc-coord">55.1644° N · 61.4368° E</div>
-              <div class="cnt-loc-addr">ул. Орджоникидзе, 37 — производственная<br>площадка завода</div>
+              <div class="cnt-loc-addr">ул. Орджоникидзе, 37 — офис<br>и департамент управления</div>
             </div>
           </div>
         </div>

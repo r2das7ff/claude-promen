@@ -7,6 +7,9 @@
  * promen_footer_form (контакты — футер без s10: на странице своя форма).
  */
 $promen_privacy_url = promen_privacy_url();
+?>
+</main><?php // открыт в header.php; закрываем до раннего выхода ниже ?>
+<?php
 
 if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
 <?php wp_footer(); ?>
@@ -52,7 +55,6 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
       <div class="s10-form-label">ФОРМА ЗАПРОСА — ПЭ-ФОРМА/КТЛ</div>
       <div class="s10-promise">
         <span class="s10-promise-item"><span class="s10-promise-dot"></span>Ответ в течение 1 рабочего дня</span>
-        <span class="s10-promise-item"><span class="s10-promise-dot"></span>Запрос без обязательств</span>
       </div>
       <?php $promen_sent = isset( $_GET['sent'] ); ?>
       <form id="s10-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"<?php echo $promen_sent ? ' style="display:none;"' : ''; ?>>
@@ -73,7 +75,7 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
           </div>
           <div class="s10-field">
             <label class="s10-field-label" for="f-std">СТАНДАРТ</label>
-            <input id="f-std" name="standard" type="text" placeholder="ГОСТ 17375, ОСТ 36, СТО ЦКТИ…" autocomplete="off">
+            <input id="f-std" name="standard" type="text" placeholder="ГОСТ 17375-2001, ОСТ 36, СТО ЦКТИ…" autocomplete="off">
           </div>
           <div class="s10-field">
             <label class="s10-field-label" for="f-dn">DN / D, мм</label>
@@ -131,7 +133,7 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
   <div class="ft-statement">
     <div class="ft-kicker">ПРОМЫШЛЕННАЯ ЭНЕРГЕТИКА / prom-en.com</div>
     <h2 class="ft-headline">Готовы<br>к работе</h2>
-    <p class="ft-tagline">Производство деталей и сборочных единиц трубопроводов для объектов атомной и тепловой энергетики. Единичные и серийные партии. Сертификат 3.1.</p>
+    <p class="ft-tagline">Производство деталей и сборочных единиц трубопроводов для объектов атомной и тепловой энергетики. Единичные и серийные партии. Сертификат качества.</p>
     <button type="button" class="ft-cta" onclick="openRequestModal('contact')">Отправить запрос →</button>
   </div>
   <div class="ft-grid">
@@ -148,7 +150,7 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
       <div class="ft-cell-val mono">
         DN 15 — DN 1400<br>
         PN до 250 / 25 МПа<br>
-        ГОСТ · ОСТ · СТО · ТУ
+        ГОСТ · ОСТ · СТО · СТО ЦКТИ · СТО СРО-П · ТУ
       </div>
     </div>
     <div class="ft-cell ft-cell--extra">

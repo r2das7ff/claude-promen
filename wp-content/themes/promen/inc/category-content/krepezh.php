@@ -19,7 +19,7 @@ return [
       </nav>
       <div class="hero-eyebrow">КР · Семейство изделий — изготовление под заказ</div>
       <h1 class="hero-h1">Крепёж<br><em>фланцевый</em><br>и монтажный</h1>
-      <p class="hero-desc">Болты, шпильки, гайки, шайбы и винты для фланцевых соединений и общепромышленного монтажа: ГОСТ 7798 / 7805 / 22032, шпильки ГОСТ 15590 / 9066 и ОСТ 26-2040, гайки и шайбы по ряду ГОСТ. Пять типов, <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по резьбе M и длине L.</p>
+      <p class="hero-desc">Болты, шпильки, гайки, шайбы и винты для фланцевых соединений и общепромышленного монтажа: ГОСТ 7798-70 / 7805-70 / 22032-76, шпильки ГОСТ 15590-70 / 9066-75 и ОСТ 26-2040-96, гайки и шайбы по ряду ГОСТ. Пять типов, <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по резьбе M и длине L.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">M × L</span><span class="hp-k">Резьба / длина</span></div>
@@ -39,8 +39,8 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 7798 / 7805</span><span class="hud-rv live">Болты</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 15590 / 9066</span><span class="hud-rv live">Шпильки</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 7798-70 / 7805-70</span><span class="hud-rv live">Болты</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 15590-70 / 9066-75</span><span class="hud-rv live">Шпильки</span></div>
         <div class="hud-row"><span class="hud-rk">ОСТ 26-2040-96</span><span class="hud-rv live">Шпильки ОСТ</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
@@ -63,9 +63,9 @@ return [
           <div class="mg-hd"><div class="mg-code">Б</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'bolty' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Болты</div>
           <div class="mg-items">
-            <div class="mg-item">Фундаментные<span class="mg-norm">ГОСТ 22032 / 22043</span></div>
-            <div class="mg-item">Шестигранные<span class="mg-norm">ГОСТ 7798 / 7795</span></div>
-            <div class="mg-item">Высокопрочные<span class="mg-norm">ГОСТ 10602</span></div>
+            <div class="mg-item">Фундаментные<span class="mg-norm">ГОСТ 22032-76 / 22043-76</span></div>
+            <div class="mg-item">Шестигранные<span class="mg-norm">ГОСТ 7798-70 / 7795-70</span></div>
+            <div class="mg-item">Высокопрочные<span class="mg-norm">ГОСТ 10602-94</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">M × L</span><span class="mg-ftag">Страница семейства →</span></div>
         </a>
@@ -73,9 +73,9 @@ return [
           <div class="mg-hd"><div class="mg-code">ШП</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'shpilki' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Шпильки</div>
           <div class="mg-items">
-            <div class="mg-item">Общепромышленные<span class="mg-norm">ГОСТ 15590</span></div>
-            <div class="mg-item">Фланцевые<span class="mg-norm">ГОСТ 9066</span></div>
-            <div class="mg-item">ОСТ для аппаратов<span class="mg-norm">ОСТ 26-2040</span></div>
+            <div class="mg-item">Общепромышленные<span class="mg-norm">ГОСТ 15590-70</span></div>
+            <div class="mg-item">Фланцевые<span class="mg-norm">ГОСТ 9066-75</span></div>
+            <div class="mg-item">ОСТ для аппаратов<span class="mg-norm">ОСТ 26-2040-96</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">ШП</span><span class="mg-ftag">Страница семейства →</span></div>
         </a>
@@ -83,8 +83,8 @@ return [
           <div class="mg-hd"><div class="mg-code">Г</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'gayki' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Гайки</div>
           <div class="mg-items">
-            <div class="mg-item">Фланцевые<span class="mg-norm">ГОСТ 9064</span></div>
-            <div class="mg-item">Шестигранные<span class="mg-norm">ГОСТ 5915 / 10605</span></div>
+            <div class="mg-item">Фланцевые<span class="mg-norm">ГОСТ 9064-75</span></div>
+            <div class="mg-item">Шестигранные<span class="mg-norm">ГОСТ 5915-70 / 10605-94</span></div>
             <div class="mg-item">Низкие / колпачковые<span class="mg-norm">ряд ГОСТ</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">Г</span><span class="mg-ftag">Страница семейства →</span></div>
@@ -93,8 +93,8 @@ return [
           <div class="mg-hd"><div class="mg-code">Ш</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'shayby' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Шайбы</div>
           <div class="mg-items">
-            <div class="mg-item">Пружинные / плоские<span class="mg-norm">ГОСТ 6402</span></div>
-            <div class="mg-item">Усиленные<span class="mg-norm">ГОСТ 11371</span></div>
+            <div class="mg-item">Пружинные / плоские<span class="mg-norm">ГОСТ 6402-70</span></div>
+            <div class="mg-item">Усиленные<span class="mg-norm">ГОСТ 11371-78</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">Ш</span><span class="mg-ftag">Страница семейства →</span></div>
         </a>
@@ -102,7 +102,7 @@ return [
           <div class="mg-hd"><div class="mg-code">В</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_catalog_group_count( 'vinty' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Винты</div>
           <div class="mg-items">
-            <div class="mg-item">По ГОСТ 6958<span class="mg-norm">ГОСТ 6958-1978</span></div>
+            <div class="mg-item">По ГОСТ 6958-78<span class="mg-norm">ГОСТ 6958-78</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">В</span><span class="mg-ftag">Страница семейства →</span></div>
         </a>
@@ -129,7 +129,7 @@ return [
             <div class="sg-task-h">Крепёж фланцевой пары (шпилька + гайка)</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Шпильки ГОСТ 9066 / 15590 + гайки ГОСТ 9064</div>
+            <div class="sg-prod-name">Шпильки ГОСТ 9066-75 / 15590-70 + гайки ГОСТ 9064-75</div>
             <div class="sg-tags">
               <span class="sg-tag hi">ШП</span><span class="sg-tag">Г</span><span class="sg-tag">фланцы</span>
             </div>
@@ -147,9 +147,9 @@ return [
             <div class="sg-task-h">Болтовое соединение / общепромышленный монтаж</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Болты с шестигранной головкой ГОСТ 7798 / 7795 / 7805</div>
+            <div class="sg-prod-name">Болты с шестигранной головкой ГОСТ 7798-70 / 7795-70 / 7805-70</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">Б</span><span class="sg-tag">ГОСТ 7798</span><span class="sg-tag">M × L</span>
+              <span class="sg-tag hi">Б</span><span class="sg-tag">ГОСТ 7798-70</span><span class="sg-tag">M × L</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-7798-1970', $ctx['url'] ) ); ?>">К болтам 7798 в реестре →</a>
           </div>
@@ -165,9 +165,9 @@ return [
             <div class="sg-task-h">Фундаментный болт / анкерное крепление</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Болты фундаментные ГОСТ 22032 / 22043</div>
+            <div class="sg-prod-name">Болты фундаментные ГОСТ 22032-76 / 22043-76</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ГОСТ 22032</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'krepezh', 'gost-22032-1976' ) + promen_category_norm_count( 'krepezh', 'gost-22043-1976' ) ) ); ?> поз. семейства</span>
+              <span class="sg-tag hi">ГОСТ 22032-76</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'krepezh', 'gost-22032-1976' ) + promen_category_norm_count( 'krepezh', 'gost-22043-1976' ) ) ); ?> поз. семейства</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'gost-22032-1976', $ctx['url'] ) ); ?>">К фундаментным в реестре →</a>
           </div>
@@ -185,7 +185,7 @@ return [
           <div class="sg-product" data-label="Нужное исполнение">
             <div class="sg-prod-name">Шпильки ОСТ 26-2040-96</div>
             <div class="sg-tags">
-              <span class="sg-tag hi">ОСТ 26-2040</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'krepezh', 'ost-26-2040-96' ) ) ); ?> поз.</span>
+              <span class="sg-tag hi">ОСТ 26-2040-96</span><span class="sg-tag"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'krepezh', 'ost-26-2040-96' ) ) ); ?> поз.</span>
             </div>
             <a class="sg-link" href="<?php echo esc_url( add_query_arg( 'gost', 'ost-26-2040-96', $ctx['url'] ) ); ?>">К шпилькам ОСТ в реестре →</a>
           </div>
@@ -236,7 +236,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Крепёж" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 7798, ГОСТ 9066, ОСТ 26-2040…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 7798-70, ГОСТ 9066-75, ОСТ 26-2040-96…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">Резьба M</label><input id="om-dn" name="dn" type="text" placeholder="M16" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Длина L, мм</label><input id="om-pn" name="pn" type="text" placeholder="80" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка / класс прочности</label><input id="om-mat" name="material" type="text" placeholder="Ст20 / 5.6 / 8.8…" autocomplete="off"></div>

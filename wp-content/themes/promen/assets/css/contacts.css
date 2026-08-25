@@ -24,7 +24,7 @@
 }
 .cnt-eyebrow{
   display:flex;align-items:center;gap:16px;margin-bottom:20px;
-  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1);
+  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1-text);
 }
 .cnt-eyebrow::before{content:'11';border:1px solid var(--g1);padding:3px 8px;font-size:12px;letter-spacing:.2em;line-height:1;}
 .cnt-h1{
@@ -32,13 +32,13 @@
   font-size:clamp(44px,5.5vw,80px);line-height:.88;letter-spacing:-.02em;
   text-transform:uppercase;color:var(--dark);margin-bottom:20px;
 }
-.cnt-h1 em{color:var(--g1);font-style:normal;}
+.cnt-h1 em{color:var(--g1-text);font-style:normal;}
 .cnt-desc{font-size:15px;font-weight:300;line-height:1.72;color:var(--blue);max-width:520px;}
 .cnt-stats{display:flex;flex-direction:column;border-left:1px solid var(--ln2);padding-left:32px;}
 .hs{padding:12px 0;border-bottom:1px solid var(--ln);}
 .hs:last-child{border-bottom:none;}
 .hs-v{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:26px;line-height:1.1;letter-spacing:-.02em;color:var(--dark);display:block;margin-bottom:3px;}
-.hs-k{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1);}
+.hs-k{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1-text);}
 
 /* ── BODY ── */
 /* Левая колонка — по самой длинной строке реквизитов (декларация в одну
@@ -47,16 +47,16 @@
 .cnt-left{border-right:1px solid var(--ln2);padding:48px 52px 48px var(--head-x);display:flex;flex-direction:column;gap:40px;}
 .cnt-right{padding:48px 52px;background:var(--form-bg);}
 
-.cnt-label{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1);display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.cnt-label{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1-text);display:flex;align-items:center;gap:10px;margin-bottom:18px;}
 .cnt-label::before{content:'';width:16px;height:1px;background:var(--g1);flex-shrink:0;}
 
 /* registry rows */
 .cnt-reg{border-top:1px solid var(--ln2);}
 .cnt-row{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--ln);align-items:baseline;}
-.cnt-row-k{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1);}
+.cnt-row-k{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1-text);}
 .cnt-row-v{font-size:14px;color:var(--dark);line-height:1.5;}
 .cnt-row-v a{transition:color var(--dur-fast);border-bottom:1px solid transparent;}
-.cnt-row-v a:hover{color:var(--g1);border-bottom-color:var(--g1);}
+.cnt-row-v a:hover{color:var(--g1-text);border-bottom-color:var(--g1);}
 .cnt-row-v.mono{font-family:'DINPro',monospace;font-size:13.5px;letter-spacing:.01em;}
 
 /* location panel */
@@ -75,15 +75,15 @@
 .cnt-loc-dot{position:absolute;left:50%;top:50%;width:5px;height:5px;background:var(--dark);border-radius:50%;transform:translate(-50%,-50%);}
 @keyframes locPulse{0%{transform:translate(-50%,-50%) scale(.4);opacity:.9;}100%{transform:translate(-50%,-50%) scale(2.6);opacity:0;}}
 .cnt-loc-city{text-align:center;margin-top:14px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:20px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);}
-.cnt-loc-coord{text-align:center;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;color:var(--g1);margin-top:4px;}
+.cnt-loc-coord{text-align:center;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;color:var(--g1-text);margin-top:4px;}
 .cnt-loc-addr{text-align:center;font-size:13px;color:var(--blue);margin-top:12px;line-height:1.5;border-top:1px solid var(--ln2);padding-top:12px;}
 
 /* form */
 .cnt-form{display:grid;grid-template-columns:1fr 1fr;gap:20px 24px;}
 .cnt-field{display:flex;flex-direction:column;gap:8px;}
 .cnt-field--wide{grid-column:1 / -1;}
-.cnt-field-label{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1);}
-.cnt-required{color:var(--g1);opacity:.8;}
+.cnt-field-label{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--g1-text);}
+.cnt-required{color:var(--g1-text);opacity:.8;}
 .cnt-field input,.cnt-field select,.cnt-field textarea{
   background:transparent;border:none;border-bottom:1px solid var(--ln2);
   padding:9px 2px;font-family:'DINPro',sans-serif;font-size:14px;color:var(--dark);
@@ -102,7 +102,7 @@
 }
 .cnt-submit:hover{background:var(--blue);}
 /* подчёркивание текстом — рамка бокса уезжала вниз на тач-цели 44px */
-.cnt-ghost{font-family:'DINPro',monospace;font-size:13px;letter-spacing:.06em;color:var(--g1);text-decoration:underline;text-decoration-color:var(--ln2);text-decoration-thickness:1px;text-underline-offset:4px;transition:color var(--dur-fast),text-decoration-color var(--dur-fast);}
+.cnt-ghost{font-family:'DINPro',monospace;font-size:13px;letter-spacing:.06em;color:var(--g1-text);text-decoration:underline;text-decoration-color:var(--ln2);text-decoration-thickness:1px;text-underline-offset:4px;transition:color var(--dur-fast),text-decoration-color var(--dur-fast);}
 .cnt-ghost:hover{color:var(--dark);text-decoration-color:var(--g1);}
 
 .cnt-success{
@@ -116,9 +116,9 @@
   margin-top:auto;border-top:1px solid var(--ln2);padding:20px 52px;
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;
 }
-.cnt-bar-copy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g1);opacity:.7;}
-.cnt-bar-idx{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g1);opacity:.5;}
-.cnt-bar-policy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g1);opacity:.7;text-decoration:none;transition:opacity var(--dur-fast),color var(--dur-fast);}
+.cnt-bar-copy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g1-text);opacity:.7;}
+.cnt-bar-idx{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g1-text);opacity:.5;}
+.cnt-bar-policy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;color:var(--g1-text);opacity:.7;text-decoration:none;transition:opacity var(--dur-fast),color var(--dur-fast);}
 .cnt-bar-policy:hover{opacity:1;color:var(--dark);}
 
 /* ── ANIMATIONS ── */
@@ -167,7 +167,7 @@
 }
 
 /* ── Белая плитка активного поля — как .s10-field:focus-within на главной ── */
-.cnt-field{padding:10px 12px 12px;margin:-10px -12px -12px;transition:background .12s;}
+.cnt-field{padding:10px 12px 12px;margin:-10px -12px -12px;transition:background var(--dur-tap);}
 .cnt-field:focus-within{background:#fff;}
 
 /* ── Контакты: тач-цели, iOS-инпуты 16px, чекбокс ПДн, статы hero ── */
@@ -192,7 +192,7 @@
      Поле с подменяющим списком (.pm-select) исключаем: там своя стрелка,
      иначе под ней рисовался второй, уже лишний, треугольник. */
   .cnt-field:has(select):not(:has(.pm-select)){position:relative;}
-  .cnt-field:has(select):not(:has(.pm-select))::after{content:'▾';position:absolute;right:6px;bottom:16px;font-size:13.5px;color:var(--g1);pointer-events:none;}
+  .cnt-field:has(select):not(:has(.pm-select))::after{content:'▾';position:absolute;right:6px;bottom:16px;font-size:13.5px;color:var(--g1-text);pointer-events:none;}
 }
 @media (max-width:900px){
   .cnt-stats{display:grid;grid-template-columns:repeat(3,auto);gap:0 32px;border-left:none;border-top:1px solid var(--ln2);padding:18px 0 0;justify-content:start;}

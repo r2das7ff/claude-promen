@@ -59,8 +59,8 @@ get_header();
 
     <p class="body">
       Производство деталей и сборочных единиц трубопроводов
-      для объектов атомной и тепловой энергетики. Изготовление по ГОСТ, ОСТ, СТО, ТУ
-      и конструкторской документации заказчика.
+      для объектов атомной и тепловой энергетики. Изготовление по ГОСТ, ОСТ,
+      СТО, СТО ЦКТИ, СТО СРО-П, ТУ и конструкторской документации заказчика.
     </p>
 
     <!-- CTAs — "EXPLORE WORK ↗  [VIEW MANIFESTO]" structure -->
@@ -74,7 +74,7 @@ get_header();
     <!-- Bottom technical data row -->
     <div class="data-row" aria-hidden="true">
       <span>ТР ТС 032</span>
-      <span>ГОСТ 5520</span>
+      <span>ГОСТ 5520-2017</span>
       <span>PN 250 / 25 МПа</span>
     </div>
   </div>
@@ -82,10 +82,6 @@ get_header();
   <!-- RIGHT: Visual element -->
   <div class="right">
     <div class="right-glow"></div>
-
-    <!-- Structural cross-hair lines -->
-    <div class="cross-h"></div>
-    <div class="cross-v"></div>
 
     <!-- Frame corners -->
     <div class="rf">
@@ -159,7 +155,7 @@ get_header();
 
     <!-- PE SIGN — main visual element with CSS glitch -->
     <div class="pe-wrap">
-      <img class="pe-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/PE_sign_blue.png' ) ); ?>" alt="Промышленная Энергетика — знак">
+      <img class="pe-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/PE_sign_blue.png' ) ); ?>" alt="Промышленная Энергетика — знак" width="2000" height="2000" decoding="async">
       <div class="pe-g1"></div>
       <div class="pe-g2"></div>
     </div>
@@ -217,11 +213,11 @@ get_header();
         <div class="sfk-params">
           <div class="sfk-param">
             <span class="sfk-pk">НОРМАТИВЫ</span>
-            <span class="sfk-pv">ПНАЭ · ОСТ 24 · СТО · КД заказчика</span>
+            <span class="sfk-pv">ПНАЭ · ОСТ 24 · СТО · СТО ЦКТИ · СТО СРО-П · КД заказчика</span>
           </div>
           <div class="sfk-param">
             <span class="sfk-pk">ДОКУМЕНТАЦИЯ</span>
-            <span class="sfk-pv">Паспорт изделия · Серт. 3.1 · Протоколы НК</span>
+            <span class="sfk-pv">Паспорт изделия · Сертификат качества · Протоколы НК</span>
           </div>
           <div class="sfk-param">
             <span class="sfk-pk">КОНТРОЛЬ</span>
@@ -233,7 +229,7 @@ get_header();
           </div>
           <div class="sfk-param">
             <span class="sfk-pk">МАТЕРИАЛ</span>
-            <span class="sfk-pv">12Х1МФ · 08Х18Н10Т · по КД</span>
+            <span class="sfk-pv">08Х18Н10Т · 10Х17Н13М2Т · по КД</span>
           </div>
         </div>
       </div>
@@ -250,7 +246,7 @@ get_header();
         <div class="sfk-params">
           <div class="sfk-param">
             <span class="sfk-pk">НОРМАТИВЫ</span>
-            <span class="sfk-pv">ГОСТ · ОСТ 108 · СТО ЦКТИ · ТУ · КД</span>
+            <span class="sfk-pv">ГОСТ · ОСТ 108 · СТО · СТО ЦКТИ · СТО СРО-П · ТУ · КД</span>
           </div>
           <div class="sfk-param">
             <span class="sfk-pk">СРЕДА / УСЛОВИЯ</span>
@@ -266,7 +262,7 @@ get_header();
           </div>
           <div class="sfk-param">
             <span class="sfk-pk">МАТЕРИАЛ</span>
-            <span class="sfk-pv">09Г2С · Ст20 · 12Х1МФ · 15Х5М</span>
+            <span class="sfk-pv">20 · 09Г2С · 12Х1МФ · 15Х5М</span>
           </div>
         </div>
       </div>
@@ -283,15 +279,15 @@ get_header();
   <div class="trust-strip">
     <span class="ts-label">РАЗРЕШИТЕЛЬНАЯ ДОКУМЕНТАЦИЯ</span>
     <div class="ts-items">
+      <span class="ts-item">ТР ТС 032</span>
+      <span class="ts-sep">·</span>
       <span class="ts-item">ПНАЭ Г-7</span>
-      <span class="ts-sep">·</span>
-      <span class="ts-item">РТН</span>
-      <span class="ts-sep">·</span>
-      <span class="ts-item">ОСТ 108</span>
       <span class="ts-sep">·</span>
       <span class="ts-item">ИСО 9001</span>
       <span class="ts-sep">·</span>
-      <span class="ts-item">СЕРТИФИКАТ 3.1</span>
+      <span class="ts-item">НАКС</span>
+      <span class="ts-sep">·</span>
+      <span class="ts-item">ПАСПОРТ И СЕРТИФИКАТ</span>
       <span class="ts-sep">·</span>
       <span class="ts-item">ВИК · УЗК · РК</span>
     </div>
@@ -332,7 +328,7 @@ get_header();
             <div class="s2-param"><span class="s2-param-k">PN</span><span class="s2-param-v">до 400 кгс/см²</span></div>
             <div class="s2-param"><span class="s2-param-k">Температура</span><span class="s2-param-v">−70 … +600 °C</span></div>
             <div class="s2-param"><span class="s2-param-k">Среда</span><span class="s2-param-v">нефть · газ · пар · вода</span></div>
-            <div class="s2-param"><span class="s2-param-k">Стандарт</span><span class="s2-param-v">ГОСТ · ОСТ · СТО · ТУ · DIN · ANSI</span></div>
+            <div class="s2-param"><span class="s2-param-k">Стандарт</span><span class="s2-param-v">ГОСТ · ОСТ · СТО ЦКТИ · СТО СРО-П · ТУ · DIN · ANSI</span></div>
           </div>
         </div>
       </div>
@@ -353,11 +349,11 @@ get_header();
           <div class="sr-left">Определяем стандарт, марку стали, тип детали, способ изготовления и требования к контролю.</div>
           <div class="sr-sep"></div>
           <div class="sr-right">
-            <div class="s2-param"><span class="s2-param-k">Стандарт</span><span class="s2-param-v">ГОСТ 17375</span></div>
-            <div class="s2-param"><span class="s2-param-k">Материал</span><span class="s2-param-v">Сталь 09Г2С</span></div>
-            <div class="s2-param"><span class="s2-param-k">Тип</span><span class="s2-param-v">штампосварной</span></div>
-            <div class="s2-param"><span class="s2-param-k">Давление</span><span class="s2-param-v">PN 25 · 2,5 МПа</span></div>
-            <div class="s2-param"><span class="s2-param-k">Темп.</span><span class="s2-param-v">до +300 °C</span></div>
+            <div class="s2-param"><span class="s2-param-k">Стандарт</span><span class="s2-param-v">ГОСТ 17375-2001</span></div>
+            <div class="s2-param"><span class="s2-param-k">Материал</span><span class="s2-param-v">09Г2С</span></div>
+            <div class="s2-param"><span class="s2-param-k">Тип</span><span class="s2-param-v">бесшовный крутоизогнутый 3D</span></div>
+            <div class="s2-param"><span class="s2-param-k">Давление</span><span class="s2-param-v">PN до 160 · 16 МПа</span></div>
+            <div class="s2-param"><span class="s2-param-k">Темп.</span><span class="s2-param-v">−70 … +450 °C</span></div>
             <div class="s2-param"><span class="s2-param-k">Контроль</span><span class="s2-param-v">УЗК + ВИК</span></div>
           </div>
         </div>
@@ -371,7 +367,7 @@ get_header();
         <div class="sr-bar">
           <div class="sr-bar-text">
             <span class="sr-title">Производство и комплектация</span>
-            <span class="sr-meta">изготовление · подбор · фасонные детали</span>
+            <span class="sr-meta">изготовление · механообработка · комплектация</span>
           </div>
           <span class="sr-plus">+</span>
         </div>
@@ -382,19 +378,27 @@ get_header();
             <div class="s2-parts">
               <div class="s2-part">
                 <span class="s2-part-name">Отвод 90°</span>
-                <span class="s2-part-gost">ГОСТ 17375</span>
+                <span class="s2-part-gost">ГОСТ 17375-2001</span>
               </div>
               <div class="s2-part">
                 <span class="s2-part-name">Тройник</span>
-                <span class="s2-part-gost">ГОСТ 17376</span>
-              </div>
-              <div class="s2-part">
-                <span class="s2-part-name">Фланец</span>
-                <span class="s2-part-gost">ГОСТ 33259</span>
+                <span class="s2-part-gost">ГОСТ 17376-2001</span>
               </div>
               <div class="s2-part">
                 <span class="s2-part-name">Переход</span>
-                <span class="s2-part-gost">ГОСТ 17378</span>
+                <span class="s2-part-gost">ГОСТ 17378-2001</span>
+              </div>
+              <div class="s2-part">
+                <span class="s2-part-name">Заглушка</span>
+                <span class="s2-part-gost">ГОСТ 17379-2001</span>
+              </div>
+              <div class="s2-part">
+                <span class="s2-part-name">Фланец</span>
+                <span class="s2-part-gost">ГОСТ 33259-2015</span>
+              </div>
+              <div class="s2-part">
+                <span class="s2-part-name">Труба</span>
+                <span class="s2-part-gost">ГОСТ 8732-78</span>
               </div>
             </div>
           </div>
@@ -418,11 +422,11 @@ get_header();
           <div class="sr-sep"></div>
           <div class="sr-right">
             <ul class="s2-checklist">
-              <li><span class="s2-chk">✓</span>Геометрия изделий</li>
-              <li><span class="s2-chk">✓</span>Маркировка плавки</li>
-              <li><span class="s2-chk">✓</span>Сварные швы</li>
-              <li><span class="s2-chk">✓</span>Комплектность</li>
-              <li><span class="s2-chk">✓</span>Паспорт · Сертификат · Протоколы</li>
+              <li><span class="s2-chk">✓</span>Геометрия и размеры</li>
+              <li><span class="s2-chk">✓</span>Маркировка и номер плавки</li>
+              <li><span class="s2-chk">✓</span>Неразрушающий контроль · ВИК · УЗК · РК</li>
+              <li><span class="s2-chk">✓</span>Комплектность партии</li>
+              <li><span class="s2-chk">✓</span>Паспорт · Сертификат · Протоколы НК</li>
             </ul>
             <div class="s2-status">Статус · Готово к отгрузке</div>
           </div>
@@ -501,18 +505,18 @@ get_header();
         </div>
 
         <!-- Hover reveal -->
-        <div class="s3-vis-hover">Материалы: ст. 09Г2С · 12Х18Н10Т · 15ГС · 15Х1М1Ф · Документация: паспорт, сертификат, ПТД</div>
+        <div class="s3-vis-hover">Материалы: 09Г2С · 12Х18Н10Т · 15ГС · 15Х1М1Ф · Документация: паспорт, сертификат, ПТД</div>
       </div><!-- /.s3-visual -->
 
       <!-- Light content area -->
       <div class="s3-body">
         <p class="s3-desc">Изготавливаем детали трубопроводов для объектов тепловой и атомной энергетики по ГОСТ, ОСТ, ТУ, СТО, СТО ЦКТИ и СТО СРО-П. Полный пакет сопроводительной документации.</p>
         <div class="s3-tags">
-          <span class="s3-tag">DN 25–1400</span>
+          <span class="s3-tag">DN 15–1400</span>
           <span class="s3-tag">PN до 250</span>
           <span class="s3-tag">Паспорт</span>
           <span class="s3-tag">Легир. стали</span>
-          <span class="s3-tag">ГОСТ 17375–17379</span>
+          <span class="s3-tag">ГОСТ · ОСТ 108 · СТО ЦКТИ</span>
         </div>
       </div>
 
@@ -574,11 +578,13 @@ get_header();
 
       <p class="s3-desc">Производим соединительные детали для изменения направления, разветвления, сужения трубопровода и его закрытия — под давление, температуру и марку стали заказчика.</p>
       <div class="s3-tags">
-        <span class="s3-tag">DN 25–1200</span>
-        <span class="s3-tag">PN до 250</span>
-        <span class="s3-tag">ГОСТ 17375–17379</span>
-        <span class="s3-tag">Бесшовные</span>
-        <span class="s3-tag">Сварные</span>
+        <span class="s3-tag">DN 15–1000</span>
+        <span class="s3-tag">PN до 160 · 16 МПа</span>
+        <span class="s3-tag">ГОСТ 17375-2001</span>
+        <span class="s3-tag">ГОСТ 17376-2001</span>
+        <span class="s3-tag">ГОСТ 17378-2001</span>
+        <span class="s3-tag">ГОСТ 17379-2001</span>
+        <span class="s3-tag">Бесшовные приварные</span>
       </div>
 
       <div class="s3-hover-bar">Угловые и секционные · Штамповка · Сегментная сварка · Конические и соосные переходы</div>
@@ -611,7 +617,7 @@ get_header();
         <span class="s3-tag">СЭП</span>
       </div>
 
-      <div class="s3-hover-bar">Бесшовные · ГОСТ 8731 / 8733 · Сварные · ГОСТ 10705 / 20295</div>
+      <div class="s3-hover-bar">Бесшовные · ГОСТ 8731-87 / 8733-87 · Сварные · ГОСТ 10705-80 / 20295-85</div>
     </div><!-- /.s3-d3 -->
 
     <!-- ── D4: Compact · Нестандартные узлы ──────────────── -->
@@ -670,17 +676,23 @@ get_header();
     <h2 class="s4-h2 js-lines">Подтверждённые<br>объекты поставок</h2>
     <div class="s4-right">
       <p class="s4-lead">Производим и отгружаем детали трубопроводов для российских и зарубежных энергетических объектов. Работаем по требованиям объекта: нормативная база, материал, комплект документов.</p>
+      <?php
+      // Счётчики берём из реестра объектов — руками они разъезжались с картой.
+      $promen_geo_all   = promen_projects_registry();
+      $promen_geo_intl  = count( array_filter( $promen_geo_all, static fn( $x ) => 'intl' === $x['region'] ) );
+      $promen_geo_lands = count( array_unique( array_filter( array_column( $promen_geo_all, 'country' ) ) ) );
+      ?>
       <div class="s4-stats">
         <div class="s4-stat">
-          <span class="s4-stat-num">5</span>
+          <span class="s4-stat-num"><?php echo (int) count( $promen_geo_all ); ?></span>
           <span class="s4-stat-label">Объектов поставки</span>
         </div>
         <div class="s4-stat">
-          <span class="s4-stat-num">2</span>
+          <span class="s4-stat-num"><?php echo (int) $promen_geo_intl; ?></span>
           <span class="s4-stat-label">Международных проекта</span>
         </div>
         <div class="s4-stat">
-          <span class="s4-stat-num">3</span>
+          <span class="s4-stat-num"><?php echo (int) $promen_geo_lands; ?></span>
           <span class="s4-stat-label">Страны</span>
         </div>
       </div>
@@ -706,16 +718,20 @@ get_header();
 // ── Бегущая строка объектов — живая навигация в опубликованные /proekty/<slug>/.
 // Имена и география — как на детальных страницах (pd-h1 / pd-loc).
 $promen_tkr_items = [];
-foreach ( [
-	[ 'kurskaya-aes',              'Курская АЭС‑2',   'Курчатов · Россия' ],
-	[ 'aes-akkuyu',                'АЭС «Аккую»',      'Мерсин · Турция' ],
-	[ 'aes-ruppur',                'АЭС «Руппур»',     'Пабна · Бангладеш' ],
-	[ 'cherepetskaya-gres',        'Черепетская ГРЭС', 'Суворов · Россия' ],
-	[ 'teploelektrocentral-tec-3', 'Омская ТЭЦ‑3',     'Омск · Россия' ],
-] as [ $promen_tkr_slug, $promen_tkr_name, $promen_tkr_geo ] ) {
-	$promen_tkr_url = promen_project_url( $promen_tkr_slug );
+foreach ( promen_projects_registry() as $promen_tkr_p ) {
+	// Ссылка ведёт на детальную страницу, если она есть; у остальных объектов
+	// её роль пока играет раздел «Проекты» — карточка там уже есть.
+	$promen_tkr_url = $promen_tkr_p['page'] ? promen_project_url( $promen_tkr_p['page'] ) : '';
+	if ( ! $promen_tkr_url ) {
+		$promen_tkr_hub_page = promen_page( 'proekty' );
+		$promen_tkr_url      = $promen_tkr_hub_page ? get_permalink( $promen_tkr_hub_page ) . '#' . $promen_tkr_p['slug'] : '';
+	}
 	if ( $promen_tkr_url ) {
-		$promen_tkr_items[] = [ $promen_tkr_url, $promen_tkr_name, $promen_tkr_geo ];
+		$promen_tkr_geo_txt = $promen_tkr_p['city'];
+		if ( $promen_tkr_p['country'] ) {
+			$promen_tkr_geo_txt .= ' · ' . $promen_tkr_p['country'];
+		}
+		$promen_tkr_items[] = [ $promen_tkr_url, $promen_tkr_p['name'], $promen_tkr_geo_txt ];
 	}
 }
 $promen_tkr_hub = promen_page( 'proekty' );
@@ -1158,11 +1174,11 @@ $promen_tkr_hub = promen_page( 'proekty' );
         <line x1="142" y1="245" x2="262" y2="245" stroke="#A0B0BC" stroke-width="0.7"></line>
         <text x="147" y="243" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="1.2">МАТЕРИАЛ</text>
         <text x="147" y="257" font-family="DINProCond,DINPro,monospace" font-size="10" fill="#0F2A44" font-weight="700" letter-spacing="0.3">09Г2С / 12Х1МФ</text>
-        <text x="147" y="268" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="0.6">ГОСТ 17375 / ТУ</text>
+        <text x="147" y="268" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="0.6">ГОСТ 17375-2001 / ТУ</text>
         <text x="147" y="276" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="0.4" opacity="0.65">Р ≤ 250 / Т ≤ +600°C</text>
 
         <!-- Номер чертежа -->
-        <text x="290" y="16" text-anchor="end" font-family="DINPro,monospace" font-size="7" fill="#A0B0BC" letter-spacing="0.8" opacity="0.65">ОТВОД 90° ГОСТ 17375</text>
+        <text x="290" y="16" text-anchor="end" font-family="DINPro,monospace" font-size="7" fill="#A0B0BC" letter-spacing="0.8" opacity="0.65">ОТВОД 90° ГОСТ 17375-2001</text>
         <text x="290" y="26" text-anchor="end" font-family="DINPro,monospace" font-size="7" fill="#A0B0BC" letter-spacing="0.6">ПЭ-01-100-90</text>
       </svg>
 
@@ -1317,8 +1333,8 @@ $promen_tkr_hub = promen_page( 'proekty' );
       </div>
       <h2 class="s7-h2 js-lines">Параметры<br>производства</h2>
       <p class="s7-desc">Полный диапазон диаметров и давлений для объектов
-        атомной и тепловой энергетики. Изготовление в единичном
-        и серийном исполнении по ГОСТ, ОСТ, СТО, ТУ и КД заказчика.</p>
+        атомной и тепловой энергетики. Изготовление в единичном и серийном
+        исполнении по ГОСТ, ОСТ, СТО, СТО ЦКТИ, СТО СРО-П, ТУ и КД заказчика.</p>
     </div>
     <div class="s7-right">
       <div class="s7-param" data-tip="Условный диаметр от DN 15 до DN 1400">
@@ -1490,7 +1506,7 @@ $promen_tkr_hub = promen_page( 'proekty' );
           </div>
           <div class="s8-pp-row" data-field="docs">
             <span class="s8-pp-key">ДОКУМЕНТЫ</span>
-            <span class="s8-pp-val">Серт. 3.1 / Паспорт / Протоколы НК</span>
+            <span class="s8-pp-val">Сертификат / Паспорт / Протоколы НК</span>
             <span class="s8-pp-chk">✓</span>
           </div>
         </div>
@@ -1552,7 +1568,7 @@ $promen_tkr_hub = promen_page( 'proekty' );
       <div class="s9-card-top">
         <span class="s9-type">ГОСТ</span>
       </div>
-      <p class="s9-card-name">ГОСТ 17375–17380-2001 · соединительные детали</p>
+      <p class="s9-card-name">ГОСТ 17380-2001 · соединительные детали</p>
       <div class="s9-card-foot">
         <span class="s9-scope">Отводы, тройники, переходы, заглушки. DN 15–800</span>
         <span class="s9-status"><span class="s9-status-dot"></span>Действует</span>

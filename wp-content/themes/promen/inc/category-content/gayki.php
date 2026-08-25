@@ -19,7 +19,7 @@ return [
       </nav>
       <div class="hero-eyebrow">КР / Гайки · изготовление под заказ</div>
       <h1 class="hero-h1">Гайки<br><em>шестигранные</em><br>и фланцевые</h1>
-      <p class="hero-desc">Гайки для фланцевых соединений ГОСТ 9064, шестигранные ГОСТ 5915 / 10605, низкие, колпачковые и с уменьшенным размером под ключ. В реестре — <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по резьбе M.</p>
+      <p class="hero-desc">Гайки для фланцевых соединений ГОСТ 9064-75, шестигранные ГОСТ 5915-70 / 10605-94, низкие, колпачковые и с уменьшенным размером под ключ. В реестре — <?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> <?php echo esc_html( promen_ru_plural( (int) $ctx['count'], 'позиция', 'позиции', 'позиций' ) ); ?>. Подбор по резьбе M.</p>
       <div class="hero-params">
         <div class="hp"><span class="hp-v"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?></span><span class="hp-k">Типоразмеров</span></div>
         <div class="hp"><span class="hp-v">M × L</span><span class="hp-k">Резьба / длина</span></div>
@@ -40,10 +40,10 @@ return [
       </div>
       <div class="hud-block">
         <div class="hud-label">Нормативный статус</div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 9064-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-9064-1970' ) ) ); ?> поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 10605-1994</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-10605-1994' ) ) ); ?> поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 5915-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-5915-1970' ) ) ); ?> поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">ГОСТ 5927-1970</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-5927-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 9064-75</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-9064-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 10605-94</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-10605-1994' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 5915-70</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-5915-1970' ) ) ); ?> поз.</span></div>
+        <div class="hud-row"><span class="hud-rk">ГОСТ 5927-70</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'gayki', 'gost-5927-1970' ) ) ); ?> поз.</span></div>
       </div>
     </div>
   </div>
@@ -64,7 +64,7 @@ return [
           <div class="mg-hd"><div class="mg-code">Г</div><div class="mg-cnt"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'gayki', 'main' ) ) ); ?> поз.</div></div>
           <div class="mg-name">Гайки</div>
           <div class="mg-items">
-            <div class="mg-item">Фланцевые<span class="mg-norm">ГОСТ 9064</span></div><div class="mg-item">Шестигранные<span class="mg-norm">ГОСТ 5915 / 10605</span></div><div class="mg-item">Низкие<span class="mg-norm">ГОСТ 5916 / 10607</span></div><div class="mg-item">Колпачковые / под ключ<span class="mg-norm">ГОСТ 5929 / 5927</span></div>
+            <div class="mg-item">Фланцевые<span class="mg-norm">ГОСТ 9064-75</span></div><div class="mg-item">Шестигранные<span class="mg-norm">ГОСТ 5915-70 / 10605-94</span></div><div class="mg-item">Низкие<span class="mg-norm">ГОСТ 5916-70 / 10607-94</span></div><div class="mg-item">Колпачковые / под ключ<span class="mg-norm">ГОСТ 5929-70 / 5927-70</span></div>
           </div>
           <div class="mg-footer"><span class="mg-ftag">Г</span><span class="mg-ftag"><?php echo esc_html( number_format_i18n( promen_category_bucket_count( 'gayki', 'main' ) ) ); ?> поз.</span></div>
         </div>
@@ -91,7 +91,7 @@ return [
             <div class="sg-task-h">Гайка для фланцевого соединения</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Гайки ГОСТ 9064</div>
+            <div class="sg-prod-name">Гайки ГОСТ 9064-75</div>
             <div class="sg-tags">
               <span class="sg-tag hi">Г</span><span class="sg-tag">M × L</span>
             </div>
@@ -109,7 +109,7 @@ return [
             <div class="sg-task-h">Гайка шестигранная</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Гайки ГОСТ 5915 / 10605</div>
+            <div class="sg-prod-name">Гайки ГОСТ 5915-70 / 10605-94</div>
             <div class="sg-tags">
               <span class="sg-tag hi">Г</span><span class="sg-tag">M × L</span>
             </div>
@@ -127,7 +127,7 @@ return [
             <div class="sg-task-h">Гайка низкая / колпачковая</div>
           </div>
           <div class="sg-product" data-label="Нужное исполнение">
-            <div class="sg-prod-name">Гайки ГОСТ 5916 / 5929 / 10607</div>
+            <div class="sg-prod-name">Гайки ГОСТ 5916-70 / 5929-70 / 10607-94</div>
             <div class="sg-tags">
               <span class="sg-tag hi">Г</span><span class="sg-tag">M × L</span>
             </div>
@@ -180,7 +180,7 @@ return [
     <input type="text" name="company_url" value="" style="position:absolute;left:-9999px;" tabindex="-1" autocomplete="off">
     <div class="om-grid">
       <div class="om-field"><label class="om-lbl" for="om-name">Наименование</label><input id="om-name" name="product" type="text" value="Гайки" autocomplete="off"></div>
-      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 7798, ГОСТ 9066, ОСТ 26-2040…" autocomplete="off"></div>
+      <div class="om-field"><label class="om-lbl" for="om-std">Стандарт</label><input id="om-std" name="standard" type="text" placeholder="ГОСТ 7798-70, ГОСТ 9066-75, ОСТ 26-2040-96…" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-dn">Резьба M</label><input id="om-dn" name="dn" type="text" placeholder="M16" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-pn">Длина L, мм</label><input id="om-pn" name="pn" type="text" placeholder="80" autocomplete="off"></div>
       <div class="om-field"><label class="om-lbl" for="om-mat">Марка / класс прочности</label><input id="om-mat" name="material" type="text" placeholder="Ст20 / 5.6 / 8.8…" autocomplete="off"></div>

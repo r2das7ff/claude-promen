@@ -67,7 +67,7 @@ defined( 'ABSPATH' ) || exit;
           <div class="app-bg">ЖКХ</div>
           <div class="app-code">Сектор 06</div>
           <div class="app-h">ЖКХ и теплосети</div>
-          <p class="app-p">Тепловые сети, котельные установки, системы горячего водоснабжения. Стандартные исполнения по ГОСТ 17375–17380, DN 15–600, PN 6–25 МПа.</p>
+          <p class="app-p">Тепловые сети, котельные установки, системы горячего водоснабжения. Стандартные исполнения по ГОСТ 17375-2001, 17376-2001, 17378-2001, 17379-2001, DN 15–600, PN 6–25 МПа.</p>
           <div class="app-params">
             <div class="app-pr"><span class="app-pk">Давление, МПа</span><span class="app-pv">6–25</span></div>
             <div class="app-pr"><span class="app-pk">Температура, °C</span><span class="app-pv">до +200</span></div>

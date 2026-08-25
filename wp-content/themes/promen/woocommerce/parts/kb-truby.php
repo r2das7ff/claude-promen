@@ -33,15 +33,15 @@ defined( 'ABSPATH' ) || exit;
         <div class="kb-cards">
           <div class="kb-card">
             <div class="kb-card-badge">БШ · 700</div>
-            <div class="kb-card-title">Бесшовные · ГОСТ 8732 / 8734</div>
-            <p class="kb-card-body">Горячедеформированные (ГОСТ 8732, <strong>595 поз.</strong>) и холоднодеформированные (ГОСТ 8734, <strong>105 поз.</strong>). Для давления, пара, НГК и ответственных трактов ТЭС. Диапазон DN от малых до крупных по таблицам стандартов.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 8732-1978</span><span class="kb-tag">ГОСТ 8734-1975</span><span class="kb-tag">700 поз.</span></div>
+            <div class="kb-card-title">Бесшовные · ГОСТ 8732-78 / 8734-75</div>
+            <p class="kb-card-body">Горячедеформированные (ГОСТ 8732-78, <strong>595 поз.</strong>) и холоднодеформированные (ГОСТ 8734-75, <strong>105 поз.</strong>). Для давления, пара, НГК и ответственных трактов ТЭС. Диапазон DN от малых до крупных по таблицам стандартов.</p>
+            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 8732-78</span><span class="kb-tag">ГОСТ 8734-75</span><span class="kb-tag">700 поз.</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ЭС · 733</div>
-            <div class="kb-card-title">Электросварные · ГОСТ 10704 / 10705</div>
-            <p class="kb-card-body">Прямошовные электросварные: сортамент ГОСТ 10704 (<strong>522 поз.</strong>) и технические условия ГОСТ 10705 (<strong>211 поз.</strong>). Теплосети, общепром, технологические линии.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 10704-1991</span><span class="kb-tag">ГОСТ 10705-1980</span><span class="kb-tag">733 поз.</span></div>
+            <div class="kb-card-title">Электросварные · ГОСТ 10704-91 / 10705-80</div>
+            <p class="kb-card-body">Прямошовные электросварные: сортамент ГОСТ 10704-91 (<strong>522 поз.</strong>) и технические условия ГОСТ 10705-80 (<strong>211 поз.</strong>). Теплосети, общепром, технологические линии.</p>
+            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 10704-91</span><span class="kb-tag">ГОСТ 10705-80</span><span class="kb-tag">733 поз.</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ППУ · 441</div>
@@ -51,17 +51,17 @@ defined( 'ABSPATH' ) || exit;
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ВГП · 70</div>
-            <div class="kb-card-title">Водогазопроводные · ГОСТ 3262-1975</div>
+            <div class="kb-card-title">Водогазопроводные · ГОСТ 3262-75</div>
             <p class="kb-card-body">Трубы ВГП — лёгкие, обыкновенные и усиленные; с резьбой или без. <strong>70 позиций</strong>. Внутренние сети воды и газа, ЖКХ.</p>
-            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 3262-1975</span><span class="kb-tag">ЖКХ</span><span class="kb-tag">70 поз.</span></div>
+            <div class="kb-card-tags"><span class="kb-tag">ГОСТ 3262-75</span><span class="kb-tag">ЖКХ</span><span class="kb-tag">70 поз.</span></div>
           </div>
         </div>
         <div class="kb-groups-hd">Сравнение типов</div>
         <div class="kb-groups">
-          <div class="kb-grp"><span class="kb-grp-code">БШ</span><span class="kb-grp-name">Бесшовные · 700 поз.</span><span class="kb-grp-items">ГОСТ 8732 / 8734 · давление / пар</span></div>
-          <div class="kb-grp"><span class="kb-grp-code">ЭС</span><span class="kb-grp-name">Электросварные · 733 поз.</span><span class="kb-grp-items">ГОСТ 10704 / 10705 · теплосети</span></div>
-          <div class="kb-grp"><span class="kb-grp-code">ППУ</span><span class="kb-grp-name">В изоляции · 441 поз.</span><span class="kb-grp-items">ГОСТ 30732 · предизол. плети</span></div>
-          <div class="kb-grp"><span class="kb-grp-code">ВГП</span><span class="kb-grp-name">Водогазопроводные · 70 поз.</span><span class="kb-grp-items">ГОСТ 3262 · ЖКХ</span></div>
+          <div class="kb-grp"><span class="kb-grp-code">БШ</span><span class="kb-grp-name">Бесшовные · 700 поз.</span><span class="kb-grp-items">ГОСТ 8732-78 / 8734-75 · давление / пар</span></div>
+          <div class="kb-grp"><span class="kb-grp-code">ЭС</span><span class="kb-grp-name">Электросварные · 733 поз.</span><span class="kb-grp-items">ГОСТ 10704-91 / 10705-80 · теплосети</span></div>
+          <div class="kb-grp"><span class="kb-grp-code">ППУ</span><span class="kb-grp-name">В изоляции · 441 поз.</span><span class="kb-grp-items">ГОСТ 30732-2020 · предизол. плети</span></div>
+          <div class="kb-grp"><span class="kb-grp-code">ВГП</span><span class="kb-grp-name">Водогазопроводные · 70 поз.</span><span class="kb-grp-items">ГОСТ 3262-75 · ЖКХ</span></div>
         </div>
       </div>
 
@@ -77,7 +77,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-checklist">
               <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">D×s или DN</div><div class="kb-check-body">Наружный диаметр × толщина стенки (или условный проход). Пример: 159×6 / DN 150.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">Тип трубы</div><div class="kb-check-body"><strong>БШ</strong> — бесшовная; <strong>ЭС</strong> — электросварная; <strong>ППУ</strong> — предизолированная; <strong>ВГП</strong> — водогазопроводная.</div></div></div>
-              <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Норматив</div><div class="kb-check-body">ГОСТ 8732 / 8734 / 10704 / 10705 / 30732 / 3262 — по объекту и проекту.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Норматив</div><div class="kb-check-body">ГОСТ 8732-78 / 8734-75 / 10704-91 / 10705-80 / 30732-2020 / 3262-75 — по объекту и проекту.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Марка стали</div><div class="kb-check-body">Ст20, сталь 10, Ст3сп, 09Г2С, 17Г1С-У и др. — по каталогу или условиям среды.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">05</span><div><div class="kb-check-title">ППУ / покрытие</div><div class="kb-check-body">Для ППУ: оболочка ПЭ или ОЦ, длина плети, система ОДК — по проекту теплосети.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">06</span><div><div class="kb-check-title">Количество и срок</div><div class="kb-check-body">Метраж / число труб, желаемая дата отгрузки, условия поставки.</div></div></div>
@@ -104,22 +104,22 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">Бесшовные</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 8732-1978</span><span class="kb-norm-desc">Сортамент бесшовных горячедеформированных. 595 позиций</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 8734-1975</span><span class="kb-norm-desc">Сортамент бесшовных холоднодеформированных. 105 позиций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 8732-78</span><span class="kb-norm-desc">Сортамент бесшовных горячедеформированных. 595 позиций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 8734-75</span><span class="kb-norm-desc">Сортамент бесшовных холоднодеформированных. 105 позиций</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">Электросварные</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10704-1991</span><span class="kb-norm-desc">Сортамент прямошовных электросварных. 522 позиции</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10705-1980</span><span class="kb-norm-desc">Технические условия на электросварные трубы. 211 позиций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10704-91</span><span class="kb-norm-desc">Сортамент прямошовных электросварных. 522 позиции</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10705-80</span><span class="kb-norm-desc">Технические условия на электросварные трубы. 211 позиций</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">ППУ и ВГП</div>
             <div class="kb-norm-items">
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 30732-2020</span><span class="kb-norm-desc">Трубы и фасонные изделия в ППУ-изоляции. 441 позиция</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 3262-1975</span><span class="kb-norm-desc">Водогазопроводные трубы. 70 позиций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 3262-75</span><span class="kb-norm-desc">Водогазопроводные трубы. 70 позиций</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
@@ -128,7 +128,7 @@ defined( 'ABSPATH' ) || exit;
               <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">Оборудование под избыточным давлением. Обязателен при PN &gt; 0,05 МПа</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ТУ 24.20.40-001-13842829-2023</span><span class="kb-norm-desc">ТУ предприятия — комплектность, маркировка, объём контроля</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ ISO 10474-2016</span><span class="kb-norm-desc">Документы о контроле металлопродукции. Паспорт 3.1</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 1050 / 19281</span><span class="kb-norm-desc">Марки стали Ст20, 10, 09Г2С</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 1050-2013 / 19281-2014</span><span class="kb-norm-desc">Марки стали Ст20, 10, 09Г2С</span></div>
             </div>
           </div>
         </div>
@@ -140,7 +140,7 @@ defined( 'ABSPATH' ) || exit;
         <div class="kb-mat-grid">
           <div class="kb-mat">
             <div class="kb-mat-grade">Ст20</div>
-            <div class="kb-mat-std">ГОСТ 1050-2013 · ГОСТ 8731/8732</div>
+            <div class="kb-mat-std">ГОСТ 1050-2013 · ГОСТ 8731-87/8732-78</div>
             <div class="kb-mat-range">до +425°С · основная марка</div>
             <div class="kb-mat-apps">ТЭС · Общепром · НГК · Теплосети · типовые БШ и ЭС</div>
           </div>
@@ -152,7 +152,7 @@ defined( 'ABSPATH' ) || exit;
           </div>
           <div class="kb-mat">
             <div class="kb-mat-grade">Ст3сп</div>
-            <div class="kb-mat-std">ГОСТ 380 / трубные ряды</div>
+            <div class="kb-mat-std">ГОСТ 380-2005 / трубные ряды</div>
             <div class="kb-mat-range">Общепром · низкое/среднее давление</div>
             <div class="kb-mat-apps">ЭС · ВГП · строительные и сетевые применения</div>
           </div>
@@ -251,7 +251,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Частые ошибки при заказе</div>
             <div class="kb-errors">
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">DN ≠ наружный диаметр</div><div class="kb-err-note">Для DN 50 наружный диаметр по ГОСТ 8732 = 57 мм. Уточняйте стандарт ряда.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">DN ≠ наружный диаметр</div><div class="kb-err-note">Для DN 50 наружный диаметр по ГОСТ 8732-78 = 57 мм. Уточняйте стандарт ряда.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путать БШ и ЭС</div><div class="kb-err-note">Бесшовная и электросварная — разные нормативы и области применения.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">ППУ без оболочки</div><div class="kb-err-note">Укажите ПЭ или ОЦ — от этого зависит тип прокладки.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Забыть ТР ТС 032</div><div class="kb-err-note">При PN &gt; 0.05 МПа в ЕАЭС нужна декларация.</div></div></div>
@@ -283,7 +283,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-card-badge">УПАКОВКА</div>
             <div class="kb-card-title">Защита торцов и маркировка</div>
             <p class="kb-card-body">Пакетирование / обрешётка по габариту, защита торцов, маркировка позиций. Для ППУ — бережная погрузка оболочки. Документы — с грузом и по email.</p>
-            <div class="kb-card-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат 3.1</span></div>
+            <div class="kb-card-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат качества</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ОПЛАТА</div>

@@ -23,11 +23,11 @@
 .smgr-eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:24px;}
 .smgr-eye-num{
   font-family:'DINPro',monospace;font-size:12px;letter-spacing:.2em;
-  color:var(--g1);border:1px solid var(--g1);padding:3px 8px;line-height:1;
+  color:var(--g1-text);border:1px solid var(--g1);padding:3px 8px;line-height:1;
 }
 .smgr-eye-label{
   font-family:'DINPro',monospace;font-size:11px;letter-spacing:.25em;
-  text-transform:uppercase;color:var(--g1);opacity:.6;
+  text-transform:uppercase;color:var(--g1-text);opacity:.6;
   display:flex;align-items:center;gap:10px;
 }
 .smgr-eye-label::before{content:'';width:28px;height:1px;background:var(--g1);flex-shrink:0;}
@@ -56,19 +56,19 @@
 .smgr-group-bar::after{content:'';flex:1;height:1px;background:var(--ln2);align-self:center;}
 .smgr-group-count{
   font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;
-  color:var(--g1);flex-shrink:0;order:3;
+  color:var(--g1-text);flex-shrink:0;order:3;
 }
 
 /* ── CARD GRID ── */
 .smgr-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(216px,1fr));
-  gap:24px 20px;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:28px 24px;
 }
 .smgr-card{
   display:flex;flex-direction:column;min-width:0;
   background:var(--white);border:1px solid var(--ln2);
-  transition:border-color var(--dur-fast),transform .3s var(--ease-out),box-shadow .3s var(--ease-out);
+  transition:border-color var(--dur-fast),transform var(--dur-panel) var(--ease-out),box-shadow var(--dur-panel) var(--ease-out);
 }
 .smgr-card:hover{
   border-color:var(--g1);
@@ -82,7 +82,7 @@
 }
 .smgr-photo img{
   width:100%;height:100%;object-fit:cover;object-position:top center;display:block;
-  transition:transform .45s var(--ease-out);
+  transition:transform var(--dur-entrance) var(--ease-out);
 }
 .smgr-card:hover .smgr-photo img{transform:scale(1.03);}
 .smgr-idx{
@@ -93,7 +93,7 @@
 }
 .smgr-body{
   display:flex;flex-direction:column;flex:1;
-  padding:16px 14px 14px;
+  padding:18px 18px 16px;
 }
 .smgr-name{
   font-size:16.5px;font-weight:700;color:var(--dark);
@@ -114,23 +114,24 @@
   display:flex;align-items:flex-start;gap:9px;flex:1;min-width:0;
   padding:9px 0;
 }
-.smgr-ic{width:15px;height:15px;flex-shrink:0;margin-top:1px;color:var(--g1);transition:color var(--dur-fast);}
+.smgr-ic{width:15px;height:15px;flex-shrink:0;margin-top:1px;color:var(--g1-text);transition:color var(--dur-fast);}
 .smgr-line-v{
   display:block;min-width:0;
-  font-family:'DINPro',monospace;font-size:12.5px;color:var(--dark);
+  font-family:'DINPro',monospace;font-size:13px;color:var(--dark);
   white-space:nowrap;line-height:1.35;
   transition:color var(--dur-fast);
 }
-.smgr-ext{display:block;font-style:normal;color:var(--g1);font-size:11px;margin-top:1px;}
+.smgr-ext{display:block;font-style:normal;color:var(--g1-text);font-size:11px;margin-top:1px;}
 .smgr-line-link:hover .smgr-line-v,
-.smgr-line-link:hover .smgr-ic{color:var(--g1);}
+.smgr-line-link:hover .smgr-ic{color:var(--g1-text);}
 .smgr-line-link:focus-visible{outline:2px solid var(--dark);outline-offset:2px;}
 
 /* Кнопка копирования: copy и check одна поверх другой, is-copied меняет */
 .smgr-copy{
-  width:30px;height:30px;flex-shrink:0;
+  /* 44x44 — минимальная тач-цель; иконка внутри остаётся 14px */
+  width:44px;height:44px;flex-shrink:0;
   display:grid;place-items:center;
-  color:var(--g1);border:1px solid transparent;
+  color:var(--g1-text);border:1px solid transparent;
   transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast);
 }
 .smgr-copy-ic{width:14px;height:14px;grid-area:1/1;transition:opacity var(--dur-ui) var(--ease-out-sm),transform var(--dur-ui) var(--ease-out-sm);}
@@ -161,7 +162,7 @@
   font-family:'DINPro',monospace;font-size:14px;color:var(--dark);
 }
 .smgr-foot-lines a{border-bottom:1px solid var(--ln2);padding-bottom:2px;transition:border-color var(--dur-fast),color var(--dur-fast);}
-.smgr-foot-lines a:hover{color:var(--g1);border-color:var(--g1);}
+.smgr-foot-lines a:hover{color:var(--g1-text);border-color:var(--g1);}
 .smgr-foot-lines a:focus-visible{outline:2px solid var(--dark);outline-offset:3px;}
 .smgr-foot-lines span{color:var(--blue);font-size:12.5px;}
 
@@ -173,6 +174,12 @@
   .smgr-head{padding:52px 24px 36px;}
   .smgr-groups{padding:36px 24px 64px;}
 }
+/* Телефон и почта в подвале — частые тач-цели, добираем до 44px по высоте
+   вертикальным padding; инлайн-ссылки внутри абзацев намеренно не трогаем. */
+@media (max-width:639px){
+  .smgr-foot-lines a{display:inline-flex;align-items:center;min-height:44px;}
+}
+
 @media (max-width:639px){
   /* Длинное имя группы: разрешаем перенос, линия+счётчик уходят строкой ниже */
   .smgr-group-bar{flex-wrap:wrap;row-gap:8px;}
@@ -189,8 +196,8 @@
   .smgr-name{font-size:15.5px;}
   .smgr-role{font-size:12px;margin-bottom:10px;}
   /* Звонок — главное действие: тап-таргеты ≥44px */
-  .smgr-line-link{padding:12px 0;}
-  .smgr-copy{width:40px;height:40px;}
+  .smgr-line-link{padding:14px 0;min-height:44px;display:flex;align-items:center;}
+  .smgr-copy{width:44px;height:44px;} /* минимальная тач-цель */
   .smgr-foot{padding:18px;margin-top:44px;}
   .smgr-foot-lines{gap:14px 22px;font-size:13.5px;}
 }

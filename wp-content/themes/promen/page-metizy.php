@@ -51,13 +51,13 @@ $promen_hub = promen_calc_url( 'kalkulyatory' );
   <div class="clc-seo">
     <h2>Сколько болтов в килограмме</h2>
     <p>У каждого типоразмера крепежа в нормативе задана теоретическая масса тысячи штук:
-      например, болт M12×50 по ГОСТ 7798 весит около 48 кг за 1000 шт — то есть в килограмме
+      например, болт M12×50 по ГОСТ 7798-70 весит около 48 кг за 1000 шт — то есть в килограмме
       примерно 20 болтов. Калькулятор использует эти же значения из
       <a href="<?php echo esc_url( promen_product_cat_link( 'krepezh' ) ); ?>">каталога крепежа</a>,
       поэтому расчёт совпадает со счётом склада.</p>
     <ul>
-      <li><a href="<?php echo esc_url( promen_product_cat_link( 'bolty' ) ); ?>">Болты</a> — ГОСТ 7798, 7805, 22032 и др.;</li>
-      <li><a href="<?php echo esc_url( promen_product_cat_link( 'gayki' ) ); ?>">Гайки</a> — ГОСТ 5915, 5927;</li>
+      <li><a href="<?php echo esc_url( promen_product_cat_link( 'bolty' ) ); ?>">Болты</a> — ГОСТ 7798-70, 7805-70, 22032-76 и др.;</li>
+      <li><a href="<?php echo esc_url( promen_product_cat_link( 'gayki' ) ); ?>">Гайки</a> — ГОСТ 5915-70, 5927-70;</li>
       <li><a href="<?php echo esc_url( promen_product_cat_link( 'shpilki' ) ); ?>">Шпильки</a> — для фланцевых соединений;</li>
       <li><a href="<?php echo esc_url( promen_product_cat_link( 'shayby' ) ); ?>">Шайбы</a> — плоские и пружинные;</li>
       <li><a href="<?php echo esc_url( promen_product_cat_link( 'vinty' ) ); ?>">Винты</a>.</li>

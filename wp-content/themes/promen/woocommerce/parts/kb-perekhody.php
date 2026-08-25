@@ -35,13 +35,13 @@ defined( 'ABSPATH' ) || exit;
 
         <div class="kb-cards">
           <div class="kb-card">
-            <div class="kb-card-badge">ГОСТ 17378</div>
+            <div class="kb-card-badge">ГОСТ 17378-2001</div>
             <div class="kb-card-title">Бесшовные приварные · DN 32–600</div>
             <p class="kb-card-body">Бесшовные приварные переходы из углеродистой и низколегированной стали (ГОСТ 17378-2001, ИСО 3419-81). <strong>Концентрические (ПК)</strong> — оси совпадают; <strong>эксцентрические (ПЭ)</strong> — для дренажа и сохранения уклона трассы. Основной тип для общепрома, НГК и трубопроводов ТЭС. <strong>278 позиций</strong>.</p>
             <div class="kb-card-tags"><span class="kb-tag">ГОСТ 17378-2001</span><span class="kb-tag">ПК · ПЭ</span><span class="kb-tag">DN 32–600</span><span class="kb-tag">278 поз.</span></div>
           </div>
           <div class="kb-card">
-            <div class="kb-card-badge">ГОСТ 22826</div>
+            <div class="kb-card-badge">ГОСТ 22826-83</div>
             <div class="kb-card-title">На Ру до 100 МПа · DN 25–200</div>
             <p class="kb-card-body">Переходы высокого давления (свыше 10 до 100 МПа) по ГОСТ 22826-83. Применяются в нефтехимии и производстве минеральных удобрений; рабочий диапазон температур −50…+510 °C. Поставка с расширенным объёмом контроля. <strong>68 позиций</strong>.</p>
             <div class="kb-card-tags"><span class="kb-tag">Ру до 100 МПа</span><span class="kb-tag">DN 25–200</span><span class="kb-tag">ГОСТ 22826-83</span><span class="kb-tag">68 поз.</span></div>
@@ -53,10 +53,10 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-card-tags"><span class="kb-tag">ОСТ 36-22-77</span><span class="kb-tag">ОСТ 34-10-753-97</span><span class="kb-tag">57 поз.</span></div>
           </div>
           <div class="kb-card">
-            <div class="kb-card-badge">СТО 318 / ОСТ 754</div>
+            <div class="kb-card-badge">СТО ЦКТИ 318 / ОСТ 754</div>
             <div class="kb-card-title">Точёные и мелкий DN · 15–65</div>
-            <p class="kb-card-body">Точёные переходы по СТО 318.01-2009 (исполнения 01–03) и сварные мелкого DN по ОСТ 34.10.754-97. Котельные обвязки, малые диаметры, точная геометрия. <strong>22 позиции</strong>.</p>
-            <div class="kb-card-tags"><span class="kb-tag">СТО 318.01</span><span class="kb-tag">ОСТ 34.10.754</span><span class="kb-tag">DN 15–65</span><span class="kb-tag">22 поз.</span></div>
+            <p class="kb-card-body">Точёные переходы по СТО ЦКТИ 318.01-2009 (исполнения 01–03) и сварные мелкого DN по ОСТ 34-10-754-97. Котельные обвязки, малые диаметры, точная геометрия. <strong>22 позиции</strong>.</p>
+            <div class="kb-card-tags"><span class="kb-tag">СТО ЦКТИ 318.01</span><span class="kb-tag">ОСТ 34-10-754-97</span><span class="kb-tag">DN 15–65</span><span class="kb-tag">22 поз.</span></div>
           </div>
         </div>
 
@@ -65,22 +65,22 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-grp">
             <span class="kb-grp-code">ПШ</span>
             <span class="kb-grp-name">Бесшовные · DN 32–600</span>
-            <span class="kb-grp-items">Штамповка · ГОСТ 17378 · ПК/ПЭ · 278 поз.</span>
+            <span class="kb-grp-items">Штамповка · ГОСТ 17378-2001 · ПК/ПЭ · 278 поз.</span>
           </div>
           <div class="kb-grp">
             <span class="kb-grp-code">П-100</span>
             <span class="kb-grp-name">Ру до 100 МПа · DN 25–200</span>
-            <span class="kb-grp-items">ГОСТ 22826 · нефтехимия · 68 поз.</span>
+            <span class="kb-grp-items">ГОСТ 22826-83 · нефтехимия · 68 поз.</span>
           </div>
           <div class="kb-grp">
             <span class="kb-grp-code">ПСВ</span>
             <span class="kb-grp-name">Сварные · DN 300–1600</span>
-            <span class="kb-grp-items">ОСТ 36-22 / 34-10-753 · НК швов · 57 поз.</span>
+            <span class="kb-grp-items">ОСТ 36-22-77 / 34-10-753 · НК швов · 57 поз.</span>
           </div>
           <div class="kb-grp">
             <span class="kb-grp-code">ПТ</span>
             <span class="kb-grp-name">Точёные / мелкий DN</span>
-            <span class="kb-grp-items">СТО 318 / ОСТ 754 · 22 поз.</span>
+            <span class="kb-grp-items">СТО ЦКТИ 318 / ОСТ 754 · 22 поз.</span>
           </div>
         </div>
       </div>
@@ -97,7 +97,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-checklist">
               <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Размеры обоих концов</div><div class="kb-check-body">D1×s1 и D2×s2 (или DN1×DN2 с толщинами). Пример: 108×4 – 89×4 / DN 100×80.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">Тип: ПК или ПЭ</div><div class="kb-check-body"><strong>Концентрический (ПК)</strong> — оси совпадают; <strong>эксцентрический (ПЭ)</strong> — для дренажа и сохранения уклона. Укажите ориентацию плоскости для ПЭ.</div></div></div>
-              <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Норматив объекта</div><div class="kb-check-body">ГОСТ 17378 / ГОСТ 22826 (Ру 100) / ОСТ 36-22 / ОСТ 34-10-753 / СТО 318.01 / ОСТ 34.10.754.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Норматив объекта</div><div class="kb-check-body">ГОСТ 17378-2001 / ГОСТ 22826-83 (Ру 100) / ОСТ 36-22-77 / ОСТ 34-10-753-97 / СТО ЦКТИ 318.01 / ОСТ 34.10.754.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Марка стали и среда</div><div class="kb-check-body">Точная марка из каталога или условия: t°С, среда, агрессивность. Для АЭС — по программе контроля.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">05</span><div><div class="kb-check-title">Поднадзорность и НК</div><div class="kb-check-body">ТР ТС 032/2013; методы НК (ВИК, УЗК, РК) — особенно для сварных серий.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">06</span><div><div class="kb-check-title">Количество и срок</div><div class="kb-check-body">Количество в штуках, желаемая дата. Для крупного DN сварных — согласуйте перевозку заранее.</div></div></div>
@@ -126,16 +126,16 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-norm-items">
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17378-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные. Переходы. Конструкция (ИСО 3419-81). Концентрические и эксцентрические — 278 позиций, DN 32–600</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17380-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные из углеродистой и низколегированной стали. Общие технические условия — головной документ серии</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22826-1983</span><span class="kb-norm-desc">Сборочные единицы и детали трубопроводов. Переходы на Ру св. 10 до 100 МПа. Конструкция и размеры. Точёные, Dy 10×6…200×150, t −50…+510 °C. 68 позиций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22826-83</span><span class="kb-norm-desc">Сборочные единицы и детали трубопроводов. Переходы на Ру св. 10 до 100 МПа. Конструкция и размеры. Точёные, Dy 10×6…200×150, t −50…+510 °C. 68 позиций</span></div>
             </div>
           </div>
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">ОСТ / СТО — сварные и точёные</div>
             <div class="kb-norm-items">
               <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-22-77</span><span class="kb-norm-desc">Детали трубопроводов Dy 500–1400 мм сварные из углеродистой стали на Ру ≤ 2,5 МПа. Переходы сварные. 33 позиции</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.700-97</span><span class="kb-norm-desc">Детали трубопроводов стальные бесшовные приварные на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций. Переходы. Конструкция и размеры</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.753-97</span><span class="kb-norm-desc">Сводный том ОСТ 34 10.747-97 ÷ 10.754-97, часть I: детали и сборочные единицы трубопроводов ТЭС, Рраб &lt; 2,2 МПа, t ≤ 425 °C. 24 позиции</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.754-97</span><span class="kb-norm-desc">Тот же сводный том, часть I — переходы малых DN 15–40. 9 позиций</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-700-97</span><span class="kb-norm-desc">Детали трубопроводов стальные бесшовные приварные на Рраб &lt; 2,2 МПа для атомных и тепловых электростанций. Переходы. Конструкция и размеры</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-753-97</span><span class="kb-norm-desc">Сводный том ОСТ 34-10-747-97 ÷ 10.754-97, часть I: детали и сборочные единицы трубопроводов ТЭС, Рраб &lt; 2,2 МПа, t ≤ 425 °C. 24 позиции</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-754-97</span><span class="kb-norm-desc">Тот же сводный том, часть I — переходы малых DN 15–40. 9 позиций</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 318.01–318.06-2009</span><span class="kb-norm-desc">Переходы точёные, обжатые и штампованные для трубопроводов и паропроводов тепловых станций. Ресурс 200 000 часов. 13 позиций</span></div>
             </div>
           </div>
@@ -175,7 +175,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-mat-grade">Сталь 10</div>
             <div class="kb-mat-std">ГОСТ 1050-2013</div>
             <div class="kb-mat-range">Общепромышленные трубопроводы</div>
-            <div class="kb-mat-apps">Типовые переходы ГОСТ 17378 · Тепловые сети · Технологические линии без агрессивной среды</div>
+            <div class="kb-mat-apps">Типовые переходы ГОСТ 17378-2001 · Тепловые сети · Технологические линии без агрессивной среды</div>
           </div>
           <div class="kb-mat">
             <div class="kb-mat-grade">09Г2С</div>
@@ -234,13 +234,13 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-mat">
             <div class="kb-mat-grade">20ХЗМВФ</div>
             <div class="kb-mat-std">Теплоустойчивая · серия Ру 100</div>
-            <div class="kb-mat-range">Ру до 100 МПа · ГОСТ 22826</div>
+            <div class="kb-mat-range">Ру до 100 МПа · ГОСТ 22826-83</div>
             <div class="kb-mat-apps">Переходы высокого давления ГОСТ 22826-83 · Нефтехимия · Минеральные удобрения · t −50…+510 °C</div>
           </div>
           <div class="kb-mat">
             <div class="kb-mat-grade">Р9</div>
             <div class="kb-mat-std">По каталогу / спецназначение</div>
-            <div class="kb-mat-range">Серии ГОСТ 17378</div>
+            <div class="kb-mat-range">Серии ГОСТ 17378-2001</div>
             <div class="kb-mat-apps">Позиции каталога с материалом Р9 · Согласование применимости — с инженером при запросе КП</div>
           </div>
         </div>
@@ -310,7 +310,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Как подготовить заявку на переход</div>
             <div class="kb-checklist">
-              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Наименование и норматив</div><div class="kb-check-body">Переход ПК/ПЭ по <strong>ГОСТ 17378</strong>, Ру 100 по <strong>ГОСТ 22826</strong>, сварной по <strong>ОСТ 36-22 / 34-10</strong> или точёный по <strong>СТО 318.01</strong>. Если норматив неизвестен — укажите DN1×DN2, PN и объект.</div></div></div>
+              <div class="kb-check"><span class="kb-check-n">01</span><div><div class="kb-check-title">Наименование и норматив</div><div class="kb-check-body">Переход ПК/ПЭ по <strong>ГОСТ 17378-2001</strong>, Ру 100 по <strong>ГОСТ 22826-83</strong>, сварной по <strong>ОСТ 36-22-77 / 34-10</strong> или точёный по <strong>СТО ЦКТИ 318.01</strong>. Если норматив неизвестен — укажите DN1×DN2, PN и объект.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">02</span><div><div class="kb-check-title">D1×s1 и D2×s2</div><div class="kb-check-body">Оба конца с толщинами. При отсутствии — передайте DN1×DN2, PN и t°С для подбора инженером.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">03</span><div><div class="kb-check-title">Марка стали</div><div class="kb-check-body">Точная марка или условия среды. Для серии Ру 100 часто требуется <strong>20ХЗМВФ</strong> и расширенный НК.</div></div></div>
               <div class="kb-check"><span class="kb-check-n">04</span><div><div class="kb-check-title">Количество и срок</div><div class="kb-check-body">Количество в штуках. Желаемая дата. Для сварных крупного DN — поэтапный график.</div></div></div>
@@ -321,7 +321,7 @@ defined( 'ABSPATH' ) || exit;
           <div>
             <div class="kb-col-title">Что влияет на стоимость</div>
             <div class="kb-factors">
-              <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Тип перехода</div><div class="kb-factor-note">Сварные крупного DN (ОСТ) и точёные СТО дороже бесшовных ГОСТ 17378 при сопоставимых DN за счёт трудоёмкости.</div></div></div>
+              <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Тип перехода</div><div class="kb-factor-note">Сварные крупного DN (ОСТ) и точёные СТО дороже бесшовных ГОСТ 17378-2001 при сопоставимых DN за счёт трудоёмкости.</div></div></div>
               <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Марка стали</div><div class="kb-factor-note">Нержавеющие (12Х18Н10Т) в 5–6 раз дороже Ст20. Теплоустойчивая 20ХЗМВФ для Ру 100 — по рынку заготовки.</div></div></div>
               <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">Объём НК</div><div class="kb-factor-note">Полный объём для АЭС (УЗК+РК+МПД+ПВК) может в 2–4 раза увеличить стоимость относительно базового ВИК.</div></div></div>
               <div class="kb-factor"><span class="kb-factor-ic">↑</span><div><div class="kb-factor-name">DN и перепад диаметров</div><div class="kb-factor-note">Крупный DN и большой перепад D1/D2 увеличивают массу и сложность штамповки/сварки.</div></div></div>
@@ -333,8 +333,8 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-errors">
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Указать только один DN</div><div class="kb-err-note">Переход задаётся двумя концами. «Переход DN 100» без второго диаметра — не спецификация.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Путать ПК и ПЭ</div><div class="kb-err-note">Эксцентрический нужен для дренажа и уклона. Ошибка типа = переделка на объекте.</div></div></div>
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">DN ≠ наружный диаметр трубы</div><div class="kb-err-note">Для DN 50 наружный диаметр по ГОСТ 8732 = 57 мм. Всегда уточняйте стандарт трубы обоих участков.</div></div></div>
-              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Заказать ГОСТ 17378 при Ру 100</div><div class="kb-err-note">Высокое давление (свыше 10 МПа) — серия ГОСТ 22826, не бесшовный общепром.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">DN ≠ наружный диаметр трубы</div><div class="kb-err-note">Для DN 50 наружный диаметр по ГОСТ 8732-78 = 57 мм. Всегда уточняйте стандарт трубы обоих участков.</div></div></div>
+              <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Заказать ГОСТ 17378-2001 при Ру 100</div><div class="kb-err-note">Высокое давление (свыше 10 МПа) — серия ГОСТ 22826-83, не бесшовный общепром.</div></div></div>
               <div class="kb-err"><span class="kb-err-ic">!</span><div><div class="kb-err-title">Забыть ТР ТС 032/2013</div><div class="kb-err-note">Изделия с PN &gt; 0.05 МПа в ЕАЭС требуют декларации. Заказывайте заблаговременно.</div></div></div>
             </div>
           </div>
@@ -364,7 +364,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-card-badge">УПАКОВКА</div>
             <div class="kb-card-title">Защита кромок и маркировка каждой позиции</div>
             <p class="kb-card-body">Паллеты или деревянная обрешётка по массе и габариту, защита сварочных кромок обоих концов, маркировка позиций по упаковочному листу. Комплект документов — с грузом и дублируется по email.</p>
-            <div class="kb-card-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат 3.1</span></div>
+            <div class="kb-card-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат качества</span></div>
           </div>
           <div class="kb-card">
             <div class="kb-card-badge">ОПЛАТА</div>

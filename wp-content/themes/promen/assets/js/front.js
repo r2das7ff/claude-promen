@@ -162,8 +162,8 @@ document.addEventListener('DOMContentLoaded', function(){
   const container = document.getElementById('s4-wrap');
   if (!canvas || !container) return;
 
-  /* Projection: -5°W–140°E, 5°N–78°N */
-  const LON_MIN = -5, LON_MAX = 140, LAT_MIN = 5, LAT_MAX = 78;
+  /* Projection: -5°W–155°E, 5°N–78°N (правый край расширен под Магаданскую обл.) */
+  const LON_MIN = -5, LON_MAX = 155, LAT_MIN = 5, LAT_MAX = 78;
   const lonToX = (lon, w) => ((lon - LON_MIN) / (LON_MAX - LON_MIN)) * w;
   const latToY = (lat, h) => ((LAT_MAX - lat) / (LAT_MAX - LAT_MIN)) * h;
   const xToLon = (x, w) => (x / w) * (LON_MAX - LON_MIN) + LON_MIN;
@@ -175,21 +175,38 @@ document.addEventListener('DOMContentLoaded', function(){
     labelSide: 'top', labelOff: 25, labelShiftY: -8, labelShiftX: 0,
   };
 
-  const destinations = [
-    { id: 'ruppur',  label: 'АЭС «Руппур»',    sublabel: 'Бангладеш', lon: 89.6, lat: 21.4, international: true,  labelSide: 'right',  labelOff: 30, labelShiftY: 0,   labelShiftX: 0 },
-    { id: 'akkuju',  label: 'АЭС «Аккую»',     sublabel: 'Турция',    lon: 33.8, lat: 36.1, international: true,  labelSide: 'bottom', labelOff: 25, labelShiftY: 0,   labelShiftX: 0 },
-    { id: 'suvorov', label: 'Черепетская ГРЭС', sublabel: 'Суворов',   lon: 36.6, lat: 54.1, international: false, labelSide: 'top',    labelOff: 22, labelShiftY: -12, labelShiftX: -30 },
-    { id: 'omsk',    label: 'ТЭЦ-3',            sublabel: 'Омск',      lon: 73.4, lat: 55.0, international: false, labelSide: 'right',  labelOff: 30, labelShiftY: 0,   labelShiftX: 0 },
-    { id: 'kursk',   label: 'Курская АЭС-2',   sublabel: 'Курск',     lon: 36.2, lat: 51.7, international: false, labelSide: 'left',   labelOff: 25, labelShiftY: 8,   labelShiftX: 0 },
-  ];
+  // Точки карты приходят из PHP-реестра (inc/projects-registry.php) — он же
+  // питает бегущую строку и страницу «Проекты», поэтому списки не расходятся.
+  // Фолбэк на случай, если конфиг не доехал: пять исходных объектов.
+  const GEO = ((window.promenFront || {}).geo || []);
+  const destinations = (GEO.length ? GEO : [
+    { id:'aes-ruppur',  label:'АЭС «Руппур»', sub:'Пабна',  lon:89.6, lat:24.1, intl:true,  label_side:'right',  label_off:30, label_dx:0, label_dy:0 },
+    { id:'aes-akkuyu',  label:'АЭС «Аккую»',  sub:'Мерсин', lon:33.8, lat:36.1, intl:true,  label_side:'bottom', label_off:25, label_dx:0, label_dy:0 },
+  ]).map((g, i) => ({
+    id: g.id,
+    label: g.label,
+    sublabel: g.sub,
+    lon: g.lon, lat: g.lat,
+    international: !!g.intl,
+    labelSide: g.label_side || 'right',
+    labelOff: g.label_off || 26,
+    labelShiftX: g.label_dx || 0,
+    labelShiftY: g.label_dy || 0,
+    // Подпись постоянно видна только у экспортных объектов и у тех, где есть
+    // детальная страница. Остальные 30+ точек подписываются при наведении —
+    // иначе на Урале и в Поволжье подписи наезжают друг на друга.
+    labelAlways: !!g.intl || !!g.href,
+    // Экспорт «прилетает» первым, дальше точки проявляются волной с запада.
+    delay: g.intl ? i * 0.35 : 1.0 + (i % 12) * 0.12,
+  }));
 
-  const routes = [
-    { to: destinations[0], delay: 0 },
-    { to: destinations[1], delay: 0.4 },
-    { to: destinations[2], delay: 0.8 },
-    { to: destinations[3], delay: 1.1 },
-    { to: destinations[4], delay: 1.4 },
-  ];
+  // Дуги ведём ко всем объектам. Чтобы 36 линий из одной точки не превратились
+  // в паутину, российские идут тонкими и полупрозрачными — они читаются как
+  // фоновая «сетка поставок», а экспортные проведены ярко и поверх неё.
+  const routes = destinations.map((d, i) => ({
+    to: d,
+    delay: d.international ? i * 0.25 : 0.6 + (i % 14) * 0.09,
+  }));
 
   const regionPolygons = [
     [[32,70.5],[36,69.5],[40,68.5],[45,68],[50,68.5],[55,69],[60,68],[65,67],[70,67],[73,69],[77,71],[80,72],[84,73.5],[88,75],[93,76],[97,75],[102,77],[107,75],[112,73],[117,73],[122,72],[127,71],[132,68],[136,64],[140,60],[139,56],[135,50],[132,48],[128,47],[125,48],[120,50],[115,50],[110,48],[105,50],[100,50],[95,50],[90,47],[85,48],[80,50],[75,53],[70,52],[65,52],[60,54],[55,50],[50,47],[48,43],[46,42],[44,42],[42,42],[40,43],[38,44.5],[37,46],[36,47],[35,48],[34,49],[33,50],[32,51],[31,52],[30,54],[29,56],[28,58],[29,60],[30,63],[30,67],[32,70.5]],
@@ -213,6 +230,28 @@ document.addEventListener('DOMContentLoaded', function(){
     [[130,31],[131,33],[132,34],[133,35],[135,36],[137,37],[139,38],[140,40],[141,41.5],[142,43],[141,44],[140,42],[139,39],[137,36],[135,34],[133,33],[132,31],[130,31]],
     [[126,34],[127,36],[128,37],[129,38.5],[130,38],[129,36],[128,35],[127,34],[126,34]],
   ];
+
+  // Контуры-заплатки: регионы, в которые попадают объекты поставок, но которых
+  // не было в исходной отрисовке суши. isLand() объединяет все полигоны по ИЛИ,
+  // поэтому заплатки достаточно просто добавить в общий список.
+  regionPolygons.push(
+    // Приморье и Хабаровский край — Хабаровские ТЭЦ, Артемовская ТЭЦ, Партизанская ГРЭС
+    [[130.5,42.5],[132,43],[133.5,44],[135,45],[136.5,46],[138,47],[139.5,48.5],[141,50],[141.5,52],
+     [140.5,54],[139,54.5],[137,53.5],[135.5,52],[134,50],[132.5,48],[131,46],[130,44.5],[130.5,42.5]],
+    // Побережье Охотского моря и Магаданская область — Усть-Среднеканская ГЭС
+    [[139,58.5],[143,59.5],[147,60.5],[151,61],[154.5,61.5],[156,63],[155,65],[151.5,64.5],
+     [148,63],[144,61.5],[140.5,60],[139,58.5]],
+    // Юг Индии — АЭС «Куданкулам»
+    [[72.5,20],[75,20.5],[78,19],[80.5,16],[80,13],[79.5,10.5],[78,8],[76.5,8.5],[75,11],[74,14],[72.8,17],[72.5,20]],
+    // Средиземноморское побережье Египта — АЭС «Эль-Дабаа»
+    [[25,31],[28,31.3],[31,31.5],[34,31.3],[34.5,29.5],[32.5,29],[30,29.5],[27,30],[25,30.5],[25,31]],
+    // Северное Приазовье — Запорожская АЭС
+    [[29.5,45.5],[33,45.8],[36,45.8],[38,46.5],[38.5,48],[37,49.5],[33,49.8],[30,48.5],[29.5,46.8],[29.5,45.5]],
+    // Южное побережье Финского залива — Усть-Луга
+    [[27.2,58.6],[31,58.6],[31.5,60.3],[28.5,60.5],[27.2,60],[27.2,58.6]],
+    // Бангладеш и низовья Ганга — АЭС «Руппур» (24.1°N, реальная широта площадки)
+    [[88,26],[90,26.3],[92,26],[92.5,24],[92,22.3],[90.5,21.7],[89,21.9],[88.2,23.5],[88,26]]
+  );
 
   function pointInPoly(px, py, poly) {
     let inside = false;
@@ -263,74 +302,153 @@ document.addEventListener('DOMContentLoaded', function(){
     };
   }
 
-  function drawLabel(ctx, dotX, dotY, loc, C, alpha, isHub, isHovered, w, h, blurBuf, dpr) {
-    const { label, sublabel, labelSide, labelOff, labelShiftY, labelShiftX } = loc;
-    const shiftY = labelShiftY || 0, shiftX = labelShiftX || 0;
-    const fontSize = isHub ? (isHovered ? 17 : 16) : (isHovered ? 15 : 14);
-    const subFontSize = isHub ? 10 : 9.5;
+  // ── Подписи объектов ───────────────────────────────────────────────────
+  // Плашка — основная зона наведения (по точке диаметром 7px целиться неудобно),
+  // поэтому все подписи показаны постоянно, а раскладка разводит их так, чтобы
+  // они не наезжали друг на друга.
+
+  function measurePill(ctx, loc, isHub) {
+    const fontSize = isHub ? 16 : 12.5;
+    const subFontSize = isHub ? 10 : 9;
     const family = 'ui-sans-serif, system-ui, sans-serif';
     const mono = 'ui-monospace, monospace';
     ctx.font = `${isHub ? '700' : '600'} ${fontSize}px ${family}`;
-    const labelW = ctx.measureText(label).width;
+    const labelW = ctx.measureText(loc.label).width;
     ctx.font = `500 ${subFontSize}px ${mono}`;
-    const subW = ctx.measureText(sublabel).width;
-    const textW = Math.max(labelW, subW);
-    const padX = 10, padY = 6;
-    const pillW = textW + padX * 2;
-    const pillH = fontSize + subFontSize + padY * 2 + 2;
-    const gap = labelOff + (isHovered ? 8 : 0);
-    let pillX, pillY, lineStartX, lineStartY, lineEndX, lineEndY;
-    if (labelSide === 'top') {
-      pillX = dotX - pillW/2; pillY = dotY - gap - pillH;
-      lineStartX = dotX; lineStartY = dotY - 7; lineEndX = pillX + pillW/2; lineEndY = pillY + pillH;
-    } else if (labelSide === 'left') {
-      pillX = dotX - gap - pillW; pillY = dotY - pillH/2;
-      lineStartX = dotX - 7; lineStartY = dotY; lineEndX = pillX + pillW; lineEndY = pillY + pillH/2;
-    } else if (labelSide === 'right') {
-      pillX = dotX + gap; pillY = dotY - pillH/2;
-      lineStartX = dotX + 7; lineStartY = dotY; lineEndX = pillX; lineEndY = pillY + pillH/2;
-    } else {
-      pillX = dotX - pillW/2; pillY = dotY + gap;
-      lineStartX = dotX; lineStartY = dotY + 7; lineEndX = pillX + pillW/2; lineEndY = pillY;
-    }
-    pillX = Math.max(4, Math.min(w - pillW - 4, pillX + shiftX));
-    pillY = Math.max(4, Math.min(h - pillH - 4, pillY + shiftY));
-    if (shiftY) { lineStartY += shiftY; lineEndY += shiftY; }
-    if (shiftX) { lineStartX += shiftX; lineEndX += shiftX; }
+    const subW = ctx.measureText(loc.sublabel || '').width;
+    const padX = 9, padY = 5;
+    return {
+      fontSize, subFontSize, family, mono, padX, padY,
+      pillW: Math.max(labelW, subW) + padX * 2 + 5,
+      pillH: fontSize + subFontSize + padY * 2 + 2,
+    };
+  }
+
+  /* Жадная раскладка: объект получает первую позицию из списка кандидатов,
+     которая никого не задевает. Порядок важен — сначала хаб и экспорт, они
+     занимают лучшие места, затем остальные с севера на юг. */
+  function layoutLabels(ctx, hub, items, w, h) {
+    const placed = [];
+    const out = new Map();
+    const hit = (a, b) => !(a.x + a.w + 9 < b.x || b.x + b.w + 9 < a.x ||
+                            a.y + a.h + 7 < b.y || b.y + b.h + 7 < a.y);
+    const dots = items.map(d => ({ x: lonToX(d.lon, w), y: latToY(d.lat, h) }))
+                      .concat([{ x: lonToX(hub.lon, w), y: latToY(hub.lat, h) }]);
+    const coversDot = r => dots.some(p => p.x > r.x - 3 && p.x < r.x + r.w + 3 && p.y > r.y - 3 && p.y < r.y + r.h + 3);
+
+    const order = items.slice().sort((a, b) => {
+      const rank = d => (d.international ? 0 : (d.labelAlways ? 1 : 2));
+      return rank(a) - rank(b) || b.lat - a.lat;
+    });
+
+    const place = (loc, isHub) => {
+      const m = measurePill(ctx, loc, isHub);
+      const dx = lonToX(loc.lon, w), dy = latToY(loc.lat, h);
+      const base = isHub ? 26 : 20;
+      const cands = [];
+      for (const ring of [0, 14, 28, 44, 62, 84, 110]) {
+        const off = base + ring;
+        cands.push(
+          { side: 'right',  x: dx + off,             y: dy - m.pillH / 2 },
+          { side: 'left',   x: dx - off - m.pillW,   y: dy - m.pillH / 2 },
+          { side: 'right',  x: dx + off,             y: dy - m.pillH / 2 - 20 },
+          { side: 'right',  x: dx + off,             y: dy - m.pillH / 2 + 20 },
+          { side: 'left',   x: dx - off - m.pillW,   y: dy - m.pillH / 2 - 20 },
+          { side: 'left',   x: dx - off - m.pillW,   y: dy - m.pillH / 2 + 20 },
+          { side: 'right',  x: dx + off,             y: dy - m.pillH / 2 - 38 },
+          { side: 'right',  x: dx + off,             y: dy - m.pillH / 2 + 38 },
+          { side: 'left',   x: dx - off - m.pillW,   y: dy - m.pillH / 2 - 38 },
+          { side: 'left',   x: dx - off - m.pillW,   y: dy - m.pillH / 2 + 38 },
+          { side: 'top',    x: dx - m.pillW / 2,     y: dy - off - m.pillH },
+          { side: 'bottom', x: dx - m.pillW / 2,     y: dy + off }
+        );
+      }
+      let chosen = null;
+      for (const c of cands) {
+        const r = { x: c.x, y: c.y, w: m.pillW, h: m.pillH };
+        if (r.x < 6 || r.y < 6 || r.x + r.w > w - 6 || r.y + r.h > h - 6) continue;
+        if (placed.some(pr => hit(r, pr))) continue;
+        if (coversDot(r)) continue;
+        chosen = { ...c, ...m, x: r.x, y: r.y };
+        break;
+      }
+      if (!chosen) {
+        const c = cands[0];
+        chosen = { ...c, ...m, x: Math.max(6, Math.min(w - m.pillW - 6, c.x)), y: Math.max(6, Math.min(h - m.pillH - 6, c.y)) };
+      }
+      placed.push({ x: chosen.x, y: chosen.y, w: m.pillW, h: m.pillH });
+      out.set(loc.id, chosen);
+    };
+
+    place(hub, true);
+    order.forEach(d => place(d, false));
+    return out;
+  }
+
+  function drawLabel(ctx, dotX, dotY, loc, C, alpha, isHub, isHovered, w, h, blurBuf, dpr, box) {
+    if (!box) return;
+    const { pillW, pillH, fontSize, subFontSize, family, mono, padX, padY, side } = box;
+    const pillX = box.x, pillY = box.y;
+    // Экспортные объекты — тёмная плашка, российские — светлая. Разница читается
+    // с одного взгляда, без легенды и без наведения.
+    const intl = !isHub && !!loc.international;
+
+    let lineStartX = dotX, lineStartY = dotY, lineEndX = pillX + pillW / 2, lineEndY = pillY + pillH / 2;
+    if (side === 'right')      { lineStartX = dotX + 6; lineEndX = pillX; lineEndY = pillY + pillH / 2; }
+    else if (side === 'left')  { lineStartX = dotX - 6; lineEndX = pillX + pillW; lineEndY = pillY + pillH / 2; }
+    else if (side === 'top')   { lineStartY = dotY - 6; lineEndX = pillX + pillW / 2; lineEndY = pillY + pillH; }
+    else                       { lineStartY = dotY + 6; lineEndX = pillX + pillW / 2; lineEndY = pillY; }
+
     ctx.globalAlpha = alpha;
-    ctx.beginPath(); ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.setLineDash([3, 3]);
     ctx.moveTo(lineStartX, lineStartY); ctx.lineTo(lineEndX, lineEndY);
     ctx.strokeStyle = C.connectorLine; ctx.lineWidth = 1; ctx.stroke(); ctx.setLineDash([]);
-    const bCtx = blurBuf.getContext('2d');
-    const expand = 12;
-    const srcX = Math.max(0, pillX - expand), srcY = Math.max(0, pillY - expand);
-    const srcW = Math.min(w - srcX, pillW + expand*2), srcH = Math.min(h - srcY, pillH + expand*2);
-    blurBuf.width = srcW; blurBuf.height = srcH;
-    bCtx.filter = 'blur(10px)';
-    bCtx.drawImage(ctx.canvas, srcX*dpr, srcY*dpr, srcW*dpr, srcH*dpr, 0, 0, srcW, srcH);
-    bCtx.filter = 'none';
-    ctx.save();
-    roundRect(ctx, pillX, pillY, pillW, pillH, 10); ctx.clip();
-    ctx.drawImage(blurBuf, 0, 0, srcW, srcH, srcX, srcY, srcW, srcH);
-    ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.fillRect(pillX, pillY, pillW, pillH);
-    const hlGrad = ctx.createLinearGradient(pillX, pillY, pillX, pillY + pillH);
-    hlGrad.addColorStop(0, 'rgba(255,255,255,0.35)'); hlGrad.addColorStop(0.4, 'rgba(255,255,255,0)');
-    ctx.fillStyle = hlGrad; ctx.fillRect(pillX, pillY, pillW, pillH);
-    ctx.restore();
-    roundRect(ctx, pillX, pillY, pillW, pillH, 10);
-    ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(pillX+4, pillY+8); ctx.lineTo(pillX+4, pillY+pillH-8);
-    ctx.strokeStyle = isHub ? C.accent : `rgba(${C.accentRgb},0.55)`;
-    ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.stroke();
+
+    if (!intl) {
+      const bCtx = blurBuf.getContext('2d');
+      const expand = 12;
+      const srcX = Math.max(0, pillX - expand), srcY = Math.max(0, pillY - expand);
+      const srcW = Math.min(w - srcX, pillW + expand * 2), srcH = Math.min(h - srcY, pillH + expand * 2);
+      blurBuf.width = srcW; blurBuf.height = srcH;
+      bCtx.filter = 'blur(10px)';
+      bCtx.drawImage(ctx.canvas, srcX * dpr, srcY * dpr, srcW * dpr, srcH * dpr, 0, 0, srcW, srcH);
+      bCtx.filter = 'none';
+      ctx.save();
+      roundRect(ctx, pillX, pillY, pillW, pillH, 9); ctx.clip();
+      ctx.drawImage(blurBuf, 0, 0, srcW, srcH, srcX, srcY, srcW, srcH);
+      ctx.fillStyle = isHovered ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.62)';
+      ctx.fillRect(pillX, pillY, pillW, pillH);
+      ctx.restore();
+      roundRect(ctx, pillX, pillY, pillW, pillH, 9);
+      ctx.strokeStyle = isHovered ? `rgba(${C.accentRgb},0.75)` : 'rgba(255,255,255,0.65)';
+      ctx.lineWidth = 1; ctx.stroke();
+    } else {
+      ctx.save();
+      roundRect(ctx, pillX, pillY, pillW, pillH, 9); ctx.clip();
+      ctx.fillStyle = isHovered ? 'rgba(15,42,68,0.97)' : 'rgba(15,42,68,0.90)';
+      ctx.fillRect(pillX, pillY, pillW, pillH);
+      ctx.restore();
+      roundRect(ctx, pillX, pillY, pillW, pillH, 9);
+      ctx.strokeStyle = isHovered ? C.intlColor : `rgba(${C.accentRgb},0.55)`;
+      ctx.lineWidth = 1; ctx.stroke();
+    }
+
+    // Левая полоса-маркер: у экспорта акцентная и толще, у РФ — приглушённая.
+    ctx.beginPath(); ctx.moveTo(pillX + 4, pillY + 7); ctx.lineTo(pillX + 4, pillY + pillH - 7);
+    ctx.strokeStyle = isHub ? C.accent : (intl ? C.intlColor : `rgba(30,61,92,0.5)`);
+    ctx.lineWidth = intl ? 2.5 : 2; ctx.lineCap = 'round'; ctx.stroke();
+
     const tx = pillX + padX + 5;
     ctx.font = `${isHub ? '700' : '600'} ${fontSize}px ${family}`;
-    ctx.fillStyle = '#0F2A44'; ctx.textBaseline = 'alphabetic';
-    ctx.fillText(label, tx, pillY + padY + fontSize);
+    ctx.fillStyle = intl ? '#F2F6FA' : '#0F2A44';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(loc.label, tx, pillY + padY + fontSize);
     ctx.font = `500 ${subFontSize}px ${mono}`;
-    ctx.fillStyle = 'rgba(30,61,92,0.7)';
-    ctx.fillText(sublabel, tx, pillY + padY + fontSize + 2 + subFontSize);
+    ctx.fillStyle = intl ? 'rgba(180,205,225,0.9)' : 'rgba(30,61,92,0.7)';
+    ctx.fillText(loc.sublabel || '', tx, pillY + padY + fontSize + 2 + subFontSize);
     ctx.globalAlpha = 1;
   }
+
 
   function buildLandMask(w, h, step) {
     const cols = Math.floor(w / step), rows = Math.floor(h / step);
@@ -358,6 +476,7 @@ document.addEventListener('DOMContentLoaded', function(){
   const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
   const startTime = performance.now();
   let hoveredId = null;
+  let labelBoxes = null, labelLayoutW = 0, labelLayoutH = 0;
   let mask = null, maskW = 0, maskH = 0, maskStep = 0;
   const blurBuf = document.createElement('canvas');
   const mouse = { x: -1000, y: -1000 };
@@ -394,73 +513,24 @@ document.addEventListener('DOMContentLoaded', function(){
       <rect x="0" y="270" width="200" height="30" fill="var(--dark)"/>
     </svg>`,
   };
-  const projectInfo = {
-    kursk: {
-      accent: '#1E3D5C', kind: 'nuclear', tag: 'АЭС',
-      photo: PF_ASSETS + 'img/projects/kursk2.png',
-      sub: 'Курск · Россия',
-      status: 'Поставки завершены',
-      pulse: false,
-      projectHref: PF_PROJECT('proekt-kurskaya-aes'),
-      facts: [
-        { k: 'Материал', v: 'Сталь 08Х18Н10Т' },
-        { k: 'Объём поставки', v: '≈36 т' },
-        { k: 'Номенклатура', v: 'Фланцы, колена 45–90°' },
-      ],
-    },
-    suvorov: {
-      accent: '#1E3D5C', kind: 'thermal', tag: 'ГРЭС',
-      photo: PF_ASSETS + 'img/projects/tec2.png',
-      sub: 'Суворов, Тульская обл. · Россия',
-      status: 'Поставки завершены',
-      pulse: false,
-      projectHref: PF_PROJECT('proekt-cherepetskaya-gres'),
-      facts: [
-        { k: 'Материал', v: 'Сталь 20' },
-        { k: 'Объём поставки', v: '≈157 т' },
-        { k: 'Диаметр', v: 'Ø25–530 мм' },
-      ],
-    },
-    ruppur: {
-      accent: '#6D8CA6', kind: 'nuclear', tag: 'АЭС',
-      photo: PF_ASSETS + 'img/projects/rupp.png',
-      sub: 'Бангладеш · Международный проект',
-      status: 'В стадии строительства',
-      pulse: true,
-      projectHref: PF_PROJECT('proekt-aes-ruppur'),
-      facts: [
-        { k: 'Материал', v: 'Сталь 15Х1М1Ф' },
-        { k: 'Объём поставки', v: '≈96 т' },
-        { k: 'Давление', v: 'До 25 МПа' },
-      ],
-    },
-    akkuju: {
-      accent: '#6D8CA6', kind: 'nuclear', tag: 'АЭС',
-      photo: PF_ASSETS + 'img/projects/turk2.png',
-      sub: 'Мерсин, Турция · Международный проект',
-      status: 'В стадии строительства',
-      pulse: true,
-      projectHref: PF_PROJECT('proekt-aes-akkuyu'),
-      facts: [
-        { k: 'Материал', v: 'Сталь 20 / 08Х18Н10Т' },
-        { k: 'Объём поставки', v: '≈148 т' },
-        { k: 'Номенклатура', v: 'Отводы, тройники, переходы' },
-      ],
-    },
-    omsk: {
-      accent: '#1E3D5C', kind: 'thermal', tag: 'ТЭЦ',
-      photo: PF_ASSETS + 'img/projects/tec3.png',
-      sub: 'Омск · Россия',
-      status: 'Действующий объект',
-      pulse: false,
-      projectHref: PF_PROJECT('proekt-teploelektrocentral-tec-3'),
-      facts: [
-        { k: 'Материал', v: 'Сталь 15Х1М1Ф' },
-        { k: 'Объём поставки', v: '≈96 т' },
-        { k: 'Давление', v: 'До 25 МПа' },
-      ],
-    },
-  };
+  // Карточки объектов — из того же реестра. Фото есть не у всех: пока
+  // изображение не сгенерировано, <img> прячется по onerror и остаётся
+  // векторная иконка типа объекта.
+  const projectInfo = {};
+  (GEO.length ? GEO : []).forEach(g => {
+    projectInfo[g.id] = {
+      accent: g.intl ? '#6D8CA6' : '#1E3D5C',
+      kind: g.kind,
+      tag: g.tag,
+      photo: g.photo || '',
+      sub: g.country && g.country !== 'Россия' ? (g.sub + ' · ' + g.country) : (g.sub + ' · Россия'),
+      status: g.status,
+      pulse: /строительств/i.test(g.status || ''),
+      projectHref: g.href || '',
+      facts: (g.facts || []).map(f => ({ k: f[0], v: f[1] })),
+    };
+  });
+
   let shownId = null;
 
   /* Габариты и последняя позиция тултипа: мерить offsetWidth/Height и писать
@@ -478,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function(){
         `<div class="s4-tt-img">` +
           `<img src="${info.photo}" alt="${dest.label}" loading="eager" referrerpolicy="no-referrer" ` +
             `onerror="this.style.display='none';this.nextElementSibling.style.display='block';">` +
-          icons[info.kind].replace('<svg ', '<svg style="display:none" ') +
+          (icons[info.kind] || icons.thermal).replace('<svg ', '<svg style="display:none" ') +
           `<span class="s4-tt-img-tag">${info.tag}</span>` +
         `</div>` +
         `<div class="s4-tt-content">` +
@@ -688,34 +758,51 @@ document.addEventListener('DOMContentLoaded', function(){
         }
         ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
       };
-      drawP(5,C.routeGlow);
-      drawP(1.6, route.to.international ? C.intlColor : C.localColor);
-      if (dp>=1) {
+      const isIntl = route.to.international;
+      const isOn = route.to.id === hoveredId;
+      if (isIntl || isOn) drawP(5, C.routeGlow);
+      ctx.globalAlpha = isOn ? 1 : (isIntl ? 0.8 : 0.3);
+      drawP(isOn ? 2.2 : (isIntl ? 1.6 : 0.8), isIntl ? C.intlColor : C.localColor);
+      ctx.globalAlpha = 1;
+      if (dp>=1 && (isIntl || isOn)) {
         const tt=((t-route.delay-2.0)%3.5)/3.5;
         const tp=quadBez(tt,hubX,hubY,cx,cy,destX,destY);
         const g=ctx.createRadialGradient(tp.x,tp.y,0,tp.x,tp.y,14);
         g.addColorStop(0,`rgba(${C.accentRgb},0.25)`); g.addColorStop(1,`rgba(${C.accentRgb},0)`);
         ctx.beginPath(); ctx.arc(tp.x,tp.y,14,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
         ctx.beginPath(); ctx.arc(tp.x,tp.y,2.5,0,Math.PI*2);
-        ctx.fillStyle=route.to.international ? C.intlColor : C.localColor; ctx.fill();
+        ctx.fillStyle=isIntl ? C.intlColor : C.localColor; ctx.fill();
       }
     });
 
-    // Two points can sit only ~20px apart on screen (e.g. Kursk/Cherepetskaya
-    // GRES, 0.4° of longitude apart) — pick whichever is genuinely nearest
-    // the pointer instead of "last one in the array within 24px", which
-    // silently made the earlier point unreachable whenever both qualified.
+    // Раскладка подписей зависит только от размера холста — считаем её при
+    // изменении размера, а не каждый кадр: measureText на 36 объектов дорог.
+    if (!labelBoxes || labelLayoutW !== w || labelLayoutH !== h) {
+      labelBoxes = layoutLabels(ctx, HUB, destinations, w, h);
+      labelLayoutW = w; labelLayoutH = h;
+    }
+
+    // Целиться в точку 7px неудобно, поэтому зона наведения — сама плашка.
+    // Точка тоже остаётся кликабельной для тех, кто ведёт мышь по карте.
     hoveredId = null;
-    { let nearestDist = 24;
+    { let nearestDist = 22;
       destinations.forEach(dest => {
-        const dx=lonToX(dest.lon,w), dy=latToY(dest.lat,h);
-        const dist=Math.hypot(mx-dx,my-dy);
-        if (dist < nearestDist) { nearestDist = dist; hoveredId = dest.id; }
+        const box = labelBoxes.get(dest.id);
+        if (box && mx >= box.x && mx <= box.x + box.pillW && my >= box.y && my <= box.y + box.pillH) {
+          nearestDist = -1; hoveredId = dest.id;
+        }
       });
+      if (nearestDist >= 0) {
+        destinations.forEach(dest => {
+          const dx=lonToX(dest.lon,w), dy=latToY(dest.lat,h);
+          const dist=Math.hypot(mx-dx,my-dy);
+          if (dist < nearestDist) { nearestDist = dist; hoveredId = dest.id; }
+        });
+      }
     }
     destinations.forEach((dest, idx) => {
       const dx=lonToX(dest.lon,w), dy=latToY(dest.lat,h);
-      const re=Math.max(0,t-routes[idx].delay);
+      const re=Math.max(0,t-dest.delay);
       const fadeIn=Math.min(1,Math.max(0,(re-1.2)/0.6));
       if (fadeIn<=0) return;
       const hovered = dest.id === hoveredId;
@@ -725,9 +812,14 @@ document.addEventListener('DOMContentLoaded', function(){
       ctx.lineWidth=1; ctx.stroke();
       const pulse=1+Math.sin(t*2+idx)*0.12;
       const col=dest.international ? C.intlColor : C.localColor;
-      ctx.beginPath(); ctx.arc(dx,dy,(hovered?5:3.5)*pulse,0,Math.PI*2);
+      const rBase = dest.international ? 4.5 : 3.2;
+      ctx.beginPath(); ctx.arc(dx,dy,(hovered?rBase+1.5:rBase)*pulse,0,Math.PI*2);
       ctx.fillStyle=col; ctx.globalAlpha=fadeIn; ctx.fill(); ctx.globalAlpha=1;
-      drawLabel(ctx,dx,dy,dest,C,fadeIn*(hovered?1:0.85),false,hovered,w,h,blurBuf,dpr);
+      if (dest.international) {
+        ctx.beginPath(); ctx.arc(dx,dy,rBase+3.5,0,Math.PI*2);
+        ctx.strokeStyle=`rgba(${C.accentRgb},${0.5*fadeIn})`; ctx.lineWidth=1; ctx.stroke();
+      }
+      drawLabel(ctx,dx,dy,dest,C,fadeIn*(hovered?1:0.9),false,hovered,w,h,blurBuf,dpr,labelBoxes.get(dest.id));
     });
 
     {
@@ -743,7 +835,7 @@ document.addEventListener('DOMContentLoaded', function(){
       ctx.beginPath(); ctx.arc(hubX,hubY,22,0,Math.PI*2); ctx.fillStyle=g1; ctx.fill();
       ctx.beginPath(); ctx.arc(hubX,hubY,5.5,0,Math.PI*2);
       ctx.fillStyle=C.hubColor; ctx.globalAlpha=ha; ctx.fill(); ctx.globalAlpha=1;
-      drawLabel(ctx,hubX,hubY,HUB,C,ha,true,false,w,h,blurBuf,dpr);
+      drawLabel(ctx,hubX,hubY,HUB,C,ha,true,false,w,h,blurBuf,dpr,labelBoxes.get('hub'));
     }
 
     const wantId = hoveredId || (cardHovered ? shownId : null);
@@ -838,13 +930,17 @@ document.addEventListener('DOMContentLoaded', function(){
   var s5ScrollTrigger = null;
   /* Дискретное листание колесом внутри пина (см. wheel-обработчик ниже) */
   var stepTween = null;
+  var renderedOnce = false;
+  var pinnedState = null;   /* последнее записанное состояние класса пина */
   var wheelAnimating = false;
   var wheelAcc = 0;
   var wheelLast = 0;
-  var wheelPrevAbs = 0;     /* |дельта| прошлого тика — для детекта щелчка мыши и хвоста */
-  var wheelDecayRun = 0;    /* сколько тиков подряд дельта не растёт: устоявшийся хвост */
-  var wheelStepped = false; /* жест уже листнул год: его хвост глотаем целиком */
   var pendingStep = 0;
+  var gestureUsed = false;  /* текущее проведение пальцами уже листнуло год */
+  var wheelPrevAbs = 0;     /* |дельта| прошлого тика — чтобы отличить новый свайп от хвоста */
+  var wheelStepAt = 0;      /* когда листнули: раньше 350 мс новый свайп не ждём */
+  var WHEEL_GESTURE_GAP = 150; /* пауза, после которой поток считается новым жестом */
+  var WHEEL_NOTCH = 100;    /* от такой дельты это щелчок мыши, а не тачпад */
   var metrics   = {
     scrollDistance: 0,
     hScrollDistance: 0,
@@ -896,8 +992,43 @@ document.addEventListener('DOMContentLoaded', function(){
     document.body.scrollTop = y;
   }
 
+  /* classList.toggle с тем же значением всё равно проходит по стилям, а
+     зовётся он из onUpdate — каждый кадр скролла и твина. */
+  /* Нативный скролл (въезд в секцию, скроллбар, инерция на краях) двигает
+     трек мимо годов: с мгновенным скрабом секция замирает между 2017 и 2019.
+     Снап ScrollTrigger здесь не годится — он спорил со step-твином. Поэтому
+     доводим сами и только тогда, когда движение уже закончилось. */
+  var settleTimer = null;
+  function scheduleSettle() {
+    if (settleTimer) clearTimeout(settleTimer);
+    settleTimer = setTimeout(function() {
+      settleTimer = null;
+      if (!isHMode() || !s5ScrollTrigger || wheelAnimating || stepTween) return;
+      var prog = s5ScrollTrigger.progress;
+      /* Краевые зоны — это въезд в секцию и выезд из неё. Доводить там нельзя:
+         пользователь уходит со страницы секции, а доводчик утащил бы его
+         обратно на первый или последний год. */
+      if (prog <= 0.06 || prog >= 0.94) return;
+      var idx = indexFromProgress(prog);
+      var exact = total > 1 ? idx / (total - 1) : 0;
+      if (Math.abs(prog - exact) < 0.004) return;   /* уже стоим на годе */
+      goToStep(idx);
+    }, 140);
+  }
+
+  function setPinned(on) {
+    if (pinnedState === on) return;
+    pinnedState = on;
+    s5.classList.toggle('s5-pinned', on);
+  }
+
   function renderIndex(idx) {
     idx = clamp(idx, 0, LAST);
+    /* onUpdate скраба зовёт это каждый кадр, а шагов всего пять: без
+       выхода по неизменившемуся индексу браузер 60 раз в секунду
+       перебирал элементы и трогал стили впустую. */
+    if (idx === current && renderedOnce) return;
+    renderedOnce = true;
     current = idx;
     tlItems.forEach(function(it, i) {
       it.classList.toggle('active', i === idx);
@@ -1010,9 +1141,10 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     wheelAnimating = false;
     pendingStep = 0;
-    wheelStepped = false;
+    gestureUsed = false;
     wheelPrevAbs = 0;
-    wheelDecayRun = 0;
+    wheelStepAt = 0;
+    pinnedState = null;
     if (s5Timeline) {
       s5Timeline.kill();
       s5Timeline = null;
@@ -1060,34 +1192,31 @@ document.addEventListener('DOMContentLoaded', function(){
         scroller: scrollRoot || undefined,
         start: 'top top+=' + NAV_H,
         end: '+=' + scrollDistance,
-        /* 0.15, не true: жёсткий скраб телепортировал трек за каждым тиком
-           колеса — ступеньки при честных 60fps. Колесо в пине теперь идёт
-           через goToStep-твин (см. wheel ниже), скраб сглаживает остальное:
-           скроллбар, клавиатуру, въезд. Больше 0.3 не ставить: трек
-           «доплывает» после твина/снапа отдельным вторым движением. */
-        scrub: 0.15,
-        /* Снап к ближайшему — страховка для не-колёсного скролла.
-           Направленным ему быть нельзя: на въезде в секцию с ходу
-           остаток инерции (2–3% прогресса) уводил бы с 2017 сразу на
-           2019, у нижнего края симметрично. */
-        snap: total > 1 ? {
-          snapTo: function(value) {
-            var step = 1 / (total - 1);
-            return Math.round(value / step) * step;
-          },
-          duration: { min: 0.25, max: 0.5 },
-          delay: 0.08,
-          ease: 'power1.inOut'
-        } : false,
+        /* true, не 0.15. Отложенный скраб ставился, когда колесо двигало
+           скролл напрямую и давало ступеньки. Сейчас колесо, клавиши и клики
+           идут через goToStep-твин, сглаживать скрабу нечего — зато его
+           доводка после твина шла вторым движением и читалась как рывок.
+           Мгновенный скраб = трек ровно там, где скролл. */
+        scrub: true,
+        /* Снап убран. Он страховал не-колёсный скролл, но колесо, клавиши,
+           кнопки и точки таймлайна ведут через goToStep — тот попадает в год
+           точно. А поверх step-твина снап добавлял третье движение: трек
+           доезжал, потом его ещё подтягивало. Скроллбаром секцию можно
+           оставить между годами — это осознанный размен на плавность. */
         invalidateOnRefresh: true,
         onUpdate: function(self) {
           syncVisualFromProgress(self.progress);
-          s5.classList.toggle('s5-pinned', self.progress > 0.01 && self.progress < 0.99);
+          setPinned(self.progress > 0.01 && self.progress < 0.99);
+          if (!wheelAnimating && !stepTween) scheduleSettle();
         },
-        onEnter: function() { s5.classList.add('s5-pinned'); },
-        onEnterBack: function() { s5.classList.add('s5-pinned'); },
-        onLeave: function() { s5.classList.remove('s5-pinned'); },
-        onLeaveBack: function() { s5.classList.remove('s5-pinned'); }
+        /* Жест, которым пользователь въехал в секцию, не должен ещё и листать:
+           иначе 2017 проскакивает — секция закрепилась и тем же движением
+           уехала на 2019. Помечаем проведение использованным, следующий
+           жест (после паузы) листает нормально. */
+        onEnter: function() { setPinned(true); gestureUsed = true; wheelAcc = 0; },
+        onEnterBack: function() { setPinned(true); gestureUsed = true; wheelAcc = 0; },
+        onLeave: function() { setPinned(false); },
+        onLeaveBack: function() { setPinned(false); }
       }
     });
 
@@ -1136,16 +1265,20 @@ document.addEventListener('DOMContentLoaded', function(){
     trig.disable(false, false);
     stepTween = gsap.to(pos, {
       k: 1,
-      /* 0.45, не 0.9: шаг вешается на ArrowLeft/Right и клики — 900мс были
-         3× бюджета UI, серия нажатий вставала в очередь заметно надолго. */
-      duration: 0.45,
-      ease: 'power1.inOut',
+      /* 0.55: 0.34 давало резкий, «щёлкающий» переход. Колесо на это время
+         заблокировано, но хвост жеста мы и так гасим, а щелчки мыши
+         подхватывает pendingStep — на отзывчивость длительность больше
+         не влияет. */
+      duration: 0.55,
+      /* expo.out: мгновенный отклик на жест и длинное мягкое торможение —
+         год «подъезжает», а не щёлкает на место. */
+      ease: 'expo.out',
       onUpdate: function() {
         var prog = p0 + (p - p0) * pos.k;
         if (s5Timeline) s5Timeline.progress(prog);
         setScrollY(startY + (y - startY) * pos.k);
         syncVisualFromProgress(prog);
-        s5.classList.toggle('s5-pinned', prog > 0.01 && prog < 0.99);
+        setPinned(prog > 0.01 && prog < 0.99);
       },
       onComplete: finishStep,
       onInterrupt: finishStep
@@ -1207,53 +1340,78 @@ document.addEventListener('DOMContentLoaded', function(){
      На краях (2017 вверх / 2025 вниз) событие не перехватывается — страница
      скроллится дальше. Порог 24px копит трекпадные микродельты; пауза 250мс
      сбрасывает жест. Снап остаётся страховкой для скроллбара и клавиатуры. */
+  /* Листание колесом внутри пина.
+     Раньше здесь стояло распознавание тачпада по форме дельт (щелчок мыши,
+     затухающий хвост, всплеск поверх хвоста). На macOS оно проигрывало:
+     инерция шлёт события ещё секунду-полторы после жеста, все они гасились
+     preventDefault, и страница «зависала» — пользователь крутит, ничего не
+     двигается. Вместо угадывания устройства — предсказуемое правило,
+     одинаковое для тачпада и мыши: шаг, короткая пауза, снова принимаем.
+     Один отложенный тик копится, поэтому серия щелчков мыши листает подряд. */
   s5.addEventListener('wheel', function(e) {
     if (!isHMode() || !s5ScrollTrigger || typeof gsap === 'undefined') return;
     /* Не st.isActive: в текущей сборке ScrollTrigger его нет (undefined).
        Считаем «внутри пина» по границам сами. */
     var sy = getScrollY();
     if (sy < s5ScrollTrigger.start - 1 || sy > s5ScrollTrigger.end + 1) return;
-    var dy  = (e.deltaMode === 1 ? e.deltaY * 40 : e.deltaY);
-    var ady = Math.abs(dy);
-    var now = performance.now();
-    var gap = now - wheelLast;
-    /* «Одно проведение пальцев — один год». Жест жив, пока события идут без
-       паузы. Активная фаза тачпада джиттерит (3,1,15,8,60…) — рост дельты
-       внутри проведения НЕ признак нового жеста (первая версия фикса на этом
-       и двоила). Ре-арм только по трём надёжным сигналам:
-       — пауза >250мс (жест кончился);
-       — щелчок мыши: крупная дельта той же величины с редким шагом — плотные
-         тачпадные потоки так не выглядят (серия тиков мыши листает подряд);
-       — новый свайп поверх устоявшегося хвоста инерции: 5+ тиков без роста,
-         затухание до ≤12px, затем всплеск ≥25px — это новые пальцы. */
-    var notch    = e.deltaMode === 1 || (ady >= 50 && gap > 80 && Math.abs(ady - wheelPrevAbs) <= 1);
-    var tailJump = wheelDecayRun >= 5 && wheelPrevAbs <= 12 && ady >= 25;
-    var fresh    = gap > 250 || notch || tailJump;
-    if (fresh) {
-      wheelAcc = 0;
-      wheelStepped = false;
-      wheelDecayRun = 0;
-    } else if (ady <= wheelPrevAbs + 1) {
-      wheelDecayRun++;
-    } else {
-      wheelDecayRun = 0;
-    }
-    wheelLast = now;
-    wheelPrevAbs = ady;
+
     var dir = e.deltaY > 0 ? 1 : -1;
-    if (wheelAnimating) {
-      e.preventDefault();
-      if (!wheelStepped) { pendingStep = dir; wheelStepped = true; }
+    /* На краях секции скролл принадлежит странице: перехват здесь и создаёт
+       ощущение, что секция «не отпускает». Но если в этот момент ещё идёт
+       доводка или шаг, она продолжает двигать скролл программно и спорит
+       с нативным — экран дёргается на выходе вверх. Гасим её. */
+    if ((current === 0 && dir < 0) || (current === LAST && dir > 0)) {
+      if (settleTimer) { clearTimeout(settleTimer); settleTimer = null; }
+      if (stepTween) stepTween.kill();
       return;
     }
-    if ((current === 0 && dir < 0) || (current === LAST && dir > 0)) return;
+
+    var dy  = (e.deltaMode === 1 ? e.deltaY * 40 : e.deltaY);
+    var now = performance.now();
+    var gap = now - wheelLast;
+    wheelLast = now;
+
+    /* Щелчок колеса мыши приходит одной крупной дельтой; тачпад — плотным
+       потоком мелких. Различать по этому надёжнее, чем по форме затухания:
+       щелчок всегда листает свой год, поток — один год на проведение. */
+    var isNotch = (e.deltaMode === 1) || Math.abs(dy) >= WHEEL_NOTCH;
+
+    /* Пауза = пальцы убраны и инерция кончилась. Только здесь жест
+       считается новым: иначе хвост инерции macOS (он идёт ещё секунду
+       после жеста) успевал набрать порог и пролистывал лишние годы. */
+    if (gap > WHEEL_GESTURE_GAP) { wheelAcc = 0; gestureUsed = false; }
+
+    /* Новый свайп поверх ещё живого хвоста. Инерция всегда затухает, поэтому
+       заметный рост дельты — это снова пальцы. Без этого второй жест подряд
+       пришлось бы ждать до полной остановки инерции (до полутора секунд),
+       и секция читалась бы как залипшая. */
+    if (gestureUsed && now - wheelStepAt > 350 &&
+        Math.abs(dy) >= 20 && Math.abs(dy) > wheelPrevAbs * 2) {
+      gestureUsed = false;
+      wheelAcc = 0;
+    }
+    wheelPrevAbs = Math.abs(dy);
+
     e.preventDefault();
-    if (wheelStepped) return;
+
+    if (isNotch) {
+      /* Мышь: каждый щелчок — свой шаг, серия листает подряд. */
+      if (wheelAnimating) { pendingStep = dir; return; }
+      wheelAcc = 0;
+      goToStep(current + dir);
+      return;
+    }
+
+    /* Тачпад: год за проведение. Остаток жеста и вся инерция гасятся —
+       без preventDefault страница проскочила бы секцию насквозь. */
+    if (gestureUsed || wheelAnimating) return;
+
     wheelAcc += dy;
     if (Math.abs(wheelAcc) < 24) return;
-    wheelStepped = true;
-    goToStep(current + (wheelAcc > 0 ? 1 : -1));
     wheelAcc = 0;
+    gestureUsed = true;
+    wheelStepAt = now;
+    goToStep(current + dir);
   }, { passive: false });
 
   /* Swipe support for the mobile/tablet slide-switch mode — a "slide" reads

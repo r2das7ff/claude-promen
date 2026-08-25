@@ -2,7 +2,7 @@
 /**
  * Секция 10 — база знаний «Тройники» (7 табов).
  * Структура — по образцу kb-otvody; факты — content/aggregates.json,
- * content/norm_aggregates.json, ГОСТ 17376-2001, ГОСТ 22801/22822-83.
+ * content/norm_aggregates.json, ГОСТ 17376-2001, ГОСТ 22801-83/22822-83.
  */
 defined( 'ABSPATH' ) || exit;
 ?>
@@ -33,13 +33,13 @@ defined( 'ABSPATH' ) || exit;
         </div>
         <div class="kb-type-grid">
           <div class="kb-type">
-            <div class="kb-type-badge">ГОСТ 17376</div>
+            <div class="kb-type-badge">ГОСТ 17376-2001</div>
             <div class="kb-type-title">Штампованные бесшовные · DN 15–600</div>
             <p class="kb-type-body">Бесшовные приварные тройники из углеродистой и низколегированной стали (ГОСТ 17376-2001, ИСО 3419-81). <strong>Равнопроходные (d = D)</strong> и <strong>переходные (d &lt; D)</strong>. Основной тип для общепромышленных трубопроводов и трубопроводов ТЭС.</p>
             <div class="kb-type-tags"><span class="kb-tag">ГОСТ 17376-2001</span><span class="kb-tag">DN 15–600</span><span class="kb-tag">96 позиций</span></div>
           </div>
           <div class="kb-type">
-            <div class="kb-type-badge">ГОСТ 22801/22822</div>
+            <div class="kb-type-badge">ГОСТ 22801-83/22822-83</div>
             <div class="kb-type-title">На Ру до 100 МПа · DN 6–200</div>
             <p class="kb-type-body">Детали трубопроводов высокого давления (свыше 10 до 100 МПа): ГОСТ 22801-83 — тройники, ГОСТ 22822-83 — <strong>тройники с опорой</strong>. Применяются на поднадзорных объектах; поставка с расширенным объёмом контроля.</p>
             <div class="kb-type-tags"><span class="kb-tag">Ру до 100 МПа</span><span class="kb-tag">DN 6–200</span><span class="kb-tag">222 позиции</span></div>
@@ -83,7 +83,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-col-title">Чеклист заявки на тройник</div>
             <div class="kb-check"><span class="kb-check-n">01</span>DN и PN магистрали (или D×s, напр. 219×8)</div>
             <div class="kb-check"><span class="kb-check-n">02</span>DN ответвления (d×s₁) — или «равнопроходный»</div>
-            <div class="kb-check"><span class="kb-check-n">03</span>Норматив объекта: ГОСТ 17376 / Ру 100 / ОСТ 34-10</div>
+            <div class="kb-check"><span class="kb-check-n">03</span>Норматив объекта: ГОСТ 17376-2001 / Ру 100 / ОСТ 34-10</div>
             <div class="kb-check"><span class="kb-check-n">04</span>Марка стали и рабочая среда (t, °C)</div>
             <div class="kb-check"><span class="kb-check-n">05</span>Поднадзорность (ТР ТС 032/2013) и объём НК</div>
             <div class="kb-check"><span class="kb-check-n">06</span>Количество и срок поставки</div>
@@ -107,9 +107,9 @@ defined( 'ABSPATH' ) || exit;
         <div class="kb-norm-list">
           <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17376-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные из углеродистой и низколегированной стали. Тройники. Конструкция (ИСО 3419-81). Равнопроходные и переходные — основной стандарт</span></div>
           <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17380-2001</span><span class="kb-norm-desc">Детали трубопроводов бесшовные приварные. Общие технические условия — материалы, приёмка, маркировка для всей серии</span></div>
-          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22801-1983</span><span class="kb-norm-desc">Тройники переходные и проходные с фланцами на Ру св. 10 до 100 МПа. Конструкция и размеры. Dy 6×6…200×200, t −50…+510 °C</span></div>
-          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22822-1983</span><span class="kb-norm-desc">Тройники переходные на Ру св. 10 до 100 МПа. Конструкция и размеры. Dy 6×6…200×200</span></div>
-          <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34 10.761-97 ÷ 10.766-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС из углеродистой и низколегированной сталей на Рраб &lt; 2,2 МПа, t ≤ 425 °C. Часть III — тройники, штуцеры, ответвления</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22801-83</span><span class="kb-norm-desc">Тройники переходные и проходные с фланцами на Ру св. 10 до 100 МПа. Конструкция и размеры. Dy 6×6…200×200, t −50…+510 °C</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 22822-83</span><span class="kb-norm-desc">Тройники переходные на Ру св. 10 до 100 МПа. Конструкция и размеры. Dy 6×6…200×200</span></div>
+          <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-761-97 ÷ 10.766-97</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов ТЭС из углеродистой и низколегированной сталей на Рраб &lt; 2,2 МПа, t ≤ 425 °C. Часть III — тройники, штуцеры, ответвления</span></div>
           <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 36-23-77 / 36-24-77</span><span class="kb-norm-desc">Детали трубопроводов Dy 500–1400 мм сварные из углеродистой стали на Ру ≤ 2,5 МПа. Тройники сварные и сварные с усилением</span></div>
           <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 34-10-416-90 ÷ 513-90</span><span class="kb-norm-desc">Детали и сборочные единицы трубопроводов из коррозионностойкой стали на Рраб ≤ 2,2 МПа, T ≤ 300 °C для АС. Конструкция и размеры</span></div>
           <div class="kb-norm-item"><span class="kb-norm-code">СТО ЦКТИ 720.01–720.24-2009</span><span class="kb-norm-desc">Тройники равнопроходные и переходные (штампованные, сварные, кованые) для трубопроводов и паропроводов тепловых станций. Ресурс 200 000 часов</span></div>
@@ -122,7 +122,7 @@ defined( 'ABSPATH' ) || exit;
       <div class="kb-panel" id="kp-materials">
         <div class="kb-lead">
           <div class="kb-lead-h">Марки стали тройников</div>
-          <p class="kb-lead-p">Шесть марок в каталоге; выбор — по температуре, давлению и среде. <strong>Сертификат 3.1</strong> с плавочными данными — в стандартном комплекте каждой поставки.</p>
+          <p class="kb-lead-p">Шесть марок в каталоге; выбор — по температуре, давлению и среде. <strong>Сертификат качества</strong> с плавочными данными — в стандартном комплекте каждой поставки.</p>
         </div>
         <div class="kb-norm-list">
           <div class="kb-norm-item"><span class="kb-norm-code">09Г2С</span><span class="kb-norm-desc">Низколегированная, до 475 °C — основная марка для энергетики и северного исполнения</span></div>
@@ -172,7 +172,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-type-badge">УПАКОВКА</div>
             <div class="kb-type-title">Защита кромок и маркировка каждой позиции</div>
             <p class="kb-type-body">Паллеты или деревянная обрешётка по массе и габариту, защита сварочных кромок, маркировка позиций по упаковочному листу. Комплект документов — с грузом и дублируется по email.</p>
-            <div class="kb-type-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат 3.1</span></div>
+            <div class="kb-type-tags"><span class="kb-tag">Упаковочный лист</span><span class="kb-tag">Паспорт · Сертификат качества</span></div>
           </div>
           <div class="kb-type">
             <div class="kb-type-badge">ОПЛАТА</div>
