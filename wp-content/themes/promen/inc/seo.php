@@ -31,37 +31,27 @@ add_filter( 'document_title_parts', function ( array $parts ): array {
 	return $parts;
 } );
 
-/** Meta description из первого абзаца описания термина / товара. */
+/*
+ * Meta description раньше выводился и здесь, и в promen_meta_description()
+ * из functions.php — два независимых хука wp_head, то есть тег на каждой
+ * категории и карточке печатался дважды (проверено 2026-08-25, 8 из 8
+ * страниц каждого типа). Логика этого хука перенесена в functions.php,
+ * он остался единственным источником тега.
+ */
+
+/*
+ * ВРЕМЕННО: подтверждение прав на тестовый домен в Яндекс.Вебмастере.
+ * Нужно, чтобы увидеть, попал ли стенд в индекс — если попал, перед
+ * переездом его закрываем, иначе после переключения домена получим
+ * два одинаковых сайта и склейку не в ту сторону.
+ * Снять вместе с самим доменом после переезда.
+ */
 add_action( 'wp_head', function () {
-	$desc = '';
-
-	if ( function_exists( 'is_product' ) && is_product() ) {
-		$p = wc_get_product( get_the_ID() );
-		if ( $p ) {
-			$desc = wp_strip_all_tags( promen_sanitize_desc( $p->get_id(), $p->get_short_description() ?: $p->get_description() ) );
-		}
-	} elseif ( is_tax( 'product_cat' ) || is_tax( 'norm' ) ) {
-		$term = get_queried_object();
-		if ( $term && $term->description ) {
-			$parts = preg_split( '/\n\s*\n/', trim( wp_strip_all_tags( $term->description ) ), 2 );
-			$desc  = $parts[0] ?? '';
-		}
-	} elseif ( function_exists( 'is_shop' ) && is_shop() ) {
-		$desc = 'Каталог соединительных деталей трубопроводов, фланцев и крепежа. Запрос коммерческого предложения без корзины.';
-	} elseif ( is_page() && has_excerpt() ) {
-		// Страницы с заданным экцерптом (калькуляторы и т.п.) — он и есть description.
-		$desc = wp_strip_all_tags( get_the_excerpt() );
-	}
-
-	$desc = trim( preg_replace( '/\s+/', ' ', $desc ) );
-	if ( $desc === '' ) {
+	if ( 'prom-en.forgotaboutdre.ru' !== ( $_SERVER['HTTP_HOST'] ?? '' ) ) {
 		return;
 	}
-	if ( mb_strlen( $desc ) > 160 ) {
-		$desc = mb_substr( $desc, 0, 157 ) . '…';
-	}
-	echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "\n";
-}, 2 );
+	echo '<meta name="yandex-verification" content="fadaca41a33d7a26" />' . "\n";
+}, 1 );
 
 /** Включаем norm в core XML sitemap. */
 add_filter( 'wp_sitemaps_taxonomies', function ( array $taxonomies ): array {

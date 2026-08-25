@@ -798,27 +798,52 @@ function promen_active_summary(): array {
 	return $out;
 }
 
-// ── Canonical / robots на отфильтрованных видах ──────────────────
+// ── Canonical / robots на архивах ────────────────────────────────
 
+/*
+ * Ядро WP отдаёт canonical только для singular — у товаров он есть, а у
+ * архивов (главная, /catalog/, категории, нормативы, пагинация) не было
+ * ни одного. Проверено на живом сайте 2026-08-25: 147 страниц без тега,
+ * и `?utm_source=…` на категории отдавал 200 без canonical и без noindex,
+ * то есть любая метка из рассылки плодила дубль раздела.
+ *
+ * Поэтому хук выводит self-canonical на всех архивах, а параметрические
+ * виды (фильтр, поиск, ?group=) по-прежнему каноникалит на чистый адрес.
+ */
 add_action( 'wp_head', function () {
+	if ( is_singular() ) {
+		return; // ядро уже отдало canonical
+	}
+
 	$group    = promen_active_group();
 	$filtered = promen_has_filters();
-	if ( ! ( $filtered || $group !== '' ) ) {
-		return;
-	}
+
 	if ( is_post_type_archive( 'product' ) || is_shop() ) {
 		// Групповой вид (?group=otvody) каноникалим на страницу категории, а не на голый /catalog/.
 		$url = ( $group !== '' ? promen_product_cat_link( $group ) : '' ) ?: get_post_type_archive_link( 'product' );
 	} elseif ( is_tax( 'product_cat' ) || is_tax( 'norm' ) ) {
 		$url = get_term_link( get_queried_object() );
+	} elseif ( is_front_page() ) {
+		$url = home_url( '/' );
 	} else {
 		return;
 	}
-	if ( $url && ! is_wp_error( $url ) ) {
-		echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
-		// noindex — только у параметрических (фильтр/поиск) видов; чистая категория индексируется.
-		if ( $filtered ) {
-			echo '<meta name="robots" content="noindex,follow">' . "\n";
-		}
+
+	if ( ! $url || is_wp_error( $url ) ) {
+		return;
+	}
+
+	// Пагинация каноникалит на себя. Склейка на первую страницу увела бы
+	// из индекса товары со второй и дальше — а их в разделе до 109 страниц.
+	// У параметрических видов адрес уже подменён на чистый, туда номер не дописываем.
+	$paged = max( (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
+	if ( $paged > 1 && ! $filtered && '' === $group ) {
+		$url = trailingslashit( $url ) . user_trailingslashit( 'page/' . $paged, 'paged' );
+	}
+
+	echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
+	// noindex — только у параметрических (фильтр/поиск) видов; чистая категория индексируется.
+	if ( $filtered ) {
+		echo '<meta name="robots" content="noindex,follow">' . "\n";
 	}
 }, 1 );
