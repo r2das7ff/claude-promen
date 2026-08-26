@@ -37,6 +37,35 @@ function promen_cache_purge(): int {
 }
 
 /**
+ * Уборка каталогов от прежних версий темы.
+ *
+ * Версия входит в путь кеша (см. advanced-cache.php), поэтому после заливки
+ * темы старые файлы становятся недосягаемыми — ни отдать, ни перезаписать.
+ * Сами по себе они не исчезнут: TTL их не трогает, читать их никто не будет.
+ * Момент удачный: сразу после правки темы каждый запрос всё равно промах,
+ * то есть WordPress загружается и этот хук отрабатывает.
+ */
+add_action( 'init', function () {
+	if ( ! is_dir( PROMEN_CACHE_DIR ) || ! function_exists( 'promen_cache_theme_stamp' ) ) {
+		return;
+	}
+	$current = 'v' . promen_cache_theme_stamp();
+	foreach ( (array) glob( PROMEN_CACHE_DIR . '/v*', GLOB_ONLYDIR ) as $dir ) {
+		if ( basename( $dir ) === $current ) {
+			continue;
+		}
+		$it = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator( $dir, FilesystemIterator::SKIP_DOTS ),
+			RecursiveIteratorIterator::CHILD_FIRST
+		);
+		foreach ( $it as $item ) {
+			$item->isDir() ? @rmdir( $item->getPathname() ) : @unlink( $item->getPathname() );
+		}
+		@rmdir( $dir );
+	}
+}, 1 );
+
+/**
  * Сброс откладываем на конец запроса: при массовом импорте save_post
  * срабатывает тысячи раз, и чистить каталог на каждом — впустую жечь диск.
  */

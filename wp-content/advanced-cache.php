@@ -54,10 +54,33 @@ function promen_cache_eligible(): bool {
 	return true;
 }
 
+/**
+ * Отпечаток версии темы.
+ *
+ * Заливка файлов темы кеш не сбрасывает: хуки WordPress при этом не
+ * срабатывают, и посетители до истечения TTL видели бы старую вёрстку.
+ * Поэтому версия входит в путь кеша — после правки любого PHP темы все
+ * запросы автоматически становятся промахами. Стоимость: один glob по inc/
+ * и пара stat на запрос, доли миллисекунды против секунды генерации.
+ */
+function promen_cache_theme_stamp(): int {
+	$dir   = WP_CONTENT_DIR . '/themes/promen';
+	$stamp = (int) @filemtime( $dir . '/functions.php' );
+	foreach ( [ '/inc/*.php', '/woocommerce/*.php' ] as $mask ) {
+		foreach ( (array) glob( $dir . $mask ) as $file ) {
+			$mtime = (int) @filemtime( $file );
+			if ( $mtime > $stamp ) {
+				$stamp = $mtime;
+			}
+		}
+	}
+	return $stamp;
+}
+
 /** Путь к файлу кеша. Хост в ключе — при переезде на боевой домен чужой кеш не подхватится. */
 function promen_cache_file(): string {
 	$key = md5( ( $_SERVER['HTTP_HOST'] ?? '' ) . '|' . ( $_SERVER['REQUEST_URI'] ?? '/' ) );
-	return PROMEN_CACHE_DIR . '/' . substr( $key, 0, 2 ) . '/' . $key . '.html';
+	return PROMEN_CACHE_DIR . '/v' . promen_cache_theme_stamp() . '/' . substr( $key, 0, 2 ) . '/' . $key . '.html';
 }
 
 /** Обработчик буфера: решает, можно ли сохранить готовую страницу. */
