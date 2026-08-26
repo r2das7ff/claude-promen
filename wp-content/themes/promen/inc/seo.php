@@ -270,6 +270,71 @@ add_action( 'template_redirect', function () {
 }, 0 );
 
 /**
+ * Картинка страницы для Open Graph и микроразметки.
+ *
+ * У карточки — фото изделия, у остальных страниц — первое фото из контента,
+ * иначе общий снимок производства. Логотип в og:image не ставим: в превью
+ * мессенджера он выглядит пустой плашкой.
+ */
+function promen_og_image(): string {
+	if ( function_exists( 'is_product' ) && is_product() ) {
+		$photo = promen_product_photo_url( get_queried_object_id() );
+		if ( '' !== $photo ) {
+			return $photo;
+		}
+	}
+	$post = get_queried_object();
+	if ( $post instanceof WP_Post ) {
+		$thumb = get_the_post_thumbnail_url( $post, 'full' );
+		if ( $thumb ) {
+			return $thumb;
+		}
+		if ( preg_match( '/<img[^>]+src=["\']([^"\']+)["\']/i', (string) $post->post_content, $m )
+			&& false === stripos( $m[1], 'logo' ) ) {
+			return $m[1];
+		}
+	}
+	return get_theme_file_uri( 'assets/img/photos/promen-photo-hor-1.jpg' );
+}
+
+/**
+ * Open Graph и Twitter Card.
+ *
+ * Обход 2026-08-25: ни одного og-тега на 16 390 страницах. Для B2B это
+ * заметно — менеджеры кидают ссылки на позиции в мессенджеры, а превью
+ * выходит пустым. Заголовок и описание берём те же, что в <title> и
+ * meta description, чтобы тексты не разъезжались.
+ */
+add_action( 'wp_head', function () {
+	if ( is_404() ) {
+		return;
+	}
+	// wp_get_document_title() отдаёт заголовок с HTML-сущностями, а esc_attr
+	// кодирует их повторно — в превью уезжало «&#8211;» вместо тире.
+	$title = html_entity_decode( wp_get_document_title(), ENT_QUOTES, 'UTF-8' );
+	$desc  = function_exists( 'promen_meta_description_text' ) ? promen_meta_description_text() : '';
+	$type  = ( function_exists( 'is_product' ) && is_product() ) ? 'product' : ( is_singular() ? 'article' : 'website' );
+	$url   = home_url( add_query_arg( [] ) );
+
+	$tags = [
+		'og:site_name'   => 'PROM-EN — Промышленная Энергетика',
+		'og:locale'      => 'ru_RU',
+		'og:type'        => $type,
+		'og:title'       => $title,
+		'og:url'         => $url,
+		'og:image'       => promen_og_image(),
+	];
+	if ( '' !== $desc ) {
+		$tags['og:description'] = $desc;
+	}
+	foreach ( $tags as $k => $v ) {
+		printf( '<meta property="%s" content="%s">' . "\n", esc_attr( $k ), esc_attr( $v ) );
+	}
+	// Twitter читает свои теги, но подхватывает og:* — дублируем только карту.
+	echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+}, 3 );
+
+/**
  * Organization — единая карточка компании на всех страницах.
  *
  * Аудит разметки 2026-08-26: Product и BreadcrumbList на карточках были,
@@ -359,10 +424,7 @@ add_action( 'wp_head', function () {
 		'author'           => [ '@id' => home_url( '/#organization' ) ],
 		'publisher'        => [ '@id' => home_url( '/#organization' ) ],
 	];
-	$img = get_the_post_thumbnail_url( $post, 'full' );
-	if ( $img ) {
-		$data['image'] = $img;
-	}
+	$data['image'] = promen_og_image();
 	echo '<script type="application/ld+json">'
 		. wp_json_encode( $data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES )
 		. '</script>' . "\n";

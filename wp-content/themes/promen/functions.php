@@ -494,7 +494,7 @@ function promen_footer_idx(): string {
  * Мета-описание страницы. Без него поисковик берёт случайный фрагмент текста,
  * а у главной это была строка HUD-декора.
  */
-function promen_meta_description(): void {
+function promen_meta_description_text(): string {
 	$desc = '';
 	if ( is_front_page() ) {
 		$desc = 'Завод «Промышленная Энергетика»: детали и сборочные единицы трубопроводов для АЭС и ТЭС. Изготовление по ГОСТ, ОСТ, СТО ЦКТИ и чертежам заказчика.';
@@ -571,7 +571,7 @@ function promen_meta_description(): void {
 	// уезжают в атрибут тега как есть.
 	$desc = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( (string) $desc ) ) );
 	if ( '' === $desc ) {
-		return;
+		return '';
 	}
 	// Пагинация: номер страницы в описании, иначе все страницы раздела несут
 	// один и тот же текст — на «Отводах» это 109 одинаковых описаний.
@@ -586,6 +586,14 @@ function promen_meta_description(): void {
 		$space = mb_strrpos( $cut, ' ' );
 		$desc  = rtrim( false !== $space ? mb_substr( $cut, 0, $space ) : $cut, " ,.;:—-" ) . '…';
 	}
-	echo '<meta name="description" content="' . esc_attr( $desc . $suffix ) . '">' . "\n";
+	return $desc . $suffix;
+}
+
+/** Сам тег. Текст отдаётся отдельно — его же берут Open Graph и Twitter Card. */
+function promen_meta_description(): void {
+	$desc = promen_meta_description_text();
+	if ( '' !== $desc ) {
+		echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "\n";
+	}
 }
 add_action( 'wp_head', 'promen_meta_description', 1 );
