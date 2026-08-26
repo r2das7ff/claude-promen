@@ -171,9 +171,25 @@ add_filter( 'robots_txt', function ( string $output, $public ): string {
 		'Disallow: /checkout/',
 		'Disallow: /my-account/',
 		'',
+		// Любой адрес с параметрами — мимо обхода.
+		//
+		// Лог доступа 2026-08-26 показал, зачем: GPTBot и безымянный бот
+		// перебирали сочетания фасетов на /normativy/…/page/16/?gost=<40
+		// нормативов через запятую>&steel=…, адресами по две тысячи символов.
+		// Пространство таких URL бесконечно, содержимого своего у них нет,
+		// а noindex роботу скачивать не мешает — он мешает только индексировать.
+		// Вдобавок параметрические запросы идут мимо полностраничного кеша,
+		// то есть каждый такой обход — полная генерация страницы. Похоже,
+		// отсюда и два ответа 500 при нашем собственном обходе каталога.
+		'Disallow: /*?',
+		'',
 		'Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&utm_referrer',
 		'Clean-param: yclid&gclid&ymclid&from&openstat&_openstat&roistat&fbclid',
 		'Clean-param: add-to-cart&orderby',
+		// Фасеты каталога: для Яндекса этого мало (см. Disallow выше), но
+		// директива говорит ему склеивать такие адреса с чистыми, а не
+		// считать отдельными страницами.
+		'Clean-param: gost&steel&dn&pn&s&angle&industry&group&q&paged',
 		'',
 	];
 	return $output . implode( "\n", $extra ) . "\n";
