@@ -16,8 +16,28 @@ if ( ! defined( 'PROMEN_CACHE_DIR' ) ) {
 	define( 'PROMEN_CACHE_DIR', WP_CONTENT_DIR . '/cache/promen-page' );
 }
 
+/**
+ * Транзиенты каталога, в которых лежат готовые ссылки.
+ *
+ * Обход 2026-08-26: после переименования слагов карточки продолжали
+ * ссылаться на старые адреса — 521 внутренняя ссылка вела через 301.
+ * Виноваты были не канон и не кеш страниц, а транзиенты `promen_series*`
+ * с таблицами серий: они пережили и пересборку канона, и переезд базы.
+ * Поэтому чистим их вместе со страничным кешем.
+ *
+ * `promen_dlc` (расчёты доставки) не трогаем — ссылок там нет.
+ */
+function promen_cache_flush_transients(): int {
+	global $wpdb;
+	return (int) $wpdb->query(
+		"DELETE FROM {$wpdb->options}
+		 WHERE option_name REGEXP '^_transient_(timeout_)?promen_(series|f|grpcount)'"
+	);
+}
+
 /** Рекурсивно удаляет содержимое каталога кеша. Возвращает число файлов. */
 function promen_cache_purge(): int {
+	promen_cache_flush_transients();
 	if ( ! is_dir( PROMEN_CACHE_DIR ) ) {
 		return 0;
 	}

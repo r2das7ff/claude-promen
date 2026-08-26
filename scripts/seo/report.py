@@ -20,7 +20,11 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 HTML = "AND (p.content_type IS NULL OR p.content_type LIKE '%html%')"
-INDEXABLE = ("AND p.status=200 AND COALESCE(p.meta_robots,'') NOT LIKE '%noindex%' "
+# Страницы, которые не удалось разобрать (сервер отдал пустое тело под
+# нагрузкой), из проверок содержимого исключаем: иначе они попадают в «нет
+# title», «нет canonical» и «нет разметки» разом и портят все цифры.
+INDEXABLE = ("AND p.status=200 AND p.error IS NULL "
+             "AND COALESCE(p.meta_robots,'') NOT LIKE '%noindex%' "
              "AND COALESCE(p.x_robots,'') NOT LIKE '%noindex%'")
 
 CHECKS = [

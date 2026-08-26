@@ -673,3 +673,19 @@ a.s10-contact-v:hover{color:var(--blue);}
   .nav-cta{min-height:44px;}
   .ft-cell-val a,.ft-nav-list a,.ft-policy{display:inline-flex;align-items:center;min-height:44px;}
 }
+
+/* Заголовок только для поисковика и скринридера.
+   Нужен там, где по макету видимого заголовка нет: страница «Производство»
+   открывается числом «0.01 мм», текстового титула в дизайне не предусмотрено,
+   и обход 2026-08-26 нашёл её единственной страницей сайта без H1. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

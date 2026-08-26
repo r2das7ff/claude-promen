@@ -206,6 +206,13 @@ function promen_is_service_page(): bool {
 	if ( function_exists( 'is_cart' ) && ( is_cart() || is_checkout() || is_account_page() ) ) {
 		return true;
 	}
+	// Архивы автора и рубрик — наследие WordPress: на сайте нет ни блога, ни
+	// авторов, а /author/admin/ и /category/uncategorized/ отвечают 200 и
+	// светят логин администратора. Обход 2026-08-26 нашёл их единственными
+	// страницами без canonical.
+	if ( is_author() || is_category() || is_tag() || is_date() ) {
+		return true;
+	}
 	return is_page( [ 'sample-page', 'cart', 'checkout', 'my-account' ] ) || is_search();
 }
 
