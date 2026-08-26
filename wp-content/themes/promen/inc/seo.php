@@ -430,6 +430,77 @@ add_action( 'wp_head', function () {
 		. '</script>' . "\n";
 }, 6 );
 
+/**
+ * /llms.txt — карта сайта для языковых моделей.
+ *
+ * Соглашение молодое и поисковой выдачи не даёт, но для B2B оно уместно:
+ * снабженец всё чаще спрашивает про деталь у ассистента, а не в поиске.
+ * Собираем из живых данных, чтобы файл не разошёлся с каталогом.
+ */
+add_action( 'template_redirect', function () {
+	$path = trim( (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ), '/' );
+	if ( 'llms.txt' !== $path ) {
+		return;
+	}
+	$out   = [];
+	$out[] = '# PROM-EN — ООО «Завод Промышленная Энергетика»';
+	$out[] = '';
+	$out[] = '> Завод в Челябинске: детали и сборочные единицы трубопроводов для объектов';
+	$out[] = '> атомной и тепловой энергетики. Изготовление по ГОСТ, ОСТ, СТО ЦКТИ, ТУ и';
+	$out[] = '> чертежам заказчика. Каталог без цен: коммерческое предложение по запросу.';
+	$out[] = '';
+	$out[] = '## Каталог';
+	$out[] = '';
+	$terms = get_terms( [
+		'taxonomy'   => 'product_cat',
+		'hide_empty' => true,
+		'parent'     => 0,
+		'orderby'    => 'count',
+		'order'      => 'DESC',
+	] );
+	if ( ! is_wp_error( $terms ) ) {
+		foreach ( $terms as $t ) {
+			$link = get_term_link( $t );
+			if ( is_wp_error( $link ) ) {
+				continue;
+			}
+			$desc = trim( wp_strip_all_tags( (string) $t->description ) );
+			$desc = $desc ? ': ' . wp_html_excerpt( $desc, 120, '…' ) : '';
+			$out[] = sprintf( '- [%s](%s)%s — позиций: %d', $t->name, $link, $desc, (int) $t->count );
+		}
+	}
+	$out[] = '';
+	$out[] = '## Справочное';
+	$out[] = '';
+	foreach ( [ 'normativnaya-baza' => 'Нормативная база: реестр ГОСТ, ОСТ, СТО и ТУ',
+	            'kalkulyatory'      => 'Калькуляторы подбора и расчёта массы',
+	            'stati'             => 'Статьи: выбор стали, контроль качества, изготовление по КД' ] as $slug => $title ) {
+		$page = get_page_by_path( $slug );
+		if ( $page ) {
+			$out[] = sprintf( '- [%s](%s)', $title, get_permalink( $page ) );
+		}
+	}
+	$out[] = '';
+	$out[] = '## Компания';
+	$out[] = '';
+	foreach ( [ 'production' => 'Производство и контроль качества',
+	            'proekty'    => 'Реализованные поставки на объекты энергетики',
+	            'contacts'   => 'Контакты: 454091, Челябинск, ул. Орджоникидзе, 37' ] as $slug => $title ) {
+		$page = get_page_by_path( $slug );
+		if ( $page ) {
+			$out[] = sprintf( '- [%s](%s)', $title, get_permalink( $page ) );
+		}
+	}
+	$out[] = '';
+	$out[] = 'Полный перечень адресов: ' . home_url( '/wp-sitemap.xml' );
+	$out[] = '';
+
+	header( 'Content-Type: text/plain; charset=UTF-8' );
+	status_header( 200 );
+	echo implode( "\n", $out );
+	exit;
+}, 0 );
+
 /** Включаем norm в core XML sitemap. */
 add_filter( 'wp_sitemaps_taxonomies', function ( array $taxonomies ): array {
 	$taxonomies['norm'] = get_taxonomy( 'norm' );
