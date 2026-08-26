@@ -24,3 +24,11 @@ products-csv/new_products_from_az/az/
 # OS
 .DS_Store
 **/.DS_Store
+
+# Рабочие базы SEO-краула (крупные, пересобираются)
+perf-reports/seo/*.db
+# Объёмные перечни аудита — пересобираются из базы командой report.py
+perf-reports/seo/*/deep.csv
+perf-reports/seo/*/long_desc.csv
+perf-reports/seo/*/long_title.csv
+perf-reports/seo/*/slow.csv

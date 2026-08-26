@@ -1,0 +1,17 @@
+{
+  "sitemaps": [
+    {
+      "sitemap_id": "0afa052e-5e14-39b1-bf90-22b0d89615b3",
+      "sitemap_url": "https://prom-en.com/sitemap.xml",
+      "last_access_date": "2026-08-23T07:33:37.000+03:00",
+      "errors_count": 0,
+      "urls_count": 10174,
+      "children_count": 0,
+      "sources": [
+        "ROBOTS_TXT",
+        "WEBMASTER"
+      ],
+      "sitemap_type": "SITEMAP"
+    }
+  ]
+}
