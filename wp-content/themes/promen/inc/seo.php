@@ -269,6 +269,105 @@ add_action( 'template_redirect', function () {
 	exit;
 }, 0 );
 
+/**
+ * Organization — единая карточка компании на всех страницах.
+ *
+ * Аудит разметки 2026-08-26: Product и BreadcrumbList на карточках были,
+ * а Organization не было нигде. Для завода это главный пробел — именно по
+ * ней поисковик связывает сайт, юрлицо, адрес и телефоны в одну сущность.
+ * Данные — со страницы «Контакты», выдумывать тут нечего.
+ */
+add_action( 'wp_head', function () {
+	if ( is_404() ) {
+		return;
+	}
+	$org = [
+		'@context'      => 'https://schema.org',
+		'@type'         => 'Organization',
+		'@id'           => home_url( '/#organization' ),
+		'name'          => 'ООО «Завод Промышленная Энергетика»',
+		'alternateName' => 'PROM-EN',
+		'url'           => home_url( '/' ),
+		'logo'          => get_theme_file_uri( 'assets/img/PE_logo_color.png' ),
+		'email'         => 'zakaz@prom-en.com',
+		'telephone'     => '+7 (351) 217-00-99',
+		'address'       => [
+			'@type'           => 'PostalAddress',
+			'postalCode'      => '454091',
+			'addressLocality' => 'Челябинск',
+			'streetAddress'   => 'ул. Орджоникидзе, 37',
+			'addressCountry'  => 'RU',
+		],
+		'contactPoint'  => [
+			[
+				'@type'             => 'ContactPoint',
+				'contactType'       => 'sales',
+				'telephone'         => '+7 (351) 217-00-99',
+				'email'             => 'zakaz@prom-en.com',
+				'areaServed'        => 'RU',
+				'availableLanguage' => 'Russian',
+			],
+		],
+		// geo — свойство места, а не организации, поэтому через location.
+		'location'      => [
+			'@type'   => 'Place',
+			'name'    => 'Производственная площадка',
+			'address' => [
+				'@type'           => 'PostalAddress',
+				'postalCode'      => '454091',
+				'addressLocality' => 'Челябинск',
+				'streetAddress'   => 'ул. Орджоникидзе, 37',
+				'addressCountry'  => 'RU',
+			],
+			'geo'     => [
+				'@type'     => 'GeoCoordinates',
+				'latitude'  => 55.1644,
+				'longitude' => 61.4368,
+			],
+		],
+	];
+	echo '<script type="application/ld+json">'
+		. wp_json_encode( $org, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES )
+		. '</script>' . "\n";
+}, 5 );
+
+/**
+ * Article на страницах «Статей».
+ *
+ * Их четыре, и разметки у них не было вовсе. Автор — организация: статьи
+ * пишутся от лица завода, выдумывать физлицо неправильно.
+ */
+add_action( 'wp_head', function () {
+	if ( ! is_singular() ) {
+		return;
+	}
+	$post = get_queried_object();
+	if ( ! $post instanceof WP_Post || ! $post->post_parent ) {
+		return;
+	}
+	if ( 'stati' !== get_post_field( 'post_name', $post->post_parent ) ) {
+		return;
+	}
+	$data = [
+		'@context'         => 'https://schema.org',
+		'@type'            => 'Article',
+		'headline'         => get_the_title( $post ),
+		'mainEntityOfPage' => get_permalink( $post ),
+		'datePublished'    => get_the_date( 'c', $post ),
+		'dateModified'     => get_the_modified_date( 'c', $post ),
+		'inLanguage'       => 'ru-RU',
+		'author'           => [ '@id' => home_url( '/#organization' ) ],
+		'publisher'        => [ '@id' => home_url( '/#organization' ) ],
+	];
+	$img = get_the_post_thumbnail_url( $post, 'full' );
+	if ( $img ) {
+		$data['image'] = $img;
+	}
+	echo '<script type="application/ld+json">'
+		. wp_json_encode( $data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES )
+		. '</script>' . "\n";
+}, 6 );
+
 /** Включаем norm в core XML sitemap. */
 add_filter( 'wp_sitemaps_taxonomies', function ( array $taxonomies ): array {
 	$taxonomies['norm'] = get_taxonomy( 'norm' );

@@ -1624,7 +1624,11 @@ function promen_product_schema( WC_Product $product ): string {
 	$data = [
 		'@context'    => 'https://schema.org',
 		'@type'       => 'Product',
-		'name'        => $product->get_name(),
+		// С PN, как и <title>: без давления фланцы одного DN дают одинаковое
+		// имя сущности, и поисковик склеивает разные позиции в одну.
+		'name'        => function_exists( 'promen_product_title_seo' )
+			? promen_product_title_seo( $product->get_id() )
+			: $product->get_name(),
 		'sku'         => $product->get_sku(),
 		'description' => wp_strip_all_tags( promen_sanitize_desc( $product->get_id(), $product->get_description() ) ),
 		'url'         => get_permalink( $product->get_id() ),
