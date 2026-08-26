@@ -60,6 +60,9 @@ services:
       - wpcore:/var/www/html
       - ./wp-content/themes/promen:/var/www/html/wp-content/themes/promen
       - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins
+      # Drop-in полностраничного кеша: на сервере он лежит в wp-content,
+      # локально его надо примонтировать отдельно — сам wp-content в томе.
+      - ./wp-content/advanced-cache.php:/var/www/html/wp-content/advanced-cache.php
       # CSV и PDF пайплайна доступны изнутри контейнера для импорта:
       - ../normatives:/data/normatives:ro
       - ./products-csv:/data/products-csv:ro
@@ -84,6 +87,9 @@ services:
       - wpcore:/var/www/html
       - ./wp-content/themes/promen:/var/www/html/wp-content/themes/promen
       - ./wp-content/mu-plugins:/var/www/html/wp-content/mu-plugins
+      # Drop-in полностраничного кеша: на сервере он лежит в wp-content,
+      # локально его надо примонтировать отдельно — сам wp-content в томе.
+      - ./wp-content/advanced-cache.php:/var/www/html/wp-content/advanced-cache.php
       - ./scripts:/scripts
       - ../normatives:/data/normatives:ro
       - ./products-csv:/data/products-csv:ro

@@ -63,6 +63,7 @@ require_once __DIR__ . '/inc/catalog-api.php';
 require_once __DIR__ . '/inc/delivery-calc.php';
 require_once __DIR__ . '/inc/calculators.php';
 require_once __DIR__ . '/inc/seo.php';
+require_once __DIR__ . '/inc/page-cache.php';
 require_once __DIR__ . '/inc/pilot-otvody.php';
 
 // Главная — front-page.php (этап 1); прежний 302-редирект в каталог снят.
