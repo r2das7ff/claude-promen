@@ -138,8 +138,11 @@ class Crawler:
         out["title"] = (one("//title/text()") or "").strip()
         out["description"] = (one(
             "//meta[translate(@name,'DESCRIPTION','description')='description']/@content") or "").strip()
-        h1s = [x.strip() for x in doc.xpath("//h1//text()") if x.strip()]
-        out["h1"] = " ".join(h1s[:1])
+        # Берём текст ЦЕЛИКОМ, а не первый узел: в теме H1 собран из вложенных
+        # span'ов (тип изделия + типоразмер + норматив), и по первому узлу
+        # тысячи разных карточек выглядели одинаковыми «Болт»/«Шпилька».
+        h1s = [" ".join(x.text_content().split()) for x in doc.xpath("//h1")]
+        out["h1"] = h1s[0] if h1s else ""
         out["h1_count"] = len(doc.xpath("//h1"))
         out["h2_count"] = len(doc.xpath("//h2"))
         out["canonical"] = one("//link[@rel='canonical']/@href")

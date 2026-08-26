@@ -504,14 +504,22 @@ function promen_meta_description(): void {
 		$p = wc_get_product( get_the_ID() );
 		if ( $p ) {
 			$desc = wp_strip_all_tags( promen_sanitize_desc( $p->get_id(), $p->get_short_description() ?: $p->get_description() ) );
+			if ( '' === trim( $desc ) ) {
+				$desc = promen_product_desc_fallback( $p );
+			}
 		}
 	} elseif ( is_tax( 'product_cat' ) || is_tax( 'norm' ) ) {
 		// Только первый абзац описания раздела: дальше идут подробности,
 		// которые в сниппет всё равно не влезут.
 		$term = get_queried_object();
-		if ( $term && $term->description ) {
-			$parts = preg_split( '/\n\s*\n/', trim( wp_strip_all_tags( $term->description ) ), 2 );
-			$desc  = $parts[0] ?? '';
+		if ( $term instanceof WP_Term ) {
+			if ( $term->description ) {
+				$parts = preg_split( '/\n\s*\n/', trim( wp_strip_all_tags( $term->description ) ), 2 );
+				$desc  = $parts[0] ?? '';
+			}
+			if ( '' === trim( (string) $desc ) ) {
+				$desc = promen_term_desc_fallback( $term );
+			}
 		}
 	} elseif ( function_exists( 'is_shop' ) && is_shop() ) {
 		$desc = 'Каталог соединительных деталей трубопроводов, фланцев и крепежа. Запрос коммерческого предложения без корзины.';
@@ -541,19 +549,43 @@ function promen_meta_description(): void {
 		}
 	}
 
+	// Дочерние страницы разделов — конкретный проект, статья, калькулятор —
+	// своего описания не имеют: их вёрстка нарисована в PHP, post_content пуст,
+	// а карта по слагам выше знает только сами разделы. Собираем из заголовка,
+	// подбирая формулировку по родителю.
+	if ( '' === trim( wp_strip_all_tags( (string) $desc ) ) && is_singular() ) {
+		$obj = get_queried_object();
+		if ( $obj instanceof WP_Post ) {
+			$parent_slug = $obj->post_parent ? (string) get_post_field( 'post_name', $obj->post_parent ) : '';
+			$by_parent   = [
+				'proekty'      => '%s — реализованная поставка завода «Промышленная Энергетика»: детали и сборочные единицы трубопроводов для объектов энергетики.',
+				'stati'        => '%s — материал завода «Промышленная Энергетика» о деталях трубопроводов, марках стали и нормативной базе.',
+				'kalkulyatory' => '%s — калькулятор завода «Промышленная Энергетика»: подбор и расчёт по ГОСТ, ОСТ и СТО ЦКТИ.',
+			];
+			$tpl  = $by_parent[ $parent_slug ] ?? '%s — завод «Промышленная Энергетика»: изготовление деталей трубопроводов по ГОСТ, ОСТ и чертежам заказчика.';
+			$desc = sprintf( $tpl, get_the_title( $obj ) );
+		}
+	}
+
 	// Переносы и двойные пробелы из post_content схлопываем: иначе они
 	// уезжают в атрибут тега как есть.
 	$desc = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( (string) $desc ) ) );
 	if ( '' === $desc ) {
 		return;
 	}
+	// Пагинация: номер страницы в описании, иначе все страницы раздела несут
+	// один и тот же текст — на «Отводах» это 109 одинаковых описаний.
+	$paged  = function_exists( 'promen_paged_number' ) ? promen_paged_number() : 1;
+	$suffix = $paged > 1 ? ' Страница ' . $paged . '.' : '';
+
 	// 160 символов — предел, после которого сниппет обрезают и Яндекс, и Google.
 	// Рвём по границе слова: wp_html_excerpt резал по символу, посреди ГОСТа.
-	if ( mb_strlen( $desc ) > 160 ) {
-		$cut   = mb_substr( $desc, 0, 159 );
+	$limit = 160 - mb_strlen( $suffix );
+	if ( mb_strlen( $desc ) > $limit ) {
+		$cut   = mb_substr( $desc, 0, $limit - 1 );
 		$space = mb_strrpos( $cut, ' ' );
 		$desc  = rtrim( false !== $space ? mb_substr( $cut, 0, $space ) : $cut, " ,.;:—-" ) . '…';
 	}
-	echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "\n";
+	echo '<meta name="description" content="' . esc_attr( $desc . $suffix ) . '">' . "\n";
 }
 add_action( 'wp_head', 'promen_meta_description', 1 );

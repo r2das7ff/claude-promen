@@ -98,29 +98,9 @@ while ( have_posts() ) :
 	$mass_ok   = $mass && promen_mass_is_reliable( $cat_group );
 	$mass_col  = promen_mass_is_reliable( $cat_group ); // показывать колонку «Масса» в таблицах серии
 
-	// Фото изделия: assets/img/products/<slug-категории>.<ext>.
-	// Идём от самой глубокой категории вверх по дереву — подкатегория без
-	// собственного снимка наследует родительский; нет ни одного — заглушка.
+	// Фото изделия — общий подбор с микроразметкой, см. promen_product_photo_url().
 	$deep_cat  = promen_deepest_cat( $product->get_id() );
-	$photo_url = '';
-	if ( $deep_cat ) {
-		$photo_slugs = [ $deep_cat->slug ];
-		foreach ( get_ancestors( $deep_cat->term_id, 'product_cat', 'taxonomy' ) as $anc_id ) {
-			$anc = get_term( $anc_id, 'product_cat' );
-			if ( $anc && ! is_wp_error( $anc ) ) {
-				$photo_slugs[] = $anc->slug;
-			}
-		}
-		foreach ( $photo_slugs as $photo_slug ) {
-			foreach ( [ 'webp', 'png', 'jpg', 'jpeg' ] as $ext ) {
-				$rel = 'assets/img/products/' . $photo_slug . '.' . $ext;
-				if ( file_exists( get_theme_file_path( $rel ) ) ) {
-					$photo_url = get_theme_file_uri( $rel );
-					break 2;
-				}
-			}
-		}
-	}
+	$photo_url = promen_product_photo_url( $product->get_id() );
 
 	$norm_term = null;
 	$norm_terms = get_the_terms( $product->get_id(), 'norm' );

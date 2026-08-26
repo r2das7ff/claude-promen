@@ -56,7 +56,10 @@ def meta_of(resp):
         "status": resp.status_code,
         "title": (one("//title/text()") or "").strip(),
         "canonical": one("//link[@rel='canonical']/@href"),
-        "robots": one("//meta[translate(@name,'ROBTS','robts')='robots']/@content"),
+        # Тегов robots на странице бывает несколько (ядро отдаёт свой
+        # max-image-preview, тема — свой noindex). Берём все: по первому
+        # проверка врала, что страница открыта.
+        "robots": ", ".join(doc.xpath("//meta[translate(@name,'ROBTS','robts')='robots']/@content")),
         "x_robots": resp.headers.get("X-Robots-Tag"),
         "jsonld": blobs,
     }
@@ -126,7 +129,7 @@ SERVICE = ["/cart/", "/checkout/", "/my-account/", "/sample-page/",
            "/feed/", "/wp-json/", "/?s=test", "/comments/feed/"]
 
 
-def check_service(root):
+def check_service(root, robots_body=""):
     for path in SERVICE:
         r = get(root + path, allow_redirects=False)
         if r is None:
@@ -136,9 +139,16 @@ def check_service(root):
             add(3, f"Служебная {path}", True, f"{st} — в индекс не попадёт")
             continue
         m = meta_of(r) if st == 200 else {}
-        closed = noindexed(m)
+        # Закрыта либо мета-тегом, либо строкой Disallow в robots.txt —
+        # иначе получаем ложную тревогу по /feed/ и /wp-json/.
+        rule = path.split("?")[0].rstrip("/") or "/"
+        in_robots = any(
+            line.strip().lower().startswith("disallow:") and rule.strip("/") in line
+            for line in (robots_body or "").splitlines())
+        closed = noindexed(m) or in_robots
+        how = "noindex" if noindexed(m) else ("robots.txt" if in_robots else "")
         add(2, f"Служебная {path}", closed,
-            f"{st}, robots={m.get('robots') or 'нет'} — страница открыта для индексации")
+            f"{st}, {how or 'открыта: ни noindex, ни Disallow'}")
 
 
 # ------------------------------------------------------------- пагинация
@@ -296,7 +306,7 @@ def main():
 
     robots_body = check_robots(root)
     urls, cats = check_sitemap(root, robots_body)
-    check_service(root)
+    check_service(root, robots_body)
     check_mirrors(root)
     cat = a.category or pick_category(cats) or root + "/catalog/"
     check_pagination(root, cat)

@@ -1510,6 +1510,103 @@ function promen_breadcrumbs_schema( array $crumbs ): string {
 }
 
 /**
+ * Описание раздела, когда своего текста в базе нет.
+ *
+ * Обход 2026-08-25 нашёл 15 подразделов с пустым описанием — «Фланцы
+ * плоские», «Трубы б/ш», «Опоры скользящие» и другие. Дописывать их
+ * текстом в базу нельзя: контент живёт в БД стенда, а правка отсюда туда
+ * не уедет. Поэтому собираем из имени раздела и числа позиций.
+ */
+function promen_term_desc_fallback( WP_Term $term ): string {
+	$n = (int) $term->count;
+	$forms = [ 'позиция', 'позиции', 'позиций' ];
+	$mod100 = $n % 100;
+	$mod10  = $n % 10;
+	if ( $mod100 >= 11 && $mod100 <= 14 ) {
+		$word = $forms[2];
+	} elseif ( 1 === $mod10 ) {
+		$word = $forms[0];
+	} elseif ( $mod10 >= 2 && $mod10 <= 4 ) {
+		$word = $forms[1];
+	} else {
+		$word = $forms[2];
+	}
+
+	// Имя подраздела в отрыве от родителя бессодержательно: «Плоские ФП»,
+	// «Бесшовные», «Скользящие». В сниппете это выглядит обрывком, поэтому
+	// впереди ставим родительский раздел.
+	$head   = $term->name;
+	$parent = $term->parent ? get_term( $term->parent, $term->taxonomy ) : null;
+	if ( $parent instanceof WP_Term ) {
+		$head = $parent->name . ' — ' . $term->name;
+	}
+	if ( $n > 0 ) {
+		$head .= ' — ' . number_format_i18n( $n ) . ' ' . $word . ' в каталоге';
+	}
+	return $head . '. Изготовление по ГОСТ, ОСТ и чертежам заказчика, запрос коммерческого предложения без корзины.';
+}
+
+/**
+ * Описание карточки, когда своего текста в базе нет.
+ *
+ * Обход 2026-08-25 нашёл 409 карточек без meta description. Собираем из
+ * того, что заведомо заполнено и что различает позиции между собой:
+ * типоразмер, норматив, марки стали. Шаблон один, но подстановки разные —
+ * одинаковых описаний это не плодит.
+ */
+function promen_product_desc_fallback( WC_Product $product ): string {
+	$id     = $product->get_id();
+	$dims   = promen_get_dims( $id );
+	$size   = promen_size_label( $dims );
+	$norm   = (string) get_post_meta( $id, '_promen_norm_key', true );
+	$kind   = promen_kind_from_title( (string) $product->get_name() );
+	$steels = (array) wc_get_product_terms( $id, 'pa_steel', [ 'fields' => 'names' ] );
+
+	$head  = trim( ( '' !== $kind ? $kind : (string) $product->get_name() ) . ( '' !== $size ? ' ' . $size : '' ) );
+	$parts = [];
+	if ( '' !== $head ) {
+		$parts[] = '' !== $norm ? $head . ' по ' . $norm : $head;
+	}
+	if ( $steels ) {
+		$parts[] = 'Марки стали ' . implode( ', ', array_slice( $steels, 0, 4 ) );
+	}
+	$parts[] = 'Изготовление на заказ, запрос коммерческого предложения';
+
+	return implode( '. ', $parts ) . '.';
+}
+
+/**
+ * Фото изделия: assets/img/products/<slug-категории>.<ext>.
+ *
+ * Идём от самой глубокой категории вверх по дереву — подкатегория без
+ * собственного снимка наследует родительский; нет ни одного — пусто.
+ * Вынесено из шаблона карточки, чтобы микроразметка и вёрстка показывали
+ * одну и ту же картинку: в schema.org поле image до 2026-08-26 не выводилось.
+ */
+function promen_product_photo_url( int $product_id ): string {
+	$deep_cat = promen_deepest_cat( $product_id );
+	if ( ! $deep_cat ) {
+		return '';
+	}
+	$slugs = [ $deep_cat->slug ];
+	foreach ( get_ancestors( $deep_cat->term_id, 'product_cat', 'taxonomy' ) as $anc_id ) {
+		$anc = get_term( $anc_id, 'product_cat' );
+		if ( $anc && ! is_wp_error( $anc ) ) {
+			$slugs[] = $anc->slug;
+		}
+	}
+	foreach ( $slugs as $slug ) {
+		foreach ( [ 'webp', 'png', 'jpg', 'jpeg' ] as $ext ) {
+			$rel = 'assets/img/products/' . $slug . '.' . $ext;
+			if ( file_exists( get_theme_file_path( $rel ) ) ) {
+				return get_theme_file_uri( $rel );
+			}
+		}
+	}
+	return '';
+}
+
+/**
  * schema.org Product без цены (catalog mode).
  * sku / name / description / brand / material / category.
  */
@@ -1535,14 +1632,16 @@ function promen_product_schema( WC_Product $product ): string {
 			'@type' => 'Brand',
 			'name'  => 'Промышленная Энергетика',
 		],
-		'offers'      => [
-			'@type'         => 'Offer',
-			'availability'  => 'https://schema.org/InStock',
-			'url'           => get_permalink( $product->get_id() ),
-			'priceCurrency' => 'RUB',
-			// Цены нет — catalog mode; указываем только availability.
-		],
+		// offers здесь больше нет. Оно выводилось без price — а Offer обязан
+		// нести price либо priceSpecification, иначе валидатор считает его
+		// неполным, и товарный сниппет всё равно не собирается. Для каталога
+		// без цен Product без offers — валидная разметка, и это честнее, чем
+		// пустой Offer. Подставлять price: 0 нельзя: читается как «бесплатно».
 	];
+	$photo = promen_product_photo_url( $product->get_id() );
+	if ( '' !== $photo ) {
+		$data['image'] = $photo;
+	}
 	if ( $cat_name ) {
 		$data['category'] = $cat_name;
 	}
@@ -1884,9 +1983,27 @@ function promen_series_meta( WC_Product $product ): array {
 		'angle'   => $angle,
 		'code'    => $code,
 		'slug'    => $slug,
-		'url'     => trailingslashit( $cat_link ) . 'seriya/' . $slug . '/',
+		'url'     => promen_series_url( $cat_link, $slug ),
 		'pass_id' => 'ПЭ-' . $code . ( $dn !== '' ? '-' . $dn : '' ),
 	];
+}
+
+/**
+ * Адрес страницы серии — только если серия открывается.
+ *
+ * Серия — не отдельный товар, а маршрут `catalog/…/seriya/<слаг>/` из
+ * mu-plugins/promen-structure.php: он ищет репрезентативный товар по
+ * нормативу и рисует его в режиме серии. Если товара нет, маршрут никуда
+ * не ведёт, а крошка ссылку всё равно строила — обход 2026-08-25 нашёл
+ * 44 такие битые ссылки. Проверяем ровно тем же способом, что и роутер,
+ * иначе адрес и его проверка разойдутся; результат там уже кэшируется
+ * в транзиенте, отдельный кэш не нужен.
+ */
+function promen_series_url( string $cat_link, string $slug ): string {
+	if ( '' === $slug || ! promen_series_representative( $slug ) ) {
+		return '';
+	}
+	return trailingslashit( $cat_link ) . 'seriya/' . $slug . '/';
 }
 
 /**
