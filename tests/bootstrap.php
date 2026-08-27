@@ -17,3 +17,13 @@ if ( ! function_exists( 'promen_is_fastener_group' ) ) {
 require_once __DIR__ . '/../wp-content/themes/promen/inc/catalog-schema.php';
 require_once __DIR__ . '/../wp-content/themes/promen/inc/catalog-document.php';
 require_once __DIR__ . '/stubs/catalog-search-stubs.php';
+
+// Подборщик: под тест идёт только чистая логика (парсер строки и отбор марок),
+// поэтому справочник марок подключается напрямую, без WordPress.
+// selector.php регистрирует REST-маршрут на уровне файла — заглушка хука
+// нужна только чтобы require прошёл; сам маршрут в юнит-тестах не участвует.
+if ( ! function_exists( 'add_action' ) ) {
+	function add_action( ...$args ) {}
+}
+require_once __DIR__ . '/../wp-content/themes/promen/inc/steel-reference.php';
+require_once __DIR__ . '/../wp-content/themes/promen/inc/selector.php';

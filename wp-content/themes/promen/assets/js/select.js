@@ -200,6 +200,11 @@
     document.querySelectorAll('select[data-select]').forEach(enhance);
   }
 
+  /* Списки, созданные после загрузки (панель подбора строит разметку по
+     первому открытию), инициализируются повторным вызовом: enhance()
+     помечает обработанные data-pm-select, поэтому вызов идемпотентен. */
+  window.promenSelectInit = init;
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

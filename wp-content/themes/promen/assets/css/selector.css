@@ -1,0 +1,849 @@
+/* ══ ПОДБОР — плавающая кнопка и панель ══
+   Модуль изолирован: все селекторы начинаются с .psel-, общий хром
+   (.pg/.strip/.s10/.nav) не переопределяется — страничный файл грузится
+   после базового и при равной специфичности перебил бы его.
+   Токены — из :root в base.css; свой только один. */
+
+/* Единственный красный на сайте: он нигде больше не используется, поэтому
+   работает как безусловный сигнал «сюда». Объявлен здесь, а не в base.css,
+   чтобы вместе с модулем выключался и он. */
+.psel-panel, .psel-overlay { --psel-req: #B23A2E; }
+
+/* ── Кнопка вызова ── */
+.psel-launch {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9500;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: var(--dark);
+  color: var(--white);
+  border: 1px solid var(--dark);
+  font-family: "DINPro", sans-serif;
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(15, 42, 68, .22);
+  transition: background .15s, border-color .15s,
+              transform var(--dur-press, 160ms) var(--ease-out, ease);
+}
+
+.psel-launch:hover { background: var(--blue); border-color: var(--blue); }
+.psel-launch:active { transform: scale(.97); }
+
+.psel-launch-ico {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Ручка «лупы» — псевдоэлемент, чтобы не тащить SVG ради двух линий. */
+.psel-launch-ico::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 7px;
+  height: 1.5px;
+  background: currentColor;
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+
+/* ── Оверлей и панель ── */
+.psel-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9600;
+  background: rgba(15, 42, 68, .5);
+  opacity: 0;
+  visibility: hidden;
+  /* visibility с задержкой = длительности фейда: иначе кадр закрытия
+     не рендерится вовсе (тот же приём, что у .rm-overlay). */
+  transition: opacity .2s ease, visibility 0s linear .2s;
+}
+
+.psel-overlay.show { opacity: 1; visibility: visible; transition-delay: 0s; }
+
+.psel-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(560px, 100%);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border-left: 1px solid var(--ln);
+  transform: translateX(24px);
+  transition: transform .24s var(--ease-out, ease);
+}
+
+.psel-overlay.show .psel-panel { transform: translateX(0); }
+
+/* ── Шапка ── */
+.psel-head {
+  position: relative;
+  padding: 26px 28px 18px;
+  border-bottom: 1px solid var(--ln);
+  background: var(--white);
+  flex-shrink: 0;
+}
+
+.psel-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--g1-text);
+  margin-bottom: 12px;
+}
+
+.psel-eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: var(--g1);
+  flex-shrink: 0;
+}
+
+.psel-title {
+  font-family: "DINProCond", "DINPro", sans-serif;
+  font-weight: 900;
+  font-size: clamp(22px, 3vw, 28px);
+  line-height: 1.05;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  color: var(--dark);
+  margin: 0 0 10px;
+}
+
+.psel-sub {
+  font-family: "DINPro", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--blue);
+  margin: 0;
+  max-width: 44ch;
+}
+
+.psel-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--g1);
+  background: none;
+  color: var(--dark);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .12s, color .12s,
+              transform var(--dur-press, 160ms) var(--ease-out, ease);
+}
+
+.psel-close:hover { background: var(--dark); color: var(--white); }
+.psel-close:active { transform: scale(.97); }
+
+/* ── Прокручиваемое тело ── */
+.psel-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 22px 28px 28px;
+}
+
+.psel-step { margin-bottom: 30px; }
+.psel-step:last-child { margin-bottom: 0; }
+
+/* Нумерованные шаги: человек должен видеть, что страница — это три хода,
+   и на каком он сейчас. */
+.psel-step-h {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "DINProCond", "DINPro", sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--dark);
+  margin: 0 0 14px;
+}
+
+.psel-step-n {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border: 1px solid var(--g1);
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--g1-text);
+}
+
+.psel-res-sec { margin-bottom: 24px; }
+.psel-res-sec:last-child { margin-bottom: 0; }
+
+.psel-lab {
+  display: block;
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--g1-text);
+  margin-bottom: 10px;
+}
+
+/* ── Строка запроса ── */
+.psel-ask { display: flex; gap: 1px; background: var(--ln); border: 1px solid var(--ln); }
+
+.psel-ask input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: none;
+  background: var(--white);
+  padding: 14px 16px;
+  font-family: "DINPro", sans-serif;
+  /* 16px — анти-зум iOS: при меньшем кегле фокус в поле масштабирует
+     страницу, и панель уезжает за экран. Не уменьшать. */
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--dark);
+  outline: none;
+}
+
+.psel-ask input::placeholder { color: var(--g2); font-weight: 300; font-size: 14px; }
+.psel-ask input:focus { box-shadow: inset 0 -2px 0 var(--dark); }
+
+.psel-ask button {
+  flex-shrink: 0;
+  padding: 0 20px;
+  background: var(--dark);
+  color: var(--white);
+  border: none;
+  font-family: "DINPro", sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .15s, transform var(--dur-press, 160ms) var(--ease-out, ease);
+}
+
+.psel-ask button:hover { background: var(--blue); }
+.psel-ask button:active { transform: scale(.97); }
+
+.psel-hint {
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .04em;
+  line-height: 1.5;
+  color: var(--g1-text);
+  margin: 8px 0 0;
+}
+
+/* Кликабельные примеры: снабженец не читает инструкции — он тыкает
+   в похожее на свою задачу. */
+.psel-ex {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--dark);
+  cursor: pointer;
+  border-bottom: 1px dashed var(--g1);
+}
+
+.psel-ex:hover { color: var(--blue); border-bottom-style: solid; }
+.psel-ex-sep { margin: 0 6px; opacity: .5; }
+
+/* ── Плашка требования ──
+   Держится на экране, пока условие не выполнено: инструкция должна быть
+   видна в тот момент, когда по ней действуют. Красный на сайте больше
+   нигде не используется, поэтому взгляд ловит его сразу; заливкой не
+   берём — она выбилась бы из стального фирменного стиля. */
+.psel-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid var(--psel-req, #B23A2E);
+  border-left-width: 3px;
+  background: var(--white);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  font-family: "DINPro", sans-serif;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--dark);
+}
+
+.psel-banner-ico {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--psel-req, #B23A2E);
+  border-radius: 50%;
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--psel-req, #B23A2E);
+}
+
+/* ── Параметры мастера ── */
+/* display:grid перебивает display:none, который [hidden] получает от
+   стилей браузера: без этой строки свёрнутая сетка остаётся на экране,
+   а атрибут hidden при этом честно равен true — проверка «по атрибуту»
+   такую поломку не видит, нужен computed display. */
+.psel-grid[hidden] { display: none; }
+
+/* display:flex, а не inline-flex: обе кнопки были строчными и вставали
+   в одну строку — «Подобрать» прижималась вплотную к «Уточнить параметры».
+   width:fit-content оставляет кнопку по содержимому, но занимает строку. */
+.psel-more {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 7px;
+  margin: 14px 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--g1-text);
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+
+.psel-more::before { content: "+"; font-size: 13px; line-height: 1; }
+.psel-more[aria-expanded="true"]::before { content: "−"; }
+.psel-more:hover { color: var(--dark); border-color: var(--g1); }
+
+.psel-run {
+  display: flex;
+  width: fit-content;
+  margin-top: 22px;
+}
+
+.psel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--ln);
+  border: 1px solid var(--ln);
+}
+
+.psel-cell {
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  padding: 12px 14px 10px;
+}
+
+.psel-cell-lab {
+  font-family: "DINPro", monospace;
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--g1-text);
+  margin-bottom: 7px;
+}
+
+.psel-cell input,
+.psel-cell select {
+  border: none;
+  background: transparent;
+  font-family: "DINPro", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dark);
+  outline: none;
+  padding: 0;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+
+.psel-cell input::placeholder { color: var(--g2); font-weight: 300; }
+
+/* Обязательное незаполненное условие — подсвечено в той же сетке, что и
+   остальные, без второй формы для тех же данных. */
+.psel-cell--need { box-shadow: inset 0 -2px 0 var(--psel-req, #B23A2E); }
+.psel-cell--need .psel-cell-lab { color: var(--dark); }
+
+.psel-req-mark {
+  font-size: 10px;
+  letter-spacing: .08em;
+  color: var(--psel-req, #B23A2E);
+  border: 1px solid var(--psel-req, #B23A2E);
+  padding: 1px 5px;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+/* ── Разобранные условия ── */
+.psel-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.psel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  background: var(--white);
+  border: 1px solid var(--ln);
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--dark);
+}
+
+.psel-chip b { font-weight: 700; }
+.psel-chip--warn { border-color: var(--g1); background: var(--g1b); }
+
+/* Крестик — то, чего метке не хватало: условие снимается там же, где
+   показано, и не надо искать нужное поле в сетке параметров. */
+.psel-chip-x {
+  border: none;
+  background: none;
+  color: var(--g1-text);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px;
+  margin: -2px -2px -2px 0;
+}
+
+.psel-chip-x:hover { color: var(--psel-req, #B23A2E); }
+
+.psel-chips-empty {
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: var(--g1-text);
+  opacity: .7;
+}
+
+/* Возврат к списку разделов — самый частый обратный шаг, ради него
+   нащупывать крестик на метке не нужно. */
+.psel-back {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: "DINPro", monospace;
+  font-size: 11.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--g1-text);
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+
+.psel-back:hover { color: var(--dark); border-color: var(--g1); }
+
+/* ── Разделы каталога под объект ── */
+.psel-groups {
+  display: grid;
+  /* auto-fill, а не фиксированные две колонки: широкая правая колонка
+     должна давать БОЛЬШЕ плиток в ряд, а не растягивать две штуки на
+     полтора экрана с числом, улетевшим к правому краю. */
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1px;
+  background: var(--ln);
+  border: 1px solid var(--ln);
+}
+
+.psel-group {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--white);
+  border: none;
+  padding: 13px 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: background .12s;
+}
+
+.psel-group:hover { background: var(--bg2); }
+
+.psel-group-t {
+  font-family: "DINPro", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dark);
+}
+
+.psel-group-n {
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: var(--g1-text);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* Отрасль как переключатель: кнопка в оболочке чипа. */
+button.psel-chip { cursor: pointer; font: inherit; font-family: "DINPro", monospace; font-size: 11px; }
+button.psel-chip:hover { border-color: var(--dark); color: var(--dark); }
+
+/* ── Марки ── */
+.psel-steel { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.psel-mark {
+  padding: 6px 10px;
+  border: 1px solid var(--ln);
+  background: var(--white);
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--dark);
+  cursor: help;
+}
+
+.psel-mark--warn {
+  border-style: dashed;
+  border-color: var(--g1);
+  color: var(--g1-text);
+}
+
+/* ── Результаты ── */
+.psel-count {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.psel-count-n {
+  font-family: "DINProCond", "DINPro", sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  color: var(--dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.psel-list { display: flex; flex-direction: column; gap: 1px; background: var(--ln); border: 1px solid var(--ln); }
+
+.psel-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  background: var(--white);
+  padding: 12px 14px;
+  transition: background .12s;
+}
+
+.psel-row:hover { background: var(--bg2); }
+
+.psel-row input[type="checkbox"] { margin-top: 3px; accent-color: var(--dark); }
+
+.psel-row-t {
+  font-family: "DINPro", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--dark);
+  text-decoration: none;
+  display: block;
+}
+
+.psel-row-t:hover { color: var(--blue); text-decoration: underline; }
+
+.psel-row-m {
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .04em;
+  line-height: 1.6;
+  color: var(--g1-text);
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+/* ── Заметки и пустое состояние ── */
+.psel-note {
+  font-family: "DINPro", sans-serif;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--blue);
+  background: var(--g1b);
+  border-left: 2px solid var(--g1);
+  padding: 10px 14px;
+  margin: 0 0 8px;
+}
+
+.psel-empty {
+  font-family: "DINPro", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--g1-text);
+  padding: 22px 0;
+}
+
+/* ── Подвал ── */
+.psel-foot {
+  flex-shrink: 0;
+  border-top: 1px solid var(--ln);
+  background: var(--white);
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.psel-picked {
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--g1-text);
+  margin-right: auto;
+}
+
+.psel-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 22px;
+  background: var(--dark);
+  color: var(--white);
+  border: 1px solid var(--dark);
+  font-family: "DINPro", sans-serif;
+  font-weight: 700;
+  font-size: 12.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .15s, border-color .15s,
+              transform var(--dur-press, 160ms) var(--ease-out, ease);
+}
+
+.psel-cta:hover { background: var(--blue); border-color: var(--blue); }
+.psel-cta:active { transform: scale(.97); }
+.psel-cta[disabled] { opacity: .5; cursor: default; }
+
+.psel-ghost {
+  font-family: "DINPro", monospace;
+  font-size: 11.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--g1-text);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.psel-ghost:hover { color: var(--dark); border-color: var(--g1); }
+
+.psel-busy { opacity: .5; pointer-events: none; }
+
+/* ── Встроенный режим (страница /podbor/) ──
+   Та же разметка без оверлея: панель становится блоком в потоке. */
+.psel-inline .psel-panel {
+  position: static;
+  width: 100%;
+  height: auto;
+  transform: none;
+  border: 1px solid var(--ln);
+  border-left: 1px solid var(--ln);
+}
+
+.psel-inline .psel-body { overflow: visible; max-height: none; }
+.psel-inline .psel-close { display: none; }
+
+/* Шапка панели нужна выплывающей версии, где своего заголовка нет.
+   На странице она дублировала бы h1 и лид почти теми же словами. */
+.psel-inline .psel-head { display: none; }
+
+/* Заглушка третьего шага: на широком экране она занимает правую колонку
+   и объясняет, что там появится, — пустой столбец рядом с формой читался
+   бы как недогруженная страница. */
+.psel-placeholder {
+  border: 1px dashed var(--ln2);
+  padding: 26px 24px;
+  font-family: "DINPro", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--g1-text);
+}
+
+/* ── Страница /podbor/ ──
+   Внутренние отступы даёт СВОЯ обёртка, а не переопределение .pg.
+   В base.css у .pg есть мобильные @media (≤1024 → 20px, ≤480 → 0), и
+   немедийный дубль .pg в страничном файле перебил бы их на всех ширинах —
+   этот класс багов в теме уже ловили (production.css, 2026-07-27).
+   Отсюда: ось рельсы и высота шапки — от .pg, воздух — отсюда. */
+
+/* ── Страница /podbor/: шапка раздела ──
+   Свои классы, а не .clc-* из calc.css: тот файл грузится только на
+   калькуляторах, и заимствование сделало бы страницу зависимой от
+   чужого условия подключения. Размеры совпадают с шапкой калькуляторов. */
+.psel-page-hero {
+  padding: 56px 52px 44px var(--head-x, 56px);
+  border-bottom: 1px solid var(--ln2);
+}
+
+.psel-page-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  font-family: "DINPro", monospace;
+  font-size: 11px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--g1-text);
+}
+
+.psel-page-eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--g1); }
+
+.psel-page-h1 {
+  font-family: "DINProCond", "DINPro", sans-serif;
+  font-weight: 900;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: .98;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  color: var(--dark);
+  margin: 0 0 16px;
+}
+
+.psel-page-h1 em { font-style: normal; color: var(--g1-text); }
+
+.psel-page-desc {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--blue);
+  /* Ограничиваем СТРОКУ, а не блок: длинная строка нечитаема, но сам
+     блок должен идти во всю ширину — иначе страница «прижимается»
+     к левому краю, а справа висит пустота (образец — .cat-hero). */
+  max-width: 720px;
+}
+
+/* Блок инструмента — тоже во всю ширину. */
+.psel-page-tool { padding: 40px 52px 56px var(--head-x, 56px); }
+
+.psel-page-seo {
+  padding: 48px 52px 64px var(--head-x, 56px);
+  border-top: 1px solid var(--ln2);
+}
+
+.psel-page-seo h2 {
+  font-family: "DINProCond", "DINPro", sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  text-transform: uppercase;
+  color: var(--dark);
+  margin: 0 0 14px;
+}
+
+.psel-page-seo p {
+  font-size: 14.5px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--blue);
+  margin: 0 0 12px;
+  max-width: 900px;
+}
+
+/* ── Адаптив (после базовых правил, иначе не применится) ── */
+/* ── Широкий экран: форма слева, результат справа ──
+   Одноколоночная панель шириной 1000px оставляла половину экрана пустой,
+   а результат уезжал под форму. Две колонки заполняют ширину и держат
+   позиции на виду, пока человек правит условия. Приём тот же, что у
+   боковой панели реестра в katalog.html. */
+/* Порог 1360, а не 1200: на 1280 после вычета рельсы и отступов на две
+   колонки остаётся ~1000px, и результату доставалось меньше, чем форме. */
+@media (min-width: 1360px) {
+  .psel-inline .psel-body {
+    display: grid;
+    /* Ровно пополам. Потолка нет намеренно: с ним на широком экране доля
+       переставала работать и форма замирала на своём максимуме.
+       minmax снизу держит 420px — ниже этого сетка параметров ломается. */
+    grid-template-columns: minmax(420px, 50%) minmax(0, 1fr);
+    /* Третья строка — компенсатор. Без неё высокий результат, растянутый
+       на строки 1–2, раздувает их обе, и блок «Условия» уезжает на середину
+       левой колонки, оторвавшись от строки запроса. Лишняя высота уходит
+       в 1fr, а auto-строки остаются по своему содержимому. */
+    grid-template-rows: auto auto 1fr;
+    column-gap: 36px;
+    align-items: start;
+  }
+
+  .psel-inline #pselStep1 { grid-column: 1; grid-row: 1; }
+  .psel-inline #pselCond { grid-column: 1; grid-row: 2; margin-bottom: 0; }
+
+  /* Результат занимает всю высоту правой колонки и прокручивается вместе
+     со страницей — своей полосы прокрутки у него быть не должно. */
+  .psel-inline #pselResSec {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    margin-bottom: 0;
+  }
+}
+
+/* Отступы страницы — после базового правила, иначе не применятся:
+   при равной специфичности побеждает последнее по порядку. */
+@media (max-width: 1024px) {
+  .psel-page-hero { padding: 44px 24px; }
+  .psel-page-tool { padding: 32px 24px 44px; }
+  .psel-page-seo { padding: 40px 24px 52px; }
+}
+
+@media (max-width: 480px) {
+  /* На этой ширине .pg уже отдал padding-left 0 — боковой воздух
+     остаётся только здесь. */
+  .psel-page-hero { padding: 32px 18px 28px; }
+  .psel-page-tool { padding: 24px 18px 36px; }
+  .psel-page-seo { padding: 32px 18px 44px; }
+}
+
+@media (max-width: 640px) {
+  .psel-panel { width: 100%; border-left: none; }
+  .psel-head { padding: 20px 18px 14px; }
+  .psel-body { padding: 18px; }
+  .psel-foot { padding: 14px 18px; }
+  .psel-grid { grid-template-columns: 1fr; }
+  .psel-launch { right: 14px; bottom: 14px; padding: 12px 16px; font-size: 12px; }
+  .psel-picked { width: 100%; margin-bottom: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Фейд оверлея остаётся — он объясняет смену контекста; сдвиг убираем. */
+  .psel-panel { transform: none; transition: none; }
+  .psel-launch:active, .psel-cta:active, .psel-close:active { transform: none; }
+}

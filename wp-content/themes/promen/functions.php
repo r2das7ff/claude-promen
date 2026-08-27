@@ -5,7 +5,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PROMEN_VERSION', '0.99.7' );
+define( 'PROMEN_VERSION', '0.99.8' );
+
+// Модуль «Подбор» (inc/selector.php) — детерминированный подборщик изделия.
+// Один выключатель на всё: false — нет REST-маршрута, ассетов и кнопки,
+// сайт возвращается в исходное состояние. Форма КП от него не зависит.
+defined( 'PROMEN_SELECTOR' ) || define( 'PROMEN_SELECTOR', true );
+
+// Плавающая кнопка подбора на всех страницах. Выключена: пока подбор живёт
+// только на /podbor/, и его CSS/JS (56 КБ) не грузятся на остальных страницах.
+// Включить — той же командой, что и сам модуль: wp config set … true --raw.
+defined( 'PROMEN_SELECTOR_LAUNCHER' ) || define( 'PROMEN_SELECTOR_LAUNCHER', false );
 
 // Версия ассетов привязана ко времени правки файлов темы: иначе браузер
 // держит старый CSS/JS и правки не видно без ручного сброса кэша.
@@ -60,6 +70,7 @@ require_once __DIR__ . '/inc/steel-reference.php';
 require_once __DIR__ . '/inc/catalog-filters.php';
 require_once __DIR__ . '/inc/category-page.php';
 require_once __DIR__ . '/inc/catalog-api.php';
+require_once __DIR__ . '/inc/selector.php';
 require_once __DIR__ . '/inc/delivery-calc.php';
 require_once __DIR__ . '/inc/calculators.php';
 require_once __DIR__ . '/inc/seo.php';
@@ -302,6 +313,31 @@ add_action( 'wp_enqueue_scripts', function () {
 		'privacyUrl' => promen_privacy_url(),
 		'email'      => 'zakaz@prom-en.com',
 	] );
+
+	// Подбор изделия: плавающая кнопка + панель. Зависит от request-modal
+	// (передаёт выбранные позиции в форму КП) и select.js (списки мастера).
+	// Один выключатель — PROMEN_SELECTOR: с ним модуль исчезает целиком.
+	// Грузим только там, где подбор действительно есть: на своей странице
+	// либо везде, если включена плавающая кнопка. Раньше ассеты ехали на
+	// каждую страницу ради кнопки — на сайте с пройденным перф-планом это
+	// была заметная добавка ради функции для меньшинства.
+	if ( promen_selector_enabled() && ( is_page( 'podbor' ) || promen_selector_launcher_enabled() ) ) {
+		wp_enqueue_style( 'promen-selector', get_theme_file_uri( 'assets/css/selector.css' ), [ 'promen-base' ], PROMEN_ASSET_VER );
+		wp_enqueue_script(
+			'promen-selector',
+			get_theme_file_uri( 'assets/js/selector.js' ),
+			[ 'promen-request-modal', 'promen-select' ],
+			PROMEN_ASSET_VER,
+			[ 'in_footer' => true ]
+		);
+		wp_localize_script( 'promen-selector', 'promenSelector', array_merge(
+			promen_selector_bootstrap(),
+			[
+				'api'      => rest_url( 'promen/v1/select' ),
+				'launcher' => promen_selector_launcher_enabled(),
+			]
+		) );
+	}
 
 	// Живой реестр: корень каталога и страницы категорий (встроенный partial).
 	if ( $is_registry || $is_cat_page ) {
