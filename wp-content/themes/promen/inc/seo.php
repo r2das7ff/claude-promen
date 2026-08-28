@@ -38,6 +38,75 @@ function promen_product_title_seo( int $product_id ): string {
 	return $title . ' ' . $label;
 }
 
+/**
+ * Что за изделия лежат под нормативом: «— тройники DN 15–200».
+ *
+ * Заголовок «ГОСТ 9064-1970 — Каталог» не говорит ни человеку, ни поисковику,
+ * о чём документ. А это ровно те запросы, по которым старый сайт получает
+ * показы без переходов: «сто 95 113-2013» — 49 показов и ноль кликов за
+ * 28 дней. Человек ищет норматив, чтобы понять, какие детали по нему делают,
+ * и какой у них диапазон размеров.
+ *
+ * Считаем по товарам норматива и кладём в транзиент: на 127 страницах
+ * пересчитывать на каждом запросе незачем.
+ */
+function promen_norm_summary( WP_Term $term ): string {
+	$key    = 'promen_normsum_' . $term->term_id;
+	$cached = get_transient( $key );
+	if ( false !== $cached ) {
+		return (string) $cached;
+	}
+
+	// Берём весь норматив, а не первые N: при ограничении выборки диапазон
+	// врал — у ГОСТ 17375-2001 выходило «DN 400–800» вместо полного ряда.
+	$q = new WP_Query( [
+		'post_type'      => 'product',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+		'no_found_rows'  => true,
+		'tax_query'      => [ [ 'taxonomy' => 'norm', 'field' => 'term_id', 'terms' => $term->term_id ] ],
+	] );
+
+	$kinds     = [];
+	$sizes     = [];
+	$fasteners = 0;
+	foreach ( $q->posts as $pid ) {
+		$cat = promen_deepest_cat( $pid );
+		if ( $cat ) {
+			$kinds[ $cat->name ] = ( $kinds[ $cat->name ] ?? 0 ) + 1;
+		}
+		$dims = promen_get_dims( $pid );
+		// У крепежа размер — резьба М, а не условный проход: «DN 14» у болта
+		// это неверный термин, инженер такое читает как ошибку.
+		if ( promen_product_is_fastener( $pid ) ) {
+			$fasteners++;
+			$thread = promen_fastener_dims( $dims )['thread'];
+			if ( '' !== $thread && is_numeric( $thread ) ) {
+				$sizes[] = (float) $thread;
+			}
+		} elseif ( isset( $dims['dn'] ) && is_numeric( $dims['dn'] ) ) {
+			$sizes[] = (float) $dims['dn'];
+		}
+	}
+	arsort( $kinds );
+
+	$out = '';
+	if ( $kinds ) {
+		$name = (string) array_key_first( $kinds );
+		$out .= ' — ' . ( function_exists( 'mb_strtolower' ) ? mb_strtolower( $name ) : strtolower( $name ) );
+	}
+	if ( $sizes ) {
+		$prefix = ( $fasteners > count( $q->posts ) / 2 ) ? 'M' : 'DN ';
+		$min = promen_fmt_dim( (string) min( $sizes ) );
+		$max = promen_fmt_dim( (string) max( $sizes ) );
+		$out .= ' ' . $prefix . ( $min === $max ? $min : $min . '–' . $max );
+	}
+
+	set_transient( $key, $out, WEEK_IN_SECONDS );
+	return $out;
+}
+
 /** Document title по типу страницы. */
 add_filter( 'document_title_parts', function ( array $parts ): array {
 	$brand = 'Промышленная Энергетика';
@@ -48,7 +117,14 @@ add_filter( 'document_title_parts', function ( array $parts ): array {
 		return $parts;
 	}
 
-	if ( is_tax( 'product_cat' ) || is_tax( 'norm' ) ) {
+	if ( is_tax( 'norm' ) ) {
+		$term = get_queried_object();
+		$parts['title'] = $term->name . promen_norm_summary( $term );
+		$parts['site']  = 'Каталог · ' . $brand;
+		return $parts;
+	}
+
+	if ( is_tax( 'product_cat' ) ) {
 		$term = get_queried_object();
 		$parts['title'] = $term->name;
 		$parts['site']  = 'Каталог · ' . $brand;
