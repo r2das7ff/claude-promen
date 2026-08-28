@@ -76,6 +76,11 @@ body::before{opacity:.55;} /* приглушение фон-сетки; оста
 #hero,.s,#request,#registry{scroll-margin-top:80px;}
 .catalog-embed{scroll-margin-top:80px;}
 .catalog-embed.is-flash{box-shadow:inset 0 0 0 2px var(--blue);}
+/* Карточка норматива (секция 04) — ссылка целиком. Класс sg-link на ней стоит
+   только как хук для catalog.js (переход в реестр без перезагрузки), поэтому
+   текстовый стиль .sg-link из неё исключён через :not(.nc) — иначе карточка
+   получала margin-top, подчёркивание снизу, padding-bottom:2px и 11px/uppercase
+   на весь свой текст. */
 a.nc.sg-link{text-decoration:none;color:inherit;display:block;cursor:pointer;transition:border-color var(--dur-fast),background var(--dur-fast);}
 a.nc.sg-link:hover{border-color:var(--blue);}
 .s{scroll-margin-top:var(--nav-h);position:relative;overflow:hidden;border-top:1px solid var(--ln2);}
@@ -769,13 +774,15 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 }
 
 /* ── Подбор: ссылки к позициям ── */
-.sg-link{
+/* :not(.nc) — стиль только для мелких текстовых ссылок «К … в реестре»;
+   карточка-ссылка .nc.sg-link оформляется своими правилами (см. выше). */
+.sg-link:not(.nc){
   display:inline-flex;align-items:center;gap:6px;margin-top:10px;
   font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
   color:var(--g1-text);border-bottom:1px solid var(--ln2);padding-bottom:2px;
   transition:color var(--dur-fast),border-color var(--dur-fast);
 }
-.sg-link:hover{color:var(--dark);border-color:var(--g1);}
+.sg-link:not(.nc):hover{color:var(--dark);border-color:var(--g1);}
 
 /* ── Hero CTA + модал заявки ── */
 .hero-cta-row{display:flex;align-items:center;gap:22px;margin-top:30px;}
@@ -829,7 +836,7 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 /* ═══ Телефон: тач-цели ═══ */
 @media (max-width:640px){
   /* Ссылки «К … в реестре» — были 17px по высоте */
-  .sg-link{min-height:44px;padding-bottom:0;align-items:center;}
+  .sg-link:not(.nc){min-height:44px;padding-bottom:0;align-items:center;}
   /* Кнопки типоразмеров в сетке DN */
   .dn-b{min-height:44px;display:inline-flex;align-items:center;justify-content:center;}
   /* Кнопка заказа в герое */
@@ -853,7 +860,7 @@ a.nc.sg-link:hover{border-color:var(--blue);}
 
 /* Планшет — тач: см. комментарий в catalog.css */
 @media (max-width:1024px){
-  .sg-link,.nc.sg-link{min-height:44px;align-items:center;padding-bottom:0;}
+  .sg-link:not(.nc){min-height:44px;align-items:center;padding-bottom:0;}
   .dn-b{min-height:44px;display:inline-flex;align-items:center;justify-content:center;}
   .hero-order-btn{min-height:48px;}
   .norm-more-btn{min-height:44px;}
