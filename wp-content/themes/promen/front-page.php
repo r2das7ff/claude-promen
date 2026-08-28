@@ -1121,65 +1121,68 @@ $promen_tkr_hub = promen_page( 'proekty' );
           </marker>
         </defs>
 
-        <!-- Тело отвода: путь описывает профиль 90° изгиба -->
-        <!-- Внешний радиус дуги: 106, внутренний: 54, центр дуги: (120,140) -->
-        <path d="M 14 265 L 14 140 A 106 106 0 0 1 120 34 L 265 34 L 265 86 L 120 86 A 54 54 0 0 0 66 140 L 66 265 Z" fill="url(#s6metal)" stroke="#0F2A44" stroke-width="1.5" stroke-linejoin="round"></path>
+        <!-- Пропорция гиба взята из реальной детали: R 150 / Ø 108 = 1,389 — та же,
+             что считает карточка товара (inc/blueprint-geometry.php). Раньше здесь
+             было 1,538: множитель 1,5 ошибочно применяли к наружному диаметру,
+             тогда как он относится к условному проходу DN 100. -->
+        <path d="M 13.92 265 L 13.92 140 A 106.08 106.08 0 0 1 120 33.92 L 265 33.92 L 265 90.08 L 120 90.08 A 49.92 49.92 0 0 0 70.08 140 L 70.08 265 Z" fill="url(#s6metal)" stroke="#0F2A44" stroke-width="1.5" stroke-linejoin="round"></path>
+        <path d="M 13.92 265 L 13.92 140 A 106.08 106.08 0 0 1 120 33.92 L 265 33.92 L 265 90.08 L 120 90.08 A 49.92 49.92 0 0 0 70.08 140 L 70.08 265 Z" fill="url(#s6highlight)" stroke="none"></path>
 
-        <!-- Металлический блик поверх тела -->
-        <path d="M 14 265 L 14 140 A 106 106 0 0 1 120 34 L 265 34 L 265 86 L 120 86 A 54 54 0 0 0 66 140 L 66 265 Z" fill="url(#s6highlight)" stroke="none"></path>
-
-        <!-- Внутренняя линия глубины (металлический рельеф) -->
-        <path d="M 19 260 L 19 144 A 101 101 0 0 1 124 39 L 260 39" fill="none" stroke="#D2E0E8" stroke-width="0.8" opacity="0.55"></path>
+        <!-- Линия рельефа вдоль внешней стенки -->
+        <path d="M 18.92 260 L 18.92 140 A 101.08 101.08 0 0 1 120 38.92 L 260 38.92" fill="none" stroke="#D2E0E8" stroke-width="0.8" opacity="0.55"></path>
 
         <!-- Торцевая штриховка — низ вертикальной трубы -->
-        <line x1="14" y1="265" x2="66" y2="265" stroke="#0F2A44" stroke-width="1.5"></line>
+        <line x1="13.92" y1="265" x2="70.08" y2="265" stroke="#0F2A44" stroke-width="1.5"></line>
         <line x1="21" y1="265" x2="21" y2="257" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
         <line x1="29" y1="265" x2="29" y2="257" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
-        <line x1="37" y1="265" x2="37" y2="257" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
-        <line x1="45" y1="265" x2="45" y2="257" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
-        <line x1="53" y1="265" x2="53" y2="257" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
-        <line x1="61" y1="265" x2="61" y2="257" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
+        <line x1="38" y1="265" x2="38" y2="257" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
+        <line x1="46" y1="265" x2="46" y2="257" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
+        <line x1="55" y1="265" x2="55" y2="257" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
+        <line x1="63" y1="265" x2="63" y2="257" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
 
         <!-- Торцевая штриховка — правый торец горизонтальной трубы -->
-        <line x1="265" y1="34" x2="265" y2="86" stroke="#0F2A44" stroke-width="1.5"></line>
+        <line x1="265" y1="33.92" x2="265" y2="90.08" stroke="#0F2A44" stroke-width="1.5"></line>
         <line x1="265" y1="41" x2="257" y2="41" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
-        <line x1="265" y1="51" x2="257" y2="51" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
-        <line x1="265" y1="61" x2="257" y2="61" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
-        <line x1="265" y1="71" x2="257" y2="71" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
-        <line x1="265" y1="79" x2="257" y2="79" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
+        <line x1="265" y1="51.5" x2="257" y2="51.5" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
+        <line x1="265" y1="62" x2="257" y2="62" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
+        <line x1="265" y1="72.5" x2="257" y2="72.5" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
+        <line x1="265" y1="83" x2="257" y2="83" stroke="#6D8CA6" stroke-width="0.8" opacity="0.7"></line>
 
-        <!-- Осевые линии (штрихпунктир) — вертикаль -->
-        <line x1="40" y1="278" x2="40" y2="143" stroke="#6D8CA6" stroke-width="0.75" stroke-dasharray="8,3,2,3" opacity="0.55"></line>
-        <!-- Осевая — дуга перехода -->
-        <path d="M 40 140 A 80 80 0 0 1 120 60" fill="none" stroke="#6D8CA6" stroke-width="0.75" stroke-dasharray="8,3,2,3" opacity="0.55"></path>
-        <!-- Осевая — горизонталь -->
-        <line x1="120" y1="60" x2="278" y2="60" stroke="#6D8CA6" stroke-width="0.75" stroke-dasharray="8,3,2,3" opacity="0.55"></line>
+        <!-- Осевые (штрихпунктир по ГОСТ) -->
+        <line x1="42" y1="278" x2="42" y2="140" stroke="#6D8CA6" stroke-width="0.75" stroke-dasharray="8,3,2,3" opacity="0.55"></line>
+        <path d="M 42 140 A 78 78 0 0 1 120 62" fill="none" stroke="#6D8CA6" stroke-width="0.75" stroke-dasharray="8,3,2,3" opacity="0.55"></path>
+        <line x1="120" y1="62" x2="278" y2="62" stroke="#6D8CA6" stroke-width="0.75" stroke-dasharray="8,3,2,3" opacity="0.55"></line>
 
-        <!-- Размер: DN (диаметр трубы) -->
-        <line x1="14" y1="210" x2="66" y2="210" stroke="#6D8CA6" stroke-width="0.9" marker-start="url(#s6arrR)" marker-end="url(#s6arr)"></line>
-        <line x1="14" y1="200" x2="14" y2="216" stroke="#6D8CA6" stroke-width="0.7" opacity="0.6"></line>
-        <line x1="66" y1="200" x2="66" y2="216" stroke="#6D8CA6" stroke-width="0.7" opacity="0.6"></line>
-        <text x="40" y="224" text-anchor="middle" font-family="DINPro,monospace" font-size="8.5" fill="#6D8CA6" letter-spacing="0.8">DN 100</text>
+        <!-- Размер по наружному диаметру трубы -->
+        <line x1="13.92" y1="210" x2="70.08" y2="210" stroke="#6D8CA6" stroke-width="0.9" marker-start="url(#s6arrR)" marker-end="url(#s6arr)"></line>
+        <line x1="13.92" y1="200" x2="13.92" y2="216" stroke="#6D8CA6" stroke-width="0.7" opacity="0.6"></line>
+        <line x1="70.08" y1="200" x2="70.08" y2="216" stroke="#6D8CA6" stroke-width="0.7" opacity="0.6"></line>
+        <text x="42.0" y="224" text-anchor="middle" font-family="DINPro,monospace" font-size="8.5" fill="#6D8CA6" letter-spacing="0.8">&#216; 108</text>
 
-        <!-- Размер: радиус гиба R -->
-        <line x1="40" y1="146" x2="120" y2="146" stroke="#6D8CA6" stroke-width="0.9" marker-start="url(#s6arrR)" marker-end="url(#s6arr)" opacity="0.9"></line>
-        <text x="80" y="160" text-anchor="middle" font-family="DINPro,monospace" font-size="8" fill="#6D8CA6" letter-spacing="0.6">R = 1,5DN</text>
+        <!-- Угол: дуга центрирована в центре гиба, ограничена радиусами к осевым.
+             Конвенция карточки — метка ложится в пустоту вогнутой части. -->
+        <line x1="120" y1="140" x2="42" y2="140" stroke="#6D8CA6" stroke-width="0.75" stroke-dasharray="4,4" opacity="0.7"></line>
+        <line x1="120" y1="140" x2="120" y2="62" stroke="#6D8CA6" stroke-width="0.75" stroke-dasharray="4,4" opacity="0.7"></line>
+        <path d="M 94 140 A 26 26 0 0 1 120 114" fill="none" stroke="#6D8CA6" stroke-width="0.85"></path>
+        <text x="88" y="122" text-anchor="middle" font-family="DINProCond,DINPro,monospace" font-size="10" fill="#0F2A44" font-weight="700" letter-spacing="0.4">90&#176;</text>
 
-        <!-- Угол 90° -->
-        <path d="M 40 108 A 32 32 0 0 1 72 60" fill="none" stroke="#6D8CA6" stroke-width="0.85" opacity="0.75"></path>
-        <text x="62" y="96" text-anchor="middle" font-family="DINProCond,DINPro,monospace" font-size="10" fill="#6D8CA6" font-weight="700" letter-spacing="0.4">90°</text>
+        <!-- Радиус: центровой знак и вынос от центра гиба в середину осевой дуги -->
+        <line x1="113" y1="140" x2="127" y2="140" stroke="#6D8CA6" stroke-width="0.7" opacity="0.9"></line>
+        <line x1="120" y1="133" x2="120" y2="147" stroke="#6D8CA6" stroke-width="0.7" opacity="0.9"></line>
+        <line x1="120" y1="140" x2="64.85" y2="84.85" stroke="#6D8CA6" stroke-width="0.9" marker-end="url(#s6arr)"></line>
+        <text x="73.67" y="87.67" text-anchor="middle" font-family="DINPro,monospace" font-size="8" fill="#6D8CA6" letter-spacing="0.6">R 150</text>
 
         <!-- Технический паспорт детали (title block) -->
         <rect x="142" y="235" width="120" height="44" fill="rgba(232,236,240,0.85)" stroke="#A0B0BC" stroke-width="0.8"></rect>
         <line x1="142" y1="245" x2="262" y2="245" stroke="#A0B0BC" stroke-width="0.7"></line>
-        <text x="147" y="243" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="1.2">МАТЕРИАЛ</text>
-        <text x="147" y="257" font-family="DINProCond,DINPro,monospace" font-size="10" fill="#0F2A44" font-weight="700" letter-spacing="0.3">09Г2С / 12Х1МФ</text>
-        <text x="147" y="268" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="0.6">ГОСТ 17375-2001 / ТУ</text>
-        <text x="147" y="276" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="0.4" opacity="0.65">Р ≤ 250 / Т ≤ +600°C</text>
+        <text x="147" y="243" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="1.2">&#1052;&#1040;&#1058;&#1045;&#1056;&#1048;&#1040;&#1051;</text>
+        <text x="147" y="257" font-family="DINProCond,DINPro,monospace" font-size="10" fill="#0F2A44" font-weight="700" letter-spacing="0.3">09&#1043;2&#1057; / 12&#1061;1&#1052;&#1060;</text>
+        <text x="147" y="268" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="0.6">&#1043;&#1054;&#1057;&#1058; 17375-2001 / &#1058;&#1059;</text>
+        <text x="147" y="276" font-family="DINPro,monospace" font-size="7" fill="#6D8CA6" letter-spacing="0.4" opacity="0.65">&#1056; &#8804; 250 &#1082;&#1075;&#1089;/&#1089;&#1084;&#178; / &#1058; &#8804; +600&#176;C</text>
 
         <!-- Номер чертежа -->
-        <text x="290" y="16" text-anchor="end" font-family="DINPro,monospace" font-size="7" fill="#A0B0BC" letter-spacing="0.8" opacity="0.65">ОТВОД 90° ГОСТ 17375-2001</text>
-        <text x="290" y="26" text-anchor="end" font-family="DINPro,monospace" font-size="7" fill="#A0B0BC" letter-spacing="0.6">ПЭ-01-100-90</text>
+        <text x="290" y="16" text-anchor="end" font-family="DINPro,monospace" font-size="7" fill="#A0B0BC" letter-spacing="0.8" opacity="0.65">&#1054;&#1058;&#1042;&#1054;&#1044; 90&#176; &#1043;&#1054;&#1057;&#1058; 17375-2001</text>
+        <text x="290" y="26" text-anchor="end" font-family="DINPro,monospace" font-size="7" fill="#A0B0BC" letter-spacing="0.6">&#1055;&#1069;-01-100-90</text>
       </svg>
 
       <span class="s6-dwg-label">ПКД / ОТВОД 90° / DN 100 / М 1:2</span>
