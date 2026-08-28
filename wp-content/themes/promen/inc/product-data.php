@@ -2016,12 +2016,29 @@ function promen_series_meta( WC_Product $product ): array {
 		}
 	}
 
+	// Уточнение подкатегории, когда один норматив описывает несколько типов.
+	// ГОСТ 33259-2015 — это и тип 01, и тип 11: у обеих серий имя выходило
+	// «Фланец трубопроводный», а значит одинаковые H1 и title. Проверка по
+	// данным (28.08.2026) нашла четыре норматива, живущих больше чем в одной
+	// подкатегории; из них имена расходятся сами у трёх — `series_tag` стоит
+	// только там, где не расходятся.
+	//
+	// Только в режиме серии: на карточке типоразмер и так несёт тип
+	// («DN40 PN40 тип 11 B»), и уточнение в H1 читалось бы дважды.
+	if ( $cat && promen_is_series_view() ) {
+		$defs = function_exists( 'promen_catalog_taxonomy_defs' ) ? promen_catalog_taxonomy_defs() : [];
+		$tag  = trim( (string) ( $defs[ $cat->slug ]['series_tag'] ?? '' ) );
+		if ( '' !== $tag && false === mb_stripos( $name, $tag ) ) {
+			$name .= ' ' . $tag;
+		}
+	}
+
 	return [
 		'name'    => $name,
 		'angle'   => $angle,
 		'code'    => $code,
 		'slug'    => $slug,
-		'url'     => promen_series_url( $cat_link, $slug ),
+		'url'     => promen_series_url( $cat_link, $slug, $cat ? $cat->slug : '' ),
 		'pass_id' => 'ПЭ-' . $code . ( $dn !== '' ? '-' . $dn : '' ),
 	];
 }
@@ -2037,8 +2054,8 @@ function promen_series_meta( WC_Product $product ): array {
  * иначе адрес и его проверка разойдутся; результат там уже кэшируется
  * в транзиенте, отдельный кэш не нужен.
  */
-function promen_series_url( string $cat_link, string $slug ): string {
-	if ( '' === $slug || ! promen_series_representative( $slug ) ) {
+function promen_series_url( string $cat_link, string $slug, string $cat_slug = '' ): string {
+	if ( '' === $slug || ! promen_series_representative( $slug, $cat_slug ) ) {
 		return '';
 	}
 	return trailingslashit( $cat_link ) . 'seriya/' . $slug . '/';
@@ -2047,9 +2064,17 @@ function promen_series_url( string $cat_link, string $slug ): string {
 /**
  * Репрезентативный товар серии (медианный DN — как DN 100 в дизайне).
  * Кэш в транзиенте; слаг серии = translit(norm)+angle.
+ *
+ * $cat_slug — категория из адреса серии. Без неё выборка шла по одному
+ * нормативу, а один норматив живёт в нескольких подкатегориях: ГОСТ 33259-2015
+ * описывает и тип 01, и тип 11. Обход 2026-08-28 нашёл результат — страницы
+ * /flancy-01/seriya/gost-33259-2015/ и /flancy-11/seriya/gost-33259-2015/
+ * отдавали побайтово одинаковый HTML (различались только og:url и nonce),
+ * то есть у плоских фланцев страницы серии не было вовсе, а посетитель на её
+ * адресе видел воротниковые. Категорию берём из маршрута, а не из товара.
  */
-function promen_series_representative( string $series_slug ): int {
-	$cache_key = 'promen_series_rep_' . md5( $series_slug );
+function promen_series_representative( string $series_slug, string $cat_slug = '' ): int {
+	$cache_key = 'promen_series_rep_' . md5( $series_slug . '|' . $cat_slug );
 	$id = get_transient( $cache_key );
 	if ( false !== $id ) {
 		return (int) $id;
@@ -2066,6 +2091,11 @@ function promen_series_representative( string $series_slug ): int {
 	$tax_query = [ [ 'taxonomy' => 'norm', 'field' => 'slug', 'terms' => $norm_slug ] ];
 	if ( $angle !== '' ) {
 		$tax_query[] = [ 'taxonomy' => 'pa_angle', 'field' => 'name', 'terms' => $angle ];
+	}
+	if ( '' !== $cat_slug ) {
+		// include_children по умолчанию true: для родительской категории серия
+		// соберётся из всех подкатегорий, для дочерней — только из своей.
+		$tax_query[] = [ 'taxonomy' => 'product_cat', 'field' => 'slug', 'terms' => $cat_slug ];
 	}
 	$q = new WP_Query( [
 		'post_type'      => 'product',

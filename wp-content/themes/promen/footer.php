@@ -176,6 +176,30 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
 </footer>
 
 </div><!-- /.footer-zone -->
-<?php wp_footer(); ?>
+
+<?php
+/**
+ * Яндекс.Метрика 62844301.
+ *
+ * В футере, а не в head: счётчик не должен задерживать отрисовку. Внутри
+ * админки и для залогиненных не выводим — их визиты портят статистику
+ * (страничный кеш их и так не отдаёт, см. wp-content/advanced-cache.php).
+ */
+if ( ! is_admin() && ! is_user_logged_in() ) :
+	?>
+<script>
+(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+m[i].l=1*new Date();
+for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
+ym(62844301, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/62844301" style="position:absolute; left:-9999px;" alt=""></div></noscript>
+	<?php
+endif;
+
+wp_footer();
+?>
 </body>
 </html>

@@ -95,7 +95,10 @@ add_action( 'send_headers', function () {
  */
 add_action( 'wp_head', function () {
 	$base = get_theme_file_uri( 'assets/fonts' );
-	foreach ( [ 'DINPro-CondBlack', 'DINPro' ] as $f ) {
+	// Все семь начертаний: при font-display:optional шрифт применяется только
+	// если успел к первой отрисовке, поэтому загрузку начинаем как можно раньше.
+	$faces = [ 'DINPro-CondBlack', 'DINPro', 'DINPro-Medium', 'DINPro-Bold', 'DINPro-CondBold', 'DINPro-Light', 'DINPro-Black' ];
+	foreach ( $faces as $f ) {
 		printf(
 			'<link rel="preload" href="%s/%s.woff2" as="font" type="font/woff2" crossorigin>' . "\n",
 			esc_url( $base ),

@@ -245,3 +245,28 @@ mark{background:rgba(109,140,166,.3);color:var(--dark);padding:0 1px;}
     white-space:normal;text-align:left;line-height:1.35;
   }
 }
+
+/* ═══ Резерв высоты под то, что собирает JS ═══════════════════════════════
+   Реестр и фильтры рисует nb.js: до этого чипы и сетка — пустые контейнеры,
+   и на телефоне их появление сдвигало страницу на CLS 0.27–0.30 при пороге
+   0.1 (замер 28.08.2026).
+
+   Резерв снимается сам: :empty перестаёт совпадать, как только пришли
+   карточки, поэтому после фильтрации пустоты не остаётся. Числа — высота
+   отрисованных чипов; на сетку хватает экрана, дальше она растёт уже за
+   пределами видимой области и на CLS не влияет. */
+#nbChips:empty     { min-height: 100px; }
+#nbTypeChips:empty { min-height: 28px; }
+#nbGrid:empty      { min-height: 100vh; }
+
+@media (max-width: 1024px) {
+  #nbChips:empty     { min-height: 200px; }
+  #nbTypeChips:empty { min-height: 70px; }
+}
+@media (max-width: 640px) {
+  #nbChips:empty     { min-height: 300px; }
+  #nbTypeChips:empty { min-height: 98px; }
+}
+@media (max-width: 430px) {
+  #nbChips:empty     { min-height: 470px; }
+}

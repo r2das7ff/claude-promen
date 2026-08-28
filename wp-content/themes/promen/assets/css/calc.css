@@ -225,3 +225,62 @@
 @media (max-width:899px){
   .dlv-grid,.dlv-grid.has-qty{grid-template-columns:repeat(2,minmax(0,1fr));}
 }
+
+/* ═══ Резерв высоты под то, что собирает JS ═══════════════════════════════
+   Инструмент строится после загрузки: вкладки и поля приходят из REST,
+   результат — следом. Пока их нет, контейнеры пустые, и текст под ними
+   съезжает вниз на глазах у посетителя: замер 28.08.2026 дал CLS 0.06–0.45
+   на всех семи калькуляторах при пороге 0.1.
+
+   Резерв держится ровно до прихода содержимого: пустой контейнер (:empty)
+   или заглушка .clc-empty в блоке результата. Как только пришло — min-height
+   снимается, поэтому пустоты под коротким ответом не остаётся. Резервируем
+   именно внутренние блоки, а не .clc-wrap: снаружи высота уже удержана, а
+   поля растут внутри и двигают примечание и результат под собой.
+
+   Числа — высота собранного блока, замер при 1440 и 390 px (в промежутке
+   1024 и 768 расходятся на единицы пикселей, отдельной ступени не нужно).
+   Меняется состав полей — перемерить: PerformanceObserver('layout-shift'). */
+.clc-tabs:empty { min-height: 47px; }
+
+.clc-wrap[data-calc="sdt"]    .clc-fields:empty { min-height: 185px; }
+.clc-wrap[data-calc="flange"] .clc-fields:empty { min-height: 250px; }
+.clc-wrap[data-calc="metizy"] .clc-fields:empty { min-height: 185px; }
+.clc-wrap[data-calc="pipes"]  .clc-fields:empty { min-height: 125px; }
+
+.clc-wrap[data-calc="sdt"]    [data-result]:has(.clc-empty) { min-height: 275px; }
+.clc-wrap[data-calc="flange"] [data-result]:has(.clc-empty) { min-height: 575px; }
+.clc-wrap[data-calc="metizy"] [data-result]:has(.clc-empty) { min-height: 275px; }
+.clc-wrap[data-calc="pipes"]  [data-result]:has(.clc-empty) { min-height: 350px; }
+
+.clc-wrap[data-calc="steels"] [data-table]:empty { min-height: 970px; }
+.clc-wrap[data-calc="dn"]     [data-table]:empty { min-height: 898px; }
+
+/* Доставка: два набора полей — параметры груза и маршрут. Замер снят со
+   стенда, локально страницы нет в базе. */
+.clc-wrap[data-calc="dostavka"] [data-extra]:empty { min-height: 62px; }
+.clc-wrap[data-calc="dostavka"] [data-route]:empty { min-height: 123px; }
+
+@media (max-width: 820px) {
+  .clc-wrap[data-calc="steels"] [data-table]:empty { min-height: 1344px; }
+}
+@media (max-width: 640px) {
+  .clc-wrap[data-calc="sdt"]    .clc-tabs:empty { min-height: 94px; }
+  .clc-wrap[data-calc="metizy"] .clc-tabs:empty { min-height: 94px; }
+
+  .clc-wrap[data-calc="sdt"]    .clc-fields:empty { min-height: 322px; }
+  .clc-wrap[data-calc="flange"] .clc-fields:empty { min-height: 389px; }
+  .clc-wrap[data-calc="metizy"] .clc-fields:empty { min-height: 322px; }
+  .clc-wrap[data-calc="pipes"]  .clc-fields:empty { min-height: 261px; }
+
+  .clc-wrap[data-calc="sdt"]    [data-result]:has(.clc-empty) { min-height: 346px; }
+  .clc-wrap[data-calc="flange"] [data-result]:has(.clc-empty) { min-height: 788px; }
+  .clc-wrap[data-calc="metizy"] [data-result]:has(.clc-empty) { min-height: 328px; }
+  .clc-wrap[data-calc="pipes"]  [data-result]:has(.clc-empty) { min-height: 420px; }
+
+  .clc-wrap[data-calc="steels"] [data-table]:empty { min-height: 1497px; }
+  .clc-wrap[data-calc="dn"]     [data-table]:empty { min-height: 932px; }
+
+  .clc-wrap[data-calc="dostavka"] [data-extra]:empty { min-height: 133px; }
+  .clc-wrap[data-calc="dostavka"] [data-route]:empty { min-height: 194px; }
+}

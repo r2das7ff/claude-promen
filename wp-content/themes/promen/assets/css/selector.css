@@ -847,3 +847,12 @@ button.psel-chip:hover { border-color: var(--dark); color: var(--dark); }
   .psel-panel { transform: none; transition: none; }
   .psel-launch:active, .psel-cta:active, .psel-close:active { transform: none; }
 }
+
+/* ═══ Резерв высоты под инструмент подбора ═══════════════════════════════
+   selector.js монтируется в пустой #promenSelectorMount; до монтажа
+   текстовый блок под ним стоял на его месте и затем съезжал вниз —
+   CLS 0.41 на телефоне при пороге 0.1 (замер 28.08.2026). Резерв снимается
+   сам, как только в контейнере появилось содержимое. */
+#promenSelectorMount:empty { min-height: 433px; }
+@media (max-width: 1024px) { #promenSelectorMount:empty { min-height: 597px; } }
+@media (max-width: 640px)  { #promenSelectorMount:empty { min-height: 674px; } }

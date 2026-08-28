@@ -50,7 +50,8 @@ foreach ( promen_catalog_nav_roots() as $root_slug ) {
         <?php endforeach; ?>
       </nav>
       <div class="hero-eyebrow">Цифровой инженерный реестр · пилот</div>
-      <h1 class="hero-h1">Каталог<br><em>продукции</em></h1>
+      <?php [ $promen_h1_top, $promen_h1_em ] = promen_archive_h1(); ?>
+      <h1 class="hero-h1"><?php echo esc_html( $promen_h1_top ); ?><?php if ( '' !== $promen_h1_em ) : ?><br><em><?php echo esc_html( $promen_h1_em ); ?></em><?php endif; ?></h1>
       <p class="hero-desc">В витрине — СДТ, фланцы, крепёж, точеные детали, трубы, изоляция, опоры и арматура: <?php echo esc_html( number_format_i18n( $catalog_total_n ) ); ?> типоразмеров.</p>
     </div>
     <div class="hero-stats">

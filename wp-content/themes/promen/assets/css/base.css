@@ -5,13 +5,20 @@
    сетка и адаптив — brand-spec.md + responsive-rules.md.
    ════════════════════════════════════════════════════════════ */
 
-@font-face{font-family:'DINPro';src:url('../fonts/DINPro.woff2') format('woff2');font-weight:400;font-display:swap;}
-@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Light.woff2') format('woff2');font-weight:300;font-display:swap;}
-@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Medium.woff2') format('woff2');font-weight:500;font-display:swap;}
-@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Bold.woff2') format('woff2');font-weight:700;font-display:swap;}
-@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Black.woff2') format('woff2');font-weight:900;font-display:swap;}
-@font-face{font-family:'DINProCond';src:url('../fonts/DINPro-CondBlack.woff2') format('woff2');font-weight:900;font-display:swap;}
-@font-face{font-family:'DINProCond';src:url('../fonts/DINPro-CondBold.woff2') format('woff2');font-weight:700;font-display:swap;}
+/* font-display: optional, а не swap. При swap браузер рисует текст запасной
+   гарнитурой и подменяет её, когда приедет DINPro, — метрики Arial Narrow
+   уже и текст переливается: замер 28.08.2026 показал, что именно эта
+   подмена давала 0.09–0.30 CLS на калькуляторах (порог 0.1). При optional
+   подмены после отрисовки не происходит вовсе: шрифт либо успел (все семь
+   начертаний уходят в preload и живут в кеше год), либо страница целиком
+   рисуется запасной гарнитурой и DINPro применится со следующего захода. */
+@font-face{font-family:'DINPro';src:url('../fonts/DINPro.woff2') format('woff2');font-weight:400;font-display:optional;}
+@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Light.woff2') format('woff2');font-weight:300;font-display:optional;}
+@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Medium.woff2') format('woff2');font-weight:500;font-display:optional;}
+@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Bold.woff2') format('woff2');font-weight:700;font-display:optional;}
+@font-face{font-family:'DINPro';src:url('../fonts/DINPro-Black.woff2') format('woff2');font-weight:900;font-display:optional;}
+@font-face{font-family:'DINProCond';src:url('../fonts/DINPro-CondBlack.woff2') format('woff2');font-weight:900;font-display:optional;}
+@font-face{font-family:'DINProCond';src:url('../fonts/DINPro-CondBold.woff2') format('woff2');font-weight:700;font-display:optional;}
 
 :root{
   --bg:#E8ECF0;--bg2:#DDE3EA;--dark:#0F2A44;--blue:#1E3D5C;

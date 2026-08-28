@@ -29,7 +29,10 @@ if ( ! defined( 'PROMEN_CACHE_TTL' ) ) {
 
 /** Кешируем ли этот запрос вообще. */
 function promen_cache_eligible(): bool {
-	if ( 'GET' !== ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) ) {
+	// HEAD пускаем только на чтение готового файла (см. низ файла): начиная
+	// с WP 6.8 ядро умеет обрывать рендер шаблона на HEAD, и такой ответ
+	// нельзя класть в кеш — под ключом GET-страницы окажется пустое тело.
+	if ( ! in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', [ 'GET', 'HEAD' ], true ) ) {
 		return false;
 	}
 	// Любые параметры мимо кеша: фильтры каталога, поиск, utm, add-to-cart.
@@ -83,6 +86,61 @@ function promen_cache_file(): string {
 	return PROMEN_CACHE_DIR . '/v' . promen_cache_theme_stamp() . '/' . substr( $key, 0, 2 ) . '/' . $key . '.html';
 }
 
+/**
+ * Валидаторы кеша: отметка времени и ETag страницы.
+ *
+ * Зачем отдельный файл рядом с кешем, а не mtime самого файла: TTL сбрасывает
+ * страницу раз в 12 часов, и после перегенерации mtime меняется даже когда
+ * HTML остался прежним. Краулер в ответ на новый Last-Modified качает те же
+ * 500 КБ заново. Поэтому метка времени переставляется только при изменении
+ * содержимого — ключ здесь хеш, а не время записи.
+ *
+ * Обход 2026-08-28: HTML отдавался вообще без Cache-Control, Last-Modified и
+ * ETag, то есть на 15 407 страницах каталога условный запрос был невозможен
+ * в принципе и каждый обход перекачивал весь сайт.
+ */
+function promen_cache_meta_file( string $file ): string {
+	return $file . '.meta';
+}
+
+/** [ метка времени, ETag ] сохранённой страницы; ETag пустой, если файла нет. */
+function promen_cache_meta_read( string $file ): array {
+	$raw = @file_get_contents( promen_cache_meta_file( $file ) );
+	if ( ! is_string( $raw ) || ! preg_match( '/^(\d+) ([0-9a-f]{32})$/', trim( $raw ), $m ) ) {
+		return [ 0, '' ];
+	}
+	return [ (int) $m[1], $m[2] ];
+}
+
+/** Заголовки условного запроса. Возвращает true, если клиенту хватит 304. */
+function promen_cache_send_validators( int $ts, string $etag ): bool {
+	if ( $ts <= 0 || '' === $etag ) {
+		return false;
+	}
+	header( 'Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=60' );
+	header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s', $ts ) . ' GMT' );
+	header( 'ETag: "' . $etag . '"' );
+
+	$inm = trim( (string) ( $_SERVER['HTTP_IF_NONE_MATCH'] ?? '' ) );
+	if ( '' !== $inm ) {
+		// Прокси и браузеры присылают ETag со слабым префиксом и в списке.
+		foreach ( explode( ',', $inm ) as $candidate ) {
+			if ( trim( $candidate, " \t\"'W/" ) === $etag ) {
+				return true;
+			}
+		}
+		// ETag прислали, но он чужой — страница изменилась, дату не смотрим.
+		return false;
+	}
+
+	$ims = trim( (string) ( $_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? '' ) );
+	if ( '' !== $ims ) {
+		$since = strtotime( $ims );
+		return false !== $since && $since >= $ts;
+	}
+	return false;
+}
+
 /** Обработчик буфера: решает, можно ли сохранить готовую страницу. */
 function promen_cache_store( string $buffer ): string {
 	// Короткий ответ — почти наверняка ошибка или редирект-заглушка.
@@ -121,8 +179,18 @@ function promen_cache_store( string $buffer ): string {
 	if ( false !== @file_put_contents( $tmp, $buffer, LOCK_EX ) ) {
 		if ( ! @rename( $tmp, $file ) ) {
 			@unlink( $tmp );
+			return $buffer;
 		}
 	}
+
+	// Метку времени переставляем только когда изменился HTML: перегенерация
+	// по TTL не должна отбирать у краулера право на 304.
+	$etag             = md5( $buffer );
+	[ $old_ts, $old ] = promen_cache_meta_read( $file );
+	$ts               = ( $old === $etag && $old_ts > 0 ) ? $old_ts : time();
+	@file_put_contents( promen_cache_meta_file( $file ), $ts . ' ' . $etag, LOCK_EX );
+	promen_cache_send_validators( $ts, $etag );
+
 	return $buffer;
 }
 
@@ -130,6 +198,7 @@ if ( ! promen_cache_eligible() ) {
 	return;
 }
 
+$promen_head = 'HEAD' === ( $_SERVER['REQUEST_METHOD'] ?? 'GET' );
 $promen_file = promen_cache_file();
 if ( is_readable( $promen_file ) ) {
 	$age = time() - (int) @filemtime( $promen_file );
@@ -138,9 +207,31 @@ if ( is_readable( $promen_file ) ) {
 		header( 'X-Promen-Cache: HIT' );
 		// Возраст отдаём для диагностики: видно, свежая ли отдача.
 		header( 'X-Promen-Cache-Age: ' . $age );
-		readfile( $promen_file );
+
+		[ $promen_ts, $promen_etag ] = promen_cache_meta_read( $promen_file );
+		if ( '' === $promen_etag ) {
+			// Файл от прежней версии кеша — метку заводим на лету.
+			$promen_etag = (string) @md5_file( $promen_file );
+			$promen_ts   = (int) @filemtime( $promen_file );
+			if ( '' !== $promen_etag ) {
+				@file_put_contents( promen_cache_meta_file( $promen_file ), $promen_ts . ' ' . $promen_etag, LOCK_EX );
+			}
+		}
+		if ( promen_cache_send_validators( $promen_ts, $promen_etag ) ) {
+			http_response_code( 304 );
+			exit;
+		}
+
+		if ( ! $promen_head ) {
+			readfile( $promen_file );
+		}
 		exit;
 	}
+}
+
+// Промах на HEAD не кешируем: тело такого ответа ядро может не построить.
+if ( $promen_head ) {
+	return;
 }
 
 header( 'X-Promen-Cache: MISS' );

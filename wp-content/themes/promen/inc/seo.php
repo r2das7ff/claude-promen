@@ -107,6 +107,46 @@ function promen_norm_summary( WP_Term $term ): string {
 	return $out;
 }
 
+/**
+ * H1 архива каталога: две части — обычная и акцентная (её шаблон рисует в <em>).
+ *
+ * Шаблон archive-product.php обслуживает три вида страниц: витрину, категории
+ * и нормативы. H1 в нём был зашит строкой «Каталог / продукции», и его получали
+ * все три: обход 2026-08-28 нашёл этот заголовок на 15 подкатегориях (те, у
+ * которых нет своей страницы, `has_page => false`) и на всех 127 страницах
+ * `/normativy/*`. Title у них при этом правильный — расходились только H1.
+ *
+ * Для подкатегорий текст берём из `h1` в promen_catalog_taxonomy_defs():
+ * имя термина само по себе не запрос — «Скользящие» и «Тип 01» человек не ищет,
+ * он ищет «опоры скользящие» и «фланцы тип 01».
+ */
+function promen_archive_h1(): array {
+	if ( is_tax( 'norm' ) ) {
+		$term = get_queried_object();
+		if ( $term instanceof WP_Term ) {
+			// promen_norm_summary() отдаёт « — отводы DN 20–800»; в акцент кладём
+			// только сам хвост, тире тут разделяет строки вёрстки, а не текст.
+			$sum = trim( promen_norm_summary( $term ), " \t\n\r\0\x0B—-" );
+			return [ $term->name, $sum ];
+		}
+	}
+
+	if ( is_tax( 'product_cat' ) ) {
+		$term = get_queried_object();
+		if ( $term instanceof WP_Term ) {
+			$defs = function_exists( 'promen_catalog_taxonomy_defs' ) ? promen_catalog_taxonomy_defs() : [];
+			$h1   = (string) ( $defs[ $term->slug ]['h1'] ?? '' );
+			if ( '' !== $h1 ) {
+				$parts = explode( '|', $h1, 2 );
+				return [ trim( $parts[0] ), trim( $parts[1] ?? '' ) ];
+			}
+			return [ $term->name, '' ];
+		}
+	}
+
+	return [ 'Каталог', 'продукции' ];
+}
+
 /** Document title по типу страницы. */
 add_filter( 'document_title_parts', function ( array $parts ): array {
 	$brand = 'Промышленная Энергетика';

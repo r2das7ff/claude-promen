@@ -106,13 +106,17 @@ remove_filter( 'pre_term_description', 'wp_filter_kses' );
  */
 add_filter( 'query_vars', function ( array $vars ): array {
 	$vars[] = 'promen_series';
+	$vars[] = 'promen_series_cat';
 	return $vars;
 } );
 
 add_filter( 'rewrite_rules_array', function ( array $rules ): array {
 	return [
 		// Серии живут под любой категорией: /catalog/<путь-категории>/seriya/<слаг>/
-		'catalog/(?:[^/]+/)+seriya/([^/]+)/?$' => 'index.php?promen_series=$matches[1]',
+		// Путь категории захватываем: без него репрезентативный товар искался
+		// по одному нормативу, и /flancy-01/seriya/gost-33259-2015/ отдавал
+		// страницу типа 11 — тот же норматив, другая подкатегория.
+		'catalog/(.+?)/seriya/([^/]+)/?$' => 'index.php?promen_series_cat=$matches[1]&promen_series=$matches[2]',
 	] + $rules;
 }, 21 );
 
@@ -121,14 +125,21 @@ add_filter( 'request', function ( array $qv ): array {
 		return $qv;
 	}
 	$slug = sanitize_title( $qv['promen_series'] );
-	$rep  = function_exists( 'promen_series_representative' ) ? promen_series_representative( $slug ) : 0;
+	// Из пути «flancy/flancy-01» берём последний сегмент — самую глубокую
+	// категорию: серия принадлежит именно ей.
+	$path = (string) ( $qv['promen_series_cat'] ?? '' );
+	$segs = array_values( array_filter( explode( '/', $path ) ) );
+	$cat  = $segs ? sanitize_title( end( $segs ) ) : '';
+
+	$rep = function_exists( 'promen_series_representative' ) ? promen_series_representative( $slug, $cat ) : 0;
 	if ( ! $rep ) {
-		return $qv; // 404 штатно
+		return $qv; // 404 штатно: серии с таким нормативом в этой категории нет
 	}
 	return [
-		'promen_series' => $slug,
-		'post_type'     => 'product',
-		'p'             => $rep,
+		'promen_series'     => $slug,
+		'promen_series_cat' => $cat,
+		'post_type'         => 'product',
+		'p'                 => $rep,
 	];
 }, 20 );
 

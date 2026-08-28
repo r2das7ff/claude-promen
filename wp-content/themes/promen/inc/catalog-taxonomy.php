@@ -92,6 +92,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'flancy-plosk' => [
 			'label'    => 'Плоские ФП',
+			'h1'       => 'Фланцы плоские приварные|ФП ГОСТ 12820-80',
 			'title'    => 'ПЛОСКИЕ ФП',
 			'path'     => '/ Фланцы / Плоские ФП',
 			'has_page' => false,
@@ -100,6 +101,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'flancy-vorot' => [
 			'label'    => 'Воротниковые ФВ',
+			'h1'       => 'Фланцы воротниковые приварные встык|ФВ ГОСТ 12821-80',
 			'title'    => 'ВОРОТНИКОВЫЕ ФВ',
 			'path'     => '/ Фланцы / Воротниковые ФВ',
 			'has_page' => false,
@@ -108,6 +110,8 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'flancy-01' => [
 			'label'    => 'Тип 01',
+			'series_tag' => 'тип 01',
+			'h1'       => 'Фланцы плоские приварные|тип 01 ГОСТ 33259-2015',
 			'title'    => 'ТИП 01',
 			'path'     => '/ Фланцы / Тип 01',
 			'has_page' => false,
@@ -116,6 +120,8 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'flancy-11' => [
 			'label'    => 'Тип 11',
+			'series_tag' => 'тип 11',
+			'h1'       => 'Фланцы приварные встык|тип 11 ГОСТ 33259-2015',
 			'title'    => 'ТИП 11',
 			'path'     => '/ Фланцы / Тип 11',
 			'has_page' => false,
@@ -196,6 +202,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'truby-bsh' => [
 			'label'    => 'Бесшовные',
+			'h1'       => 'Трубы стальные|бесшовные',
 			'title'    => 'БЕСШОВНЫЕ',
 			'path'     => '/ Трубы / Бесшовные',
 			'has_page' => false,
@@ -204,6 +211,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'truby-es' => [
 			'label'    => 'Электросварные',
+			'h1'       => 'Трубы стальные|электросварные',
 			'title'    => 'ЭЛЕКТРОСВАРНЫЕ',
 			'path'     => '/ Трубы / Электросварные',
 			'has_page' => false,
@@ -212,6 +220,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'truby-vgp' => [
 			'label'    => 'ВГП',
+			'h1'       => 'Трубы стальные|водогазопроводные',
 			'title'    => 'ВГП',
 			'path'     => '/ Трубы / ВГП',
 			'has_page' => false,
@@ -231,6 +240,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'izolyatsiya-truby' => [
 			'label'    => 'Трубы в ППУ',
+			'h1'       => 'Трубы|в ППУ-изоляции',
 			'title'    => 'ТРУБЫ В ППУ',
 			'path'     => '/ Изоляция / Трубы в ППУ',
 			'has_page' => false,
@@ -239,6 +249,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'izolyatsiya-troyniki' => [
 			'label'    => 'Тройники ППУ',
+			'h1'       => 'Тройники|в ППУ-изоляции',
 			'title'    => 'ТРОЙНИКИ ППУ',
 			'path'     => '/ Изоляция / Тройники ППУ',
 			'has_page' => false,
@@ -258,6 +269,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'opory-nepodv' => [
 			'label'    => 'Неподвижные',
+			'h1'       => 'Опоры трубопроводов|неподвижные',
 			'title'    => 'НЕПОДВИЖНЫЕ',
 			'path'     => '/ Опоры / Неподвижные',
 			'has_page' => false,
@@ -266,6 +278,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'opory-skolz' => [
 			'label'    => 'Скользящие',
+			'h1'       => 'Опоры трубопроводов|скользящие',
 			'title'    => 'СКОЛЬЗЯЩИЕ',
 			'path'     => '/ Опоры / Скользящие',
 			'has_page' => false,
@@ -274,6 +287,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'opory-pruzh' => [
 			'label'    => 'Пружинные',
+			'h1'       => 'Опоры трубопроводов|пружинные',
 			'title'    => 'ПРУЖИННЫЕ',
 			'path'     => '/ Опоры / Пружинные',
 			'has_page' => false,
@@ -293,6 +307,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'armatura-zadvizhki' => [
 			'label'    => 'Задвижки',
+			'h1'       => 'Задвижки|трубопроводные',
 			'title'    => 'ЗАДВИЖКИ',
 			'path'     => '/ Арматура / Задвижки',
 			'has_page' => false,
@@ -301,6 +316,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'armatura-klapany' => [
 			'label'    => 'Клапаны',
+			'h1'       => 'Клапаны|трубопроводные',
 			'title'    => 'КЛАПАНЫ',
 			'path'     => '/ Арматура / Клапаны',
 			'has_page' => false,
@@ -309,6 +325,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'armatura-krany' => [
 			'label'    => 'Краны',
+			'h1'       => 'Краны|трубопроводные',
 			'title'    => 'КРАНЫ',
 			'path'     => '/ Арматура / Краны',
 			'has_page' => false,
