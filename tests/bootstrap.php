@@ -15,6 +15,7 @@ if ( ! function_exists( 'promen_is_fastener_group' ) ) {
 }
 
 require_once __DIR__ . '/../wp-content/themes/promen/inc/catalog-schema.php';
+require_once __DIR__ . '/../wp-content/themes/promen/inc/catalog-terms.php';
 require_once __DIR__ . '/../wp-content/themes/promen/inc/catalog-document.php';
 require_once __DIR__ . '/stubs/catalog-search-stubs.php';
 

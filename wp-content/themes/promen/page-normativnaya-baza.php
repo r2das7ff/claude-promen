@@ -90,6 +90,9 @@ get_header();
       <div class="nb-panel-row" id="pSubRow" style="display:none"><span class="nb-panel-k">Тип детали</span><span class="nb-panel-v" id="pSub">—</span></div>
       <div class="nb-panel-row"><span class="nb-panel-k">Статус</span><span class="nb-panel-v" id="pStatus">● Действует</span></div>
       <div class="nb-panel-row"><span class="nb-panel-k">Тип</span><span class="nb-panel-v" id="pTypeFull">—</span></div>
+      <!-- Виден, только если документ нашёлся в каноне каталога: тогда
+           «Открыть в каталоге» ведёт на выдачу с ним в фильтре. -->
+      <div class="nb-panel-row" id="pCatalogCountRow" style="display:none"><span class="nb-panel-k">В каталоге</span><span class="nb-panel-v" id="pCatalogCount">—</span></div>
     </div>
     <div class="nb-panel-sec" id="pSuperSec" style="display:none">
       <div class="nb-panel-sec-lbl">Статус документа</div>

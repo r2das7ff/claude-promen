@@ -260,6 +260,9 @@ add_action( 'wp_enqueue_scripts', function () {
 				'iz'   => 'izolyatsiya',
 				'td'   => 'tochenye',
 			],
+			// Ключ документа → фасет `gost` каталога: «Открыть в каталоге»
+			// ведёт на выдачу с этим нормативом в фильтре, а не в общий раздел.
+			'norms'      => function_exists( 'promen_norm_catalog_index' ) ? promen_norm_catalog_index() : [],
 		] );
 	}
 

@@ -106,3 +106,40 @@ function promen_product_cat_links(): array {
 function promen_product_cat_link( string $slug ): string {
 	return promen_product_cat_links()[ $slug ] ?? '';
 }
+
+/**
+ * Ключ сопоставления обозначений нормативов: «тип + номер без года».
+ *
+ * Реестр «Нормативной базы» и каталог записывают один документ по-разному:
+ * «ГОСТ 22793-83» против «ГОСТ 22793-1983», «ОСТ 34-10-763-97» против
+ * «ОСТ 34.10.763-97», «СТО ЦКТИ 321.02-2009» против «СТО 321.02». Ключ
+ * снимает расхождение: год отбрасывается, разделители сводятся к точке,
+ * приписка «ЦКТИ» и хвост в скобках («(часть III)») убираются.
+ *
+ * Тот же ключ считает assets/js/nb.js — при правке править обе стороны.
+ */
+function promen_norm_match_key( string $label ): string {
+	$s = mb_strtoupper( trim( $label ), 'UTF-8' );
+	$s = str_replace( 'Ё', 'Е', $s );
+	$s = preg_replace( '/\([^)]*\)/u', ' ', $s );
+	$s = preg_replace( '/ЦКТИ/u', ' ', (string) $s );
+	$s = trim( (string) preg_replace( '/\s+/u', ' ', (string) $s ) );
+
+	if ( ! preg_match( '/^(ГОСТ Р|ГОСТ|ОСТ|СТО|ТУ|СЕРИЯ|НП|ПБ|ПНАЭ|АТК|РД|СП|СНИП)\s*(.+)$/u', $s, $m ) ) {
+		return '';
+	}
+	$num = promen_norm_number_key( $m[2] );
+	return '' === $num ? '' : str_replace( ' ', '', $m[1] ) . ' ' . $num;
+}
+
+/**
+ * Номер норматива без года: «34-10-763-97» → «34.10.763».
+ *
+ * Год отсекается только за дефисом, слэшем или пробелом: у «СТО 321.01»
+ * «.01» — часть номера документа, а не год, и точка его защищает.
+ */
+function promen_norm_number_key( string $num ): string {
+	$num = preg_replace( '/[-–—\/\s](?:19\d{2}|20\d{2}|\d{2})$/u', '', trim( $num ) );
+	$num = preg_replace( '/[^0-9A-ZА-Я]+/u', '.', mb_strtoupper( (string) $num, 'UTF-8' ) );
+	return trim( (string) $num, '.' );
+}

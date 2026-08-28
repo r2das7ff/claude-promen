@@ -770,6 +770,62 @@ function promen_group_filter_url( ?string $group_slug ): string {
 }
 
 /**
+ * Нормативы каталога: ключ сопоставления → куда вести фильтр.
+ *
+ * [ 'ГОСТ 17375' => [ 'g' => 'gost-17375-2001', 'c' => 'otvody', 'n' => 1025 ] ]
+ *   g — слаги фасета `gost` (через запятую: у одного документа в каталоге
+ *       бывает несколько терминов-дублей — «ost-34-10-432-90» и
+ *       «ost-34-10-432-1990»), c — категория, где позиций больше всего,
+ *       n — сколько строк канона под этим документом.
+ *
+ * Считается по канон-таблице, а не по терминам таксономии: фильтр каталога
+ * читает именно её, и норматив без строк канона не должен давать ссылку в
+ * пустую выдачу. Отдаётся в «Нормативную базу» (promenNB.norms), чтобы
+ * кнопка «Открыть в каталоге» открывала каталог сразу с этим документом
+ * в фильтре, а не общий вид раздела.
+ */
+function promen_norm_catalog_index(): array {
+	$ckey   = promen_filters_cache_key( 'norm_index' );
+	$cached = get_transient( $ckey );
+	if ( is_array( $cached ) ) {
+		return $cached;
+	}
+
+	global $wpdb;
+	$table  = promen_catalog_table_name();
+	$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
+	$rows   = $exists
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		? (array) $wpdb->get_results( "SELECT norm_slug, category, COUNT(*) AS n FROM {$table} WHERE norm_slug <> '' GROUP BY norm_slug, category", ARRAY_A )
+		: [];
+
+	$acc = [];
+	foreach ( $rows as $row ) {
+		$key = promen_norm_match_key( promen_term_label( 'norm', (string) $row['norm_slug'] ) );
+		if ( '' === $key ) {
+			continue;
+		}
+		$n = (int) $row['n'];
+		$acc[ $key ]['slugs'][ (string) $row['norm_slug'] ] = true;
+		$acc[ $key ]['cats'][ (string) $row['category'] ]   = ( $acc[ $key ]['cats'][ (string) $row['category'] ] ?? 0 ) + $n;
+		$acc[ $key ]['n'] = ( $acc[ $key ]['n'] ?? 0 ) + $n;
+	}
+
+	$index = [];
+	foreach ( $acc as $key => $e ) {
+		arsort( $e['cats'] );
+		$index[ $key ] = [
+			'g' => implode( ',', array_keys( $e['slugs'] ) ),
+			'c' => (string) array_key_first( $e['cats'] ),
+			'n' => (int) $e['n'],
+		];
+	}
+
+	set_transient( $ckey, $index, 15 * MINUTE_IN_SECONDS );
+	return $index;
+}
+
+/**
  * Сводка активных фильтров: [ ['label','value','clear_url'] ] для строки-резюме.
  *
  * У 'gost' подпись пустая намеренно. Значение фасета — полное обозначение

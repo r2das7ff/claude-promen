@@ -2,7 +2,7 @@
    фильтры, пагинация, боковая панель документа, честный тост
    «PDF пока не опубликован». Порт инлайна html/normativnaya-baza.html
    (2026-07-23); часы — chrome.js; прогресс/наезд — projects.js.
-   Конфиг: window.promenNB { catalogUrl, groups{} }. ── */
+   Конфиг: window.promenNB { catalogUrl, groups{}, norms{} }. ── */
 function NB_CATALOG(cat) {
   var cfg = window.promenNB || {};
   var slug = (cfg.groups || {})[cat];
@@ -194,6 +194,79 @@ const PAGE_SIZE=12;
 
 function docCatalog(d){
   return (d.sub&&SUBTYPE_META[d.sub]?.catalog)||CAT_META[d.cat].catalog;
+}
+
+/* ── ДОКУМЕНТ → ФИЛЬТР КАТАЛОГА ──
+   Каталог записывает обозначения иначе, чем реестр: «ГОСТ 22793-1983»
+   против «ГОСТ 22793-83», «СТО 321.02» против «СТО ЦКТИ 321.02-2009».
+   Сопоставление идёт по ключу «тип + номер без года»; тот же ключ считает
+   PHP (promen_norm_match_key) для promenNB.norms — при правке править обе
+   стороны. Сводные тома («СТО ЦКТИ 321.01–321.04-2009», «ОСТ 34-10-761-97
+   ÷ ОСТ 34-10-766-97») в каталоге заведены поштучно, поэтому диапазон
+   разворачивается в перечень номеров. */
+const NB_TYPE_RE=/^(ГОСТ Р|ГОСТ|ОСТ|СТО|ТУ|СЕРИЯ|НП|ПБ|ПНАЭ|АТК|РД|СП|СНИП)\s*(.+)$/;
+/* «34-10-763-97» → «34.10.763». Год отсекается только за дефисом, слэшем
+   или пробелом: у «СТО 321.01» «.01» — часть номера, и точка его защищает. */
+function nbNumKey(num){
+  return String(num).trim()
+    .replace(/[-–—/\s](?:19\d{2}|20\d{2}|\d{2})$/,'')
+    .toUpperCase().replace(/[^0-9A-ZА-Я]+/g,'.')
+    .replace(/^\.+|\.+$/g,'');
+}
+/* «321.01» … «321.04» → все номера внутри диапазона. */
+function nbRange(a,b){
+  const A=a.split('.'),B=b.split('.'),i=A.length-1;
+  if(A.length!==B.length||A.slice(0,i).join('.')!==B.slice(0,i).join('.'))return[a,b];
+  const from=parseInt(A[i],10),to=parseInt(B[i],10);
+  if(!(from<to)||to-from>40)return[a,b];
+  const out=[];
+  for(let n=from;n<=to;n++)out.push(A.slice(0,i).concat(String(n).padStart(A[i].length,'0')).join('.'));
+  return out;
+}
+function nbNormKeys(code){
+  const s=String(code||'').toUpperCase().replace(/Ё/g,'Е')
+    .replace(/\([^)]*\)/g,' ').replace(/ЦКТИ/g,' ')
+    .replace(/\s+/g,' ').trim();
+  const m=s.match(NB_TYPE_RE);
+  if(!m)return[];
+  const type=m[1].replace(/\s/g,'');
+  /* У диапазона тип повторяется у каждой границы — убираем повторы. */
+  const nums=m[2].split(m[1]).join(' ').split(/[÷–—/]/).map(nbNumKey).filter(Boolean);
+  return (nums.length===2?nbRange(nums[0],nums[1]):nums).map(n=>type+' '+n);
+}
+/* Куда ведёт «Открыть в каталоге»: {href,count} или null, если у категории
+   документа нет раздела каталога. count>0 — норматив найден в каноне и
+   встанет в фильтр; 0 — фолбэк на общий вид раздела. */
+function docCatalogTarget(d){
+  const cfg=window.promenNB||{};
+  const idx=cfg.norms||{};
+  const slugs=[],cats=[];
+  let count=0;
+  nbNormKeys(d.code).forEach(k=>{
+    const e=idx[k];
+    if(!e)return;
+    String(e.g||'').split(',').forEach(s=>{if(s&&slugs.indexOf(s)<0)slugs.push(s);});
+    if(e.c&&cats.indexOf(e.c)<0)cats.push(e.c);
+    count+=e.n||0;
+  });
+  if(!slugs.length){
+    const cat=docCatalog(d);
+    return cat?{href:NB_CATALOG(cat),count:0}:null;
+  }
+  /* Сводный том разносит позиции по разным разделам («ГОСТ 17375-83 —
+     ГОСТ 17380-83» — это отводы, тройники, переходы и заглушки сразу).
+     Тогда группу не задаём: она отрезала бы часть найденного. */
+  const base=cfg.catalogUrl||'/catalog/';
+  const qs=(cats.length===1?['group='+encodeURIComponent(cats[0])]:[])
+    .concat('gost='+encodeURIComponent(slugs.join(',')));
+  return {href:base+(base.indexOf('?')>-1?'&':'?')+qs.join('&'),count:count};
+}
+/* Русские формы: nbPlural(3,['позиция','позиции','позиций']). */
+function nbPlural(n,forms){
+  const n10=Math.abs(n)%10,n100=Math.abs(n)%100;
+  if(n10===1&&n100!==11)return forms[0];
+  if(n10>=2&&n10<=4&&(n100<12||n100>14))return forms[1];
+  return forms[2];
 }
 function escRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
 function hl(text,q){
@@ -527,10 +600,16 @@ function openPanel(d){
   if(d.replacedBy){superSec.style.display='block';document.getElementById('pSuperText').textContent=`Документ заменён на ${d.replacedBy}. При проектировании и приёмке используйте актуальную редакцию.`;}
   else if(d.noFile){superSec.style.display='block';document.getElementById('pSuperText').textContent='Позиции по этому документу есть в каталоге завода, но самого документа нет в архиве нормативов — запросите его в отделе технического контроля.';}
   else{superSec.style.display='none';}
-  const cat=docCatalog(d);
+  const tgt=docCatalogTarget(d);
   const catBtn=document.getElementById('pCatalogLink');
-  if(cat){catBtn.style.display='flex';catBtn.href=NB_CATALOG(cat);}
+  if(tgt){catBtn.style.display='flex';catBtn.href=tgt.href;}
   else{catBtn.style.display='none';}
+  const cntRow=document.getElementById('pCatalogCountRow');
+  if(tgt&&tgt.count){
+    cntRow.style.display='grid';
+    document.getElementById('pCatalogCount').textContent=
+      tgt.count.toLocaleString('ru-RU')+' '+nbPlural(tgt.count,['позиция','позиции','позиций']);
+  }else{cntRow.style.display='none';}
   document.getElementById('pDownload').onclick=()=>requestDownload(d);
   overlay.classList.add('show');
   panel.classList.add('open');
