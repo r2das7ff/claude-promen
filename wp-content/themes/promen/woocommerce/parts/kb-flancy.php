@@ -163,7 +163,7 @@ defined( 'ABSPATH' ) || exit;
               <div class="kb-norm-item"><span class="kb-norm-code">ОСТ 26.260.454-99</span><span class="kb-norm-desc">Прокладки спирально-навитые (СНП). Типы и размеры — для уплотнений «выступ-впадина» и «шип-паз»</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 10493-81</span><span class="kb-norm-desc">Линзы уплотнительные жёсткие и компенсирующие на Ру 20–100 МПа. Технические условия</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 20700-75 · ОСТ 26-2043-91</span><span class="kb-norm-desc">Крепёж фланцевых соединений: болты, шпильки, гайки и шайбы с температурой среды от 0 до 650 °С</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">НП-045-18</span><span class="kb-norm-desc">Правила контроля сварных соединений оборудования и трубопроводов АЭУ — для объектов АЭС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">НП-104-18</span><span class="kb-norm-desc">Сварка и наплавка оборудования и трубопроводов АЭУ — для объектов АЭС</span></div>
             </div>
           </div>
         </div>
@@ -249,7 +249,7 @@ defined( 'ABSPATH' ) || exit;
             </div>
           </div>
           <div>
-            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--g1);">по НП-104-18</span></div>
             <div class="kb-doclist">
               <div class="kb-doc-item kb-aes">
                 <div class="kb-doc-name">Программа контроля качества</div>

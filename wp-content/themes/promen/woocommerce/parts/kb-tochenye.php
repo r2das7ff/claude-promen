@@ -155,7 +155,7 @@ defined( 'ABSPATH' ) || exit;
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 1050-2013</span><span class="kb-norm-desc">Нелегированные конструкционные качественные стали (Ст20, сталь 10)</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 19281-2014</span><span class="kb-norm-desc">Прокат высокопрочный. Марка 09Г2С</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 5632-2014</span><span class="kb-norm-desc">Нержавеющие стали (12Х18Н10Т, 08Х18Н10Т, 10Х17Н13М2Т)</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">НП-045-18</span><span class="kb-norm-desc">Правила контроля сварных соединений оборудования и трубопроводов АЭУ — для объектов АЭС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">НП-104-18</span><span class="kb-norm-desc">Сварка и наплавка оборудования и трубопроводов АЭУ — для объектов АЭС</span></div>
             </div>
           </div>
         </div>
@@ -279,7 +279,7 @@ defined( 'ABSPATH' ) || exit;
             </div>
           </div>
           <div>
-            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--g1);">по НП-104-18</span></div>
             <div class="kb-doclist">
               <div class="kb-doc-item kb-aes">
                 <div class="kb-doc-name">Программа контроля качества</div>

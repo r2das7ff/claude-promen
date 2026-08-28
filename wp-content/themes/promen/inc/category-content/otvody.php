@@ -271,7 +271,7 @@ return [
           <div class="kb-card">
             <div class="kb-card-badge">АЭС</div>
             <div class="kb-card-title">Атомная энергетика</div>
-            <p class="kb-card-body">Трубопроводы <strong>I–IV категорий по НП-089-15</strong>. Расширенный объём НК согласно НП-045-18, прослеживаемость плавки, паспортизация по ГОСТ ISO 10474. Первый контур реакторного отсека, системы аварийного охлаждения, вспомогательные контуры. Изготовление по ТУ предприятия и КД заказчика.</p>
+            <p class="kb-card-body">Трубопроводы <strong>I–IV категорий по НП-045-18</strong>. Расширенный объём НК согласно НП-104-18, прослеживаемость плавки, паспортизация по ГОСТ ISO 10474. Первый контур реакторного отсека, системы аварийного охлаждения, вспомогательные контуры. Изготовление по ТУ предприятия и КД заказчика.</p>
             <div class="kb-card-tags"><span class="kb-tag">НП-045-18</span><span class="kb-tag">НП-068-05</span><span class="kb-tag">НП-089-15</span></div>
           </div>
           <div class="kb-card">
@@ -468,7 +468,7 @@ return [
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">НП — нормы ядерной и радиационной безопасности (АЭС)</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">НП-045-18</span><span class="kb-norm-desc">Правила контроля сварных соединений оборудования и трубопроводов АЭУ. Объём и методы НК</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">НП-104-18</span><span class="kb-norm-desc">Сварка и наплавка оборудования и трубопроводов АЭУ. Объём и методы НК</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">НП-068-05</span><span class="kb-norm-desc">Требования к арматуре для атомных станций. Проектирование, изготовление, испытания</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">НП-089-15</span><span class="kb-norm-desc">Общие требования к оборудованию и трубопроводам АЭУ. Категории трубопроводов</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ПБ 03-585-03</span><span class="kb-norm-desc">Правила устройства и безопасной эксплуатации технологических трубопроводов</span></div>
@@ -583,7 +583,7 @@ return [
           </div>
 
           <div>
-            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--g1);">по НП-104-18</span></div>
             <div class="kb-doclist">
               <div class="kb-doc-item kb-aes">
                 <div class="kb-doc-name">Программа контроля качества</div>

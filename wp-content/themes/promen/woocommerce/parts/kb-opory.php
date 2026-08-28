@@ -100,7 +100,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-doc-item"><div class="kb-doc-name">Паспорт изделия</div><div class="kb-doc-desc">Сертификат качества 3.1, маркировка, ссылка на норматив.</div></div>
             <div class="kb-doc-item"><div class="kb-doc-name">Сертификат на металл</div><div class="kb-doc-desc">Плавочные данные по ГОСТ ISO 10474-2016.</div></div>
             <div class="kb-doc-item"><div class="kb-doc-name">Протокол ВИК</div><div class="kb-doc-desc">Геометрия и качество поверхности / сборки.</div></div>
-            <div class="kb-doc-item"><div class="kb-doc-name">Декларация ТР ТС 032/2015</div><div class="kb-doc-desc">При работе под избыточным давлением свыше 0,05 МПа.</div></div>
+            <div class="kb-doc-item"><div class="kb-doc-name">Декларация ТР ТС 032/2013</div><div class="kb-doc-desc">При работе под избыточным давлением свыше 0,05 МПа.</div></div>
           </div>
         </div>
         <div>

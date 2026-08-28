@@ -150,7 +150,7 @@ defined( 'ABSPATH' ) || exit;
             <div class="kb-norm-group-hd">Связанные документы серии СДТ</div>
             <div class="kb-norm-items">
               <div class="kb-norm-item"><span class="kb-norm-code">ГОСТ 17375–17380</span><span class="kb-norm-desc">Серия стандартов на СДТ: 17375 и 30753 — отводы, 17376 — тройники, 17378 — переходы, 17379 — заглушки эллиптические, 17380 — общие технические условия</span></div>
-              <div class="kb-norm-item"><span class="kb-norm-code">НП-045-18</span><span class="kb-norm-desc">Правила контроля сварных соединений оборудования и трубопроводов АЭУ — для объектов АЭС</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">НП-104-18</span><span class="kb-norm-desc">Сварка и наплавка оборудования и трубопроводов АЭУ — для объектов АЭС</span></div>
             </div>
           </div>
         </div>
@@ -232,7 +232,7 @@ defined( 'ABSPATH' ) || exit;
             </div>
           </div>
           <div>
-            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;letter-spacing:.1em;color:var(--g1);">по НП-104-18</span></div>
             <div class="kb-doclist">
               <div class="kb-doc-item kb-aes">
                 <div class="kb-doc-name">Программа контроля качества</div>

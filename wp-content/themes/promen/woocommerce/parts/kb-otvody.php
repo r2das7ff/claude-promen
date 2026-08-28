@@ -140,7 +140,7 @@ defined( 'ABSPATH' ) || exit;
           <div class="kb-norm-group">
             <div class="kb-norm-group-hd">НП и ТР ТС — АЭС и обязательные нормы</div>
             <div class="kb-norm-items">
-              <div class="kb-norm-item"><span class="kb-norm-code">НП-045-18</span><span class="kb-norm-desc">Правила контроля сварных соединений оборудования и трубопроводов АЭУ. Расширенный НК</span></div>
+              <div class="kb-norm-item"><span class="kb-norm-code">НП-104-18</span><span class="kb-norm-desc">Сварка и наплавка оборудования и трубопроводов АЭУ. Расширенный НК</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">НП-089-15</span><span class="kb-norm-desc">Общие требования к оборудованию и трубопроводам АЭУ. Категории I–IV</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ТР ТС 032/2013</span><span class="kb-norm-desc">О безопасности оборудования под давлением. Обязателен при PN &gt; 0.05 МПа. Декл. RU С-RU.АБ53.В.08323/23</span></div>
               <div class="kb-norm-item"><span class="kb-norm-code">ТУ 24.20.40-001-2023</span><span class="kb-norm-desc">ТУ предприятия на детали трубопроводов. Применяется при изготовлении по КД заказчика</span></div>
@@ -178,7 +178,7 @@ defined( 'ABSPATH' ) || exit;
             </div>
           </div>
           <div>
-            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;color:var(--g1);">по НП-045-18</span></div>
+            <div class="kb-col-title">Расширенный пакет для АЭС <span style="font-weight:400;font-size:11px;color:var(--g1);">по НП-104-18</span></div>
             <div class="kb-doclist">
               <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Программа контроля качества</div><div class="kb-doc-desc">Индивидуальная программа НК для категории трубопровода. Согласовывается до запуска в производство.</div></div>
               <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Карты идентификации и прослеживаемости</div><div class="kb-doc-desc">От заготовки до готовой детали. Номер плавки, детали, ссылки на все протоколы контроля.</div></div>

@@ -219,7 +219,7 @@ get_header();
 <!-- ══════════════════════════════════════
      СЦЕНА 2 — НОРМИРОВАНИЕ
      Три отрасли. Реальные стандарты. Без слов об опыте.
-     Инженер видит НП-045-18 — и всё понятно.
+     Инженер видит НП-089-15 — и всё понятно.
 ══════════════════════════════════════ -->
 <section id="s2">
   <div class="s2-top">
@@ -263,8 +263,8 @@ get_header();
       </div>
       <div class="s2-col-stake"><span class="s2-stake-k">Цена отказа</span>Один дефект — внеплановый останов блока и проверка надзора</div>
       <div class="s2-cell">
-        <div class="s2-std">НП-045-18</div>
-        <div class="s2-what">Правила устройства и безопасной эксплуатации оборудования АС</div>
+        <div class="s2-std">НП-089-15</div>
+        <div class="s2-what">Правила устройства и безопасной эксплуатации оборудования и трубопроводов АЭУ</div>
       </div>
       <div class="s2-cell">
         <div class="s2-std">ТР ТС 032</div>
@@ -905,7 +905,7 @@ $shm_stages = [
       <div class="pdoc">
         <div class="pdoc-code">НК</div>
         <div><div class="pdoc-name">Протоколы НК</div><div class="pdoc-desc">Протоколы неразрушающего контроля по применённым методам (ВК/МК/УЗК/РК/ПВК) с заключениями специалистов II–III уровня.</div></div>
-        <div class="pdoc-badge">НП-045-18<br>НАКС II–III</div>
+        <div class="pdoc-badge">НП-104-18<br>НАКС II–III</div>
       </div>
       <div class="pdoc">
         <div class="pdoc-code">ТО</div>

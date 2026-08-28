@@ -38,7 +38,7 @@ defined( 'ABSPATH' ) || exit;
         <div class="kb-card">
           <div class="kb-card-badge">АЭС</div>
           <div class="kb-card-title">Атомная энергетика</div>
-          <p class="kb-card-body">Трубопроводы <strong>I–IV категорий по НП-089-15</strong>. Расширенный объём НК по НП-045-18, прослеживаемость плавки, паспорт качества 3.1. Все позиции с пометкой АЭС изготавливаются с полным пакетом разрешительной документации.</p>
+          <p class="kb-card-body">Трубопроводы <strong>I–IV категорий по НП-045-18</strong>. Расширенный объём НК по НП-104-18, прослеживаемость плавки, паспорт качества 3.1. Все позиции с пометкой АЭС изготавливаются с полным пакетом разрешительной документации.</p>
           <div class="kb-card-tags"><span class="kb-tag">НП-045-18</span><span class="kb-tag">НП-068-05</span><span class="kb-tag">НП-089-15</span></div>
         </div>
         <div class="kb-card">
@@ -230,7 +230,7 @@ defined( 'ABSPATH' ) || exit;
           </div>
         </div>
         <div>
-          <div class="kb-col-title">Расширенный пакет АЭС <span style="font-weight:400;font-size:11px;color:var(--g1);">по НП-045-18</span></div>
+          <div class="kb-col-title">Расширенный пакет АЭС <span style="font-weight:400;font-size:11px;color:var(--g1);">по НП-104-18</span></div>
           <div class="kb-doclist">
             <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Программа контроля качества</div><div class="kb-doc-desc">Индивидуальная программа НК для каждой категории трубопровода, согласованная с заказчиком до запуска в производство.</div></div>
             <div class="kb-doc-item kb-aes"><div class="kb-doc-name">Карты идентификации и прослеживаемости</div><div class="kb-doc-desc">От заготовки до готовой детали. Номер плавки, номер детали, ссылки на все протоколы контроля.</div></div>
