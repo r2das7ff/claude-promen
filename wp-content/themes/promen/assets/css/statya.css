@@ -249,3 +249,17 @@
 @media(prefers-reduced-motion:reduce){
   .ar-content a:hover{animation:none !important;}
 }
+
+/* Настоящая таблица в статье: справочные ряды марок, нормативов, размеров.
+   Блок .ar-table рядом — это пары «ключ-значение», а не таблица данных. */
+.ar-tbl-wrap{overflow-x:auto;border:1px solid var(--ln2);margin:4px 0;}
+.ar-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.ar-tbl th{
+  font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--g1-text);background:var(--bg2);text-align:left;padding:10px 12px;
+  border-bottom:1px solid var(--ln2);white-space:nowrap;
+}
+.ar-tbl td{padding:9px 12px;border-bottom:1px solid var(--ln);color:var(--blue);vertical-align:top;}
+.ar-tbl tr:last-child td{border-bottom:none;}
+.ar-tbl td.m{font-family:'DINPro',monospace;font-weight:700;color:var(--dark);white-space:nowrap;}
+.ar-tbl td:nth-child(2),.ar-tbl td:nth-child(3){font-variant-numeric:tabular-nums;white-space:nowrap;}

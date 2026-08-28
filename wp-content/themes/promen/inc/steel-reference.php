@@ -211,3 +211,88 @@ function promen_render_materials_section( string $group ): void {
   </section>
 	<?php
 }
+
+/**
+ * Таблица марок стали для статьи: марка, температура, PN, норматив, применение.
+ *
+ * Собирается из promen_steel_reference(), а не пишется руками в шаблоне —
+ * иначе статья разойдётся с каталогом. Проверка 2026-08-28 нашла ровно это:
+ * в тексте стояло «09Г2С, Ст20 — до +450 °C», тогда как в справочнике
+ * 09Г2С это −70…+475 °C, а Ст20 — до +425 °C.
+ *
+ * @param string $group Группа каталога (sdt, flange, fastener, …).
+ */
+function promen_steel_table( string $group ): void {
+	$ref    = promen_steel_reference();
+	$grades = promen_group_steel_list( $group );
+	if ( ! $grades ) {
+		return;
+	}
+	echo '<div class="ar-tbl-wrap"><table class="ar-tbl">';
+	echo '<thead><tr><th>Марка</th><th>Рабочая температура</th><th>PN, не более</th><th>Норматив</th><th>Применение</th></tr></thead><tbody>';
+	foreach ( $grades as $name ) {
+		$row = $ref[ promen_steel_key( $name ) ] ?? ( $ref[ $name ] ?? null );
+		if ( ! $row ) {
+			continue;
+		}
+		printf(
+			'<tr><td class="m">%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+			esc_html( $name ),
+			esc_html( $row['temp'] ),
+			esc_html( '—' === $row['pn'] || '' === $row['pn'] ? '—' : $row['pn'] ),
+			esc_html( $row['std'] ),
+			esc_html( implode( ', ', $row['apps'] ) )
+		);
+	}
+	echo '</tbody></table></div>';
+}
+
+/**
+ * Таблица нормативов: документ, изделие, диапазон размеров, позиций в каталоге.
+ *
+ * Данные живые — из таксономии norm и товаров под ней, поэтому таблица в
+ * статье не может разойтись с каталогом. Диапазон и тип изделия считает
+ * promen_norm_summary() (см. inc/seo.php), результат там же кэшируется.
+ *
+ * @param string[] $slugs Слаги нормативов в нужном порядке.
+ */
+function promen_norm_table( array $slugs ): void {
+	$rows = [];
+	foreach ( $slugs as $slug ) {
+		$term = get_term_by( 'slug', $slug, 'norm' );
+		if ( ! $term || is_wp_error( $term ) ) {
+			continue;
+		}
+		$summary = function_exists( 'promen_norm_summary' ) ? promen_norm_summary( $term ) : '';
+		// «— отводы DN 20–800» → «отводы» + «DN 20–800»
+		$kind = $size = '';
+		if ( preg_match( '/^\s*—\s*([^D]+?)(?:\s+(DN|M)\s*(.+))?$/u', $summary, $m ) ) {
+			$kind = trim( $m[1] );
+			$size = isset( $m[2] ) ? trim( $m[2] . ' ' . ( $m[3] ?? '' ) ) : '';
+		}
+		$rows[] = [
+			'name'  => $term->name,
+			'url'   => get_term_link( $term ),
+			'kind'  => $kind,
+			'size'  => $size,
+			'count' => (int) $term->count,
+		];
+	}
+	if ( ! $rows ) {
+		return;
+	}
+	echo '<div class="ar-tbl-wrap"><table class="ar-tbl">';
+	echo '<thead><tr><th>Норматив</th><th>Изделие</th><th>Типоразмеры</th><th>Позиций</th></tr></thead><tbody>';
+	foreach ( $rows as $r ) {
+		printf(
+			'<tr><td class="m">%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+			is_wp_error( $r['url'] )
+				? esc_html( $r['name'] )
+				: '<a href="' . esc_url( $r['url'] ) . '">' . esc_html( $r['name'] ) . '</a>',
+			esc_html( $r['kind'] ?: '—' ),
+			esc_html( $r['size'] ?: '—' ),
+			esc_html( number_format_i18n( $r['count'] ) )
+		);
+	}
+	echo '</tbody></table></div>';
+}
