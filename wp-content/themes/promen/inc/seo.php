@@ -451,6 +451,16 @@ add_action( 'wp_head', function () {
 		'@id'           => home_url( '/#organization' ),
 		'name'          => 'ООО «Завод Промышленная Энергетика»',
 		'alternateName' => 'PROM-EN',
+		// Реквизиты из карты предприятия. Это данные ЕГРЮЛ — они и так
+		// открыты, а в разметке помогают поисковику связать сайт с юрлицом.
+		'legalName'     => 'Общество с ограниченной ответственностью Завод «Промышленная Энергетика»',
+		'taxID'         => '7453307956',
+		'vatID'         => '745101001',
+		'identifier'    => [
+			[ '@type' => 'PropertyValue', 'name' => 'ОГРН', 'value' => '1177456024833' ],
+			[ '@type' => 'PropertyValue', 'name' => 'ОКПО', 'value' => '13842829' ],
+		],
+		'foundingDate'  => '2017-04-05',
 		'url'           => home_url( '/' ),
 		'logo'          => get_theme_file_uri( 'assets/img/PE_logo_color.png' ),
 		'email'         => 'zakaz@prom-en.com',

@@ -41,7 +41,23 @@ get_header();
           </div>
           <div class="cnt-row">
             <span class="cnt-row-k">Адрес</span>
-            <span class="cnt-row-v">454091, г. Челябинск, ул. Орджоникидзе, 37</span>
+            <span class="cnt-row-v">454091, г. Челябинск, ул. Орджоникидзе, д. 37, помещ. 4, офис 301</span>
+          </div>
+          <div class="cnt-row">
+            <span class="cnt-row-k">ИНН / КПП</span>
+            <span class="cnt-row-v mono">7453307956 / 745101001</span>
+          </div>
+          <div class="cnt-row">
+            <span class="cnt-row-k">ОГРН</span>
+            <span class="cnt-row-v mono">1177456024833 от 05.04.2017</span>
+          </div>
+          <div class="cnt-row">
+            <span class="cnt-row-k">ОКПО</span>
+            <span class="cnt-row-v mono">13842829</span>
+          </div>
+          <div class="cnt-row">
+            <span class="cnt-row-k">Директор</span>
+            <span class="cnt-row-v">Агапкин Александр Дмитриевич, действует на основании Устава</span>
           </div>
           <div class="cnt-row">
             <span class="cnt-row-k">Телефон</span>
@@ -58,6 +74,10 @@ get_header();
           <div class="cnt-row">
             <span class="cnt-row-k">Декларация</span>
             <span class="cnt-row-v mono">ТР ТС 032 RU С-RU.АБ53.В.08323/23 серия RU 0418908</span>
+          </div>
+          <div class="cnt-row">
+            <span class="cnt-row-k">Карта предприятия</span>
+            <span class="cnt-row-v"><a class="cnt-doc" href="<?php echo esc_url( get_theme_file_uri( 'assets/docs/karta-predpriyatiya-prom-en.pdf' ) ); ?>" download>Скачать PDF <span class="cnt-doc-meta">полные реквизиты, 155&nbsp;КБ</span></a></span>
           </div>
         </div>
       </div>

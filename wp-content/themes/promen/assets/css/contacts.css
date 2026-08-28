@@ -210,3 +210,8 @@
 
 /* ── Футер = один экран на телефоне (компоновка statement как на главной) ── */
 
+
+/* Ссылка на карту предприятия в блоке реквизитов. */
+.cnt-doc{display:inline-flex;align-items:baseline;gap:10px;color:var(--dark);text-decoration:none;border-bottom:1px solid var(--g1);padding-bottom:1px;}
+.cnt-doc:hover{border-bottom-color:var(--dark);}
+.cnt-doc-meta{font-family:'DINPro',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--g1-text);border-bottom:none;}
