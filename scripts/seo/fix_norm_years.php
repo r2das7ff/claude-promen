@@ -52,7 +52,14 @@ foreach ( $map as $old_slug => list( $old_name, $new_name, $new_slug ) ) {
 		continue;
 	}
 
-	wp_update_term( $term->term_id, 'norm', [ 'name' => $new_name, 'slug' => $new_slug ] );
+	// Описание термина тоже содержит обозначение: «ГОСТ 9064-1970 — норматив
+	// изготовления изделий…». Без этого на карточке соседствовали два года.
+	$desc = str_replace( $old_name, $new_name, (string) $term->description );
+	wp_update_term( $term->term_id, 'norm', [
+		'name'        => $new_name,
+		'slug'        => $new_slug,
+		'description' => $desc,
+	] );
 	$changed = 0;
 	foreach ( $ids as $pid ) {
 		if ( $old_name === (string) get_post_meta( $pid, '_promen_norm_key', true ) ) {
