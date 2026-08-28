@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <section class="s" id="s08">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">08</span>Комплект документов</div>
+      <h2 class="s-badge"><span class="s-badge-num">08</span>Комплект документов</h2>
       
     </div>
     <div class="s-body">

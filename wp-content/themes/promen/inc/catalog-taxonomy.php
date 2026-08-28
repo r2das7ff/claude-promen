@@ -30,6 +30,7 @@ function promen_catalog_taxonomy_defs(): array {
 	$defs = [
 		'sdt' => [
 			'label'       => 'СДТ',
+			'seo_title' => 'Соединительные детали трубопроводов (СДТ)',
 			'title'       => 'СДТ',
 			'path'        => '/ Соединительные детали трубопровода',
 			'code'        => 'СДТ',
@@ -41,6 +42,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'otvody' => [
 			'label'    => 'Отводы',
+			'seo_title' => 'Отводы стальные приварные',
 			'title'    => 'ОТВОДЫ',
 			'path'     => '/ Отводы',
 			'has_page' => true,
@@ -49,6 +51,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'troyniki' => [
 			'label'    => 'Тройники',
+			'seo_title' => 'Тройники стальные приварные',
 			'title'    => 'ТРОЙНИКИ',
 			'path'     => '/ Тройники',
 			'has_page' => true,
@@ -57,6 +60,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'perekhody' => [
 			'label'    => 'Переходы',
+			'seo_title' => 'Переходы стальные приварные',
 			'title'    => 'ПЕРЕХОДЫ',
 			'path'     => '/ Переходы',
 			'has_page' => true,
@@ -65,6 +69,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'dnishcha' => [
 			'label'    => 'Днища',
+			'seo_title' => 'Днища эллиптические отбортованные',
 			'title'    => 'ДНИЩА',
 			'path'     => '/ Днища',
 			'has_page' => true,
@@ -73,6 +78,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'zaglushki' => [
 			'label'    => 'Заглушки',
+			'seo_title' => 'Заглушки эллиптические и фланцевые',
 			'title'    => 'ЗАГЛУШКИ',
 			'path'     => '/ Заглушки',
 			'has_page' => true,
@@ -81,6 +87,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'flancy' => [
 			'label'       => 'Фланцы',
+			'seo_title' => 'Фланцы трубопроводные стальные',
 			'title'       => 'ФЛАНЦЫ',
 			'path'        => '/ Фланцы',
 			'code'        => 'ФЛ',
@@ -130,6 +137,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'krepezh' => [
 			'label'       => 'Крепёж',
+			'seo_title' => 'Крепёж фланцевый и монтажный',
 			'title'       => 'КРЕПЁЖ',
 			'path'        => '/ Крепёж',
 			'code'        => 'КР',
@@ -141,6 +149,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'bolty' => [
 			'label'    => 'Болты',
+			'seo_title' => 'Болты крепёжные стальные',
 			'title'    => 'БОЛТЫ',
 			'path'     => '/ Крепёж / Болты',
 			'has_page' => true,
@@ -149,6 +158,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'shpilki' => [
 			'label'    => 'Шпильки',
+			'seo_title' => 'Шпильки фланцевые и монтажные',
 			'title'    => 'ШПИЛЬКИ',
 			'path'     => '/ Крепёж / Шпильки',
 			'has_page' => true,
@@ -157,6 +167,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'gayki' => [
 			'label'    => 'Гайки',
+			'seo_title' => 'Гайки шестигранные и фланцевые',
 			'title'    => 'ГАЙКИ',
 			'path'     => '/ Крепёж / Гайки',
 			'has_page' => true,
@@ -165,6 +176,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'shayby' => [
 			'label'    => 'Шайбы',
+			'seo_title' => 'Шайбы пружинные и усиленные',
 			'title'    => 'ШАЙБЫ',
 			'path'     => '/ Крепёж / Шайбы',
 			'has_page' => true,
@@ -173,6 +185,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'vinty' => [
 			'label'    => 'Винты',
+			'seo_title' => 'Винты по ГОСТ 11738',
 			'title'    => 'ВИНТЫ',
 			'path'     => '/ Крепёж / Винты',
 			'has_page' => true,
@@ -181,6 +194,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'tochenye' => [
 			'label'       => 'Точеные детали',
+			'seo_title' => 'Точёные детали стальные',
 			'title'       => 'ТОЧЕНЫЕ ДЕТАЛИ',
 			'path'        => '/ Точеные детали',
 			'code'        => 'ТД',
@@ -191,6 +205,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'truby' => [
 			'label'       => 'Трубы',
+			'seo_title' => 'Трубы стальные бесшовные и сварные',
 			'title'       => 'ТРУБЫ',
 			'path'        => '/ Трубы',
 			'code'        => 'ТР',
@@ -229,6 +244,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'izolyatsiya' => [
 			'label'       => 'Изоляция',
+			'seo_title' => 'Изоляция и покрытия трубопроводов',
 			'title'       => 'ИЗОЛЯЦИЯ',
 			'path'        => '/ Изоляция и покрытия',
 			'code'        => 'ИЗ',
@@ -258,6 +274,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'opory' => [
 			'label'       => 'Опоры',
+			'seo_title' => 'Опоры трубопроводов неподвижные и скользящие',
 			'title'       => 'ОПОРЫ',
 			'path'        => '/ Опоры трубопроводов',
 			'code'        => 'ОП',
@@ -296,6 +313,7 @@ function promen_catalog_taxonomy_defs(): array {
 		],
 		'armatura' => [
 			'label'       => 'Арматура',
+			'seo_title' => 'Арматура запорно-регулирующая',
 			'title'       => 'АРМАТУРА',
 			'path'        => '/ Арматура',
 			'code'        => 'ЗРА',
@@ -508,7 +526,7 @@ function promen_render_category_catalog_embed( string $group_slug, int $count = 
 	?>
 <section class="s catalog-embed" id="registry">
   <div class="s-hd">
-    <div class="s-badge"><span class="s-badge-num">02</span>Реестр изделий</div>
+    <h2 class="s-badge"><span class="s-badge-num">02</span>Реестр изделий</h2>
     <div class="s-meta">LIVE CATALOG / <?php echo esc_html( $label ); ?> · <?php echo esc_html( number_format_i18n( $count ) ); ?> позиций</div>
   </div>
   <div class="cat-body catalog-embed__body">
@@ -941,7 +959,7 @@ function promen_render_category_norms_section( string $group_slug ): void {
 	?>
 <section class="s s-dark" id="s04">
   <div class="s-hd">
-    <div class="s-badge"><span class="s-badge-num">04</span>Нормативная база</div>
+    <h2 class="s-badge"><span class="s-badge-num">04</span>Нормативная база</h2>
     <div class="s-meta">REGULATORY REGISTRY / <?php echo esc_html( $meta ); ?></div>
   </div>
   <div class="s-body" style="padding-top:28px;">
@@ -1025,7 +1043,7 @@ function promen_render_category_series_registry( string $group_slug ): void {
 	?>
 <section class="s s-alt" id="s01">
   <div class="s-hd">
-    <div class="s-badge"><span class="s-badge-num">01</span>Реестр исполнений</div>
+    <h2 class="s-badge"><span class="s-badge-num">01</span>Реестр исполнений</h2>
     <div class="s-meta">PRODUCT REGISTRY / <?php echo esc_html( $code ); ?></div>
   </div>
   <div class="reg-bar" id="regBar">

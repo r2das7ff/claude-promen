@@ -152,28 +152,58 @@ add_filter( 'document_title_parts', function ( array $parts ): array {
 	$brand = 'Промышленная Энергетика';
 
 	if ( function_exists( 'is_product' ) && is_product() ) {
+		// Хвост сокращён до бренда латиницей: «— Промышленная Энергетика» это
+		// 25 символов из 60 доступных, и у карточек под нож уходил норматив —
+		// самая ценная часть заголовка. Обход 2026-08-28: 312 тайтлов из 393
+		// длиннее 65 символов. На страницах вне каталога хвост прежний.
 		$parts['title'] = promen_product_title_seo( get_queried_object_id() );
-		$parts['site']  = $brand;
+		$parts['site']  = 'PROM-EN';
 		return $parts;
 	}
 
 	if ( is_tax( 'norm' ) ) {
 		$term = get_queried_object();
 		$parts['title'] = $term->name . promen_norm_summary( $term );
-		$parts['site']  = 'Каталог · ' . $brand;
+		$parts['site']  = 'PROM-EN';
 		return $parts;
 	}
 
 	if ( is_tax( 'product_cat' ) ) {
 		$term = get_queried_object();
-		$parts['title'] = $term->name;
-		$parts['site']  = 'Каталог · ' . $brand;
+		// Имя термина само по себе не запрос: «Скользящие», «Тип 01» и
+		// «Бесшовные» не содержат предмета, а ищут «опоры скользящие» и
+		// «фланцы тип 01». У подкатегорий без своей страницы берём тот же
+		// текст, что ушёл в H1.
+		$defs = function_exists( 'promen_catalog_taxonomy_defs' ) ? promen_catalog_taxonomy_defs() : [];
+		$def  = $defs[ $term->slug ] ?? [];
+		// seo_title — у разделов со своей страницей (там H1 нарисован в
+		// шаблоне), h1 — у подкатегорий, которым его собирает archive-product.
+		$title = (string) ( $def['seo_title'] ?? '' );
+		if ( '' === $title && ! empty( $def['h1'] ) ) {
+			$title = trim( str_replace( '|', ' ', (string) $def['h1'] ) );
+		}
+		if ( '' === $title ) {
+			$title = $term->name;
+		}
+
+		$parts['title'] = $title;
+		$parts['site']  = 'PROM-EN';
 		return $parts;
 	}
 
 	if ( function_exists( 'is_shop' ) && is_shop() ) {
 		$parts['title'] = 'Каталог продукции';
 		$parts['site']  = $brand;
+		return $parts;
+	}
+
+	// Название сайта — «PROM-EN — Промышленная Энергетика», и на внутренних
+	// страницах оно даёт хвост в 35 символов: «Контроль качества СДТ — от
+	// входного контроля до паспорта изделия – PROM-EN — Промышленная
+	// Энергетика» это 100 символов, из которых в выдаче видно 60. Оставляем
+	// короткий бренд; полное имя остаётся на главной, где оно и уместно.
+	if ( is_singular() && ! is_front_page() ) {
+		$parts['site'] = 'PROM-EN';
 	}
 
 	return $parts;
@@ -735,11 +765,178 @@ function promen_faq_schema( string $file ): void {
 	}
 }
 
+/**
+ * ` width="…" height="…"` для картинки темы по её URL.
+ *
+ * Атрибуты нужны браузеру, чтобы зарезервировать место по соотношению сторон:
+ * без них половина изображений сайта (427 из 835 при обходе 2026-08-28)
+ * вносила вклад в CLS. Вёрстку задаёт CSS, атрибуты на неё не влияют.
+ *
+ * Там, где путь известен в шаблоне, размеры проставлены прямо в разметке.
+ * Эта функция — для мест, где src собирается на лету: фото изделия, карточки
+ * проектов, портреты менеджеров. Размер читаем с диска и кладём в транзиент:
+ * getimagesize() на каждый запрос карточки — лишний stat на 15 394 страницах.
+ */
+function promen_img_size_attr( string $url ): string {
+	if ( '' === $url ) {
+		return '';
+	}
+	$key    = 'promen_imgsz_' . md5( $url );
+	$cached = get_transient( $key );
+	if ( is_string( $cached ) ) {
+		return $cached;
+	}
+
+	$base = get_theme_file_uri( '' );
+	$attr = '';
+	if ( 0 === strpos( $url, $base ) ) {
+		$file = get_theme_file_path( ltrim( substr( $url, strlen( $base ) ), '/' ) );
+		if ( is_readable( $file ) ) {
+			$size = @getimagesize( $file );
+			if ( ! empty( $size[0] ) && ! empty( $size[1] ) ) {
+				$attr = ' width="' . (int) $size[0] . '" height="' . (int) $size[1] . '"';
+			}
+		}
+	}
+
+	set_transient( $key, $attr, WEEK_IN_SECONDS );
+	return $attr;
+}
+
 /** Включаем norm в core XML sitemap. */
 add_filter( 'wp_sitemaps_taxonomies', function ( array $taxonomies ): array {
 	$taxonomies['norm'] = get_taxonomy( 'norm' );
 	return $taxonomies;
 } );
+
+/**
+ * Родительские разделы каталога — в карту сайта.
+ *
+ * Ядро отдаёт термины с hide_empty, а у «СДТ», «Крепёж», «Трубы», «Опоры»,
+ * «Арматура» и «Изоляции» напрямую назначенных товаров нет — товары висят на
+ * подкатегориях. Из 33 разделов в карту попадали 27, причём без самой
+ * содержательной страницы сайта: у /catalog/sdt/ 6 988 слов.
+ */
+add_filter( 'wp_sitemaps_taxonomies_query_args', function ( array $args, string $taxonomy ): array {
+	if ( 'product_cat' !== $taxonomy ) {
+		return $args;
+	}
+	$args['hide_empty'] = false;
+	// Разделы каталога перечислены в defs — по нему и отбираем. Просто снять
+	// hide_empty мало: вместе с родителями в карту приезжает служебная
+	// «Uncategorized», а она отдаёт 302.
+	if ( function_exists( 'promen_catalog_taxonomy_defs' ) ) {
+		$args['slug'] = array_keys( promen_catalog_taxonomy_defs() );
+	}
+	return $args;
+}, 10, 2 );
+
+/**
+ * Архив автора — вон из карты сайта.
+ *
+ * Провайдер users отдавал единственный адрес /author/admin/: 26 слов, H1 от
+ * витрины, без canonical и description — и заодно публиковал логин
+ * администратора. Сам архив закрываем noindex: ссылок на него нет, но и
+ * держать в индексе пустышку незачем.
+ */
+add_filter( 'wp_sitemaps_add_provider', function ( $provider, string $name ) {
+	return 'users' === $name ? false : $provider;
+}, 10, 2 );
+
+add_action( 'wp_head', function (): void {
+	if ( is_author() ) {
+		echo '<meta name="robots" content="noindex,follow">' . "\n";
+	}
+}, 1 );
+
+/**
+ * Страницы серий в карте сайта.
+ *
+ * Серия — маршрут /catalog/<путь>/seriya/<норматив>[-<угол>]/, не пост и не
+ * термин, поэтому ядро о ней не знает. Обнаружить её можно было только через
+ * хлебные крошки карточек. При этом серия — готовая посадочная под запрос
+ * «фланец ГОСТ 33259» и, в отличие от карточки, сама себе не дубль.
+ *
+ * Список собираем запросом по связям, а не перебором товаров: 15 394 вызова
+ * promen_series_meta() в момент отдачи карты никто не дождётся. Тройка
+ * «глубокая категория + норматив + угол» однозначно задаёт слаг серии — тот
+ * же ключ, по которому её ищет promen_series_representative().
+ */
+function promen_series_sitemap_urls(): array {
+	$key    = 'promen_series_sitemap';
+	$cached = get_transient( $key );
+	if ( is_array( $cached ) ) {
+		return $cached;
+	}
+
+	global $wpdb;
+	$rows = $wpdb->get_results(
+		"SELECT DISTINCT c.slug AS cat, n.slug AS norm, COALESCE(a.name, '') AS angle
+		   FROM {$wpdb->posts} p
+		   JOIN {$wpdb->term_relationships} trn ON trn.object_id = p.ID
+		   JOIN {$wpdb->term_taxonomy} ttn ON ttn.term_taxonomy_id = trn.term_taxonomy_id AND ttn.taxonomy = 'norm'
+		   JOIN {$wpdb->terms} n ON n.term_id = ttn.term_id
+		   JOIN {$wpdb->term_relationships} trc ON trc.object_id = p.ID
+		   JOIN {$wpdb->term_taxonomy} ttc ON ttc.term_taxonomy_id = trc.term_taxonomy_id AND ttc.taxonomy = 'product_cat'
+		   JOIN {$wpdb->terms} c ON c.term_id = ttc.term_id
+		   LEFT JOIN {$wpdb->term_relationships} tra ON tra.object_id = p.ID
+		   LEFT JOIN {$wpdb->term_taxonomy} tta ON tta.term_taxonomy_id = tra.term_taxonomy_id AND tta.taxonomy = 'pa_angle'
+		   LEFT JOIN {$wpdb->terms} a ON a.term_id = tta.term_id
+		  WHERE p.post_type = 'product' AND p.post_status = 'publish'",
+		ARRAY_A
+	);
+
+	$defs = function_exists( 'promen_catalog_taxonomy_defs' ) ? promen_catalog_taxonomy_defs() : [];
+	$urls = [];
+	foreach ( (array) $rows as $r ) {
+		$cat = (string) $r['cat'];
+		// Только самая глубокая категория: серия принадлежит ей, а не родителю.
+		if ( ! isset( $defs[ $cat ] ) || ! empty( $defs[ $cat ]['children'] ) ) {
+			continue;
+		}
+		$slug = (string) $r['norm'] . ( '' !== $r['angle'] ? '-' . $r['angle'] : '' );
+		$link = function_exists( 'promen_product_cat_link' ) ? promen_product_cat_link( $cat ) : '';
+		if ( '' === $link ) {
+			continue;
+		}
+		$urls[ trailingslashit( $link ) . 'seriya/' . $slug . '/' ] = true;
+	}
+
+	$urls = array_keys( $urls );
+	sort( $urls );
+	set_transient( $key, $urls, DAY_IN_SECONDS );
+	return $urls;
+}
+
+/** Провайдер карты сайта для страниц серий. */
+function promen_register_series_sitemap(): void {
+	if ( ! class_exists( 'WP_Sitemaps_Provider' ) || class_exists( 'Promen_Series_Sitemap_Provider' ) ) {
+		return;
+	}
+
+	/** Отдаёт адреса серий одной страницей: их порядка сотни. */
+	class Promen_Series_Sitemap_Provider extends WP_Sitemaps_Provider {
+		public function __construct() {
+			$this->name        = 'series';
+			$this->object_type = 'series';
+		}
+
+		public function get_url_list( $page_num, $object_subtype = '' ) {
+			$out = [];
+			foreach ( promen_series_sitemap_urls() as $url ) {
+				$out[] = [ 'loc' => $url ];
+			}
+			return $out;
+		}
+
+		public function get_max_num_pages( $object_subtype = '' ) {
+			return promen_series_sitemap_urls() ? 1 : 0;
+		}
+	}
+
+	wp_register_sitemap_provider( 'series', new Promen_Series_Sitemap_Provider() );
+}
+add_action( 'init', 'promen_register_series_sitemap', 20 );
 
 /** Параметрические URL каталога не должны попадать в sitemap (их и нет — core sitemap чистый). */
 add_filter( 'wp_sitemaps_posts_entry', function ( $entry, $post ) {

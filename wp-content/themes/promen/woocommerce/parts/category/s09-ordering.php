@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <section class="s" id="s09">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">09</span>Порядок заказа</div>
+      <h2 class="s-badge"><span class="s-badge-num">09</span>Порядок заказа</h2>
       <div class="s-meta">ORDERING PROCESS</div>
     </div>
     <div class="flow-grid-wrap">

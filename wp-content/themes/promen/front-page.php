@@ -155,7 +155,7 @@ get_header();
 
     <!-- PE SIGN — main visual element with CSS glitch -->
     <div class="pe-wrap">
-      <img class="pe-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/PE_sign_blue.png' ) ); ?>" alt="Промышленная Энергетика — знак" width="2000" height="2000" decoding="async">
+      <img class="pe-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/PE_sign_blue.png' ) ); ?>" alt="Промышленная Энергетика — знак" width="800" height="800" decoding="async">
       <div class="pe-g1"></div>
       <div class="pe-g2"></div>
     </div>

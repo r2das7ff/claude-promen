@@ -89,7 +89,7 @@ get_header();
         <?php echo $promen_prj_soon ? '' : 'href="' . esc_url( $promen_prj_url ) . '"'; ?>>
         <div class="p-media">
           <?php if ( ! empty( $promen_prj['photo'] ) ) : ?>
-          <img src="<?php echo esc_url( get_theme_file_uri( 'assets/' . $promen_prj['photo'] ) ); ?>" alt="<?php echo esc_attr( $promen_prj['name'] ); ?>" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+          <img src="<?php echo esc_url( get_theme_file_uri( 'assets/' . $promen_prj['photo'] ) ); ?>" alt="<?php echo esc_attr( $promen_prj['name'] ); ?>"<?php echo promen_img_size_attr( get_theme_file_uri( 'assets/' . $promen_prj['photo'] ) ); ?> loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
           <?php endif; ?>
           <?php echo $promen_prj_svg[ $promen_prj['kind'] ] ?? $promen_prj_svg['thermal']; // phpcs:ignore WordPress.Security.EscapeOutput ?>
           <span class="p-tag"><?php echo esc_html( $promen_prj_tag ); ?></span>

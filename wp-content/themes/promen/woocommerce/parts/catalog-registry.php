@@ -218,19 +218,19 @@ $embedded      = ! empty( $promen_registry_embedded );
       <div class="pdp-sub" id="pdpSub"></div>
     </div>
     <div class="pdp-sec">
-      <div class="pdp-sec-lbl">Технические параметры</div>
+      <h3 class="pdp-sec-lbl">Технические параметры</h3>
       <div id="pdpParams"></div>
     </div>
     <div class="pdp-sec">
-      <div class="pdp-sec-lbl">Нормативная документация</div>
+      <h3 class="pdp-sec-lbl">Нормативная документация</h3>
       <div class="pdp-tags" id="pdpNorms"></div>
     </div>
     <div class="pdp-sec">
-      <div class="pdp-sec-lbl">Области применения</div>
+      <h3 class="pdp-sec-lbl">Области применения</h3>
       <div class="pdp-sectors" id="pdpSectors"></div>
     </div>
     <div class="pdp-sec">
-      <div class="pdp-sec-lbl">Контроль и документация</div>
+      <h3 class="pdp-sec-lbl">Контроль и документация</h3>
       <p class="pdp-pass">Поставка с паспортом изделия, сертификатом на металл 3.1 и протоколами контроля. Для поднадзорных объектов — расширенный объём НК по ТР ТС 032/2013.</p>
       <div class="pdp-marks" id="pdpMarks"></div>
     </div>

@@ -31,14 +31,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / TROYNIKI SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / TROYNIKI SPECS</h2>
         <div class="hud-row"><span class="hud-rk">DN, мм</span><span class="hud-rv">6 — 1600</span></div>
         <div class="hud-row"><span class="hud-rk">PN, МПа</span><span class="hud-rv">0,6 — 100</span></div>
         <div class="hud-row"><span class="hud-rk">Температура среды, °C</span><span class="hud-rv">−70 — +700</span></div>
         <div class="hud-row"><span class="hud-rk">Радиус гиба R / DN</span><span class="hud-rv">1,5 — 5,0</span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Нормативный статус</div>
+        <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 17376-2001</span><span class="hud-rv live">Штампованные</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 22801-83 / 22822-83</span><span class="hud-rv live">Ру до 100 МПа</span></div>
         <div class="hud-row"><span class="hud-rk">ОСТ 34-10-762…765</span><span class="hud-rv live">Сварные для ТЭС</span></div>
@@ -111,7 +111,7 @@ return [
 	's03' => static function ( array $ctx ): void { ?>
 <section class="s" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Подбор тройника</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Подбор тройника</h2>
       <div class="s-meta">TROYNIKI / SELECTION GUIDE</div>
     </div>
     <div class="s-body">
@@ -218,7 +218,7 @@ return [
 	's10' => static function ( array $ctx ): void { ?>
 <section class="s kb-wrap" id="s10">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">10</span>База знаний</div>
+      <h2 class="s-badge"><span class="s-badge-num">10</span>База знаний</h2>
       <div class="s-meta">KNOWLEDGE BASE / ENGINEERING REFERENCE</div>
     </div>
 

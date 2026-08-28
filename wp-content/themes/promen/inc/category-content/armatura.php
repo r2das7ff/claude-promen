@@ -32,14 +32,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / ARMATURA SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / ARMATURA SPECS</h2>
         <div class="hud-row"><span class="hud-rk">DN, мм</span><span class="hud-rv">15 — 1000</span></div>
         <div class="hud-row"><span class="hud-rk">PN, МПа</span><span class="hud-rv">1.6 — 10.0</span></div>
         <div class="hud-row"><span class="hud-rk">Типы</span><span class="hud-rv">ЗД · КО · КР</span></div>
         <div class="hud-row"><span class="hud-rk">Норматив</span><span class="hud-rv">ГОСТ 33257-2015</span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Состав реестра</div>
+        <h2 class="hud-label">Состав реестра</h2>
         <div class="hud-row"><span class="hud-rk">Задвижки</span><span class="hud-rv live"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-zadvizhki' ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Клапаны</span><span class="hud-rv live"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-klapany' ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Краны</span><span class="hud-rv live"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-krany' ) ); ?> поз.</span></div>
@@ -74,7 +74,7 @@ return [
 	's03' => static function ( array $ctx ): void { ?>
 <section class="s" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Подбор арматуры</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Подбор арматуры</h2>
       <div class="s-meta">ARMATURA / SELECTION GUIDE</div>
     </div>
     <div class="s-body">

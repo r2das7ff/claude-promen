@@ -2081,9 +2081,14 @@ function promen_series_representative( string $series_slug, string $cat_slug = '
 	}
 
 	// Разбираем слаг: угол — последний числовой сегмент.
-	$angle = '';
+	//
+	// Сначала пробуем слаг целиком как норматив: у ОСТ и СТО год двузначный
+	// («ост-34-10-699-97», «сто-321-01»), и правило «хвост из 2–3 цифр — угол»
+	// откусывало его, оставляя несуществующий норматив. Обход 2026-08-28 нашёл
+	// 43 таких серии — все отдавали 404, хотя товары под ними есть.
+	$angle     = '';
 	$norm_slug = $series_slug;
-	if ( preg_match( '/^(.*)-(\d{2,3})$/', $series_slug, $m ) ) {
+	if ( ! term_exists( $series_slug, 'norm' ) && preg_match( '/^(.*)-(\d{2,3})$/', $series_slug, $m ) ) {
 		$norm_slug = $m[1];
 		$angle     = $m[2];
 	}
@@ -2182,7 +2187,7 @@ function promen_render_norm_base( string $cat_slug ): void {
 	?>
   <section class="s s-dark" id="s04">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">04</span>Нормативная база</div>
+      <h2 class="s-badge"><span class="s-badge-num">04</span>Нормативная база</h2>
       <div class="s-meta">STANDARDS REGISTRY</div>
     </div>
     <div class="s-body">

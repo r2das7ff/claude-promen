@@ -73,7 +73,7 @@ $schem_labels = [
 ?>
 <section class="s s-dark" id="s01">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">01</span>Инженерный чертёж</div>
+      <h2 class="s-badge"><span class="s-badge-num">01</span>Инженерный чертёж</h2>
       <div class="s-meta"><?php echo $norm_key ? esc_html( $norm_key ) : ''; ?></div>
     </div>
     <div class="bp-panel">

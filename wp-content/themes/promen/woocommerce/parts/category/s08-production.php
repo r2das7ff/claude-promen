@@ -5,7 +5,7 @@ $promen_s08_weld = isset( $promen_s08_weld ) ? (string) $promen_s08_weld : '';
 ?>
 <section class="s" id="s08">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">08</span>Производственные возможности</div>
+      <h2 class="s-badge"><span class="s-badge-num">08</span>Производственные возможности</h2>
       <div class="s-meta">MANUFACTURING CAPABILITIES</div>
     </div>
     <div class="prod-layout reveal">

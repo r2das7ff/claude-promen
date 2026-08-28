@@ -31,14 +31,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / FLANCY SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / FLANCY SPECS</h2>
         <div class="hud-row"><span class="hud-rk">DN, мм</span><span class="hud-rv">10 — 4000</span></div>
         <div class="hud-row"><span class="hud-rk">PN, МПа</span><span class="hud-rv">1 — 250</span></div>
         <div class="hud-row"><span class="hud-rk">Типы</span><span class="hud-rv">01 · 11 · ФП · ФВ</span></div>
         <div class="hud-row"><span class="hud-rk">Марки стали</span><span class="hud-rv">7 марок</span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Нормативный статус</div>
+        <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 33259-2015</span><span class="hud-rv live">Тип 01 / 11</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 12820-80 / 12821-80</span><span class="hud-rv live">ФП / ФВ</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 28759.2-2022</span><span class="hud-rv live">Сосудовые</span></div>
@@ -106,7 +106,7 @@ return [
 	's03' => static function ( array $ctx ): void { ?>
 <section class="s" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Подбор фланца</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Подбор фланца</h2>
       <div class="s-meta">FLANCY / SELECTION GUIDE</div>
     </div>
     <div class="s-body">

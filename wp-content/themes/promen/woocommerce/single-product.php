@@ -204,7 +204,7 @@ while ( have_posts() ) :
       <div class="hero-desc"><?php echo wp_kses_post( wpautop( promen_sanitize_desc( $product->get_id(), $product->get_description() ) ) ); ?></div>
       <div class="hero-media <?php echo $photo_url ? 'has-photo' : 'is-ph'; ?>">
         <?php if ( $photo_url ) : ?>
-          <img src="<?php echo esc_url( $photo_url ); ?>" alt="<?php echo esc_attr( $qc_title ); ?>" loading="lazy" decoding="async">
+          <img src="<?php echo esc_url( $photo_url ); ?>" alt="<?php echo esc_attr( $qc_title ); ?>"<?php echo promen_img_size_attr( $photo_url ); ?> loading="lazy" decoding="async">
         <?php else : ?>
           <div class="pm-ph">
             <svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><path d="M6 34l10-12 7 8 6-7 13 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="16" cy="15" r="4" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="4" y="8" width="40" height="32" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
@@ -421,7 +421,7 @@ while ( have_posts() ) :
 
   <section class="s prod-essence" id="s00">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">00</span>Суть изделия</div>
+      <h2 class="s-badge"><span class="s-badge-num">00</span>Суть изделия</h2>
       
     </div>
     <div class="s-body">
@@ -501,7 +501,7 @@ while ( have_posts() ) :
   <?php if ( $dn_options || $steels ) : ?>
   <section class="s" id="s02">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">02</span>Конфигуратор</div>
+      <h2 class="s-badge"><span class="s-badge-num">02</span>Конфигуратор</h2>
     </div>
     <div class="s-body">
       <div class="params-wrap reveal">
@@ -640,7 +640,7 @@ while ( have_posts() ) :
   <?php if ( count( $series ) > 1 ) : ?>
   <section class="s s-alt" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Реестр размеров серии</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Реестр размеров серии</h2>
       <div class="s-meta"><?php echo esc_html( $norm_key ); ?></div>
     </div>
     <div class="s-body">
@@ -720,7 +720,7 @@ while ( have_posts() ) :
   <?php if ( $norm_term ) : ?>
   <section class="s s-dark" id="s04">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">04</span>Нормативная база</div>
+      <h2 class="s-badge"><span class="s-badge-num">04</span>Нормативная база</h2>
       
     </div>
     <div class="s-body">
@@ -765,7 +765,7 @@ while ( have_posts() ) :
   <?php if ( $related ) : ?>
   <section class="s s-alt" id="s09">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">09</span>Связанные позиции<?php echo $is_fastener ? ( $thread_m !== '' ? ' · ' . esc_html( $thread_m ) : '' ) : ( $dn !== '' ? ' · DN ' . esc_html( $dn ) : '' ); ?></div>
+      <h2 class="s-badge"><span class="s-badge-num">09</span>Связанные позиции<?php echo $is_fastener ? ( $thread_m !== '' ? ' · ' . esc_html( $thread_m ) : '' ) : ( $dn !== '' ? ' · DN ' . esc_html( $dn ) : '' ); ?></h2>
       
     </div>
     <div class="s-body">

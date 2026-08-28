@@ -31,14 +31,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / KREPEZH SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / KREPEZH SPECS</h2>
         <div class="hud-row"><span class="hud-rk">Резьба M</span><span class="hud-rv">по типоразмеру</span></div>
         <div class="hud-row"><span class="hud-rk">Длина L, мм</span><span class="hud-rv">8 — 900</span></div>
         <div class="hud-row"><span class="hud-rk">Типы</span><span class="hud-rv">Б · ШП · Г · Ш · В</span></div>
         <div class="hud-row"><span class="hud-rk">Нормативы</span><span class="hud-rv">23 серии</span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Нормативный статус</div>
+        <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 7798-70 / 7805-70</span><span class="hud-rv live">Болты</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 15590-70 / 9066-75</span><span class="hud-rv live">Шпильки</span></div>
         <div class="hud-row"><span class="hud-rk">ОСТ 26-2040-96</span><span class="hud-rv live">Шпильки ОСТ</span></div>
@@ -113,7 +113,7 @@ return [
 	's03' => static function ( array $ctx ): void { ?>
 <section class="s" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Подбор крепежа</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Подбор крепежа</h2>
       <div class="s-meta">KREPEZH / SELECTION GUIDE</div>
     </div>
     <div class="s-body">

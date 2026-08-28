@@ -80,7 +80,7 @@ $smgr_ic = [
           <?php foreach ( $smgr_group['managers'] as $smgr_m ) : $smgr_i++; ?>
             <article class="smgr-card">
               <div class="smgr-photo">
-                <img src="<?php echo esc_url( "$smgr_img_base/{$smgr_m['img']}.jpg" ); ?>"
+                <img src="<?php echo esc_url( "$smgr_img_base/{$smgr_m['img']}.jpg" ); ?>"<?php echo promen_img_size_attr( "$smgr_img_base/{$smgr_m['img']}.jpg" ); ?>
                      alt="<?php echo esc_attr( $smgr_m['name'] . ' — ' . mb_strtolower( mb_substr( $smgr_m['role'], 0, 1 ) ) . mb_substr( $smgr_m['role'], 1 ) ); ?>"
                      width="267" height="400" loading="lazy" decoding="async">
                 <span class="smgr-idx" aria-hidden="true">ОП-<?php echo esc_html( str_pad( (string) $smgr_i, 2, '0', STR_PAD_LEFT ) ); ?></span>

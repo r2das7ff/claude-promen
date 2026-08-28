@@ -33,14 +33,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / IZOLYATSIYA SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / IZOLYATSIYA SPECS</h2>
         <div class="hud-row"><span class="hud-rk">DN, мм</span><span class="hud-rv"><?php $izl_dn2 = promen_canon_range_options( 'dn', 'izolyatsiya' ); echo esc_html( $izl_dn2 ? $izl_dn2[0]['name'] . ' — ' . end( $izl_dn2 )['name'] : '—' ); ?></span></div>
         <div class="hud-row"><span class="hud-rk">Типы</span><span class="hud-rv">Трубы · Тройники ППУ</span></div>
         <div class="hud-row"><span class="hud-rk">Оболочка</span><span class="hud-rv">ПЭ · ОЦ</span></div>
         <div class="hud-row"><span class="hud-rk">Норматив</span><span class="hud-rv">ГОСТ 30732-2020</span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Нормативный статус</div>
+        <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 30732-2020</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'izolyatsiya', 'gost-30732-2020' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Оболочка ПЭ</span><span class="hud-rv live">бесканальная</span></div>
         <div class="hud-row"><span class="hud-rk">Оболочка ОЦ</span><span class="hud-rv live">канальная / надзем</span></div>
@@ -76,7 +76,7 @@ return [
 	's03' => static function ( array $ctx ): void { ?>
 <section class="s" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Подбор изоляции</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Подбор изоляции</h2>
       <div class="s-meta">IZOLYATSIYA / SELECTION GUIDE</div>
     </div>
     <div class="s-body">

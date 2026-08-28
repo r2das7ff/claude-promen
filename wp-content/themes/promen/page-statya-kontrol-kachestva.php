@@ -37,7 +37,7 @@ get_header();
 
   <!-- MEDIA -->
   <div class="ar-media">
-    <img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-6.jpg' ) ); ?>" alt="Контроль качества на производстве" loading="eager">
+    <picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-6.webp' ) ); ?>" type="image/webp"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-6.jpg' ) ); ?>" alt="Контроль качества на производстве" loading="eager" width="1125" height="2000"></picture>
     <span class="ar-media-tag">Отдел технического контроля · Челябинск</span>
   </div>
 
@@ -158,15 +158,15 @@ get_header();
     </div>
     <div class="pd-rel-grid">
       <a class="pd-rel" href="<?php echo esc_url( promen_article_url( 'otvod-svarnoy-besshovnyy' ) ); ?>">
-        <div class="pd-rel-media"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-7.jpg' ) ); ?>" alt="Бесшовные и сварные отводы" loading="lazy"></div>
+        <div class="pd-rel-media"><picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-7.webp' ) ); ?>" type="image/webp"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-7.jpg' ) ); ?>" alt="Бесшовные и сварные отводы" loading="lazy" width="1125" height="2000"></picture></div>
         <div class="pd-rel-body"><div class="pd-rel-tag">Производство</div><div class="pd-rel-title">Бесшовные и сварные отводы: в чём разница</div></div>
       </a>
       <a class="pd-rel" href="<?php echo esc_url( promen_article_url( 'normativnaya-baza' ) ); ?>">
-        <div class="pd-rel-media"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-4.jpg' ) ); ?>" alt="Нормативная база СДТ" loading="lazy"></div>
+        <div class="pd-rel-media"><picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-4.webp' ) ); ?>" type="image/webp"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-4.jpg' ) ); ?>" alt="Нормативная база СДТ" loading="lazy" width="1333" height="2000"></picture></div>
         <div class="pd-rel-body"><div class="pd-rel-tag">Нормативы</div><div class="pd-rel-title">ГОСТ, ОСТ и ТУ на СДТ</div></div>
       </a>
       <a class="pd-rel" href="<?php echo esc_url( promen_article_url( 'postavka-aes-tes' ) ); ?>">
-        <div class="pd-rel-media"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-3.jpg' ) ); ?>" alt="Поставки для АЭС и ТЭС" loading="lazy"></div>
+        <div class="pd-rel-media"><picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-3.webp' ) ); ?>" type="image/webp"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-3.jpg' ) ); ?>" alt="Поставки для АЭС и ТЭС" loading="lazy" width="1333" height="2000"></picture></div>
         <div class="pd-rel-body"><div class="pd-rel-tag">Проекты</div><div class="pd-rel-title">Поставки для АЭС и ТЭС: требования</div></div>
       </a>
     </div>

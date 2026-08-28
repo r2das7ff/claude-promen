@@ -31,14 +31,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / DNISHCHA SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / DNISHCHA SPECS</h2>
         <div class="hud-row"><span class="hud-rk">DN / D, мм</span><span class="hud-rv">100 — 3800</span></div>
         <div class="hud-row"><span class="hud-rk">Стенка s, мм</span><span class="hud-rv">4 — 90</span></div>
         <div class="hud-row"><span class="hud-rk">Тип</span><span class="hud-rv">ДЭ · эллиптические</span></div>
         <div class="hud-row"><span class="hud-rk">PN</span><span class="hud-rv">по расчёту сосуда</span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Нормативный статус</div>
+        <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 6533-78</span><span class="hud-rv live">Действующий</span></div>
         <div class="hud-row"><span class="hud-rk">Область</span><span class="hud-rv live">Сосуды / котлы</span></div>
         <div class="hud-row"><span class="hud-rk">Исполнение</span><span class="hud-rv live">Отбортованные</span></div>
@@ -97,7 +97,7 @@ return [
 	's03' => static function ( array $ctx ): void { ?>
 <section class="s" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Подбор днища</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Подбор днища</h2>
       <div class="s-meta">DNISHCHA / SELECTION GUIDE</div>
     </div>
     <div class="s-body">

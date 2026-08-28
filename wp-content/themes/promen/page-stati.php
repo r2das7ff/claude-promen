@@ -41,7 +41,7 @@ get_header();
 
   <!-- MEDIA BAND -->
   <div class="bl-media" data-reveal>
-    <img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-2.jpg' ) ); ?>" alt="Производственная площадка завода Промышленная Энергетика" loading="eager" decoding="async">
+    <picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-2.webp' ) ); ?>" type="image/webp"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-2.jpg' ) ); ?>" alt="Производственная площадка завода Промышленная Энергетика" loading="eager" decoding="async" width="1500" height="2000"></picture>
     <span class="bl-media-idx">ПЭ-09.ART / REV.2</span>
     <span class="bl-media-tag">Производственная площадка · Челябинск</span>
   </div>

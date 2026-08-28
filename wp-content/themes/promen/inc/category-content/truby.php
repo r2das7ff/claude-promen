@@ -32,14 +32,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / TRUBY SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / TRUBY SPECS</h2>
         <div class="hud-row"><span class="hud-rk">DN / D, мм</span><span class="hud-rv">15 — 1400</span></div>
         <div class="hud-row"><span class="hud-rk">Типы</span><span class="hud-rv">ЭС · БШ · ВГП</span></div>
         <div class="hud-row"><span class="hud-rk">Нормативы</span><span class="hud-rv">6 серий</span></div>
         <div class="hud-row"><span class="hud-rk">Плети в ППУ</span><span class="hud-rv">раздел «Изоляция»</span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Нормативный статус</div>
+        <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 8732-78</span><span class="hud-rv live">БШ · 595</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 10704-91</span><span class="hud-rv live">ЭС · 522</span></div>
         <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
@@ -73,7 +73,7 @@ return [
 	's03' => static function ( array $ctx ): void { ?>
 <section class="s" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Подбор трубы</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Подбор трубы</h2>
       <div class="s-meta">TRUBY / SELECTION GUIDE</div>
     </div>
     <div class="s-body">

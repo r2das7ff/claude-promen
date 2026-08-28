@@ -47,14 +47,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / SDT SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / SDT SPECS</h2>
         <div class="hud-row"><span class="hud-rk">DN, мм</span><span class="hud-rv">6 — 1600</span></div>
         <div class="hud-row"><span class="hud-rk">PN, МПа</span><span class="hud-rv">6 — 160</span></div>
         <div class="hud-row"><span class="hud-rk">Температура среды, °C</span><span class="hud-rv">−70 — +700</span></div>
         <div class="hud-row"><span class="hud-rk">Радиус гиба R / DN</span><span class="hud-rv">1,5 — 5,0</span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Нормативный статус</div>
+        <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 17380-2001</span><span class="hud-rv live">Штампованные</span></div>
         <div class="hud-row"><span class="hud-rk">ОСТ 34-42-621/622/632</span><span class="hud-rv live">Сварные</span></div>
         <div class="hud-row"><span class="hud-rk">ТР ТС 032</span><span class="hud-rv live">Сосуды давления</span></div>
@@ -66,7 +66,7 @@ return [
 	'series_custom' => static function ( array $ctx ): void { ?>
 <section class="s" id="s01">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">01</span>Подбор изделия</div>
+      <h2 class="s-badge"><span class="s-badge-num">01</span>Подбор изделия</h2>
       <div class="s-meta">SDT / PIPE FITTINGS</div>
     </div>
     <div class="s-body">
@@ -274,7 +274,7 @@ return [
 		?>
 <section class="s s-alt" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Реестр исполнений</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Реестр исполнений</h2>
       <div class="s-meta">PRODUCT REGISTRY / SDT</div>
     </div>
     <div class="reg-bar" id="regBar">
@@ -308,7 +308,7 @@ return [
 	's09' => static function ( array $ctx ): void { ?>
 <section class="s" id="s09">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">09</span>Технические параметры</div>
+      <h2 class="s-badge"><span class="s-badge-num">09</span>Технические параметры</h2>
       <div class="s-meta">ENGINEERING SPECIFICATIONS</div>
     </div>
     <div class="s-body">
@@ -503,7 +503,7 @@ return [
 	's10' => static function ( array $ctx ): void { ?>
 <section class="s" id="s10">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">10</span>Порядок заказа</div>
+      <h2 class="s-badge"><span class="s-badge-num">10</span>Порядок заказа</h2>
       <div class="s-meta">ORDERING PROCESS</div>
     </div>
     <div class="flow-grid-wrap">
@@ -539,7 +539,7 @@ return [
 	'after' => static function ( array $ctx ): void { ?>
 <section class="s kb-wrap" id="s11">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">11</span>База знаний</div>
+      <h2 class="s-badge"><span class="s-badge-num">11</span>База знаний</h2>
       <div class="s-meta">KNOWLEDGE BASE / ENGINEERING REFERENCE</div>
     </div>
 

@@ -31,14 +31,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / OTVODY SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / OTVODY SPECS</h2>
         <div class="hud-row"><span class="hud-rk">DN, мм</span><span class="hud-rv">6 — 1400</span></div>
         <div class="hud-row"><span class="hud-rk">Углы поворота</span><span class="hud-rv">15° — 180°</span></div>
         <div class="hud-row"><span class="hud-rk">Температура среды, °C</span><span class="hud-rv">−70 — +700</span></div>
         <div class="hud-row"><span class="hud-rk">Радиус гиба R / DN</span><span class="hud-rv">1,5 — 5,0</span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Нормативный статус</div>
+        <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 17375-2001 / 30753-2001</span><span class="hud-rv live">Крутоизогнутые</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 22793-83 / 22818-83</span><span class="hud-rv live">Ру до 100 МПа</span></div>
         <div class="hud-row"><span class="hud-rk">СТО ЦКТИ 321.01–.05</span><span class="hud-rv live">Гнутые для ТЭС</span></div>
@@ -124,7 +124,7 @@ return [
 	's03' => static function ( array $ctx ): void { ?>
 <section class="s" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Подбор отвода</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Подбор отвода</h2>
       <div class="s-meta">OTVODY / SELECTION GUIDE</div>
     </div>
     <div class="s-body">
@@ -242,7 +242,7 @@ return [
 	's10' => static function ( array $ctx ): void { ?>
 <section class="s kb-wrap" id="s10">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">10</span>База знаний</div>
+      <h2 class="s-badge"><span class="s-badge-num">10</span>База знаний</h2>
       <div class="s-meta">KNOWLEDGE BASE / ENGINEERING REFERENCE</div>
     </div>
 

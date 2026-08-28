@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
 <!-- S10: БАЗА ЗНАНИЙ — ОТВОДЫ -->
   <section class="s kb-wrap" id="s10">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">10</span>База знаний</div>
+      <h2 class="s-badge"><span class="s-badge-num">10</span>База знаний</h2>
       <div class="s-meta">ОТВОДЫ<?php echo esc_html( $angle_sp ); ?></div>
     </div>
 

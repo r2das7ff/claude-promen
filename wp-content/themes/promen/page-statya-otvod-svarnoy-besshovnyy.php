@@ -34,7 +34,7 @@ get_header();
   </div>
 
   <div class="ar-media">
-    <img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-7.jpg' ) ); ?>" alt="Формовка стальной трубы на производственной линии" loading="eager">
+    <picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-7.webp' ) ); ?>" type="image/webp"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-7.jpg' ) ); ?>" alt="Формовка стальной трубы на производственной линии" loading="eager" width="1125" height="2000"></picture>
     <span class="ar-media-tag">Формовочная линия · Челябинск</span>
   </div>
 
@@ -135,15 +135,15 @@ get_header();
     </div>
     <div class="pd-rel-grid">
       <a class="pd-rel" href="<?php echo esc_url( promen_article_url( 'vybor-stali' ) ); ?>">
-        <div class="pd-rel-media"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-1.jpg' ) ); ?>" alt="Выбор стали для СДТ" loading="lazy"></div>
+        <div class="pd-rel-media"><picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-1.webp' ) ); ?>" type="image/webp"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-1.jpg' ) ); ?>" alt="Выбор стали для СДТ" loading="lazy" width="1333" height="2000"></picture></div>
         <div class="pd-rel-body"><div class="pd-rel-tag">Материаловедение</div><div class="pd-rel-title">Как выбрать сталь для СДТ</div></div>
       </a>
       <a class="pd-rel" href="<?php echo esc_url( promen_article_url( 'kontrol-kachestva' ) ); ?>">
-        <div class="pd-rel-media"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-6.jpg' ) ); ?>" alt="Контроль качества СДТ" loading="lazy"></div>
+        <div class="pd-rel-media"><picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-6.webp' ) ); ?>" type="image/webp"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-6.jpg' ) ); ?>" alt="Контроль качества СДТ" loading="lazy" width="1125" height="2000"></picture></div>
         <div class="pd-rel-body"><div class="pd-rel-tag">Контроль качества</div><div class="pd-rel-title">От входного контроля до паспорта изделия</div></div>
       </a>
       <a class="pd-rel" href="<?php echo esc_url( promen_article_url( 'chertezh-zakazchika' ) ); ?>">
-        <div class="pd-rel-media"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-5.jpg' ) ); ?>" alt="Изготовление по чертежам заказчика" loading="lazy"></div>
+        <div class="pd-rel-media"><picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-5.webp' ) ); ?>" type="image/webp"><img src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-5.jpg' ) ); ?>" alt="Изготовление по чертежам заказчика" loading="lazy" width="2000" height="1500"></picture></div>
         <div class="pd-rel-body"><div class="pd-rel-tag">Производство</div><div class="pd-rel-title">Изготовление по чертежам заказчика</div></div>
       </a>
     </div>

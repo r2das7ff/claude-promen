@@ -32,14 +32,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / BOLTY SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / BOLTY SPECS</h2>
         <div class="hud-row"><span class="hud-rk">Резьба M</span><span class="hud-rv">по типоразмеру</span></div>
         <div class="hud-row"><span class="hud-rk">Длина L</span><span class="hud-rv">по карточке</span></div>
         <div class="hud-row"><span class="hud-rk">Семейство</span><span class="hud-rv">Фундамент · шестигранные · ВП</span></div>
         <div class="hud-row"><span class="hud-rk">В группе КР</span><span class="hud-rv"><?php echo esc_html( $ctx['parent_name'] !== '' ? $ctx['parent_name'] : 'Крепёж' ); ?></span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Нормативный статус</div>
+        <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 22032-76</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'bolty', 'gost-22032-1976' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 7805-70</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'bolty', 'gost-7805-1970' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 7798-70</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'bolty', 'gost-7798-1970' ) ) ); ?> поз.</span></div>
@@ -75,7 +75,7 @@ return [
 	's03' => static function ( array $ctx ): void { ?>
 <section class="s" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Подбор — болты</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Подбор — болты</h2>
       <div class="s-meta">BOLTY / SELECTION GUIDE</div>
     </div>
     <div class="s-body">

@@ -31,14 +31,14 @@ return [
     </div>
     <div class="hero-right">
       <div class="hud-block">
-        <div class="hud-label">Технические диапазоны / TOCHENYE SPECS</div>
+        <h2 class="hud-label">Технические диапазоны / TOCHENYE SPECS</h2>
         <div class="hud-row"><span class="hud-rk">DN, мм</span><span class="hud-rv">10 — 200</span></div>
         <div class="hud-row"><span class="hud-rk">D × D2, мм</span><span class="hud-rv">по типоразмеру</span></div>
         <div class="hud-row"><span class="hud-rk">Тип</span><span class="hud-rv">ПТ · точеные детали</span></div>
         <div class="hud-row"><span class="hud-rk">Исполнения</span><span class="hud-rv">1 — 5</span></div>
       </div>
       <div class="hud-block">
-        <div class="hud-label">Нормативный статус</div>
+        <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 22826-83</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'gost-22826-1983' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">ОСТ 34-42-664-84</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'tochenye', 'ost-34-42-664-84' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Марки стали</span><span class="hud-rv live">9 марок</span></div>
@@ -85,7 +85,7 @@ return [
 	's03' => static function ( array $ctx ): void { ?>
 <section class="s" id="s03">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">03</span>Подбор точёного перехода</div>
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Подбор точёного перехода</h2>
       <div class="s-meta">TOCHENYE / SELECTION GUIDE</div>
     </div>
     <div class="s-body">

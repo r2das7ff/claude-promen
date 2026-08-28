@@ -90,6 +90,9 @@ function renderList(){
      провалы кадров. Для карточек берём уменьшённую копию (суффикс -sm),
      крупные блоки остаются на полном файле. */
   const smImg = (src) => src.replace(/\.jpg$/i, '-sm.jpg');
+  // Тот же файл в webp: он на 25–45% легче, jpg остаётся запасным
+  // вариантом в <source>-разметке ниже.
+  const webp  = (src) => src.replace(/\.jpg$/i, '.webp');
 
   const featuredEl = document.getElementById('blFeatured');
   if(featured){
@@ -97,7 +100,7 @@ function renderList(){
       <a class="bl-featured" href="${featured.href}">
         <div class="bl-featured-media">
           <span class="bl-featured-badge">Рекомендуем</span>
-          <img src="${featured.img}" alt="${featured.title}" loading="lazy" decoding="async">
+          <picture><source srcset="${webp(featured.img)}" type="image/webp"><img src="${featured.img}" alt="${featured.title}" loading="lazy" decoding="async"></picture>
         </div>
         <div class="bl-featured-body">
           <span class="bl-featured-tag">${featured.catLabel}</span>
@@ -115,7 +118,7 @@ function renderList(){
     <a class="bl-card" href="${a.href}">
       <div class="bl-card-media">
         <span class="bl-card-cat">${a.catLabel}</span>
-        <img src="${smImg(a.img)}" alt="${a.title}" loading="lazy" decoding="async">
+        <picture><source srcset="${webp(smImg(a.img))}" type="image/webp"><img src="${smImg(a.img)}" alt="${a.title}" loading="lazy" decoding="async"></picture>
       </div>
       <div class="bl-card-body">
         <h3 class="bl-card-title">${a.title}</h3>

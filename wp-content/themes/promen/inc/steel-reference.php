@@ -192,7 +192,7 @@ function promen_render_materials_section( string $group ): void {
 	?>
 <section class="s s-alt" id="s05">
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">05</span>Марки стали и материалы</div>
+      <h2 class="s-badge"><span class="s-badge-num">05</span>Марки стали и материалы</h2>
       <div class="s-meta">STEEL GRADES</div>
     </div>
     <div class="s-body">

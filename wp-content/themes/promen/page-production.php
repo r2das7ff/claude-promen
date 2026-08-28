@@ -750,7 +750,7 @@ $shm_stages = [
     <div class="gal-track" id="galTrack">
       <div class="gal-item">
         <div class="gal-img-wrap">
-          <img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-1.jpg' ) ); ?>" alt="Цех механообработки" loading="lazy" draggable="false">
+          <picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-1.webp' ) ); ?>" type="image/webp"><img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-1.jpg' ) ); ?>" alt="Цех механообработки" loading="lazy" draggable="false" width="1333" height="2000"></picture>
           <div class="gal-ov"></div>
           <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
           <div class="gal-crn bl"></div><div class="gal-crn br"></div>
@@ -767,7 +767,7 @@ $shm_stages = [
       </div>
       <div class="gal-item">
         <div class="gal-img-wrap">
-          <img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-2.jpg' ) ); ?>" alt="Сварочный участок" loading="lazy" draggable="false">
+          <picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-2.webp' ) ); ?>" type="image/webp"><img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-2.jpg' ) ); ?>" alt="Сварочный участок" loading="lazy" draggable="false" width="1500" height="2000"></picture>
           <div class="gal-ov"></div>
           <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
           <div class="gal-crn bl"></div><div class="gal-crn br"></div>
@@ -784,7 +784,7 @@ $shm_stages = [
       </div>
       <div class="gal-item">
         <div class="gal-img-wrap">
-          <img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-3.jpg' ) ); ?>" alt="Склад металла" loading="lazy" draggable="false">
+          <picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-3.webp' ) ); ?>" type="image/webp"><img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-3.jpg' ) ); ?>" alt="Склад металла" loading="lazy" draggable="false" width="1333" height="2000"></picture>
           <div class="gal-ov"></div>
           <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
           <div class="gal-crn bl"></div><div class="gal-crn br"></div>
@@ -801,7 +801,7 @@ $shm_stages = [
       </div>
       <div class="gal-item">
         <div class="gal-img-wrap">
-          <img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-4.jpg' ) ); ?>" alt="Зона технического контроля" loading="lazy" draggable="false">
+          <picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-4.webp' ) ); ?>" type="image/webp"><img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-hor-4.jpg' ) ); ?>" alt="Зона технического контроля" loading="lazy" draggable="false" width="1333" height="2000"></picture>
           <div class="gal-ov"></div>
           <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
           <div class="gal-crn bl"></div><div class="gal-crn br"></div>
@@ -818,7 +818,7 @@ $shm_stages = [
       </div>
       <div class="gal-item">
         <div class="gal-img-wrap">
-          <img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-5.jpg' ) ); ?>" alt="Производственный цех" loading="lazy" draggable="false">
+          <picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-5.webp' ) ); ?>" type="image/webp"><img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-5.jpg' ) ); ?>" alt="Производственный цех" loading="lazy" draggable="false" width="2000" height="1500"></picture>
           <div class="gal-ov"></div>
           <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
           <div class="gal-crn bl"></div><div class="gal-crn br"></div>
@@ -834,7 +834,7 @@ $shm_stages = [
       </div>
       <div class="gal-item">
         <div class="gal-img-wrap">
-          <img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-6.jpg' ) ); ?>" alt="Производственный цех" loading="lazy" draggable="false">
+          <picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-6.webp' ) ); ?>" type="image/webp"><img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-6.jpg' ) ); ?>" alt="Производственный цех" loading="lazy" draggable="false" width="1125" height="2000"></picture>
           <div class="gal-ov"></div>
           <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
           <div class="gal-crn bl"></div><div class="gal-crn br"></div>
@@ -850,7 +850,7 @@ $shm_stages = [
       </div>
       <div class="gal-item">
         <div class="gal-img-wrap">
-          <img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-7.jpg' ) ); ?>" alt="Производственный цех" loading="lazy" draggable="false">
+          <picture><source srcset="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-7.webp' ) ); ?>" type="image/webp"><img class="gal-img" src="<?php echo esc_url( get_theme_file_uri( 'assets/img/photos/promen-photo-7.jpg' ) ); ?>" alt="Производственный цех" loading="lazy" draggable="false" width="1125" height="2000"></picture>
           <div class="gal-ov"></div>
           <div class="gal-crn tl"></div><div class="gal-crn tr"></div>
           <div class="gal-crn bl"></div><div class="gal-crn br"></div>

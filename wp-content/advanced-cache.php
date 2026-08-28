@@ -24,7 +24,19 @@ if ( ! defined( 'PROMEN_CACHE_DIR' ) ) {
 if ( ! defined( 'PROMEN_CACHE_TTL' ) ) {
 	// Каталог меняется редко, а сброс делается по событию — потолок нужен
 	// только чтобы кеш не залёживался, если событие вдруг потерялось.
-	define( 'PROMEN_CACHE_TTL', 12 * HOUR_IN_SECONDS );
+	//
+	// Неделя, а не 12 часов: за сутки истекал весь каталог сразу, и первый же
+	// обход после этого генерировал 15 394 страницы заново. Разбор лога
+	// 28.08.2026 показал, что все 5xx на стенде — именно холодная генерация
+	// тяжёлых карточек под параллелью. Сброс по событию никуда не делся, он и
+	// остаётся основным способом инвалидации.
+	define( 'PROMEN_CACHE_TTL', 7 * DAY_IN_SECONDS );
+}
+if ( ! defined( 'PROMEN_CACHE_STALE' ) ) {
+	// Сколько ещё отдавать протухшую страницу, пока её пересобирает другой
+	// процесс: без этого в момент истечения TTL все одновременные запросы к
+	// одному адресу уходят в генерацию разом.
+	define( 'PROMEN_CACHE_STALE', 10 * MINUTE_IN_SECONDS );
 }
 
 /** Кешируем ли этот запрос вообще. */
@@ -67,15 +79,44 @@ function promen_cache_eligible(): bool {
  * и пара stat на запрос, доли миллисекунды против секунды генерации.
  */
 function promen_cache_theme_stamp(): int {
+	// Сам обход маски запоминаем на минуту в файле-отметке: 122 файла — это
+	// сто с лишним stat на каждый запрос, а меняются они только при выкладке.
+	// Минута задержки роли не играет: после заливки кеш всё равно сбрасывают.
+	$memo = PROMEN_CACHE_DIR . '/.stamp';
+	$memo_mt = @filemtime( $memo );
+	if ( $memo_mt && time() - $memo_mt < 60 ) {
+		$cached = (int) @file_get_contents( $memo );
+		if ( $cached > 0 ) {
+			return $cached;
+		}
+	}
+
 	$dir   = WP_CONTENT_DIR . '/themes/promen';
 	$stamp = (int) @filemtime( $dir . '/functions.php' );
-	foreach ( [ '/inc/*.php', '/woocommerce/*.php' ] as $mask ) {
+	// Маска покрывает всё, что рисует разметку. Раньше в ней были только inc/
+	// и woocommerce/: правка page-*.php, parts/*.php или front-page.php
+	// отпечаток не меняла, и после заливки такого файла страницы отдавали
+	// старую вёрстку до истечения TTL. Ловушка выстрелила 28.08.2026 на
+	// page-stati.php — картинки не переключались на webp.
+	foreach ( [
+		'/*.php',
+		'/inc/*.php',
+		'/inc/category-content/*.php',
+		'/parts/*.php',
+		'/woocommerce/*.php',
+		'/woocommerce/parts/*.php',
+		'/woocommerce/parts/category/*.php',
+	] as $mask ) {
 		foreach ( (array) glob( $dir . $mask ) as $file ) {
 			$mtime = (int) @filemtime( $file );
 			if ( $mtime > $stamp ) {
 				$stamp = $mtime;
 			}
 		}
+	}
+
+	if ( is_dir( PROMEN_CACHE_DIR ) || @mkdir( PROMEN_CACHE_DIR, 0755, true ) || is_dir( PROMEN_CACHE_DIR ) ) {
+		@file_put_contents( $memo, (string) $stamp, LOCK_EX );
 	}
 	return $stamp;
 }
@@ -202,6 +243,23 @@ $promen_head = 'HEAD' === ( $_SERVER['REQUEST_METHOD'] ?? 'GET' );
 $promen_file = promen_cache_file();
 if ( is_readable( $promen_file ) ) {
 	$age = time() - (int) @filemtime( $promen_file );
+
+	// Страница протухла, но ещё свежая в пределах окна: пересобирает её один
+	// процесс — тот, кто первым поставил замок, — остальные получают прежнюю
+	// копию. Иначе в момент истечения TTL к генерации уходят все разом.
+	if ( $age >= PROMEN_CACHE_TTL && $age < PROMEN_CACHE_TTL + PROMEN_CACHE_STALE ) {
+		$promen_lock = $promen_file . '.lock';
+		$promen_lock_mt = @filemtime( $promen_lock );
+		if ( $promen_lock_mt && time() - $promen_lock_mt < PROMEN_CACHE_STALE ) {
+			$age = 0; // замок держит кто-то другой — отдаём прежнюю копию
+		} elseif ( @touch( $promen_lock ) ) {
+			// Замок наш: пересобираем ниже как обычный промах.
+			$age = PHP_INT_MAX;
+		} else {
+			$age = 0;
+		}
+	}
+
 	if ( $age < PROMEN_CACHE_TTL ) {
 		header( 'Content-Type: text/html; charset=UTF-8' );
 		header( 'X-Promen-Cache: HIT' );

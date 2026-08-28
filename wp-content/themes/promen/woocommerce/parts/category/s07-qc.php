@@ -5,7 +5,7 @@ defined( 'ABSPATH' ) || exit;
 <section class="s s-dark qc-wrap" id="s07">
     <div class="qc-scanline"></div>
     <div class="s-hd">
-      <div class="s-badge"><span class="s-badge-num">07</span>Контроль качества</div>
+      <h2 class="s-badge"><span class="s-badge-num">07</span>Контроль качества</h2>
       <div class="s-meta">QC ROUTE / TRACEABILITY</div>
     </div>
     <div class="qc-grid">
