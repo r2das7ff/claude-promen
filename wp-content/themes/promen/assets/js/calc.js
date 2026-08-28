@@ -196,7 +196,56 @@
     box.appendChild(el('div', 'clc-empty', esc(text)));
   }
 
-  /* ── ДОСТАВКА ПАРТИИ (Деловые Линии, через наш сервер) ── */
+  /* ── ДОСТАВКА (Деловые Линии, через наш сервер) ── */
+
+  /* Подсказки городов ДЛ. Общий механизм для расчёта партии и свободного
+     калькулятора: list обязан лежать в контейнере с position:relative.
+     Возвращает объект состояния — .code пуст, пока город не выбран из
+     подсказок (по набранному руками тексту ДЛ считать не умеет). */
+  function attachCityPicker(input, list, opts) {
+    opts = opts || {};
+    var state = { code: '', name: '', full: '', terminal: false };
+    var debounce = null;
+    function close() { list.classList.remove('show'); }
+
+    input.addEventListener('input', function () {
+      state.code = '';
+      state.name = '';
+      if (opts.onClear) opts.onClear();
+      clearTimeout(debounce);
+      var q = input.value.trim();
+      if (q.length < 2) { close(); return; }
+      debounce = setTimeout(function () {
+        fetch((CFG.deliveryApi || '/wp-json/promen/v1/delivery') + '/cities?q=' + encodeURIComponent(q), { credentials: 'same-origin' })
+          .then(function (r) { return r.json(); })
+          .then(function (json) {
+            list.innerHTML = '';
+            var cities = (json && json.cities) || [];
+            cities.slice(0, 8).forEach(function (c) {
+              var note = (c.region || '') + (c.terminal ? '' : ' · нет терминала');
+              var b = el('button', 'clc-dlv-opt', esc(c.name) + (note.trim() ? '<small>' + esc(note.trim()) + '</small>' : ''));
+              b.type = 'button';
+              b.addEventListener('click', function () {
+                state.code = c.code;
+                state.name = c.name;
+                state.full = c.full || c.name;
+                state.terminal = !!c.terminal;
+                input.value = c.name;
+                close();
+                if (opts.onPick) opts.onPick(state);
+              });
+              list.appendChild(b);
+            });
+            list.classList.toggle('show', cities.length > 0);
+          })
+          .catch(close);
+      }, 250);
+    });
+    document.addEventListener('click', function (e) {
+      if (!(opts.host || input.parentNode).contains(e.target)) close();
+    });
+    return state;
+  }
 
   function makeDelivery(host, getItems) {
     if (!CFG.delivery || !host) { if (host) host.hidden = true; return function () {}; }
@@ -218,50 +267,21 @@
     host.appendChild(form);
     host.appendChild(out);
 
-    var cityCode = '';
-    var debounce = null;
-
-    input.addEventListener('input', function () {
-      cityCode = '';
-      out.innerHTML = '';
-      clearTimeout(debounce);
-      var q = input.value.trim();
-      if (q.length < 2) { list.classList.remove('show'); return; }
-      debounce = setTimeout(function () {
-        fetch((CFG.deliveryApi || '/wp-json/promen/v1/delivery') + '/cities?q=' + encodeURIComponent(q), { credentials: 'same-origin' })
-          .then(function (r) { return r.json(); })
-          .then(function (json) {
-            list.innerHTML = '';
-            var cities = (json && json.cities) || [];
-            cities.slice(0, 8).forEach(function (c) {
-              var b = el('button', 'clc-dlv-opt', esc(c.name) + (c.region ? '<small>' + esc(c.region) + '</small>' : ''));
-              b.type = 'button';
-              b.addEventListener('click', function () {
-                cityCode = c.code;
-                input.value = c.name;
-                list.classList.remove('show');
-              });
-              list.appendChild(b);
-            });
-            list.classList.toggle('show', cities.length > 0);
-          })
-          .catch(function () { list.classList.remove('show'); });
-      }, 250);
-    });
-    document.addEventListener('click', function (e) {
-      if (!host.contains(e.target)) list.classList.remove('show');
+    var city = attachCityPicker(input, list, {
+      host: host,
+      onClear: function () { out.innerHTML = ''; }
     });
 
     go.addEventListener('click', function () {
       var items = getItems();
       if (!items || !items.length) { out.innerHTML = '<span class="mut">Для этой позиции расчёт доставки недоступен.</span>'; return; }
-      if (!cityCode) { out.innerHTML = '<span class="mut">Выберите город из списка подсказок.</span>'; input.focus(); return; }
+      if (!city.code) { out.innerHTML = '<span class="mut">Выберите город из списка подсказок.</span>'; input.focus(); return; }
       out.textContent = 'Считаем…';
       fetch((CFG.deliveryApi || '/wp-json/promen/v1/delivery') + '/quote-batch', {
         method: 'POST',
         credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ city_code: cityCode, items: items })
+        body: JSON.stringify({ city_code: city.code, items: items })
       })
         .then(function (r) { return r.json(); })
         .then(function (json) {
@@ -1047,9 +1067,284 @@
     }
   }
 
+  /* ── 07 · СТОИМОСТЬ ДОСТАВКИ (груз задаёт человек) ──
+     Единственный калькулятор раздела, который считает не по каталогу: сюда
+     приходят с заказом целиком, паллетой или чужим грузом. Поэтому габариты
+     и вес принимаются с формы, а рамки значений держит сервер
+     (promen_rest_delivery_quote_custom). */
+
+  function initDostavka(root) {
+    var tabsBox = root.querySelector('[data-tabs]');
+    var rowsBox = root.querySelector('[data-rows]');
+    var extraBox = root.querySelector('[data-extra]');
+    var routeBox = root.querySelector('[data-route]');
+    var goBtn = root.querySelector('[data-go]');
+    var resBox = root.querySelector('[data-result]');
+
+    var MODES = [['one', 'Одно грузоместо'], ['same', 'Одинаковые грузоместа'], ['diff', 'Разные грузоместа']];
+    var mode = 'one';
+    var rows = [blank()];
+    var city = null;
+    var volumeOverride = null;
+
+    /* Габариты европалеты — самый частый случай отгрузки; вес не выдумываем. */
+    function blank() { return { l: 1.2, w: 0.8, h: 0.5, weight: null, qty: 1 }; }
+
+    function autoVolume() {
+      var v = 0;
+      rows.forEach(function (r) {
+        if (r.l && r.w && r.h) v += r.l * r.w * r.h * (mode === 'one' ? 1 : (r.qty || 1));
+      });
+      return v;
+    }
+    function totalWeight() {
+      var t = 0;
+      rows.forEach(function (r) { if (r.weight) t += r.weight * (mode === 'one' ? 1 : (r.qty || 1)); });
+      return t;
+    }
+    function totalPlaces() {
+      if (mode === 'one') return 1;
+      var n = 0;
+      rows.forEach(function (r) { n += (r.qty || 1); });
+      return n;
+    }
+
+    /* ── груз ── */
+
+    MODES.forEach(function (m) {
+      var b = el('button', 'clc-tab' + (m[0] === mode ? ' is-on' : ''), esc(m[1]));
+      b.type = 'button';
+      b.setAttribute('role', 'tab');
+      b.addEventListener('click', function () {
+        if (mode === m[0]) return;
+        mode = m[0];
+        if (mode !== 'diff' && rows.length > 1) rows = [rows[0]];
+        if (mode === 'one') rows[0].qty = 1;
+        tabsBox.querySelectorAll('.clc-tab').forEach(function (t) { t.classList.toggle('is-on', t === b); });
+        drawRows();
+        drawExtra();
+      });
+      tabsBox.appendChild(b);
+    });
+
+    function cell(label, row, key, attrs) {
+      var f = makeInput(label, row[key] == null ? '' : String(row[key]).replace('.', ','), function () {
+        row[key] = num(this.value);
+        syncVolume();
+      }, attrs);
+      return f.root;
+    }
+
+    function drawRows() {
+      rowsBox.innerHTML = '';
+      rows.forEach(function (row, i) {
+        var box = el('div', 'dlv-place');
+        if (mode === 'diff') {
+          var hd = el('div', 'dlv-hd');
+          hd.appendChild(el('span', '', 'Место ' + (i + 1)));
+          if (rows.length > 1) {
+            var del = el('button', 'dlv-del', '✕');
+            del.type = 'button';
+            del.setAttribute('aria-label', 'Убрать место ' + (i + 1));
+            del.addEventListener('click', function () {
+              rows.splice(i, 1);
+              drawRows();
+              syncVolume();
+            });
+            hd.appendChild(del);
+          }
+          box.appendChild(hd);
+        }
+        var grid = el('div', 'dlv-grid' + (mode === 'one' ? '' : ' has-qty'));
+        grid.appendChild(cell('Длина, м', row, 'l', { placeholder: '1,2' }));
+        grid.appendChild(cell('Ширина, м', row, 'w', { placeholder: '0,8' }));
+        grid.appendChild(cell('Высота, м', row, 'h', { placeholder: '0,5' }));
+        grid.appendChild(cell('Вес места, кг', row, 'weight', { placeholder: '300' }));
+        if (mode !== 'one') grid.appendChild(cell('Мест', row, 'qty', { placeholder: '1' }));
+        box.appendChild(grid);
+        rowsBox.appendChild(box);
+      });
+
+      if (mode === 'diff') {
+        var add = el('button', 'clc-btn clc-btn--ghost dlv-add', '+ Добавить место');
+        add.type = 'button';
+        add.addEventListener('click', function () {
+          if (rows.length >= 10) return;
+          rows.push(blank());
+          drawRows();
+          syncVolume();
+        });
+        rowsBox.appendChild(add);
+      }
+
+      var sum = el('div', 'dlv-sum', sumHtml());
+      rowsBox.appendChild(sum);
+    }
+
+    function sumHtml() {
+      return '<span>Мест: <b>' + totalPlaces() + '</b></span>'
+        + '<span>Вес: <b>' + (totalWeight() ? fmtKg(totalWeight()) + NBSP + 'кг' : '—') + '</b></span>'
+        + '<span>Объём: <b>' + (autoVolume() ? fmt(autoVolume(), 2) + NBSP + 'м³' : '—') + '</b></span>';
+    }
+
+    var volField = null;
+    function syncVolume() {
+      if (volField) volField.input.placeholder = autoVolume() ? fmt(autoVolume(), 3) : '';
+      var sum = rowsBox.querySelector('.dlv-sum');
+      if (sum) sum.innerHTML = sumHtml();
+    }
+
+    function drawExtra() {
+      extraBox.innerHTML = '';
+      // Поля пересоздаются вместе с вкладкой, поэтому сбрасываем и значения:
+      // иначе пустое поле показывало бы старое переопределение.
+      volumeOverride = null;
+      stated = null;
+      // Объём считается из габаритов, но уложенная партия занимает меньше
+      // суммы габаритных ящиков — реальную цифру знает только отправитель.
+      volField = makeInput('Объём, м³ (если известен)', '', function () {
+        volumeOverride = num(this.value);
+      }, { placeholder: autoVolume() ? fmt(autoVolume(), 3) : '' });
+      extraBox.appendChild(volField.root);
+
+      var val = makeInput('Объявленная стоимость, ₽', '', function () {
+        stated = num(this.value);
+      }, { placeholder: 'не обязательно' });
+      extraBox.appendChild(val.root);
+    }
+
+    var stated = null;
+
+    /* ── маршрут ── */
+
+    var cityWrap = el('div', 'clc-field clc-field--wide');
+    cityWrap.appendChild(el('label', 'clc-field-label', 'Город назначения'));
+    var cityForm = el('div', 'clc-dlv-form');
+    var cityIn = document.createElement('input');
+    cityIn.type = 'text';
+    cityIn.className = 'clc-dlv-city';
+    cityIn.placeholder = 'Начните вводить город…';
+    cityIn.autocomplete = 'off';
+    var cityList = el('div', 'clc-dlv-list');
+    cityForm.appendChild(cityIn);
+    cityForm.appendChild(cityList);
+    cityWrap.appendChild(cityForm);
+    routeBox.appendChild(cityWrap);
+
+    var picked = attachCityPicker(cityIn, cityList, {
+      host: cityWrap,
+      onPick: function (c) { city = c; },
+      onClear: function () { city = null; }
+    });
+
+    var toSel = makeSelect('Куда', function () {
+      addrField.show(toSel.value() === 'address');
+    });
+    toSel.fill([{ v: 'terminal', t: 'До терминала (самовывоз)' }, { v: 'address', t: 'До адреса' }]);
+    routeBox.appendChild(toSel.root);
+
+    var typeSel = makeSelect('Перевозка', function () {});
+    typeSel.fill([{ v: 'auto', t: 'Авто — обычная' }, { v: 'express', t: 'Экспресс' }, { v: 'avia', t: 'Авиа' }]);
+    routeBox.appendChild(typeSel.root);
+
+    var address = '';
+    var addrField = makeInput('Адрес доставки', '', function () { address = this.value; },
+      { placeholder: 'улица, дом' }, true);
+    routeBox.appendChild(addrField.root);
+    addrField.show = function (on) { addrField.root.style.display = on ? '' : 'none'; };
+    addrField.show(false);
+
+    /* ── расчёт ── */
+
+    function fail(text) {
+      resBox.innerHTML = '';
+      resBox.appendChild(el('div', 'clc-empty', esc(text)));
+    }
+
+    goBtn.addEventListener('click', function () {
+      if (!city || !picked.code) { fail('Выберите город назначения из подсказок.'); cityIn.focus(); return; }
+      var bad = rows.some(function (r) {
+        return !r.l || !r.w || !r.h || !r.weight || r.l < 0.05 || r.w < 0.05 || r.h < 0.05
+          || r.l > 6 || r.w > 6 || r.h > 6;
+      });
+      if (bad) { fail('Заполните габариты (0,05–6 м) и вес каждого места.'); return; }
+      if (toSel.value() === 'address' && !address.trim()) { fail('Укажите адрес доставки или выберите «до терминала».'); return; }
+      if (totalWeight() > 20000) { fail('Груз тяжелее 20 т — это уже выделенная машина, посчитаем по запросу.'); return; }
+
+      goBtn.disabled = true;
+      goBtn.textContent = 'Считаем…';
+      resBox.innerHTML = '';
+      resBox.appendChild(el('div', 'clc-empty', 'Запрашиваем тариф «Деловых Линий»…'));
+
+      fetch((CFG.deliveryApi || '/wp-json/promen/v1/delivery') + '/quote-custom', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          city_code: picked.code,
+          to: toSel.value(),
+          address: toSel.value() === 'address' ? (city.full || city.name) + ', ' + address.trim() : '',
+          type: typeSel.value(),
+          stated_value: stated || 0,
+          volume: volumeOverride || 0,
+          places: rows.map(function (r) {
+            return { length: r.l, width: r.w, height: r.h, weight: r.weight, qty: mode === 'one' ? 1 : (r.qty || 1) };
+          })
+        })
+      })
+        .then(function (r) { return r.json(); })
+        .then(show)
+        .catch(function () { fail('Сеть недоступна — попробуйте ещё раз.'); })
+        .then(function () { goBtn.disabled = false; goBtn.textContent = 'Рассчитать доставку'; });
+    });
+
+    function show(json) {
+      if (!json || !json.ok) {
+        var code = json && json.error;
+        fail(
+          code === 'too_heavy' ? 'Груз тяжелее 20 т — это выделенная машина, посчитаем по запросу.' :
+          code === 'no_terminal' ? 'В этом населённом пункте нет терминала «Деловых Линий» — уточним доставку по запросу.' :
+          code === 'rate_limited' ? 'Слишком много расчётов подряд — попробуйте через минуту.' :
+          code === 'bad_dims' ? 'Габарит места должен быть от 0,05 до 6 м.' :
+          code === 'bad_weight' ? 'Вес места должен быть больше нуля и не больше 20 т.' :
+          code === 'bad_qty' ? 'Мест в строке — от 1 до 200.' :
+          code === 'not_configured' ? 'Расчёт временно недоступен — напишите менеджеру, посчитаем вручную.' :
+          'Не удалось рассчитать — проверьте параметры или напишите менеджеру.');
+        return;
+      }
+      resBox.innerHTML = '';
+      var toAddr = toSel.value() === 'address';
+      var where = toAddr
+        ? 'до адреса' + (city && city.name ? ' · ' + esc(city.name) : '')
+        : 'до терминала' + (json.terminal ? ' «' + esc(json.terminal) + '»' : '');
+      resNum(resBox, fmt(json.price, 0), '₽',
+        where + (json.eta ? ' · выдача с ' + esc(json.eta) : ''));
+
+      var p = json.parts || {};
+      var haul = { auto: 'Межтерминальная перевозка', express: 'Экспресс-перевозка', avia: 'Авиаперевозка' }[typeSel.value()];
+      resRows(resBox, [
+        ['Забор с площадки', fmt(p.pickup, 0) + NBSP + '₽'],
+        p.line ? [haul, fmt(p.line, 0) + NBSP + '₽'] : null,
+        p.delivery ? ['Доставка по городу', fmt(p.delivery, 0) + NBSP + '₽'] : null,
+        p.insurance ? ['Страхование груза', fmt(p.insurance, 0) + NBSP + '₽'] : null,
+        p.other ? ['Прочие сборы', fmt(p.other, 0) + NBSP + '₽'] : null,
+        ['Груз', totalPlaces() + NBSP + plural(totalPlaces(), ['место', 'места', 'мест'])
+          + ' · ' + fmtKg(json.weight) + NBSP + 'кг · ' + fmt(json.volume, 2) + NBSP + 'м³']
+      ]);
+
+      actions(resBox, [{
+        label: 'Отправить заявку',
+        onClick: function () { if (window.openRequestModal) window.openRequestModal('delivery'); }
+      }]);
+    }
+
+    drawRows();
+    drawExtra();
+  }
+
   /* ── INIT ── */
 
-  var MODULES = { sdt: initSdt, flange: initFlange, metizy: initMetizy, pipes: initPipes, dn: initDn, steels: initSteels };
+  var MODULES = { sdt: initSdt, flange: initFlange, metizy: initMetizy, pipes: initPipes, dn: initDn, steels: initSteels, dostavka: initDostavka };
   document.querySelectorAll('[data-calc]').forEach(function (root) {
     var mod = MODULES[root.dataset.calc];
     if (mod) mod(root);

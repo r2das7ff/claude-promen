@@ -209,3 +209,19 @@
   .clc-kit-m{grid-column:2;}
   .clc-search input{font-size:16px;}
 }
+
+/* ── 07 · Стоимость доставки: грузоместа ── */
+.dlv-place + .dlv-place{border-top:1px solid var(--ln);}
+.dlv-hd{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;background:var(--bg2);
+  font-family:'DINPro',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1-text);}
+.dlv-del{border:none;background:none;cursor:pointer;color:var(--g1-text);font-size:14px;line-height:1;padding:2px 6px;}
+.dlv-del:hover{color:var(--dark);}
+.dlv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--ln);}
+.dlv-grid.has-qty{grid-template-columns:repeat(5,minmax(0,1fr));}
+.dlv-add{margin:14px 16px;}
+.dlv-sum{display:flex;flex-wrap:wrap;gap:18px;padding:11px 16px;border-top:1px solid var(--ln);
+  background:var(--bg2);font-size:12.5px;color:var(--g1-text);}
+.dlv-sum b{color:var(--dark);}
+@media (max-width:899px){
+  .dlv-grid,.dlv-grid.has-qty{grid-template-columns:repeat(2,minmax(0,1fr));}
+}

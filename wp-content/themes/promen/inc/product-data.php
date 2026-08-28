@@ -1510,6 +1510,40 @@ function promen_breadcrumbs_schema( array $crumbs ): string {
 }
 
 /**
+ * Файл «Базы знаний» под категорию товара.
+ *
+ * В шаблоне карточки был жёстко подключён kb-otvody.php — и текст про отводы
+ * («Классификация отводов», ГОСТ 17375-2001, виды исполнений) выводился на
+ * всех 15 407 карточках, включая болты, трубы и фланцы. Для читателя это
+ * прямая дезинформация, для поиска — 25 упоминаний отводов на странице болта.
+ *
+ * Файлы под остальные разделы в теме уже лежали, их подключали только
+ * страницы категорий. Идём от самой глубокой категории вверх по дереву:
+ * у «болтов» найдётся kb-bolty.php, у «труб э/с» — родительский kb-truby.php.
+ * Ничего не нашлось — блок не выводим: пустое место честнее чужого текста.
+ */
+function promen_kb_part( int $product_id ): string {
+	$cat = promen_deepest_cat( $product_id );
+	if ( ! $cat ) {
+		return '';
+	}
+	$slugs = [ $cat->slug ];
+	foreach ( get_ancestors( $cat->term_id, 'product_cat', 'taxonomy' ) as $anc_id ) {
+		$anc = get_term( $anc_id, 'product_cat' );
+		if ( $anc && ! is_wp_error( $anc ) ) {
+			$slugs[] = $anc->slug;
+		}
+	}
+	foreach ( $slugs as $slug ) {
+		$path = get_theme_file_path( 'woocommerce/parts/kb-' . $slug . '.php' );
+		if ( file_exists( $path ) ) {
+			return $path;
+		}
+	}
+	return '';
+}
+
+/**
  * Описание раздела, когда своего текста в базе нет.
  *
  * Обход 2026-08-25 нашёл 15 подразделов с пустым описанием — «Фланцы

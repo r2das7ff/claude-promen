@@ -579,9 +579,14 @@ promenHideEmptyCols(document.querySelector('.series-full'));
       if (dcBox) dcBox.style.display = calc ? '' : 'none';
       if (cityField) cityField.style.display = deliveryMode ? '' : 'none';
       if (deliveryInput) deliveryInput.value = deliveryMode ? 'да' : '';
-      if (title) title.textContent = deliveryMode ? 'Расчёт доставки' : 'Заказать позицию';
-      if (sub) sub.textContent = calc
-        ? 'Укажите город и количество — покажем ориентировочную стоимость по тарифам «Деловых Линий». Для точного расчёта и КП отправьте заявку.'
+      if (title) title.textContent = deliveryMode ? (calc ? 'Расчёт доставки' : 'Стоимость доставки') : 'Заказать позицию';
+      // Без калькулятора режим доставки — обычная форма, и говорить об этом
+      // надо прямо: заголовок «Расчёт доставки» над формой без единой цифры
+      // читается как поломка.
+      if (sub) sub.textContent = deliveryMode
+        ? (calc
+          ? 'Укажите город и количество — покажем ориентировочную стоимость по тарифам «Деловых Линий». Для точного расчёта и КП отправьте заявку.'
+          : 'По этой позиции стоимость доставки считает инженер: укажите город и контакт — пришлём её вместе с КП в течение рабочего дня.')
         : subOrder;
       var f = modal.querySelector(deliveryMode ? (calc ? '#dc-city' : '#om-city') : '#om-qty');
       if (f) f.focus({ preventScroll: true });

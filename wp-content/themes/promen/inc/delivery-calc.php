@@ -6,6 +6,8 @@
  * в наши REST-эндпоинты, а наружу (api.dellin.ru) ходит сервер:
  *   GET  /wp-json/promen/v1/delivery/cities?q=…   — автодополнение городов
  *   POST /wp-json/promen/v1/delivery/quote        — расчёт стоимости и срока
+ *   POST /wp-json/promen/v1/delivery/quote-custom — свободный расчёт: груз
+ *        задаёт человек, а не каталог (/kalkulyatory/dostavka/)
  *
  * Ключ: env PROMEN_DELLIN_APPKEY (docker-compose / окружение хостинга)
  * либо константа PROMEN_DELLIN_APPKEY в wp-config.php.
@@ -97,6 +99,11 @@ add_action( 'rest_api_init', function () {
 		'callback'            => 'promen_rest_delivery_quote',
 		'permission_callback' => '__return_true',
 	] );
+	register_rest_route( 'promen/v1', '/delivery/quote-custom', [
+		'methods'             => 'POST',
+		'callback'            => 'promen_rest_delivery_quote_custom',
+		'permission_callback' => '__return_true',
+	] );
 } );
 
 /**
@@ -182,8 +189,8 @@ function promen_delivery_cargo( WC_Product $product, int $qty ): ?array {
 		'length'      => round( $len, 2 ),
 		'width'       => round( $side, 2 ),
 		'height'      => round( $side, 2 ),
-		'weight'      => round( $total_w / $places, 1 ),
-		'totalWeight' => $total_w,
+		'weight'      => promen_delivery_weight( $total_w / $places ),
+		'totalWeight' => promen_delivery_weight( $total_w ),
 		'totalVolume' => $total_v,
 		'hazardClass' => 0,
 	];
@@ -201,6 +208,18 @@ function promen_delivery_produce_date(): string {
 		$ts += DAY_IN_SECONDS;
 	}
 	return wp_date( 'Y-m-d', $ts );
+}
+
+/**
+ * Вес для калькулятора ДЛ: округление до 0,1 кг с нижней границей.
+ *
+ * Без границы мелочь вроде отвода 21,3×2 (0,02 кг) после round() уходила в
+ * API нулём, и расчёт падал с «необходимо ввести параметры груза» — на
+ * калькуляторе СДТ это ловилось на всех малых DN. Тариф от 0,1 до 1 кг
+ * одинаков (минимальный), поэтому граница цену не искажает.
+ */
+function promen_delivery_weight( float $w ): float {
+	return max( 0.1, round( $w, 1 ) );
 }
 
 /** Корзина веса для ключа кеша: близкие партии получают один расчёт. */
@@ -250,4 +269,105 @@ function promen_rest_delivery_quote( WP_REST_Request $request ) {
 	// Кэш, запрос к ДЛ и разбор ответа — общий хвост с расчётом партии
 	// (promen_delivery_quote_for_cargo в inc/calculators.php).
 	return promen_delivery_quote_for_cargo( $cargo, $city_code );
+}
+
+/**
+ * Свободный расчёт доставки — /kalkulyatory/dostavka/.
+ *
+ * В отличие от расчёта по карточке товара (там вес и габариты берутся из
+ * каталога и фронту не доверяются) здесь груз задаёт человек: менеджеру нужно
+ * посчитать заказ целиком, паллету или произвольный груз, которого в каталоге
+ * нет. Поэтому вся арифметика проходит через жёсткие рамки: габарит места
+ * 0,05–6 м, вес места до 20 т, не больше 10 строк и 200 мест в строке,
+ * суммарно не больше 20 т — выше сборным грузом не возят.
+ *
+ * Тариф ДЛ считается от суммарных веса и объёма, а габарит нужен для проверки
+ * на негабарит, поэтому разные грузоместа сводятся к одной строке: количество
+ * мест, наибольший габарит и точные суммы веса и объёма.
+ */
+function promen_rest_delivery_quote_custom( WP_REST_Request $request ) {
+	if ( promen_dellin_appkey() === '' ) {
+		return new WP_REST_Response( [ 'error' => 'not_configured' ], 503 );
+	}
+
+	// Лимит общий с расчётом по карточке: 10 расчётов в минуту с одного IP.
+	$ip      = (string) ( $_SERVER['REMOTE_ADDR'] ?? '' );
+	$rl_key  = 'promen_dlrl_' . md5( $ip );
+	$rl_hits = (int) get_transient( $rl_key );
+	if ( $rl_hits >= 10 ) {
+		return new WP_REST_Response( [ 'error' => 'rate_limited' ], 429 );
+	}
+	set_transient( $rl_key, $rl_hits + 1, MINUTE_IN_SECONDS );
+
+	$city_code = (string) $request->get_param( 'city_code' );
+	if ( ! preg_match( '/^\d{13,25}$/', $city_code ) ) {
+		return new WP_REST_Response( [ 'error' => 'bad_city' ], 400 );
+	}
+
+	$rows = $request->get_param( 'places' );
+	if ( ! is_array( $rows ) || ! $rows || count( $rows ) > 10 ) {
+		return new WP_REST_Response( [ 'error' => 'bad_places' ], 400 );
+	}
+
+	$total_w = 0.0;
+	$total_v = 0.0;
+	$qty_sum = 0;
+	$max_l   = 0.0;
+	$max_w   = 0.0;
+	$max_h   = 0.0;
+	foreach ( $rows as $row ) {
+		if ( ! is_array( $row ) ) {
+			return new WP_REST_Response( [ 'error' => 'bad_places' ], 400 );
+		}
+		$l   = (float) ( $row['length'] ?? 0 );
+		$wd  = (float) ( $row['width'] ?? 0 );
+		$h   = (float) ( $row['height'] ?? 0 );
+		$wt  = (float) ( $row['weight'] ?? 0 );
+		$qty = (int) ( $row['qty'] ?? 1 );
+		if ( $l < 0.05 || $wd < 0.05 || $h < 0.05 || $l > 6 || $wd > 6 || $h > 6 ) {
+			return new WP_REST_Response( [ 'error' => 'bad_dims' ], 400 );
+		}
+		if ( $wt <= 0 || $wt > 20000 ) {
+			return new WP_REST_Response( [ 'error' => 'bad_weight' ], 400 );
+		}
+		if ( $qty < 1 || $qty > 200 ) {
+			return new WP_REST_Response( [ 'error' => 'bad_qty' ], 400 );
+		}
+		$total_w += $wt * $qty;
+		$total_v += $l * $wd * $h * $qty;
+		$qty_sum += $qty;
+		$max_l    = max( $max_l, $l );
+		$max_w    = max( $max_w, $wd );
+		$max_h    = max( $max_h, $h );
+	}
+	if ( $total_w > 20000 ) {
+		return new WP_REST_Response( [ 'error' => 'too_heavy' ], 422 );
+	}
+
+	// Объём можно задать вручную: у сложенной в паллету партии он заметно
+	// меньше суммы габаритных ящиков, и honest-цифру знает только отправитель.
+	$manual_v = (float) $request->get_param( 'volume' );
+	if ( $manual_v > 0 ) {
+		$total_v = min( max( $manual_v, 0.01 ), 120 );
+	}
+
+	// Мест в тарифе не больше 20 — как в расчёте по карточке.
+	$places = max( 1, min( $qty_sum, 20 ) );
+	$cargo  = [
+		'quantity'    => $places,
+		'length'      => round( $max_l, 2 ),
+		'width'       => round( $max_w, 2 ),
+		'height'      => round( $max_h, 2 ),
+		'weight'      => promen_delivery_weight( $total_w / $places ),
+		'totalWeight' => promen_delivery_weight( $total_w ),
+		'totalVolume' => max( round( $total_v, 3 ), 0.01 ),
+		'hazardClass' => 0,
+	];
+
+	return promen_delivery_quote_for_cargo( $cargo, $city_code, [
+		'type'         => (string) $request->get_param( 'type' ),
+		'arrival'      => (string) $request->get_param( 'to' ),
+		'address'      => mb_substr( trim( (string) $request->get_param( 'address' ) ), 0, 200 ),
+		'stated_value' => min( 50000000, max( 0, (float) $request->get_param( 'stated_value' ) ) ),
+	] );
 }

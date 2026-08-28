@@ -245,7 +245,14 @@ while ( have_posts() ) :
       </div>
       <div class="hero-cta-row">
         <button class="nav-cta hero-order-btn" type="button" id="orderOpen">Заказать →</button>
-        <button class="s10-ghost-link" type="button" id="deliveryOpen">Рассчитать стоимость доставки</button>
+        <?php
+        // Онлайн-калькулятор доступен на 31% каталога: у крепежа масса
+        // недостоверна, у труб она в кг/м, у части позиций массы вовсе нет.
+        // Кнопка остаётся везде — вход в режим доставки нужен и там, — но
+        // обещать расчёт, которого не будет, она не должна.
+        $dc_on = promen_delivery_available( $product->get_id() );
+        ?>
+        <button class="s10-ghost-link" type="button" id="deliveryOpen"><?php echo $dc_on ? 'Рассчитать стоимость доставки' : 'Уточнить стоимость доставки'; ?></button>
       </div>
     </div>
     <div class="hero-right">
@@ -785,7 +792,14 @@ while ( have_posts() ) :
   </section>
   <?php endif; ?>
 
-<?php include __DIR__ . '/parts/kb-otvody.php'; ?>
+<?php
+  // «База знаний» под свой раздел, а не отводы на каждой карточке —
+  // см. promen_kb_part().
+  $promen_kb = promen_kb_part( $product->get_id() );
+  if ( $promen_kb ) {
+    include $promen_kb;
+  }
+?>
 
 </div><!-- /.pg -->
 
@@ -801,7 +815,7 @@ while ( have_posts() ) :
 		'steels'     => $steels,
 		'sups'       => $sups,
 		'delivery'   => [
-			'enabled' => promen_delivery_available( $product->get_id() ),
+			'enabled' => $dc_on,
 			'rest'    => esc_url_raw( rest_url( 'promen/v1/delivery' ) ),
 			'pid'     => $product->get_id(),
 		],

@@ -88,6 +88,12 @@ function promen_calc_pages(): array {
 			'desc'  => 'Ближайшие зарубежные аналоги российских марок: EN, ASTM/AISI, DIN — и обратный подбор.',
 			'tag'   => 'ГОСТ · EN · ASTM · DIN',
 		],
+		'dostavka' => [
+			'num'   => '07',
+			'title' => 'Стоимость доставки',
+			'desc'  => 'Расчёт по тарифам «Деловых Линий» для произвольного груза: свои габариты, вес и объём, до терминала или до адреса.',
+			'tag'   => 'ДЕЛОВЫЕ ЛИНИИ · АВТО · ЭКСПРЕСС · АВИА',
+		],
 	];
 }
 
@@ -600,8 +606,8 @@ function promen_rest_delivery_quote_batch( WP_REST_Request $request ) {
 		'length'      => round( $max_len, 2 ),
 		'width'       => round( $max_sid, 2 ),
 		'height'      => round( $max_sid, 2 ),
-		'weight'      => round( $total_w / $places, 1 ),
-		'totalWeight' => round( $total_w, 1 ),
+		'weight'      => promen_delivery_weight( $total_w / $places ),
+		'totalWeight' => promen_delivery_weight( $total_w ),
 		'totalVolume' => max( round( $total_v, 3 ), 0.01 ),
 		'hazardClass' => 0,
 	];
@@ -611,14 +617,41 @@ function promen_rest_delivery_quote_batch( WP_REST_Request $request ) {
 
 /**
  * Общий хвост расчёта доставки: кэш по корзине веса/объёма, запрос к ДЛ,
- * разбор цены и срока. Вынесен из promen_rest_delivery_quote 1:1.
+ * разбор цены и срока.
+ *
+ * $opts (всё необязательно, значения по умолчанию — режим карточки товара):
+ *   type         — 'auto' | 'express' | 'avia' (тип перевозки);
+ *   arrival      — 'terminal' | 'address' (куда везём в городе назначения);
+ *   address      — строка адреса, когда arrival = 'address';
+ *   stated_value — объявленная стоимость груза, ₽ (страховка ДЛ).
+ *
+ * Все четыре входят в ключ кэша: без этого расчёт «до адреса авиа» подменялся
+ * бы лежащим рядом «до терминала авто» с тем же весом.
  */
-function promen_delivery_quote_for_cargo( array $cargo, string $city_code ): WP_REST_Response {
+function promen_delivery_quote_for_cargo( array $cargo, string $city_code, array $opts = [] ): WP_REST_Response {
+	$type    = (string) ( $opts['type'] ?? '' );
+	if ( ! in_array( $type, [ 'auto', 'express', 'avia' ], true ) ) {
+		$type = 'auto';
+	}
+	$to      = ( ( $opts['arrival'] ?? 'terminal' ) === 'address' ) ? 'address' : 'terminal';
+	$address = trim( (string) ( $opts['address'] ?? '' ) );
+	$stated  = max( 0.0, (float) ( $opts['stated_value'] ?? 0 ) );
+	if ( $to === 'address' && $address === '' ) {
+		$to = 'terminal';
+	}
+	if ( $stated > 0 ) {
+		$cargo['insurance'] = [ 'statedValue' => round( $stated, 2 ), 'term' => false ];
+	}
+
 	$ck     = 'promen_dlq_' . md5( implode( '|', [
 		$city_code,
 		promen_delivery_weight_bucket( $cargo['totalWeight'] ),
 		ceil( $cargo['totalVolume'] * 20 ) / 20,
 		$cargo['quantity'],
+		$type,
+		$to,
+		mb_strtolower( $address ),
+		$stated,
 	] ) );
 	$cached = get_transient( $ck );
 	if ( is_array( $cached ) ) {
@@ -632,16 +665,24 @@ function promen_delivery_quote_for_cargo( array $cargo, string $city_code ): WP_
 		$dated['time'] = [ 'worktimeStart' => '9:00', 'worktimeEnd' => '18:00' ];
 	}
 
-	$body = static function ( array $derival ) use ( $city_code, $cargo ): array {
+	$arrival = $to === 'address'
+		? [
+			'variant' => 'address',
+			'address' => [ 'search' => $address ],
+			'time'    => [ 'worktimeStart' => '9:00', 'worktimeEnd' => '18:00' ],
+		]
+		: [
+			'variant' => 'terminal',
+			'city'    => $city_code,
+		];
+
+	$body = static function ( array $derival ) use ( $arrival, $cargo, $type ): array {
 		return [
 			'appkey'   => promen_dellin_appkey(),
 			'delivery' => [
-				'deliveryType' => [ 'type' => 'auto' ],
+				'deliveryType' => [ 'type' => $type ],
 				'derival'      => $derival,
-				'arrival'      => [
-					'variant' => 'terminal',
-					'city'    => $city_code,
-				],
+				'arrival'      => $arrival,
 			],
 			'cargo'    => $cargo,
 		];
@@ -682,13 +723,32 @@ function promen_delivery_quote_for_cargo( array $cargo, string $city_code ): WP_
 		?? ( $data['orderDates']['arrivalToOspReceiver'] ?? '' ) );
 	$eta_ts  = $eta_raw !== '' ? strtotime( $eta_raw ) : false;
 
+	// Раскладка цены: забор + магистраль + доставка + страховка не сходятся в
+	// итог до копейки (у ДЛ есть мелкие сборы вроде уведомления), поэтому
+	// остаток показываем строкой «прочие сборы», а не прячем.
+	// Магистраль лежит под разными ключами: intercity у авто, express у
+	// экспресса, air у авиа — иначе вся перевозка утекала бы в «прочие».
+	$pickup    = round( (float) ( $data['derival']['price'] ?? 0 ) );
+	$line      = round( (float) ( $data['intercity']['price']
+		?? ( $data['express']['price'] ?? ( $data['air']['price'] ?? 0 ) ) ) );
+	$last_mile = round( (float) ( $data['arrival']['price'] ?? 0 ) );
+	$insurance = round( (float) ( $data['insurance'] ?? 0 ) );
+
 	$out = [
 		'ok'       => true,
 		'price'    => round( $price ),
 		'terminal' => (string) ( $data['arrival']['terminal'] ?? '' ),
 		'eta'      => $eta_ts ? wp_date( 'd.m', $eta_ts ) : '',
+		'eta_full' => $eta_ts ? wp_date( 'd.m.Y', $eta_ts ) : '',
 		'weight'   => $cargo['totalWeight'],
 		'volume'   => $cargo['totalVolume'],
+		'parts'    => [
+			'pickup'    => $pickup,
+			'line'      => $line,
+			'delivery'  => $last_mile,
+			'insurance' => $insurance,
+			'other'     => max( 0, round( $price ) - $pickup - $line - $last_mile - $insurance ),
+		],
 	];
 	set_transient( $ck, $out, 12 * HOUR_IN_SECONDS );
 	return new WP_REST_Response( $out, 200 );
