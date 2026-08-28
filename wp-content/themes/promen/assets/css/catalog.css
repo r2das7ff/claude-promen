@@ -344,7 +344,7 @@ a.grp-row:hover .gr-go{color:var(--dark);border-color:var(--g1);background:rgba(
 }
 .seo-kicker{font-family:'DINPro',monospace;font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1-text);margin-bottom:22px;display:flex;align-items:center;gap:10px;}
 .seo-kicker::before{content:'ПЭ';border:1px solid var(--g1);padding:3px 8px;font-size:13.5px;letter-spacing:.18em;line-height:1;}
-.seo-h2{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(34px,4vw,64px);line-height:.88;letter-spacing:-.015em;text-transform:uppercase;color:var(--dark);}
+.seo-h2{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(34px,4vw,64px);line-height:.88;letter-spacing:-.015em;text-transform:uppercase;color:var(--dark);overflow-wrap:break-word;}
 .seo-h2 em{color:var(--g1-text);font-style:normal;}
 .seo-text-col{padding:60px 56px 56px;display:flex;flex-direction:column;gap:20px;justify-content:center;}
 .seo-p{font-size:14px;font-weight:300;line-height:1.76;color:var(--blue);}

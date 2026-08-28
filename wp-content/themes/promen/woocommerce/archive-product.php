@@ -107,6 +107,12 @@ foreach ( promen_catalog_nav_roots() as $root_slug ) {
 $promen_clean_root = ! is_paged();
 if ( $promen_clean_root ) {
 	include __DIR__ . '/parts/catalog-seo.php';
+	// Разметка FAQ — только на самом каталоге. Этот же блок показывается на
+	// 127 страницах нормативов, и размечать его там значило бы наплодить
+	// одинаковых FAQPage на страницах, которым он не принадлежит.
+	if ( function_exists( 'promen_faq_schema' ) && ( is_shop() || is_post_type_archive( 'product' ) ) && ! is_tax() ) {
+		promen_faq_schema( get_theme_file_path( 'woocommerce/parts/catalog-kb.php' ) );
+	}
 	include __DIR__ . '/parts/catalog-kb.php';
 }
 

@@ -520,7 +520,13 @@ add_action( 'wp_head', function () {
 		'datePublished'    => get_the_date( 'c', $post ),
 		'dateModified'     => get_the_modified_date( 'c', $post ),
 		'inLanguage'       => 'ru-RU',
-		'author'           => [ '@id' => home_url( '/#organization' ) ],
+		// Автор — то же, что стоит подписью в шапке статьи: отдел, а не
+		// абстрактная организация. Издатель остаётся заводом.
+		'author'           => [
+			'@type'          => 'Organization',
+			'name'           => 'Инженерный отдел «Промышленная Энергетика»',
+			'parentOrganization' => [ '@id' => home_url( '/#organization' ) ],
+		],
 		'publisher'        => [ '@id' => home_url( '/#organization' ) ],
 	];
 	$data['image'] = promen_og_image();
@@ -599,6 +605,61 @@ add_action( 'template_redirect', function () {
 	echo implode( "\n", $out );
 	exit;
 }, 0 );
+
+/**
+ * FAQPage по блокам «Частые вопросы».
+ *
+ * Расширенных результатов по FAQ Google не даёт с мая 2026, но разметка
+ * по-прежнему помогает ИИ-ответам разбирать содержимое и связывать сущности,
+ * а для B2B это уже заметный канал: снабженец спрашивает деталь у ассистента.
+ *
+ * Вопросы лежат статической разметкой в шаблонах, поэтому читаем их из файла
+ * и кэшируем. Ставим разметку только там, где FAQ — собственное содержимое
+ * страницы: на /catalog/ и на трёх категориях со своими блоками. На 127
+ * страницах нормативов показывается тот же общий FAQ каталога — дублировать
+ * его разметкой значит плодить одинаковые FAQPage, чего делать нельзя.
+ *
+ * @param string $file Путь к шаблону с блоком .faq-wrap.
+ */
+function promen_faq_schema( string $file ): void {
+	if ( ! is_readable( $file ) ) {
+		return;
+	}
+	$key  = 'promen_faq_' . md5( $file . (string) @filemtime( $file ) );
+	$json = get_transient( $key );
+
+	if ( false === $json ) {
+		$html = (string) file_get_contents( $file );
+		preg_match_all(
+			'#<span class="fq-t">(.*?)</span>.*?<div class="fq-a-in">(.*?)</div>#s',
+			$html, $m, PREG_SET_ORDER
+		);
+		$items = [];
+		foreach ( $m as $pair ) {
+			$q = trim( html_entity_decode( wp_strip_all_tags( $pair[1] ), ENT_QUOTES, 'UTF-8' ) );
+			$a = trim( html_entity_decode( wp_strip_all_tags( $pair[2] ), ENT_QUOTES, 'UTF-8' ) );
+			$a = preg_replace( '/\s+/u', ' ', $a );
+			if ( '' === $q || '' === $a ) {
+				continue;
+			}
+			$items[] = [
+				'@type'          => 'Question',
+				'name'           => $q,
+				'acceptedAnswer' => [ '@type' => 'Answer', 'text' => $a ],
+			];
+		}
+		$json = $items
+			? wp_json_encode(
+				[ '@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $items ],
+				JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES )
+			: '';
+		set_transient( $key, $json, WEEK_IN_SECONDS );
+	}
+
+	if ( $json ) {
+		echo '<script type="application/ld+json">' . $json . '</script>' . "\n";
+	}
+}
 
 /** Включаем norm в core XML sitemap. */
 add_filter( 'wp_sitemaps_taxonomies', function ( array $taxonomies ): array {
