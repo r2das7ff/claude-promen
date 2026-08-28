@@ -35,3 +35,6 @@ perf-reports/seo/*/slow.csv
 
 # Файлы полностраничного кеша (создаются на лету)
 wp-content/cache/
+
+# Скиллы higgsfield ставятся окружением, к проекту не относятся
+.claude/skills/higgsfield-*/
