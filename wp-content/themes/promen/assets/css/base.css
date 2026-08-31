@@ -709,6 +709,46 @@ a.s10-contact-v:hover{color:var(--blue);}
   .ft-kicker,.ft-cell-label,.ft-copy,.ft-policy,.ft-idx{font-size:12px;}
   .ft-nav-list a{font-size:12px;}
 }
+
+/* Планшет: футер — тоже один экран.
+   ─────────────────────────────────────────────────────────────────────
+   На 768×1024 футер занимал 1430px и обрезался на 406px. Основной вес —
+   сетка: 808px из 1430. Виновата не вёрстка, а тач-цели: девять ссылок
+   навигации в одну колонку по 44px минимум (правило ниже, ≤1024) дают
+   почти 500px. Разворачиваем список в две колонки — цели остаются 44px,
+   высота падает вдвое. Остальное добираем отступами и кеглем.
+
+   Верхний отступ считается от высоты навигации: на планшете
+   .ft-statement прижимает контент кверху (justify-content:flex-start),
+   и без запаса «ПРОМЫШЛЕННАЯ ЭНЕРГЕТИКА» с первой строкой заголовка
+   уезжали под фиксированную шапку. */
+@media (min-width:641px) and (max-width:1024px){
+  .ft-nav-list{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;}
+  .ft-cell{padding-top:26px;padding-bottom:26px;}
+  .ft-cell-label{margin-bottom:12px;}
+  .ft-statement{padding-top:calc(var(--nav-h,64px) + 20px);padding-bottom:28px;}
+  .ft-kicker{margin-bottom:20px;}
+  .ft-headline{font-size:min(clamp(48px,9vw,90px),calc(30vh - 150px));margin-bottom:20px;}
+  .ft-tagline{margin-bottom:24px;line-height:1.6;}
+  .ft-bar{padding-top:14px;padding-bottom:14px;}
+}
+
+/* Планшет в ландшафте (1024×768 и подобные): высоты вдвое меньше, чем в
+   портрете, а сетка всё ещё 2×2 — 492px. Разворачиваем её в один ряд из
+   четырёх колонок: при 1024px ширины на ячейку приходится 256px, ссылки
+   навигации в две подколонки помещаются без переносов, а сетка худеет до
+   288px. Порог по ширине 900px, чтобы правило не поймало портрет 768:
+   там ячейка была бы 192px и ссылки бы не влезли. */
+@media (min-width:900px) and (max-width:1024px) and (max-height:900px){
+  .ft-grid{grid-template-columns:repeat(4,1fr);}
+  .ft-cell{padding:20px;}
+  .ft-cell:nth-child(2){border-right:1px solid rgba(200,208,216,.08);}
+  .ft-cell:nth-child(3){border-top:none;}
+  .ft-statement{padding-top:calc(var(--nav-h,64px) + 28px);padding-bottom:18px;}
+  .ft-kicker{margin-bottom:14px;}
+  .ft-headline{font-size:min(clamp(44px,7vw,90px),calc(26vh - 110px));margin-bottom:16px;}
+  .ft-tagline{margin-bottom:16px;}
+}
 @media(max-width:640px){
   .site-footer{min-height:100svh;}
   .ft-cell--extra{display:none;}
@@ -732,6 +772,42 @@ a.s10-contact-v:hover{color:var(--blue);}
   .ft-headline{margin-bottom:10px;}
   .ft-cell{padding:18px 16px 18px 20px;}
   .ft-bar{padding:12px 20px;}
+}
+
+/* Телефон: доводим футер до одного экрана.
+   ─────────────────────────────────────────────────────────────────────
+   Правила выше уже метили в «один экран», но не добивали: на 375×812
+   футер занимал 955px и обрезался на 143px. Как и на планшете, вес даёт
+   не текст, а тач-цели — девять ссылок навигации по 44px минимум. В две
+   колонки это пять рядов, 290px на ячейку. Переводим в три колонки: три
+   ряда вместо пяти, цели остаются 44px, ссылки при 113px на колонку не
+   переносятся.
+
+   Верхний отступ считается от высоты навигации: .ft-statement на
+   телефоне прижимает контент книзу, и без запаса подпись оказывалась на
+   12px ВЫШЕ нижнего края фиксированной шапки, то есть под ней.
+
+   Кегль ограничен и по ширине, и по высоте (svh): на 812px это 45px,
+   на 667px — 37px. Блок стоит после правил ≤480, иначе их шорткат
+   padding у .ft-cell сбрасывал бы вертикаль обратно.
+
+   Честная оговорка: собственная высота контента ~806px. На 812px он
+   помещается, на маленьких экранах и при раскрытой адресной строке —
+   уже нет; чтобы влезть туда, пришлось бы убирать содержимое, а это
+   решение не техническое. */
+@media (max-width:640px){
+  .ft-nav-list{grid-template-columns:repeat(3,1fr);gap:0 10px;}
+  /* min-width:0 — иначе «Соединительные детали» распирает свой трек:
+     у грид-элемента min-width по умолчанию auto, длинная ссылка
+     раздвигала колонку и вылезала за правое поле ячейки. */
+  .ft-nav-list a{min-width:0;letter-spacing:.1em;}
+  .ft-cell{padding-top:10px;padding-bottom:10px;}
+  .ft-cell-label{margin-bottom:8px;}
+  .ft-statement{padding-top:calc(var(--nav-h,64px) + 16px);padding-bottom:14px;}
+  .ft-kicker{margin-bottom:12px;}
+  .ft-headline{font-size:min(clamp(32px,12vw,54px),calc(13svh - 50px));margin-bottom:10px;}
+  .ft-tagline{margin-bottom:12px;line-height:1.45;}
+  .ft-bar{padding-top:8px;padding-bottom:8px;gap:2px;}
 }
 
 /* Тач-экраны: гасим системную подсветку тапа (бирюзовая вспышка на кликах);
