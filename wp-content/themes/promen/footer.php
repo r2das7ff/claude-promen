@@ -19,10 +19,6 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
 <div class="footer-zone">
 
 <?php if ( apply_filters( 'promen_footer_form', true ) ) : ?>
-<?php /* .s10-track — трек пина. Sticky-контекст формы заканчивается
-         здесь, а не на футере — именно поэтому пин отпускается и наезд
-         не может уйти глубже пустого хвоста секции (base.css). */ ?>
-<div class="s10-track">
 <section class="s10" id="request">
   <div class="s10-inner">
     <div class="s10-left">
@@ -131,7 +127,6 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
     </div>
   </div>
 </section>
-</div><!-- /.s10-track -->
 <?php endif; ?>
 
 <footer class="site-footer" id="footer">

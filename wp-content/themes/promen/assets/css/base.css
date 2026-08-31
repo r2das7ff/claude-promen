@@ -290,36 +290,7 @@ a.s10-contact-v:hover{color:var(--blue);}
    Каркас: .footer-zone (sticky s10 + наезжающий футер) — вне .pg,
    поэтому ось задаётся зеркальными отступами (44/20/0 по тирам). */
 .footer-zone{position:relative;}
-
-/* Наезд футера на форму: «посадочная полоса» вместо сплошного накрытия.
-   ─────────────────────────────────────────────────────────────────────
-   Было: .s10 липнет внутри .footer-zone, то есть до самого низа футера,
-   и футер проезжал по форме все свои 1121px — срезая поля, чекбокс ПДн и
-   кнопку отправки. Между «форма встала в экран» и «футер начал её есть»
-   не было НИ ОДНОГО пикселя прокрутки: секция ровно 100vh, футер начинался
-   на следующем. Один флик тачпадом — и форма уже разрезана пополам.
-
-   Стало: sticky-контекст формы — .s10-track, он кончается ДО футера.
-   Отсюда три фазы, и каждая что-то сообщает:
-     1) пауза  — форма закреплена, ничего не движется (15% высоты экрана);
-     2) наезд  — тёмный край поднимается по ПУСТОМУ хвосту секции и встаёт
-                 под последней строкой контента (--s10-overlap, считает
-                 chrome.js по факту: хвост зависит от высоты экрана);
-     3) уход   — пин отпускается, форма и футер уезжают вместе, край
-                 зафиксирован под контентом и внутрь него уже не заходит.
-   Наезд остаётся наездом, но кромка режет пустоту, а не кнопку.
-
-   Грабли: запас пина задаётся ВЫСОТОЙ, не паддингом: Chromium ограничивает липкий
-   элемент content-box'ом контейнера, поэтому padding-bottom не даёт ему
-   ни пикселя хода — секция просто едет вместе со страницей, как будто
-   sticky нет вовсе. Точную высоту (секция + пауза + наезд) ставит
-   chrome.js; min-height здесь — фолбэк, если он не отработал. */
-.s10-track{position:relative;min-height:115vh;}
 .footer-zone .s10{position:sticky;top:0;z-index:5;}
-/* Фолбэк 0: пока chrome.js не отработал, наезда просто нет — ничего не едет
-   и не мигает. Переменную ставит только десктоп (>1024): ниже секция
-   распадается на display:contents и пиннится одна форма, там своя механика. */
-.footer-zone .site-footer{margin-top:calc(var(--s10-overlap, 0px) * -1);}
 /* Обёртка footer-pin.js: flex:1 не растягивает её (футер-зона внутри .pg
    съедает min-height), поэтому на коротких страницах — контакты на высоком
    экране — из-под контента выглядывал верх футера. Явный min-height дотягивает
@@ -342,15 +313,9 @@ a.s10-contact-v:hover{color:var(--blue);}
    сетка карточек — оттуда рывки в самом низу страницы, которых нет на
    страницах с простым хвостом. Линейный градиент даёт ту же мягкую
    границу за долю стоимости. */
-/* Кромка наезда. 180px градиента поверх формы читались как грязь на тексте:
-   поля оставались резкими и глаз пытался их дочитать сквозь дымку. Наезд
-   теперь короткий (только пустой хвост), поэтому и растушёвка короткая, а
-   границу держит хайрлайн — панель честно ложится сверху, а не растворяет
-   собой контент. */
-.site-footer{border-top:1px solid var(--g1);}
 .site-footer::after{
-  content:'';position:absolute;left:0;right:0;top:-28px;height:28px;
-  background:linear-gradient(to top,rgba(15,42,68,.30),rgba(15,42,68,0));
+  content:'';position:absolute;left:0;right:0;top:-180px;height:180px;
+  background:linear-gradient(to top,rgba(15,42,68,.55),rgba(15,42,68,0));
   pointer-events:none;
 }
 .site-footer::before{
@@ -611,7 +576,7 @@ a.s10-contact-v:hover{color:var(--blue);}
      распадается (display:contents), пиннится ТОЛЬКО форма .s10-right,
      низом к нижнему краю экрана (top = innerHeight − height — chrome.js
      setStickyTop; top:var(--nav-h) — фолбэк до выполнения JS). */
-  .s10-track,.footer-zone .s10,.footer-zone .s10-inner{display:contents;}
+  .footer-zone .s10,.footer-zone .s10-inner{display:contents;}
   .footer-zone .s10-left{border-top:1px solid var(--ln2);}
   .footer-zone .s10-right{position:sticky;top:var(--nav-h);z-index:5;}
 }
@@ -626,7 +591,7 @@ a.s10-contact-v:hover{color:var(--blue);}
      (display:contents), пиннится только форма .s10-right — она в экран
      помещается, поэтому видна целиком, а футер наезжает на неё снизу.
      top задаёт chrome.js (innerHeight − height); var(--nav-h) — фолбэк. */
-  .s10-track,.footer-zone .s10,.footer-zone .s10-inner{display:contents;}
+  .footer-zone .s10,.footer-zone .s10-inner{display:contents;}
   .footer-zone .s10-left{border-top:1px solid var(--ln2);}
   .footer-zone .s10-right{position:sticky;top:var(--nav-h);z-index:5;}
   /* display:contents снял с секции rail-паддинг (20px) — колонки несут его
