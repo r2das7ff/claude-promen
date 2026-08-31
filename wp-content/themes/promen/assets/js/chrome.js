@@ -151,6 +151,31 @@
     if (mqFooter.addEventListener) mqFooter.addEventListener('change', setStickyTop);
   }
 
+  /* S10 · низкий экран: пиним секцию низом, а не шапкой.
+     При min-height:100vh секция всё равно бывает ВЫШЕ вьюпорта — на 900px
+     это 901px, на 700px уже 800px. Липкий элемент выше вьюпорта прокруткой
+     не сдвинуть: закрепившись по top:0, он больше не двигается, и всё, что
+     не поместилось, становится недостижимым. На 700px под кромкой оставалась
+     кнопка «Отправить запрос» — во время паузы пользователь упирается в
+     форму, у которой обрезана единственная кнопка действия.
+     Лечится тем же приёмом, что и форма на телефоне (setStickyTop выше):
+     отрицательный top прижимает низ секции к низу экрана. */
+  var s10Sec = document.querySelector('.footer-zone .s10');
+  if (s10Sec) {
+    var mqDeskS10 = window.matchMedia('(min-width:1025px)');
+    var setS10Top = function () {
+      if (!mqDeskS10.matches) { s10Sec.style.top = ''; return; }
+      s10Sec.style.top = Math.min(0, window.innerHeight - s10Sec.offsetHeight) + 'px';
+    };
+    setS10Top();
+    window.addEventListener('resize', setS10Top, { passive: true });
+    window.addEventListener('load', setS10Top);
+    if (mqDeskS10.addEventListener) mqDeskS10.addEventListener('change', setS10Top);
+    /* Высота секции меняется без ресайза окна: пришло сообщение об отправке,
+       подставилось длинное имя файла, дорисовался шрифт. */
+    if (window.ResizeObserver) new ResizeObserver(setS10Top).observe(s10Sec);
+  }
+
   /* S10: имя выбранного файла «Чертёж / КД» */
   var s10File = document.getElementById('f-file');
   var s10FileName = document.getElementById('s10-file-name');
