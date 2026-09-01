@@ -27,21 +27,37 @@ def check(group, name, ok, detail=''):
     return ok
 
 
-def fetch(url, redirect=True, timeout=45):
-    """Возвращает (код, заголовки, тело, конечный_адрес)."""
+PAUSE = 0.25          # шаг между запросами
+
+
+def fetch(url, redirect=True, timeout=45, tries=2):
+    """Возвращает (код, заголовки, тело, конечный_адрес).
+
+    Шаред-хостинг под сотней запросов подряд начинает рвать соединения:
+    первый прогон дал пять падений, и все пять прошли при ручной проверке.
+    Тест, падающий от собственной нагрузки, не отличает поломку от тормозов —
+    поэтому пауза между запросами и одна повторная попытка на сетевую ошибку.
+    Коды HTTP (404, 500) не повторяются — это ответ сайта, а не сбой связи.
+    """
     class NoRedirect(urllib.request.HTTPRedirectHandler):
         def redirect_request(self, *a, **kw):
             return None
     op = urllib.request.build_opener(*( [] if redirect else [NoRedirect] ))
     req = urllib.request.Request(url, headers={'User-Agent': UA})
-    try:
-        with op.open(req, timeout=timeout) as r:
-            body = r.read()
-            return r.getcode(), dict(r.headers), body, r.geturl()
-    except urllib.error.HTTPError as e:
-        return e.code, dict(e.headers), e.read(), url
-    except Exception as e:
-        return 0, {}, str(e).encode(), url
+    last = None
+    for attempt in range(tries):
+        try:
+            with op.open(req, timeout=timeout) as r:
+                body = r.read()
+                time.sleep(PAUSE)
+                return r.getcode(), dict(r.headers), body, r.geturl()
+        except urllib.error.HTTPError as e:
+            time.sleep(PAUSE)
+            return e.code, dict(e.headers), e.read(), url
+        except Exception as e:
+            last = e
+            time.sleep(1.5 * (attempt + 1))
+    return 0, {}, str(last).encode(), url
 
 
 def text(body):
