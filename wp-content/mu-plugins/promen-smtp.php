@@ -17,29 +17,84 @@
  * о ней не узнаёт. Старый сайт эту проблему решал плагином wp-mail-smtp,
  * при переезде плагин не поехал.
  *
- * Что делает. Отдаёт письма на smtp.yandex.ru от имени ящика, который
- * этому домену принадлежит — тогда и SPF, и DKIM проставляет сам Яндекс.
+ * Откуда настройки. Заводить новую учётную запись не потребовалось: ящик
+ * no-reply@prom-en.com уже был настроен на старом сайте. Его параметры
+ * перенесены в опцию promen_smtp, пароль — в том же виде, в каком его
+ * хранил wp-mail-smtp: sodium_crypto_secretbox, ключ в promen_smtp_key.
+ * В открытом виде пароль существует только внутри этого файла в момент
+ * отправки письма и никуда не записывается.
  *
- * Настройка (в wp-config.php, выше require wp-settings.php):
- *
- *     define( 'PROMEN_SMTP_USER', 'no-reply@prom-en.com' );
- *     define( 'PROMEN_SMTP_PASS', 'пароль-приложения' );
- *
- * Пароль — именно пароль ПРИЛОЖЕНИЯ из Яндекс ID, а не пароль от почты:
- * при включённой двухфакторной аутентификации обычный не подойдёт.
- *
- * Без этих констант плагин молчит и письма идут прежним путём — то есть
- * незаполненный конфиг ничего не ломает, просто не чинит.
+ * Аварийный путь: если опции нет, читаются константы PROMEN_SMTP_USER и
+ * PROMEN_SMTP_PASS из wp-config. Нет ни того, ни другого — плагин молчит
+ * и письма идут прежним путём, то есть незаполненный конфиг ничего не
+ * ломает, просто не чинит.
  */
 
 defined( 'ABSPATH' ) || exit;
 
-const PROMEN_SMTP_HOST = 'smtp.yandex.ru';
-const PROMEN_SMTP_PORT = 465;
+/**
+ * Параметры подключения. Возвращает [] , если настроить нечем.
+ */
+function promen_smtp_config(): array {
+	static $cfg = null;
+	if ( null !== $cfg ) {
+		return $cfg;
+	}
+	$cfg = [];
+	$o   = get_option( 'promen_smtp' );
 
-function promen_smtp_ready(): bool {
-	return defined( 'PROMEN_SMTP_USER' ) && defined( 'PROMEN_SMTP_PASS' )
-		&& '' !== (string) PROMEN_SMTP_USER && '' !== (string) PROMEN_SMTP_PASS;
+	if ( is_array( $o ) && ! empty( $o['user'] ) && ! empty( $o['pass_enc'] ) ) {
+		$pass = promen_smtp_decrypt( (string) $o['pass_enc'], (string) get_option( 'promen_smtp_key' ) );
+		if ( '' !== $pass ) {
+			$cfg = [
+				'host'       => $o['host'] ?: 'smtp.yandex.ru',
+				'port'       => (int) ( $o['port'] ?: 465 ),
+				'encryption' => $o['encryption'] ?: 'ssl',
+				'user'       => (string) $o['user'],
+				'pass'       => $pass,
+				'from'       => (string) ( $o['from'] ?: $o['user'] ),
+				'from_name'  => (string) ( $o['from_name'] ?: 'Промышленная Энергетика' ),
+			];
+			return $cfg;
+		}
+	}
+
+	if ( defined( 'PROMEN_SMTP_USER' ) && defined( 'PROMEN_SMTP_PASS' )
+		&& '' !== (string) PROMEN_SMTP_USER && '' !== (string) PROMEN_SMTP_PASS ) {
+		$cfg = [
+			'host'       => 'smtp.yandex.ru',
+			'port'       => 465,
+			'encryption' => 'ssl',
+			'user'       => (string) PROMEN_SMTP_USER,
+			'pass'       => (string) PROMEN_SMTP_PASS,
+			'from'       => (string) PROMEN_SMTP_USER,
+			'from_name'  => 'Промышленная Энергетика',
+		];
+	}
+	return $cfg;
+}
+
+/**
+ * Расшифровка пароля. Формат тот же, что у wp-mail-smtp: base64 от
+ * «nonce + secretbox», ключ хранится base64-строкой.
+ */
+function promen_smtp_decrypt( string $enc, string $key_b64 ): string {
+	if ( '' === $enc || '' === $key_b64 || ! function_exists( 'sodium_crypto_secretbox_open' ) ) {
+		return '';
+	}
+	$key  = base64_decode( $key_b64, true );
+	$blob = base64_decode( $enc, true );
+	if ( false === $key || false === $blob
+		|| strlen( $key ) !== SODIUM_CRYPTO_SECRETBOX_KEYBYTES
+		|| strlen( $blob ) <= SODIUM_CRYPTO_SECRETBOX_NONCEBYTES ) {
+		return '';
+	}
+	$plain = @sodium_crypto_secretbox_open(
+		substr( $blob, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES ),
+		substr( $blob, 0, SODIUM_CRYPTO_SECRETBOX_NONCEBYTES ),
+		$key
+	);
+	return is_string( $plain ) ? $plain : '';
 }
 
 /*
@@ -48,26 +103,29 @@ function promen_smtp_ready(): bool {
  * бы не на тот домен и проверку у получателя письмо не прошло бы.
  */
 add_filter( 'wp_mail_from', function ( $from ) {
-	return promen_smtp_ready() ? (string) PROMEN_SMTP_USER : $from;
+	$c = promen_smtp_config();
+	return $c ? $c['from'] : $from;
 }, 20 );
 
 add_filter( 'wp_mail_from_name', function ( $name ) {
-	return promen_smtp_ready() ? 'Промышленная Энергетика' : $name;
+	$c = promen_smtp_config();
+	return $c ? $c['from_name'] : $name;
 }, 20 );
 
 add_action( 'phpmailer_init', function ( $mailer ) {
-	if ( ! promen_smtp_ready() ) {
+	$c = promen_smtp_config();
+	if ( ! $c ) {
 		return;
 	}
 	$mailer->isSMTP();
-	$mailer->Host       = PROMEN_SMTP_HOST;
-	$mailer->Port       = PROMEN_SMTP_PORT;
+	$mailer->Host       = $c['host'];
+	$mailer->Port       = $c['port'];
 	$mailer->SMTPAuth   = true;
-	$mailer->SMTPSecure = 'ssl';           // 465 — implicit TLS, не STARTTLS
-	$mailer->Username   = PROMEN_SMTP_USER;
-	$mailer->Password   = PROMEN_SMTP_PASS;
+	$mailer->SMTPSecure = $c['encryption'];   // 465 — implicit TLS, не STARTTLS
+	$mailer->Username   = $c['user'];
+	$mailer->Password   = $c['pass'];
 	$mailer->CharSet    = 'UTF-8';
-	$mailer->Timeout    = 15;              // шаред-хостинг: не висим на форме
+	$mailer->Timeout    = 15;                 // шаред-хостинг: не висим на форме
 
 	/*
 	 * Reply-To на адрес заявителя, если он оставил email. Иначе менеджер
