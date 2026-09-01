@@ -265,6 +265,41 @@ add_filter( 'pre_handle_404', function ( $preempt, $wp_query ) {
 }, 10, 2 );
 
 /*
+ * Фавикон.
+ *
+ * site_icon в базе не задан, файла в корне не было, тема иконку не
+ * объявляла — и WordPress в таком случае отдаёт на /favicon.ico редирект
+ * на СВОЙ логотип. Во вкладке у завода висела эмблема WordPress.
+ *
+ * Иконка нарезана из фирменного знака (PE_logo_white.png, левый глиф без
+ * текстовой части) и положена на --dark #0F2A44: белый знак на прозрачном
+ * фоне пропадал бы во вкладке тёмной темы, а тёмный — в светлой.
+ *
+ * do_faviconico перехватывает штатный редирект ядра: физический файл в
+ * корне сайта отдаётся веб-сервером напрямую и в git не попадает, поэтому
+ * на чистом развёртывании иконку должна давать именно тема.
+ */
+function promen_favicon_uri( string $f ): string {
+	return get_theme_file_uri( 'assets/img/favicon/' . $f );
+}
+
+add_action( 'wp_head', function () {
+	printf( '<link rel="icon" href="%s" sizes="32x32">' . "
+", esc_url( promen_favicon_uri( 'icon-32.png' ) ) );
+	printf( '<link rel="icon" href="%s" sizes="192x192">' . "
+", esc_url( promen_favicon_uri( 'icon-192.png' ) ) );
+	printf( '<link rel="apple-touch-icon" href="%s">' . "
+", esc_url( promen_favicon_uri( 'icon-180.png' ) ) );
+	printf( '<meta name="theme-color" content="#0F2A44">' . "
+" );
+}, 2 );
+
+add_action( 'do_faviconico', function () {
+	wp_redirect( promen_favicon_uri( 'favicon.ico' ), 301 );
+	exit;
+} );
+
+/*
  * Защита от soft-404.
  *
  * Адреса вида /catalog/<раздел>/seriya/<что-угодно>/ не совпадают ни с одним
