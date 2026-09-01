@@ -309,6 +309,35 @@
     el.classList.add('show');
   }
 
+  /*
+   * Цели Метрики. Форма уходит через fetch с preventDefault(): адрес не
+   * меняется, поэтому цели «по URL» здесь бесполезны, а автоцель «отправка
+   * формы» одна на все сценарии и не отличает запрос КП от запроса
+   * документа. Шлём событие сами, по цели на сценарий плюс общую —
+   * тогда в отчётах видно и суммарную конверсию, и что именно её даёт.
+   *
+   * Только при успешном ответе сервера: цель, засчитанная на неудачной
+   * отправке, завышает конверсию и врёт ровно там, где решения принимают.
+   */
+  var GOAL_BY_PRESET = {
+    kp:       'request_kp',
+    tz:       'request_tz',
+    solution: 'request_solution',
+    docs:     'request_docs',
+    contact:  'request_contact',
+    calc:     'request_calc'
+  };
+
+  function reachGoal(preset) {
+    if (typeof window.ym !== 'function' || !window.PROMEN_YM_ID) return;
+    var id = window.PROMEN_YM_ID;
+    try {
+      window.ym(id, 'reachGoal', 'request_any', { preset: preset || 'contact' });
+      var g = GOAL_BY_PRESET[preset];
+      if (g) window.ym(id, 'reachGoal', g);
+    } catch (err) { /* аналитика не должна ронять отправку заявки */ }
+  }
+
   function submitForm(e) {
     e.preventDefault();
     var consent = document.getElementById('rmConsent');
@@ -350,6 +379,7 @@
         if (json && json.success) {
           document.getElementById('rmForm').style.display = 'none';
           document.getElementById('rmSuccess').classList.add('show');
+          reachGoal(currentPreset);
         } else {
           showError((json && json.data && json.data.message) || 'Не удалось отправить запрос. Напишите нам напрямую: ' + (CFG.email || 'zakaz@prom-en.com'));
         }

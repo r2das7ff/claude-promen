@@ -186,6 +186,16 @@ function promen_handle_request(): void {
 		'post_content' => $body,
 	] );
 
+	/*
+	 * Reply-To на адрес заявителя (promen-smtp.php). Письмо уходит от
+	 * no-reply@, и без этого «Ответить» в почтовом клиенте вело бы в никуда,
+	 * а другого канала связи по заявке нет.
+	 */
+	$reply_to = is_email( $contact ) ? $contact : '';
+	add_filter( 'promen_mail_reply_to', function () use ( $reply_to ) {
+		return $reply_to;
+	} );
+
 	wp_mail(
 		PROMEN_REQUEST_EMAIL,
 		$title,
