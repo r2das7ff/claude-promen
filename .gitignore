@@ -44,3 +44,6 @@ migration/old-sitemap.xml
 migration/new-catalog.tsv
 migration/new-category-urls.txt
 migration/unmatched-products.txt
+migration/log-urls.txt
+migration/log-missing.txt
+migration/verify-report.txt

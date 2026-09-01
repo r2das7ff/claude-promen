@@ -181,7 +181,21 @@ STATIC = {
 # Изоляция и арматура названы в рубриках по-своему и не с начала слага
 # («стальная-труба-в-изоляции», «шаровые-краны»), плюс встречается вторая
 # транслитерация: troyniki рядом с trojniki. Поэтому ищем по вхождению.
+# Арматурная обвязка старого сайта, которой в новом ассортименте нет вовсе:
+# фильтры, грязевики, дисковые затворы, штуцеры, шпиндели и удлинители
+# штока. Ведём в ближайший по смыслу раздел, а не в корень каталога.
 RUBRIC_ANY = [
+    ('filtr',        C + 'armatura/'),
+    ('gryazevik',    C + 'armatura/'),
+    ('diskov',       C + 'armatura/'),
+    ('shtucer',      C + 'armatura/'),
+    ('shpindel',     C + 'armatura/'),
+    ('udlinitel',    C + 'armatura/'),
+    ('teleskopich',  C + 'armatura/'),
+    ('shtok',        C + 'armatura/'),
+    ('kondensatootvod', C + 'armatura/'),
+    ('shumoglushitel',  C + 'armatura/'),
+    ('ugolnik',      C + 'sdt/'),
     ('izolyac',   C + 'izolyatsiya/'),
     ('izolyats',  C + 'izolyatsiya/'),
     ('v-ppu',     C + 'izolyatsiya/'),
@@ -207,8 +221,26 @@ def rubric_target(slug):
 
 def main():
     by_ds, by_dnpn, by_norm, real, cat_of = load_new()
-    old = [l.strip() for l in io.open(os.path.join(MIG, 'old-urls.txt'),
-                                     encoding='utf-8') if l.strip()]
+
+    # Два источника старых адресов, и второй оказался богаче первого.
+    # sitemap.xml старого сайта собирался вручную Netpeak Spider и знает
+    # 10 174 адреса, а в логах доступа за неделю их 15 464: карта просто
+    # отстала от сайта. Без логов 8 788 адресов, из них 1 098 с живым
+    # трафиком, отдавали бы 404.
+    seen, old = set(), []
+    for name, parse in (('old-urls.txt', lambda l: l.strip()),
+                        ('log-urls.txt', lambda l: (l.split(None, 1) + [''])[1].strip())):
+        path = os.path.join(MIG, name)
+        if not os.path.exists(path):
+            continue
+        for line in io.open(path, encoding='utf-8', errors='replace'):
+            u = parse(line)
+            if not u.startswith('/'):
+                continue
+            u = '/' + u.strip('/') + '/' if u != '/' else '/'
+            if u not in seen:
+                seen.add(u)
+                old.append(u)
 
     rows, unmatched = [], []
     stat = collections.Counter()
@@ -216,6 +248,10 @@ def main():
     for path in old:
         if path == '/':
             continue                      # главная остаётся главной
+        if path in ('/products/', '/rubric-products/'):
+            rows.append((path, C, 'архив'))
+            stat['архив'] += 1
+            continue
         if path.startswith('/rubric-products/'):
             slug = path[len('/rubric-products/'):].strip('/')
             t = rubric_target(slug)
@@ -262,9 +298,15 @@ def main():
         if cat_url:
             rows.append((path, cat_url, 'категория'))
             stat['категория'] += 1
+        elif path.endswith('/feed/'):
+            # Ленты WordPress — не страницы, веса у них нет, в карту не кладём.
+            stat['ленты (пропущены)'] += 1
         else:
+            # Ни тип, ни норматив не опознаны — корень каталога.
+            # Это всё равно не главная: человек искал изделие и попадёт в каталог.
+            rows.append((path, C, 'каталог'))
+            stat['каталог'] += 1
             unmatched.append((path, ns or '?'))
-            stat['не найдено'] += 1
 
     with io.open(os.path.join(MIG, 'redirects.csv'), 'w',
                  encoding='utf-8', newline='') as f:
