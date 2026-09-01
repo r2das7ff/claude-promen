@@ -38,3 +38,9 @@ wp-content/cache/
 
 # Скиллы higgsfield ставятся окружением, к проекту не относятся
 .claude/skills/higgsfield-*/
+
+# Промежуточные данные сборки карты редиректов (восстанавливаются скриптом)
+migration/old-sitemap.xml
+migration/new-catalog.tsv
+migration/new-category-urls.txt
+migration/unmatched-products.txt
