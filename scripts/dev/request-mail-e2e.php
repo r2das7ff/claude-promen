@@ -1,7 +1,7 @@
 <?php
 /**
- * Локальная сквозная проверка обработчика заявки без SMTP: перехватываем
- * wp_mail фильтром pre_wp_mail, печатаем тему/HTML/текст между маркерами.
+ * Локальная сквозная проверка обработчика заявки без SMTP: перехватываем письмо
+ * на phpmailer_init и печатаем тему, тип, HTML, AltBody и Reply-To между маркерами.
  * Запуск (из site/): docker exec -i -e SCENARIO=calc site-wordpress-1 php < scripts/dev/request-mail-e2e.php
  * Сценарии: calc, product, contact, tz, nonce_stale_guest, nonce_stale_foreign, nonce_stale_noheaders.
  * После прогона удалить тестовые записи CPT «Заявки КП» по явным ID (wp post delete ID --force).
