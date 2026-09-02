@@ -47,3 +47,9 @@ migration/unmatched-products.txt
 migration/log-urls.txt
 migration/log-missing.txt
 migration/verify-report.txt
+
+# Ролики оживающих портретов: 6,6 МБ бинарников, живут на проде и в рабочей
+# копии, в репозиторий намеренно не едут (рядом лежат <img>.json с параметрами
+# наезда — они версионируются). Забрать их с сервера: ssh promen-prod tar.
+wp-content/themes/promen/assets/video/managers/*.mp4
+wp-content/themes/promen/assets/video/managers/*.webm

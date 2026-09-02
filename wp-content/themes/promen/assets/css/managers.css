@@ -120,9 +120,14 @@
              transform 1.8s cubic-bezier(.33,.02,.2,1);
   pointer-events:none;z-index:1;
 }
-.smgr-card:hover .smgr-photo.has-video .smgr-video{opacity:1;transform:scale(1);}
+/* is-autoplay — та же картина без курсора: очередь автопоказа вешает класс
+   на карточку, когда её ролик реально пошёл (managers.js). Подъём карточки
+   и тень оставлены только hover: это отклик на курсор, а не часть показа. */
+.smgr-card:hover .smgr-photo.has-video .smgr-video,
+.smgr-card.is-autoplay .smgr-photo.has-video .smgr-video{opacity:1;transform:scale(1);}
 /* Зум остаётся фотографии в статике; на ролике он спорил бы с отъездом. */
-.smgr-card:hover .smgr-photo.has-video img{transform:none;}
+.smgr-card:hover .smgr-photo.has-video img,
+.smgr-card.is-autoplay .smgr-photo.has-video img{transform:none;}
 .smgr-photo.has-video .smgr-idx{z-index:2;}
 
 @media (hover:none){
