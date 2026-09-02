@@ -256,10 +256,11 @@
 .clc-wrap[data-calc="steels"] [data-table]:empty { min-height: 970px; }
 .clc-wrap[data-calc="dn"]     [data-table]:empty { min-height: 898px; }
 
-/* Доставка: два набора полей — параметры груза и маршрут. Замер снят со
-   стенда, локально страницы нет в базе. */
+/* Доставка: два набора полей — параметры груза и маршрут. Замер снят с
+   прода, локально страницы нет в базе; маршрут перемерен 02.09.2026, когда
+   в нём появился выбор города отправления. */
 .clc-wrap[data-calc="dostavka"] [data-extra]:empty { min-height: 62px; }
-.clc-wrap[data-calc="dostavka"] [data-route]:empty { min-height: 123px; }
+.clc-wrap[data-calc="dostavka"] [data-route]:empty { min-height: 312px; }
 
 @media (max-width: 820px) {
   .clc-wrap[data-calc="steels"] [data-table]:empty { min-height: 1344px; }
@@ -282,5 +283,5 @@
   .clc-wrap[data-calc="dn"]     [data-table]:empty { min-height: 932px; }
 
   .clc-wrap[data-calc="dostavka"] [data-extra]:empty { min-height: 133px; }
-  .clc-wrap[data-calc="dostavka"] [data-route]:empty { min-height: 194px; }
+  .clc-wrap[data-calc="dostavka"] [data-route]:empty { min-height: 459px; }
 }

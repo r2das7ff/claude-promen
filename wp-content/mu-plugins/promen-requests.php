@@ -24,6 +24,7 @@ const PROMEN_REQUEST_PRESETS = [
 	'solution' => 'Подбор решения',
 	'product'  => 'Запрос позиции',
 	'docs'     => 'Запрос документации',
+	'delivery' => 'Заявка на доставку',
 	'project'  => 'Обсуждение проекта',
 	'contact'  => 'Общий запрос',
 ];

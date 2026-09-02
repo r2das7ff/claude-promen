@@ -1085,6 +1085,7 @@
     var mode = 'one';
     var rows = [blank()];
     var city = null;
+    var fromCity = null;
     var volumeOverride = null;
 
     /* Габариты европалеты — самый частый случай отгрузки; вес не выдумываем. */
@@ -1215,44 +1216,108 @@
 
     var stated = null;
 
-    /* ── маршрут ── */
+    /* ── маршрут ──
+       Отправление по умолчанию — наша площадка: строка адреса собрана ровно
+       той, что зашита в promen_dellin_derival(), иначе привычный расчёт поехал
+       бы на других цифрах. Но город меняется: часть партий уходит не от нас —
+       с площадки поставщика или со склада заказчика. */
 
-    var cityWrap = el('div', 'clc-field clc-field--wide');
-    cityWrap.appendChild(el('label', 'clc-field-label', 'Город назначения'));
-    var cityForm = el('div', 'clc-dlv-form');
-    var cityIn = document.createElement('input');
-    cityIn.type = 'text';
-    cityIn.className = 'clc-dlv-city';
-    cityIn.placeholder = 'Начните вводить город…';
-    cityIn.autocomplete = 'off';
-    var cityList = el('div', 'clc-dlv-list');
-    cityForm.appendChild(cityIn);
-    cityForm.appendChild(cityList);
-    cityWrap.appendChild(cityForm);
-    routeBox.appendChild(cityWrap);
+    var HOME = {
+      code: '',
+      name: 'Челябинск',
+      full: 'Челябинская обл., Челябинск',
+      street: 'Орджоникидзе, 37'
+    };
 
-    var picked = attachCityPicker(cityIn, cityList, {
-      host: cityWrap,
-      onPick: function (c) { city = c; },
-      onClear: function () { city = null; }
+    /* Поле города с подсказками ДЛ: список абсолютный, поэтому лежит внутри
+       .clc-dlv-form (position:relative). */
+    function cityField(label, value) {
+      var wrap = el('div', 'clc-field clc-field--wide');
+      wrap.appendChild(el('label', 'clc-field-label', esc(label)));
+      var form = el('div', 'clc-dlv-form');
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'clc-dlv-city';
+      input.placeholder = 'Начните вводить город…';
+      input.autocomplete = 'off';
+      input.value = value || '';
+      var list = el('div', 'clc-dlv-list');
+      form.appendChild(input);
+      form.appendChild(list);
+      wrap.appendChild(form);
+      routeBox.appendChild(wrap);
+      return { root: wrap, input: input, list: list };
+    }
+
+    /* Адрес не прячем, а гасим: пара «откуда/куда + адрес» держит ячейку
+       сетки, и поля маршрута не прыгают при переключении. */
+    function addrOff(field, off) {
+      field.root.classList.toggle('is-off', off);
+      field.input.disabled = off;
+    }
+    function cityShort(c) { return c && c.name ? c.name.split(',')[0] : '…'; }
+
+    var fromF = cityField('Город отправления', HOME.name);
+    fromCity = HOME;
+
+    var fromSel = makeSelect('Откуда', function () {
+      addrOff(fromAddr, fromSel.value() !== 'address');
     });
+    fromSel.fill([{ v: 'address', t: 'Забор с адреса' }, { v: 'terminal', t: 'Сдаём на терминал' }]);
+    routeBox.appendChild(fromSel.root);
+
+    var fromAddr = makeInput('Адрес отправления', HOME.street, function () {},
+      { placeholder: 'улица, дом', inputmode: 'text' });
+    routeBox.appendChild(fromAddr.root);
+
+    var toF = cityField('Город назначения', '');
 
     var toSel = makeSelect('Куда', function () {
-      addrField.show(toSel.value() === 'address');
+      addrOff(addrField, toSel.value() !== 'address');
     });
     toSel.fill([{ v: 'terminal', t: 'До терминала (самовывоз)' }, { v: 'address', t: 'До адреса' }]);
     routeBox.appendChild(toSel.root);
 
-    var typeSel = makeSelect('Перевозка', function () {});
+    var addrField = makeInput('Адрес доставки', '', function () {},
+      { placeholder: 'улица, дом', inputmode: 'text' });
+    routeBox.appendChild(addrField.root);
+
+    var typeSel = makeSelect('Перевозка', function () {}, true);
     typeSel.fill([{ v: 'auto', t: 'Авто — обычная' }, { v: 'express', t: 'Экспресс' }, { v: 'avia', t: 'Авиа' }]);
     routeBox.appendChild(typeSel.root);
 
-    var address = '';
-    var addrField = makeInput('Адрес доставки', '', function () { address = this.value; },
-      { placeholder: 'улица, дом' }, true);
-    routeBox.appendChild(addrField.root);
-    addrField.show = function (on) { addrField.root.style.display = on ? '' : 'none'; };
-    addrField.show(false);
+    attachCityPicker(fromF.input, fromF.list, {
+      host: fromF.root,
+      onPick: function (c) {
+        var moved = !fromCity || fromCity.name !== c.name;
+        fromCity = { code: c.code, name: c.name, full: c.full || c.name };
+        // Улицу в чужом городе мы не знаем: при смене города адрес сбрасываем
+        // и по умолчанию сдаём груз на терминал.
+        if (moved) {
+          fromAddr.input.value = '';
+          fromSel.select.value = 'terminal';
+          addrOff(fromAddr, true);
+        }
+        head();
+      },
+      onClear: function () { fromCity = null; head(); }
+    });
+
+    var picked = attachCityPicker(toF.input, toF.list, {
+      host: toF.root,
+      onPick: function (c) { city = c; head(); },
+      onClear: function () { city = null; head(); }
+    });
+
+    /* Шапка панели повторяет маршрут: «Челябинск → Москва». */
+    var routeHd = root.querySelector('[data-route-hd]');
+    function head() {
+      if (routeHd) routeHd.textContent = cityShort(fromCity) + ' → ' + cityShort(city);
+    }
+
+    addrOff(fromAddr, false);
+    addrOff(addrField, true);
+    head();
 
     /* ── расчёт ── */
 
@@ -1262,13 +1327,15 @@
     }
 
     goBtn.addEventListener('click', function () {
-      if (!city || !picked.code) { fail('Выберите город назначения из подсказок.'); cityIn.focus(); return; }
+      if (!fromCity) { fail('Выберите город отправления из подсказок.'); fromF.input.focus(); return; }
+      if (!city || !picked.code) { fail('Выберите город назначения из подсказок.'); toF.input.focus(); return; }
       var bad = rows.some(function (r) {
         return !r.l || !r.w || !r.h || !r.weight || r.l < 0.05 || r.w < 0.05 || r.h < 0.05
           || r.l > 6 || r.w > 6 || r.h > 6;
       });
       if (bad) { fail('Заполните габариты (0,05–6 м) и вес каждого места.'); return; }
-      if (toSel.value() === 'address' && !address.trim()) { fail('Укажите адрес доставки или выберите «до терминала».'); return; }
+      if (fromSel.value() === 'address' && !fromAddr.input.value.trim()) { fail('Укажите адрес отправления или выберите «сдаём на терминал».'); return; }
+      if (toSel.value() === 'address' && !addrField.input.value.trim()) { fail('Укажите адрес доставки или выберите «до терминала».'); return; }
       if (totalWeight() > 20000) { fail('Груз тяжелее 20 т — это уже выделенная машина, посчитаем по запросу.'); return; }
 
       goBtn.disabled = true;
@@ -1282,8 +1349,12 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           city_code: picked.code,
+          from_code: fromCity.code || '',
+          from: fromSel.value(),
+          from_address: fromSel.value() === 'address'
+            ? (fromCity.full || fromCity.name) + ', ' + fromAddr.input.value.trim() : '',
           to: toSel.value(),
-          address: toSel.value() === 'address' ? (city.full || city.name) + ', ' + address.trim() : '',
+          address: toSel.value() === 'address' ? (city.full || city.name) + ', ' + addrField.input.value.trim() : '',
           type: typeSel.value(),
           stated_value: stated || 0,
           volume: volumeOverride || 0,
@@ -1304,6 +1375,7 @@
         fail(
           code === 'too_heavy' ? 'Груз тяжелее 20 т — это выделенная машина, посчитаем по запросу.' :
           code === 'no_terminal' ? 'В этом населённом пункте нет терминала «Деловых Линий» — уточним доставку по запросу.' :
+          code === 'no_terminal_from' ? 'В городе отправления нет терминала «Деловых Линий» — выберите забор с адреса.' :
           code === 'rate_limited' ? 'Слишком много расчётов подряд — попробуйте через минуту.' :
           code === 'bad_dims' ? 'Габарит места должен быть от 0,05 до 6 м.' :
           code === 'bad_weight' ? 'Вес места должен быть больше нуля и не больше 20 т.' :
@@ -1314,16 +1386,17 @@
       }
       resBox.innerHTML = '';
       var toAddr = toSel.value() === 'address';
-      var where = toAddr
-        ? 'до адреса' + (city && city.name ? ' · ' + esc(city.name) : '')
-        : 'до терминала' + (json.terminal ? ' «' + esc(json.terminal) + '»' : '');
+      var where = esc(cityShort(fromCity)) + ' → ' + esc(cityShort(city)) + ' · ' + (toAddr
+        ? 'до адреса'
+        : 'до терминала' + (json.terminal ? ' «' + esc(json.terminal) + '»' : ''));
       resNum(resBox, fmt(json.price, 0), '₽',
         where + (json.eta ? ' · выдача с ' + esc(json.eta) : ''));
 
       var p = json.parts || {};
       var haul = { auto: 'Межтерминальная перевозка', express: 'Экспресс-перевозка', avia: 'Авиаперевозка' }[typeSel.value()];
       resRows(resBox, [
-        ['Забор с площадки', fmt(p.pickup, 0) + NBSP + '₽'],
+        p.pickup ? [fromSel.value() === 'address' ? 'Забор груза' : 'Приём на терминале',
+          fmt(p.pickup, 0) + NBSP + '₽'] : null,
         p.line ? [haul, fmt(p.line, 0) + NBSP + '₽'] : null,
         p.delivery ? ['Доставка по городу', fmt(p.delivery, 0) + NBSP + '₽'] : null,
         p.insurance ? ['Страхование груза', fmt(p.insurance, 0) + NBSP + '₽'] : null,
@@ -1332,9 +1405,30 @@
           + ' · ' + fmtKg(json.weight) + NBSP + 'кг · ' + fmt(json.volume, 2) + NBSP + 'м³']
       ]);
 
+      // Заявка уносит расчёт целиком: менеджеру не приходится переспрашивать
+      // маршрут и габариты, а посетителю — переписывать их руками.
+      var summary = [
+        cityShort(fromCity) + ' → ' + cityShort(city),
+        fromSel.value() === 'address'
+          ? 'забор: ' + (fromAddr.input.value.trim() || '—')
+          : 'сдаём на терминал',
+        toAddr ? 'до адреса: ' + addrField.input.value.trim()
+          : 'до терминала' + (json.terminal ? ' «' + json.terminal + '»' : ''),
+        { auto: 'авто', express: 'экспресс', avia: 'авиа' }[typeSel.value()],
+        totalPlaces() + NBSP + plural(totalPlaces(), ['место', 'места', 'мест']),
+        fmtKg(json.weight) + NBSP + 'кг',
+        fmt(json.volume, 2) + NBSP + 'м³',
+        fmt(json.price, 0) + NBSP + '₽',
+        json.eta_full ? 'выдача с ' + json.eta_full : ''
+      ].filter(Boolean).join(' · ');
+
       actions(resBox, [{
         label: 'Отправить заявку',
-        onClick: function () { if (window.openRequestModal) window.openRequestModal('delivery'); }
+        onClick: function () {
+          if (window.openRequestModal) {
+            window.openRequestModal('delivery', { city: cityShort(city), calc: summary });
+          }
+        }
       }]);
     }
 

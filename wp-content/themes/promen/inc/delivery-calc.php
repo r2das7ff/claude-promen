@@ -59,6 +59,47 @@ function promen_delivery_available( int $product_id ): bool {
 	return $product && (float) $product->get_weight() > 0;
 }
 
+/**
+ * Код города КЛАДР → id терминала, куда сдают груз.
+ *
+ * В отправлении ДЛ понимает только terminalID: кода города, которого хватает
+ * для города назначения, здесь мало — калькулятор отвечает «не передан ни один
+ * из обязательных параметров». Справочник /v2/public/terminals.json весит
+ * около 400 КБ на 230 городов и меняется редко, поэтому разбираем его целиком
+ * и держим готовую карту неделю; неудачу кешируем на десять минут, чтобы
+ * каждый расчёт не бился в недоступный API.
+ */
+function promen_dellin_terminal_id( string $city_code ): string {
+	$map = get_transient( 'promen_dl_terminals' );
+	if ( ! is_array( $map ) ) {
+		$json = promen_dellin_post( '/v2/public/terminals.json', [
+			'appkey' => promen_dellin_appkey(),
+		], 30 );
+		$map = [];
+		if ( is_wp_error( $json ) ) {
+			error_log( 'promen delivery terminals: ' . $json->get_error_message() );
+		} else {
+			foreach ( (array) ( $json['city'] ?? [] ) as $city ) {
+				$code = (string) ( $city['code'] ?? '' );
+				if ( $code === '' || isset( $map[ $code ] ) ) {
+					continue;
+				}
+				foreach ( (array) ( $city['terminals']['terminal'] ?? [] ) as $t ) {
+					// Груз принимает обычный терминал: пункт выдачи и точка
+					// «только выдача» для отправления не годятся.
+					if ( empty( $t['id'] ) || ! empty( $t['isPVZ'] ) || ! empty( $t['onlyGiveout'] ) ) {
+						continue;
+					}
+					$map[ $code ] = (string) $t['id'];
+					break;
+				}
+			}
+		}
+		set_transient( 'promen_dl_terminals', $map, $map ? WEEK_IN_SECONDS : 10 * MINUTE_IN_SECONDS );
+	}
+	return (string) ( $map[ $city_code ] ?? '' );
+}
+
 /** POST к api.dellin.ru; вернёт массив ответа или WP_Error. */
 function promen_dellin_post( string $path, array $body, int $timeout = 12 ) {
 	$res = wp_remote_post( PROMEN_DELLIN_API . $path, [
@@ -284,6 +325,10 @@ function promen_rest_delivery_quote( WP_REST_Request $request ) {
  * Тариф ДЛ считается от суммарных веса и объёма, а габарит нужен для проверки
  * на негабарит, поэтому разные грузоместа сводятся к одной строке: количество
  * мест, наибольший габарит и точные суммы веса и объёма.
+ *
+ * Отправление тоже задаёт человек: по умолчанию это наша площадка
+ * (promen_dellin_derival()), но отгружают и из других городов — например
+ * с площадки поставщика, — поэтому город отправления приходит с формы.
  */
 function promen_rest_delivery_quote_custom( WP_REST_Request $request ) {
 	if ( promen_dellin_appkey() === '' ) {
@@ -301,6 +346,12 @@ function promen_rest_delivery_quote_custom( WP_REST_Request $request ) {
 
 	$city_code = (string) $request->get_param( 'city_code' );
 	if ( ! preg_match( '/^\d{13,25}$/', $city_code ) ) {
+		return new WP_REST_Response( [ 'error' => 'bad_city' ], 400 );
+	}
+
+	// Город отправления не обязателен: пустой код — едем от нашей площадки.
+	$from_code = (string) $request->get_param( 'from_code' );
+	if ( $from_code !== '' && ! preg_match( '/^\d{13,25}$/', $from_code ) ) {
 		return new WP_REST_Response( [ 'error' => 'bad_city' ], 400 );
 	}
 
@@ -366,6 +417,9 @@ function promen_rest_delivery_quote_custom( WP_REST_Request $request ) {
 
 	return promen_delivery_quote_for_cargo( $cargo, $city_code, [
 		'type'         => (string) $request->get_param( 'type' ),
+		'from'         => (string) $request->get_param( 'from' ),
+		'from_city'    => $from_code,
+		'from_address' => mb_substr( trim( (string) $request->get_param( 'from_address' ) ), 0, 200 ),
 		'arrival'      => (string) $request->get_param( 'to' ),
 		'address'      => mb_substr( trim( (string) $request->get_param( 'address' ) ), 0, 200 ),
 		'stated_value' => min( 50000000, max( 0, (float) $request->get_param( 'stated_value' ) ) ),

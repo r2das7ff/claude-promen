@@ -87,6 +87,23 @@
       submitLabel: 'ЗАПРОСИТЬ ДОКУМЕНТЫ →',
       successText: '✓ ЗАПРОС ПРИНЯТ. Документы направим на указанный email.'
     },
+    delivery: {
+      eyebrow: 'ДОСТАВКА',
+      title: 'Заявка на\nдоставку груза',
+      sub: 'Расчёт уже в заявке — добавьте контакты, подтвердим стоимость и сроки у перевозчика.',
+      fields: [
+        /* Первые два поля readonly: цифры пришли из калькулятора, руками их
+           не правят. Уходят в city/delivery — под эту пару в письме есть
+           готовый блок «Доставка» (mu-plugins/promen-requests-mail.php). */
+        { id: 'city', label: 'ГОРОД НАЗНАЧЕНИЯ', placeholder: '', readonly: true, wide: true },
+        { id: 'calc', field: 'delivery', label: 'МАРШРУТ И РАСЧЁТ', placeholder: '', readonly: true, wide: true, textarea: true, rows: 3 },
+        { id: 'name', label: 'ФИО / КОНТАКТНОЕ ЛИЦО', placeholder: 'Иванов Иван Иванович' },
+        { id: 'contact', label: 'EMAIL / ТЕЛЕФОН', placeholder: 'ivanov@company.ru' },
+        { id: 'task', label: 'КОММЕНТАРИЙ', placeholder: 'Что за груз, упаковка, сроки, особые условия…', wide: true, textarea: true }
+      ],
+      submitLabel: 'ОТПРАВИТЬ ЗАЯВКУ →',
+      successText: '✓ ЗАЯВКА ПРИНЯТА. Подтвердим стоимость и сроки в течение рабочего дня.'
+    },
     project: {
       eyebrow: 'ПРОЕКТ',
       title: 'Обсудить\nпохожий проект',
@@ -450,6 +467,8 @@
       input.autocomplete = 'off';
       if (f.placeholder) input.placeholder = f.placeholder;
       if (f.readonly) input.readOnly = true;
+      /* Готовый текст в readonly-поле не должен уезжать в скролл. */
+      if (f.rows) input.rows = f.rows;
       var prefillVal = currentCtx[f.id];
       if (prefillVal) input.value = prefillVal;
       field.appendChild(input);

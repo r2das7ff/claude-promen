@@ -621,11 +621,14 @@ function promen_rest_delivery_quote_batch( WP_REST_Request $request ) {
  *
  * $opts (всё необязательно, значения по умолчанию — режим карточки товара):
  *   type         — 'auto' | 'express' | 'avia' (тип перевозки);
+ *   from         — 'terminal' | 'address' (как груз попадает к перевозчику);
+ *   from_city    — код КЛАДР города отправления (для сдачи на терминал);
+ *   from_address — строка адреса отправления, когда from = 'address';
  *   arrival      — 'terminal' | 'address' (куда везём в городе назначения);
  *   address      — строка адреса, когда arrival = 'address';
  *   stated_value — объявленная стоимость груза, ₽ (страховка ДЛ).
  *
- * Все четыре входят в ключ кэша: без этого расчёт «до адреса авиа» подменялся
+ * Все они входят в ключ кэша: без этого расчёт «до адреса авиа» подменялся
  * бы лежащим рядом «до терминала авто» с тем же весом.
  */
 function promen_delivery_quote_for_cargo( array $cargo, string $city_code, array $opts = [] ): WP_REST_Response {
@@ -639,6 +642,13 @@ function promen_delivery_quote_for_cargo( array $cargo, string $city_code, array
 	if ( $to === 'address' && $address === '' ) {
 		$to = 'terminal';
 	}
+
+	$from      = ( ( $opts['from'] ?? '' ) === 'address' ) ? 'address' : 'terminal';
+	$from_city = (string) ( $opts['from_city'] ?? '' );
+	$from_addr = trim( (string) ( $opts['from_address'] ?? '' ) );
+	if ( $from === 'address' && $from_addr === '' ) {
+		$from = 'terminal';
+	}
 	if ( $stated > 0 ) {
 		$cargo['insurance'] = [ 'statedValue' => round( $stated, 2 ), 'term' => false ];
 	}
@@ -649,6 +659,9 @@ function promen_delivery_quote_for_cargo( array $cargo, string $city_code, array
 		ceil( $cargo['totalVolume'] * 20 ) / 20,
 		$cargo['quantity'],
 		$type,
+		$from,
+		$from_city,
+		mb_strtolower( $from_addr ),
 		$to,
 		mb_strtolower( $address ),
 		$stated,
@@ -658,7 +671,21 @@ function promen_delivery_quote_for_cargo( array $cargo, string $city_code, array
 		return new WP_REST_Response( $cached, 200 );
 	}
 
-	$derival = promen_dellin_derival();
+	// Откуда едем. Забор с адреса ДЛ ищет по строке (код города для этого не
+	// нужен), сдачу на терминал — по id терминала в городе отправления. Нет
+	// ни того ни другого — остаётся наша площадка: так считает калькулятор
+	// в карточке товара.
+	if ( $from === 'address' && $from_addr !== '' ) {
+		$derival = [ 'variant' => 'address', 'address' => [ 'search' => $from_addr ] ];
+	} elseif ( $from_city !== '' ) {
+		$tid = promen_dellin_terminal_id( $from_city );
+		if ( $tid === '' ) {
+			return new WP_REST_Response( [ 'error' => 'no_terminal_from' ], 422 );
+		}
+		$derival = [ 'variant' => 'terminal', 'terminalID' => $tid ];
+	} else {
+		$derival = promen_dellin_derival();
+	}
 	$dated   = $derival;
 	$dated['produceDate'] = promen_delivery_produce_date();
 	if ( ( $dated['variant'] ?? '' ) === 'address' ) {
