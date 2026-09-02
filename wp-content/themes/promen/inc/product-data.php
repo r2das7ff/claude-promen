@@ -531,6 +531,21 @@ function promen_norm_canonical( string $key ): string {
 	if ( isset( $slug_map[ $low ] ) ) {
 		return $slug_map[ $low ];
 	}
+	// Термин таксономии norm — источник истины для написания. У 3 054 товаров
+	// (45 обозначений) ключ хранится латинским слагом, и слаг совпадает со
+	// слагом термина, чьё имя набрано по-русски и в принятой у семейства форме:
+	// «ОСТ 34-10-425-90» с дефисами, «ОСТ 24.125.24-89» с точками. Эвристика
+	// ниже этой разницы не знает и давала «ОСТ 34.10.425.90»; а title серии до
+	// 2026-09-02 вообще брал сырой ключ — «Фланец ФП ost-34-10-425-90», что не
+	// читалось ни человеком, ни поиском по запросу «ОСТ 34-10-425-90».
+	// taxonomy_exists — чтобы вызов до регистрации таксономии не закешировал
+	// в promen_term_map() пустую карту на 15 минут.
+	if ( taxonomy_exists( 'norm' ) && function_exists( 'promen_term_map' ) ) {
+		$term_name = (string) ( promen_term_map( 'norm' )[ $low ]['name'] ?? '' );
+		if ( '' !== $term_name && preg_match( '/[А-Яа-яЁё]/u', $term_name ) ) {
+			return $term_name;
+		}
+	}
 	// Общий случай латинского слага → русский префикс (год, если неизвестен, опускаем).
 	if ( preg_match( '/^(sto|ost|gost|tu|seriya)-(.+)$/i', $key, $m ) ) {
 		$pref = [ 'sto' => 'СТО', 'ost' => 'ОСТ', 'gost' => 'ГОСТ', 'tu' => 'ТУ', 'seriya' => 'СЕРИЯ' ][ strtolower( $m[1] ) ];
@@ -1592,7 +1607,7 @@ function promen_product_desc_fallback( WC_Product $product ): string {
 	$id     = $product->get_id();
 	$dims   = promen_get_dims( $id );
 	$size   = promen_size_label( $dims );
-	$norm   = (string) get_post_meta( $id, '_promen_norm_key', true );
+	$norm   = promen_norm_canonical( (string) get_post_meta( $id, '_promen_norm_key', true ) );
 	$kind   = promen_kind_from_title( (string) $product->get_name() );
 	$steels = (array) wc_get_product_terms( $id, 'pa_steel', [ 'fields' => 'names' ] );
 
@@ -1646,7 +1661,7 @@ function promen_product_photo_url( int $product_id ): string {
  */
 function promen_product_schema( WC_Product $product ): string {
 	$dims     = promen_get_dims( $product->get_id() );
-	$norm_key = get_post_meta( $product->get_id(), '_promen_norm_key', true );
+	$norm_key = promen_norm_canonical( (string) get_post_meta( $product->get_id(), '_promen_norm_key', true ) );
 	$steels   = wc_get_product_terms( $product->get_id(), 'pa_steel' );
 	$cats     = get_the_terms( $product->get_id(), 'product_cat' );
 	$cat_name = '';
@@ -1742,7 +1757,10 @@ add_filter( 'document_title_parts', function ( array $parts ): array {
 		$p = wc_get_product( get_the_ID() );
 		if ( $p ) {
 			$m = promen_series_meta( $p );
-			$norm = get_post_meta( $p->get_id(), '_promen_norm_key', true );
+			// Обозначение — в каноническом русском виде, не сырой ключ из меты:
+			// у латинского ключа в title стоял слаг («ost-34-10-425-90»).
+			$norm = promen_product_norm_key( $p->get_id() );
+
 			$parts['title'] = trim( $m['name'] . ( $m['angle'] !== '' ? ' ' . $m['angle'] . '°' : '' ) . ( $norm ? ' ' . $norm : '' ) );
 		}
 	}
@@ -1787,7 +1805,7 @@ function promen_related_by_dn( WC_Product $product, int $limit = 5 ): array {
 			'title' => get_the_title( $id ),
 			'url'   => get_permalink( $id ),
 			'sku'   => get_post_meta( $id, '_sku', true ),
-			'norm'  => get_post_meta( $id, '_promen_norm_key', true ),
+			'norm'  => promen_norm_canonical( (string) get_post_meta( $id, '_promen_norm_key', true ) ),
 		];
 	}
 	return $out;
@@ -2008,7 +2026,11 @@ function promen_series_meta( WC_Product $product ): array {
 
 	// Карта «норматив → тип» промахнулась или дала generic (изоляция ГОСТ 30732-2020,
 	// арматура, трубы ВГП со slug-нормой) — тип изделия из названия товара.
-	$name = promen_series_type_name( $norm_key, $family );
+	// Имя типа ищем по русскому обозначению: с латинским ключом
+	// («gost-17375-2001») карта промахивалась, и серия звалась «Отвод 90°»
+	// вместо «Отвод крутоизогнутый 90°» — не так, как та же серия в реестре.
+	$name = promen_series_type_name( promen_norm_canonical( (string) $norm_key ), $family );
+
 	if ( $name === $family || 'Изделие' === $name || 'Изделие в ППУ' === $name ) {
 		$kind = promen_kind_from_title( (string) $product->get_name() );
 		if ( $kind !== '' ) {

@@ -31,7 +31,7 @@ function promen_product_title_seo( int $product_id ): string {
 
 	// Ставим перед нормативом: «Фланец 80-11-1-B-IV PN40 ГОСТ 33259-2015»
 	// читается лучше, чем давление в самом хвосте.
-	$norm = (string) get_post_meta( $product_id, '_promen_norm_key', true );
+	$norm = function_exists( 'promen_product_norm_key' ) ? promen_product_norm_key( $product_id ) : (string) get_post_meta( $product_id, '_promen_norm_key', true );
 	if ( '' !== $norm && false !== mb_strpos( $title, $norm ) ) {
 		return str_replace( $norm, $label . ' ' . $norm, $title );
 	}
@@ -346,6 +346,11 @@ add_action( 'template_redirect', function () {
 	if ( '' === $path ) {
 		return; // настоящая главная
 	}
+	promen_send_404();
+} );
+
+/** Честная 404: статус, заголовки без кеша, шаблон темы, выход. */
+function promen_send_404(): void {
 	global $wp_query;
 	$wp_query->set_404();
 	status_header( 404 );
@@ -355,7 +360,27 @@ add_action( 'template_redirect', function () {
 		include $tpl;
 	}
 	exit;
-} );
+}
+
+/*
+ * Карта сайта с неизвестным именем — тоже честная 404.
+ *
+ * WP_Sitemaps::render_sitemaps() при имени провайдера, которого нет в реестре
+ * (wp-sitemap-users-1.xml после снятия users, wp-sitemap-foo-1.xml), молча
+ * возвращается, не трогая статус, и запрос доезжает до главной с кодом 200 —
+ * тот же мягкий 404, что и выше, только этот адрес поисковики уже знают по
+ * прежней карте. Рендерер ядра висит на template_redirect:10 и регистрируется
+ * на init — позже обработчика выше, поэтому проверка стоит на 11: если запрос
+ * карты дошёл сюда, ядро его не отрисовало. Пустой список URL ядро само
+ * закрывает 404 — тогда не вмешиваемся.
+ */
+add_action( 'template_redirect', function (): void {
+	if ( is_404() || ! ( get_query_var( 'sitemap' ) || get_query_var( 'sitemap-stylesheet' ) ) ) {
+		return;
+	}
+	promen_send_404();
+}, 11 );
+
 
 /*
  * ВРЕМЕННО: подтверждение прав на тестовый домен в Яндекс.Вебмастере.
@@ -919,18 +944,12 @@ add_filter( 'wp_sitemaps_taxonomies_query_args', function ( array $args, string 
  *
  * Провайдер users отдавал единственный адрес /author/admin/: 26 слов, H1 от
  * витрины, без canonical и description — и заодно публиковал логин
- * администратора. Сам архив закрываем noindex: ссылок на него нет, но и
- * держать в индексе пустышку незачем.
+ * администратора. Сам архив под noindex держит promen_is_service_page()
+ * выше; второй тег robots, который стоял здесь, был дублем (снят 2026-09-02).
  */
 add_filter( 'wp_sitemaps_add_provider', function ( $provider, string $name ) {
 	return 'users' === $name ? false : $provider;
 }, 10, 2 );
-
-add_action( 'wp_head', function (): void {
-	if ( is_author() ) {
-		echo '<meta name="robots" content="noindex,follow">' . "\n";
-	}
-}, 1 );
 
 /**
  * Страницы серий в карте сайта.
