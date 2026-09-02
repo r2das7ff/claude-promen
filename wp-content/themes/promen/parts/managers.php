@@ -47,8 +47,18 @@ $smgr_groups = [
 	],
 ];
 
-$smgr_img_base = get_theme_file_uri( 'assets/img/managers' );
-$smgr_i        = 0;
+$smgr_i = 0;
+
+/* Версия в адресе файла. Портрет и ролик лежат под одним и тем же именем от
+   съёмки к съёмке, поэтому без метки браузер продолжает показывать старый
+   закешированный файл — заказчик видит прежнее фото после заливки нового. */
+if ( ! function_exists( 'promen_managers_asset' ) ) {
+	function promen_managers_asset( string $rel ): string {
+		$url  = get_theme_file_uri( $rel );
+		$path = get_theme_file_path( $rel );
+		return file_exists( $path ) ? add_query_arg( 'v', (string) filemtime( $path ), $url ) : $url;
+	}
+}
 
 // Иконки — feather-грамматика, единый штрих 1.8, currentColor.
 $smgr_ic = [
@@ -78,11 +88,55 @@ $smgr_ic = [
         </div>
         <div class="smgr-grid">
           <?php foreach ( $smgr_group['managers'] as $smgr_m ) : $smgr_i++; ?>
+            <?php
+            // Оживающий портрет: если рядом с фото лежит ролик
+            // assets/video/managers/<img>.webm, карточка играет его при
+            // наведении. Ролик — «бумеранг»: движение и возврат, поэтому
+            // последний кадр совпадает с фотографией и подмены не видно.
+            // Нет файла — карточка остаётся статичной, разметка та же.
+            $smgr_vid = '';
+            foreach ( [ 'webm', 'mp4' ] as $smgr_ext ) {
+              if ( file_exists( get_theme_file_path( "assets/video/managers/{$smgr_m['img']}.$smgr_ext" ) ) ) {
+                $smgr_vid = $smgr_m['img'];
+                break;
+              }
+            }
+            // Наезд у каждого портрета свой: он зависит от того, где в кадре
+            // ролика голова. Параметры лежат рядом с ним в <img>.json —
+            // так рамка фотографии и первый кадр ролика совпадают.
+            $smgr_zoom = '';
+            if ( $smgr_vid ) {
+              $smgr_zf = get_theme_file_path( "assets/video/managers/$smgr_vid.json" );
+              if ( file_exists( $smgr_zf ) ) {
+                $smgr_zd = json_decode( (string) file_get_contents( $smgr_zf ), true );
+                if ( is_array( $smgr_zd ) && isset( $smgr_zd['z'], $smgr_zd['ox'], $smgr_zd['oy'] ) ) {
+                  $smgr_zoom = sprintf(
+                    '--vz:%.3f;--vox:%.1f%%;--voy:%.1f%%',
+                    (float) $smgr_zd['z'], (float) $smgr_zd['ox'], (float) $smgr_zd['oy']
+                  );
+                }
+              }
+            }
+            ?>
             <article class="smgr-card">
-              <div class="smgr-photo">
-                <img src="<?php echo esc_url( "$smgr_img_base/{$smgr_m['img']}.jpg" ); ?>"<?php echo promen_img_size_attr( "$smgr_img_base/{$smgr_m['img']}.jpg" ); ?>
+              <div class="smgr-photo<?php echo $smgr_vid ? ' has-video' : ''; ?>">
+                <img src="<?php echo esc_url( promen_managers_asset( "assets/img/managers/{$smgr_m['img']}.jpg" ) ); ?>"
                      alt="<?php echo esc_attr( $smgr_m['name'] . ' — ' . mb_strtolower( mb_substr( $smgr_m['role'], 0, 1 ) ) . mb_substr( $smgr_m['role'], 1 ) ); ?>"
                      width="267" height="400" loading="lazy" decoding="async">
+                <?php if ( $smgr_vid ) : ?>
+                  <?php /* preload=none — ролик не грузится, пока на карточку не навели. */ ?>
+                  <video class="smgr-video" muted playsinline preload="none" aria-hidden="true" tabindex="-1"<?php echo $smgr_zoom ? ' style="' . esc_attr( $smgr_zoom ) . '"' : ''; ?>>
+                    <?php /* Отдаём только те форматы, что реально лежат. У Курбатова и
+                             Белова webm не собирается: на мелком рисунке ткани
+                             (полоска и клетка) VP9 даёт пульсацию и рывки, а
+                             H.264 декодируется аппаратно и идёт ровно. */ ?>
+                    <?php foreach ( [ 'webm' => 'video/webm', 'mp4' => 'video/mp4' ] as $smgr_e => $smgr_mime ) : ?>
+                      <?php if ( file_exists( get_theme_file_path( "assets/video/managers/$smgr_vid.$smgr_e" ) ) ) : ?>
+                        <source src="<?php echo esc_url( promen_managers_asset( "assets/video/managers/$smgr_vid.$smgr_e" ) ); ?>" type="<?php echo esc_attr( $smgr_mime ); ?>">
+                      <?php endif; ?>
+                    <?php endforeach; ?>
+                  </video>
+                <?php endif; ?>
                 <span class="smgr-idx" aria-hidden="true">ОП-<?php echo esc_html( str_pad( (string) $smgr_i, 2, '0', STR_PAD_LEFT ) ); ?></span>
               </div>
               <div class="smgr-body">
