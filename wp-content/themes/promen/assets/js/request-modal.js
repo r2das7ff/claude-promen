@@ -320,11 +320,11 @@
    * отправке, завышает конверсию и врёт ровно там, где решения принимают.
    */
   var GOAL_BY_PRESET = {
-    kp:       'request_kp',
+    kp:       'request_kp',        // форма секции 11 и карточки товара
     tz:       'request_tz',
     solution: 'request_solution',
     docs:     'request_docs',
-    contact:  'request_contact',
+    product:  'request_product',
     calc:     'request_calc'
   };
 
@@ -336,6 +336,23 @@
       var g = GOAL_BY_PRESET[preset];
       if (g) window.ym(id, 'reachGoal', g);
     } catch (err) { /* аналитика не должна ронять отправку заявки */ }
+  }
+
+  /*
+   * Форма секции 11 (#s10-form) — обычный POST, а не модалка: она уходит
+   * перезагрузкой страницы, и обработчик ниже до неё не доходит. Сервер
+   * возвращает на тот же адрес с ?sent=1, по этой метке цель и шлём.
+   * Без этого главная форма сайта — та, через которую идут запросы КП, —
+   * не считалась бы вовсе, а именно она даёт основную конверсию.
+   */
+  function goalFromRedirect() {
+    if (window.location.search.indexOf('sent=1') === -1) return;
+    reachGoal('kp');
+    // Метку убираем из адреса: перезагрузка страницы не должна
+    // засчитывать конверсию второй раз.
+    if (window.history && history.replaceState) {
+      history.replaceState(null, '', window.location.pathname + window.location.hash);
+    }
   }
 
   function submitForm(e) {
@@ -462,4 +479,12 @@
     if (overlay) overlay.classList.remove('show');
     document.body.style.overflow = '';
   };
+
+  /* Счётчик Метрики инициализируется в подвале, то есть позже этого файла —
+     ждём готовности документа, иначе ym() ещё не существует. */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', goalFromRedirect);
+  } else {
+    goalFromRedirect();
+  }
 })();
