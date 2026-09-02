@@ -266,6 +266,8 @@ add_action( 'wp_enqueue_scripts', function () {
 			// Ключ документа → фасет `gost` каталога: «Открыть в каталоге»
 			// ведёт на выдачу с этим нормативом в фильтре, а не в общий раздел.
 			'norms'      => function_exists( 'promen_norm_catalog_index' ) ? promen_norm_catalog_index() : [],
+			// Обозначение документа → брендированный PDF в uploads/normativy/.
+			'files'      => promen_nb_files(),
 		] );
 	}
 
@@ -630,6 +632,46 @@ function promen_meta_description_text(): string {
 		$desc  = rtrim( false !== $space ? mb_substr( $cut, 0, $space ) : $cut, " ,.;:—-" ) . '…';
 	}
 	return $desc . $suffix;
+}
+
+/**
+ * Нормативная база: обозначение документа → адрес брендированного PDF.
+ *
+ * Файлы лежат в uploads/normativy/ (там же, где вся медиатека, — тема их не
+ * возит), соответствие «код из реестра → имя файла» ведёт манифест
+ * assets/data/normativy.json, который собирается из пайплайна
+ * site/normative-documents-promenergo. В карту попадают только те документы,
+ * чей файл реально лежит на диске: у остальных кнопка «Скачать PDF»
+ * по-прежнему отдаёт честный тост, а не битую ссылку.
+ */
+function promen_nb_files(): array {
+	static $map = null;
+	if ( null !== $map ) {
+		return $map;
+	}
+	$map      = [];
+	$manifest = get_theme_file_path( 'assets/data/normativy.json' );
+	if ( ! file_exists( $manifest ) ) {
+		return $map;
+	}
+	$rows = json_decode( (string) file_get_contents( $manifest ), true );
+	if ( ! is_array( $rows ) ) {
+		return $map;
+	}
+	$up  = wp_get_upload_dir();
+	$dir = trailingslashit( $up['basedir'] ) . 'normativy/';
+	$url = trailingslashit( $up['baseurl'] ) . 'normativy/';
+	foreach ( $rows as $code => $row ) {
+		$file = is_array( $row ) ? ( $row['f'] ?? '' ) : (string) $row;
+		if ( '' === $file || ! file_exists( $dir . $file ) ) {
+			continue;
+		}
+		$map[ (string) $code ] = [
+			'url'  => $url . rawurlencode( $file ),
+			'size' => (int) ( is_array( $row ) ? ( $row['s'] ?? 0 ) : 0 ),
+		];
+	}
+	return $map;
 }
 
 /** Сам тег. Текст отдаётся отдельно — его же берут Open Graph и Twitter Card. */

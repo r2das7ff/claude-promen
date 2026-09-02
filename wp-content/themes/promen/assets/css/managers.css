@@ -62,8 +62,19 @@
 /* ── CARD GRID ── */
 .smgr-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  /* Порог 300px вместо 260: на широком мониторе auto-fill набивал в ряд
+     пять-шесть колонок, и карточка сжималась до 280px — портрет
+     превращался в узкую полосу. */
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
   gap:28px 24px;
+}
+@media (min-width:1150px){
+  /* Ровно четыре колонки, не больше и не меньше: в департаментах 4 и 3
+     человека, и любое другое число рвёт группу на строки (при трёх
+     колонках четвёртый специалист уезжает вниз один). Свободную ширину
+     отдаём карточкам — на широком мониторе это 400px против прежних 260,
+     где портрет сжимался в полосу. */
+  .smgr-grid{grid-template-columns:repeat(4,1fr);}
 }
 .smgr-card{
   display:flex;flex-direction:column;min-width:0;
@@ -85,6 +96,54 @@
   transition:transform var(--dur-entrance) var(--ease-out);
 }
 .smgr-card:hover .smgr-photo img{transform:scale(1.03);}
+
+/* ── ОЖИВАЮЩИЙ ПОРТРЕТ ──
+   В покое карточка показывает крупный портрет, как у всех остальных
+   специалистов. Под курсором тот же кадр оживает и камера отъезжает:
+   человек виден в рост и скрещивает руки.
+
+   Отъезд делает transform, а не монтаж: ролик снят целиком в рост, здесь
+   он лишь стартует приближённым. Масштаб 1.613 — это 1/0.62, где 0.62
+   доля кадра, занятая портретом; origin 52%/34% ставит неподвижной точкой
+   центр той же области, поэтому первый кадр ролика совпадает с
+   фотографией пиксель в пиксель.
+
+   Возврат бесплатен: курсор ушёл — transition отыгрывает наезд обратно,
+   и ролик снова совпадает с фото. Из-за этого не нужен «бумеранг» —
+   видео проигрывается один раз, вперёд. */
+.smgr-photo.has-video .smgr-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:top center;
+  /* Масштаб и точка наезда у каждого портрета свои: они зависят от того,
+     где в кадре ролика оказалась голова. Значения приходят из
+     assets/video/managers/<img>.json и подставляются в style карточки;
+     здесь — запасные, на случай отсутствия файла параметров.
+     Точка — не центр области портрета: при масштабе она смещает кадр
+     иначе, и у первого варианта (центр 52%/34%) верх кропа уезжал на
+     227px, ровно на линию макушки. */
+  transform:scale(var(--vz,1.613));
+  transform-origin:var(--vox,55.3%) var(--voy,9.3%);
+  opacity:0;
+  /* Отъезд тянем 1.8 с и на мягкой кривой: на общей --ease-out он
+     заканчивался за полсекунды и читался как рывок, а не как работа
+     камеры. Прозрачность гасим быстрее — подмена кадра не должна
+     догонять движение. */
+  transition:opacity var(--dur-ui) var(--ease-out),
+             transform 1.8s cubic-bezier(.33,.02,.2,1);
+  pointer-events:none;z-index:1;
+}
+.smgr-card:hover .smgr-photo.has-video .smgr-video{opacity:1;transform:scale(1);}
+/* Зум остаётся фотографии в статике; на ролике он спорил бы с отъездом. */
+.smgr-card:hover .smgr-photo.has-video img{transform:none;}
+.smgr-photo.has-video .smgr-idx{z-index:2;}
+
+@media (hover:none){
+  /* Без курсора ролику негде появиться: не показываем и не грузим. */
+  .smgr-photo.has-video .smgr-video{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .smgr-photo.has-video .smgr-video{display:none;}
+}
 .smgr-idx{
   position:absolute;top:10px;left:10px;
   font-family:'DINPro',monospace;font-size:10px;letter-spacing:.18em;

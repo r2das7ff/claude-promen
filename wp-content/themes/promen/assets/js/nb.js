@@ -610,7 +610,11 @@ function openPanel(d){
     document.getElementById('pCatalogCount').textContent=
       tgt.count.toLocaleString('ru-RU')+' '+nbPlural(tgt.count,['позиция','позиции','позиций']);
   }else{cntRow.style.display='none';}
-  document.getElementById('pDownload').onclick=()=>requestDownload(d);
+  /* Вес файла в подписи кнопки: сразу видно, что документ действительно
+     опубликован, а не отдаст тост. */
+  const pdlF=nbFile(d),pdl=document.getElementById('pDownload');
+  pdl.textContent=pdlF?('Скачать PDF · '+nbSize(pdlF.size)):'Скачать PDF';
+  pdl.onclick=()=>requestDownload(d);
   overlay.classList.add('show');
   panel.classList.add('open');
 }
@@ -619,10 +623,29 @@ document.getElementById('nbPanelClose').addEventListener('click',closePanel);
 overlay.addEventListener('click',closePanel);
 document.addEventListener('keydown',(e)=>{if(e.key==='Escape')closePanel();});
 
-/* DOWNLOAD — honest placeholder, no fake file */
+/* DOWNLOAD — брендированный PDF, если он опубликован; иначе честный тост.
+   Карту «обозначение → файл» отдаёт PHP в promenNB.files: там только те
+   документы, чей файл реально лежит в uploads/normativy/. */
 const toast=document.getElementById('nbToast');
 let toastTimer=null;
+function nbFile(d){
+  return ((window.promenNB||{}).files||{})[d.code]||null;
+}
+function nbSize(bytes){
+  if(!bytes)return '';
+  const mb=bytes/1048576;
+  return (mb<1?Math.round(bytes/1024)+' КБ':mb.toFixed(1).replace('.',',')+' МБ');
+}
 function requestDownload(d){
+  const f=nbFile(d);
+  if(f&&f.url){
+    /* download на своём же домене отдаёт файл в загрузки, а не открывает
+       встроенный просмотрщик — кнопка называется «Скачать». */
+    const a=document.createElement('a');
+    a.href=f.url;a.download='';a.rel='noopener';
+    document.body.appendChild(a);a.click();a.remove();
+    return;
+  }
   toast.textContent=d.noFile
     ? `${d.code} — документа нет в архиве нормативов завода. Запросите его у отдела технического контроля: zakaz@prom-en.com`
     : `${d.code} — документ есть в архиве завода, но на сайте не публикуется. Запросите файл у отдела технического контроля: zakaz@prom-en.com`;

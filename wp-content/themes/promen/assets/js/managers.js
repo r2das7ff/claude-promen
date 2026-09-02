@@ -34,6 +34,37 @@
     document.body.removeChild(ta);
   }
 
+  /* ── ОЖИВАЮЩИЙ ПОРТРЕТ ──
+     Ролик у карточки менеджера играет только под курсором. Видимость даёт
+     CSS, здесь — воспроизведение: до первого наведения файл вообще не
+     скачивается (preload="none"), поэтому секция стоит столько же, сколько
+     стоила с одними фотографиями.
+     Ролик снят «бумерангом» и заканчивается там же, где начался, так что
+     после проигрывания кадр совпадает с фотографией. Уводя курсор, не
+     дёргаем currentTime: пусть доигрывает, пока CSS гасит его прозрачностью —
+     обрыв на середине движения выглядел бы рывком. */
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var fine   = window.matchMedia('(hover: hover) and (pointer: fine)');
+  if (fine.matches && !reduce.matches) {
+    Array.prototype.forEach.call(sec.querySelectorAll('.smgr-photo.has-video'), function (box) {
+      var v = box.querySelector('.smgr-video');
+      if (!v) return;
+      var card = box.closest('.smgr-card') || box;
+      card.addEventListener('mouseenter', function () {
+        /* Каждое наведение начинает движение заново, а не с середины. */
+        try { v.currentTime = 0; } catch (e) {}
+        var p = v.play();
+        if (p && p.catch) p.catch(function () { /* автоплей отклонён — остаётся фото */ });
+      });
+      card.addEventListener('mouseleave', function () {
+        /* Сброс на первый кадр — он же фотография: следующее наведение
+           стартует чисто, а пауза экономит декодирование. */
+        v.pause();
+        try { v.currentTime = 0; } catch (e) {}
+      });
+    });
+  }
+
   sec.addEventListener('click', function (e) {
     var btn = e.target.closest('.smgr-copy');
     if (!btn) return;
