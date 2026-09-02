@@ -41,40 +41,28 @@
   font-size:15px;line-height:1.6;color:var(--blue);
 }
 
-/* ── GROUPS ── */
-.smgr-groups{padding:48px var(--head-x) 88px;}
-.smgr-group + .smgr-group{margin-top:56px;}
-.smgr-group-bar{
-  display:flex;align-items:baseline;gap:18px;
-  margin-bottom:20px;
-}
-.smgr-group-name{
-  font-family:'DINPro',monospace;font-size:12px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--dark);font-weight:700;
-  flex-shrink:0;
-}
-.smgr-group-bar::after{content:'';flex:1;height:1px;background:var(--ln2);align-self:center;}
-.smgr-group-count{
-  font-family:'DINPro',monospace;font-size:11px;letter-spacing:.2em;
-  color:var(--g1-text);flex-shrink:0;order:3;
-}
+/* ── LIST ── */
+.smgr-list{padding:48px var(--head-x) 88px;}
 
 /* ── CARD GRID ── */
 .smgr-grid{
   display:grid;
-  /* Порог 300px вместо 260: на широком мониторе auto-fill набивал в ряд
-     пять-шесть колонок, и карточка сжималась до 280px — портрет
-     превращался в узкую полосу. */
-  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  /* Порог 272px: ниже строка контакта («+7 (351) 217-00-99» моноширинным
+     плюс кнопка копирования 44px) перестаёт помещаться в одну строку.
+     На планшете это даёт две колонки, три включаются ниже по медиа. */
+  grid-template-columns:repeat(auto-fill,minmax(272px,1fr));
   gap:28px 24px;
 }
-@media (min-width:1150px){
-  /* Ровно четыре колонки, не больше и не меньше: в департаментах 4 и 3
-     человека, и любое другое число рвёт группу на строки (при трёх
-     колонках четвёртый специалист уезжает вниз один). Свободную ширину
-     отдаём карточкам — на широком мониторе это 400px против прежних 260,
-     где портрет сжимался в полосу. */
-  .smgr-grid{grid-template-columns:repeat(4,1fr);}
+@media (min-width:900px){
+  /* Ровно три колонки, на всю ширину секции. Специалистов семь, поэтому в
+     последнем ряду одна карточка — она остаётся слева, как недобранная
+     строка реестра, а не центрируется: список читают сверху вниз, и
+     сдвинутая к середине карточка выглядела бы выделенной, хотя ничем не
+     отличается от соседей.
+     Потолок ширины колонки не ставим: на 1920 он оставлял справа 440px
+     пустоты, и сетка переставала совпадать по ширине с плашкой общей линии
+     и соседними секциями главной, которые тянутся во всю ширину. */
+  .smgr-grid{grid-template-columns:repeat(3,1fr);}
 }
 .smgr-card{
   display:flex;flex-direction:column;min-width:0;
@@ -231,7 +219,7 @@
 @media (max-width:1024px){
   .smgr{padding-left:0;}
   .smgr-head{padding:52px 24px 36px;}
-  .smgr-groups{padding:36px 24px 64px;}
+  .smgr-list{padding:36px 24px 64px;}
 }
 /* Телефон и почта в подвале — частые тач-цели, добираем до 44px по высоте
    вертикальным padding; инлайн-ссылки внутри абзацев намеренно не трогаем. */
@@ -240,9 +228,6 @@
 }
 
 @media (max-width:639px){
-  /* Длинное имя группы: разрешаем перенос, линия+счётчик уходят строкой ниже */
-  .smgr-group-bar{flex-wrap:wrap;row-gap:8px;}
-  .smgr-group-name{flex-shrink:1;line-height:1.5;}
   .smgr-grid{grid-template-columns:1fr;gap:12px;}
   .smgr-card{flex-direction:row;}
   .smgr-card:hover{transform:none;box-shadow:none;}

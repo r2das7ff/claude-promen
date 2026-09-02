@@ -141,7 +141,7 @@ body::before{
 /* На узких экранах содержательные подписи не должны быть мельче 12px.
    HUD-декор (координаты, метки сцены) намеренно остаётся тонким. */
 @media (max-width:639px){
-  .smgr-ext,.smgr-group-count,.smgr-eye-label,
+  .smgr-ext,.smgr-eye-label,
   .sfk-sector-full,.s5-desc-top-label,.s5-desc-meta-tag{font-size:12px;}
 }
 

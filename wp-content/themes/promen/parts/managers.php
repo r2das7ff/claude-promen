@@ -5,7 +5,7 @@
  *
  * Контракт: реестровая сетка карточек в мире КТЛ-01 — фото 2:3, имя,
  * направление, прямые линии (тел с добавочным + почта) как mono-строки;
- * группы «атомная продукция» / «общее назначение» полосами-заголовками;
+ * один общий список специалистов, три карточки в ряд на десктопе;
  * замыкающая плашка общей линии для сценария «не знаю, кому писать».
  * ≤639px карточка перекомпонуется в горизонтальную строку (фото 104px) —
  * на телефоне из секции звонят, а не разглядывают.
@@ -24,30 +24,26 @@
  *
  * 2026-09-02: уточнены направления — Курбатов: трубы и детали в изоляции;
  * Калашников и Хадеев: детали для АЭС и ТЭС (без «трубопровода»/«труб»).
+ *
+ * 2026-09-02: деление на департаменты («атомная продукция» / «общее
+ * назначение») снято — один список из семи специалистов без полос-заголовков.
+ * Клиенту направление говорит карточка, а внутреннее устройство отдела ему
+ * ничего не подсказывало: два блока по 4 и 3 человека читались как разные
+ * команды. Порядок людей прежний, поэтому номера ОП-01…ОП-07 не поехали.
  */
 
 $smgr_num   = $args['num']   ?? '10';
 $smgr_lines = ! empty( $args['lines'] );
 $smgr_flush = ! empty( $args['flush'] );
 
-$smgr_groups = [
-	[
-		'label'    => 'Департамент продаж атомной продукции',
-		'managers' => [
-			[ 'img' => 'kurbatov',    'name' => 'Сергей Курбатов',    'role' => 'Специалист по трубам и деталям в изоляции',         'tel' => '+7 (351) 217-00-99', 'href' => '+73512170099', 'ext' => '207', 'email' => 'zakaz7@prom-en.com' ],
-			[ 'img' => 'kalashnikov', 'name' => 'Дмитрий Калашников', 'role' => 'Специалист по деталям для АЭС и ТЭС',             'tel' => '+7 (351) 217-00-99', 'href' => '+73512170099', 'ext' => '206', 'email' => 'zakaz6@prom-en.com' ],
-			[ 'img' => 'belov',       'name' => 'Кирилл Белов',       'role' => 'Специалист по трубам и СДТ для ТЭС',              'tel' => '+7 (351) 217-00-99', 'href' => '+73512170099', 'ext' => '205', 'email' => 'zakaz5@prom-en.com' ],
-			[ 'img' => 'hadeev',      'name' => 'Виталий Хадеев',     'role' => 'Специалист по деталям для АЭС и ТЭС',             'tel' => '+7 (351) 220-02-65', 'href' => '+73512200265', 'ext' => '208', 'email' => 'zakaz8@prom-en.com' ],
-		],
-	],
-	[
-		'label'    => 'Отдел продаж продукции общего назначения',
-		'managers' => [
-			[ 'img' => 'otvagina',  'name' => 'Наталья Отвагина', 'role' => 'Специалист по трубам и деталям трубопровода', 'tel' => '+7 (351) 220-02-65', 'href' => '+73512200265', 'ext' => '213', 'email' => 'zakaz13@prom-en.com' ],
-			[ 'img' => 'menshikov', 'name' => 'Илья Меньшиков',   'role' => 'Специалист по трубам и деталям в изоляции',   'tel' => '+7 (351) 220-02-65', 'href' => '+73512200265', 'ext' => '212', 'email' => 'zakaz12@prom-en.com' ],
-			[ 'img' => 'romanov',   'name' => 'Максим Романов',   'role' => 'Специалист по трубам и деталям трубопровода', 'tel' => '+7 (351) 217-00-99', 'href' => '+73512170099', 'ext' => '214', 'email' => 'zakaz14@prom-en.com' ],
-		],
-	],
+$smgr_managers = [
+	[ 'img' => 'kurbatov',    'name' => 'Сергей Курбатов',    'role' => 'Специалист по трубам и деталям в изоляции',   'tel' => '+7 (351) 217-00-99', 'href' => '+73512170099', 'ext' => '207', 'email' => 'zakaz7@prom-en.com'  ],
+	[ 'img' => 'kalashnikov', 'name' => 'Дмитрий Калашников', 'role' => 'Специалист по деталям для АЭС и ТЭС',         'tel' => '+7 (351) 217-00-99', 'href' => '+73512170099', 'ext' => '206', 'email' => 'zakaz6@prom-en.com'  ],
+	[ 'img' => 'belov',       'name' => 'Кирилл Белов',       'role' => 'Специалист по трубам и СДТ для ТЭС',          'tel' => '+7 (351) 217-00-99', 'href' => '+73512170099', 'ext' => '205', 'email' => 'zakaz5@prom-en.com'  ],
+	[ 'img' => 'hadeev',      'name' => 'Виталий Хадеев',     'role' => 'Специалист по деталям для АЭС и ТЭС',         'tel' => '+7 (351) 220-02-65', 'href' => '+73512200265', 'ext' => '208', 'email' => 'zakaz8@prom-en.com'  ],
+	[ 'img' => 'otvagina',    'name' => 'Наталья Отвагина',   'role' => 'Специалист по трубам и деталям трубопровода', 'tel' => '+7 (351) 220-02-65', 'href' => '+73512200265', 'ext' => '213', 'email' => 'zakaz13@prom-en.com' ],
+	[ 'img' => 'menshikov',   'name' => 'Илья Меньшиков',     'role' => 'Специалист по трубам и деталям в изоляции',   'tel' => '+7 (351) 220-02-65', 'href' => '+73512200265', 'ext' => '212', 'email' => 'zakaz12@prom-en.com' ],
+	[ 'img' => 'romanov',     'name' => 'Максим Романов',     'role' => 'Специалист по трубам и деталям трубопровода', 'tel' => '+7 (351) 217-00-99', 'href' => '+73512170099', 'ext' => '214', 'email' => 'zakaz14@prom-en.com' ],
 ];
 
 $smgr_i = 0;
@@ -82,100 +78,92 @@ $smgr_ic = [
       материалу и сроку без передачи по цепочке. Звоните напрямую или пишите на личную почту.</p>
   </div>
 
-  <div class="smgr-groups">
-    <?php foreach ( $smgr_groups as $smgr_group ) : ?>
-      <div class="smgr-group">
-        <div class="smgr-group-bar">
-          <span class="smgr-group-name"><?php echo esc_html( $smgr_group['label'] ); ?></span>
-          <span class="smgr-group-count"><?php echo count( $smgr_group['managers'] ); ?> СПЕЦ.</span>
-        </div>
-        <div class="smgr-grid">
-          <?php foreach ( $smgr_group['managers'] as $smgr_m ) : $smgr_i++; ?>
-            <?php
-            // Оживающий портрет: если рядом с фото лежит ролик
-            // assets/video/managers/<img>.webm, карточка играет его при
-            // наведении. Ролик — «бумеранг»: движение и возврат, поэтому
-            // последний кадр совпадает с фотографией и подмены не видно.
-            // Нет файла — карточка остаётся статичной, разметка та же.
-            $smgr_vid = '';
-            foreach ( [ 'webm', 'mp4' ] as $smgr_ext ) {
-              if ( file_exists( get_theme_file_path( "assets/video/managers/{$smgr_m['img']}.$smgr_ext" ) ) ) {
-                $smgr_vid = $smgr_m['img'];
-                break;
-              }
+  <div class="smgr-list">
+    <div class="smgr-grid">
+      <?php foreach ( $smgr_managers as $smgr_m ) : $smgr_i++; ?>
+        <?php
+        // Оживающий портрет: если рядом с фото лежит ролик
+        // assets/video/managers/<img>.webm, карточка играет его при
+        // наведении. Ролик — «бумеранг»: движение и возврат, поэтому
+        // последний кадр совпадает с фотографией и подмены не видно.
+        // Нет файла — карточка остаётся статичной, разметка та же.
+        $smgr_vid = '';
+        foreach ( [ 'webm', 'mp4' ] as $smgr_ext ) {
+          if ( file_exists( get_theme_file_path( "assets/video/managers/{$smgr_m['img']}.$smgr_ext" ) ) ) {
+            $smgr_vid = $smgr_m['img'];
+            break;
+          }
+        }
+        // Наезд у каждого портрета свой: он зависит от того, где в кадре
+        // ролика голова. Параметры лежат рядом с ним в <img>.json —
+        // так рамка фотографии и первый кадр ролика совпадают.
+        $smgr_zoom = '';
+        if ( $smgr_vid ) {
+          $smgr_zf = get_theme_file_path( "assets/video/managers/$smgr_vid.json" );
+          if ( file_exists( $smgr_zf ) ) {
+            $smgr_zd = json_decode( (string) file_get_contents( $smgr_zf ), true );
+            if ( is_array( $smgr_zd ) && isset( $smgr_zd['z'], $smgr_zd['ox'], $smgr_zd['oy'] ) ) {
+              $smgr_zoom = sprintf(
+                '--vz:%.3f;--vox:%.1f%%;--voy:%.1f%%',
+                (float) $smgr_zd['z'], (float) $smgr_zd['ox'], (float) $smgr_zd['oy']
+              );
             }
-            // Наезд у каждого портрета свой: он зависит от того, где в кадре
-            // ролика голова. Параметры лежат рядом с ним в <img>.json —
-            // так рамка фотографии и первый кадр ролика совпадают.
-            $smgr_zoom = '';
-            if ( $smgr_vid ) {
-              $smgr_zf = get_theme_file_path( "assets/video/managers/$smgr_vid.json" );
-              if ( file_exists( $smgr_zf ) ) {
-                $smgr_zd = json_decode( (string) file_get_contents( $smgr_zf ), true );
-                if ( is_array( $smgr_zd ) && isset( $smgr_zd['z'], $smgr_zd['ox'], $smgr_zd['oy'] ) ) {
-                  $smgr_zoom = sprintf(
-                    '--vz:%.3f;--vox:%.1f%%;--voy:%.1f%%',
-                    (float) $smgr_zd['z'], (float) $smgr_zd['ox'], (float) $smgr_zd['oy']
-                  );
-                }
-              }
-            }
-            ?>
-            <article class="smgr-card">
-              <div class="smgr-photo<?php echo $smgr_vid ? ' has-video' : ''; ?>">
-                <img src="<?php echo esc_url( promen_managers_asset( "assets/img/managers/{$smgr_m['img']}.jpg" ) ); ?>"
-                     alt="<?php echo esc_attr( $smgr_m['name'] . ' — ' . mb_strtolower( mb_substr( $smgr_m['role'], 0, 1 ) ) . mb_substr( $smgr_m['role'], 1 ) ); ?>"
-                     width="267" height="400" loading="lazy" decoding="async">
-                <?php if ( $smgr_vid ) : ?>
-                  <?php /* preload=none — ролик не грузится, пока на карточку не навели. */ ?>
-                  <video class="smgr-video" muted playsinline preload="none" aria-hidden="true" tabindex="-1"<?php echo $smgr_zoom ? ' style="' . esc_attr( $smgr_zoom ) . '"' : ''; ?>>
-                    <?php /* Отдаём только те форматы, что реально лежат. У Курбатова и
-                             Белова webm не собирается: на мелком рисунке ткани
-                             (полоска и клетка) VP9 даёт пульсацию и рывки, а
-                             H.264 декодируется аппаратно и идёт ровно. */ ?>
-                    <?php foreach ( [ 'webm' => 'video/webm', 'mp4' => 'video/mp4' ] as $smgr_e => $smgr_mime ) : ?>
-                      <?php if ( file_exists( get_theme_file_path( "assets/video/managers/$smgr_vid.$smgr_e" ) ) ) : ?>
-                        <source src="<?php echo esc_url( promen_managers_asset( "assets/video/managers/$smgr_vid.$smgr_e" ) ); ?>" type="<?php echo esc_attr( $smgr_mime ); ?>">
-                      <?php endif; ?>
-                    <?php endforeach; ?>
-                  </video>
-                <?php endif; ?>
-                <span class="smgr-idx" aria-hidden="true">ОП-<?php echo esc_html( str_pad( (string) $smgr_i, 2, '0', STR_PAD_LEFT ) ); ?></span>
+          }
+        }
+        ?>
+        <article class="smgr-card">
+          <div class="smgr-photo<?php echo $smgr_vid ? ' has-video' : ''; ?>">
+            <img src="<?php echo esc_url( promen_managers_asset( "assets/img/managers/{$smgr_m['img']}.jpg" ) ); ?>"
+                 alt="<?php echo esc_attr( $smgr_m['name'] . ' — ' . mb_strtolower( mb_substr( $smgr_m['role'], 0, 1 ) ) . mb_substr( $smgr_m['role'], 1 ) ); ?>"
+                 width="267" height="400" loading="lazy" decoding="async">
+            <?php if ( $smgr_vid ) : ?>
+              <?php /* preload=none — ролик не грузится, пока на карточку не навели. */ ?>
+              <video class="smgr-video" muted playsinline preload="none" aria-hidden="true" tabindex="-1"<?php echo $smgr_zoom ? ' style="' . esc_attr( $smgr_zoom ) . '"' : ''; ?>>
+                <?php /* Отдаём только те форматы, что реально лежат. У Курбатова и
+                         Белова webm не собирается: на мелком рисунке ткани
+                         (полоска и клетка) VP9 даёт пульсацию и рывки, а
+                         H.264 декодируется аппаратно и идёт ровно. */ ?>
+                <?php foreach ( [ 'webm' => 'video/webm', 'mp4' => 'video/mp4' ] as $smgr_e => $smgr_mime ) : ?>
+                  <?php if ( file_exists( get_theme_file_path( "assets/video/managers/$smgr_vid.$smgr_e" ) ) ) : ?>
+                    <source src="<?php echo esc_url( promen_managers_asset( "assets/video/managers/$smgr_vid.$smgr_e" ) ); ?>" type="<?php echo esc_attr( $smgr_mime ); ?>">
+                  <?php endif; ?>
+                <?php endforeach; ?>
+              </video>
+            <?php endif; ?>
+            <span class="smgr-idx" aria-hidden="true">ОП-<?php echo esc_html( str_pad( (string) $smgr_i, 2, '0', STR_PAD_LEFT ) ); ?></span>
+          </div>
+          <div class="smgr-body">
+            <h3 class="smgr-name"><?php echo esc_html( $smgr_m['name'] ); ?></h3>
+            <p class="smgr-role"><?php echo esc_html( $smgr_m['role'] ); ?></p>
+            <div class="smgr-lines">
+              <?php /* Запятая — pause-dial: мобильный дайлер сам донабирает добавочный после ответа IVR. */ ?>
+              <div class="smgr-line">
+                <a class="smgr-line-link" href="tel:<?php echo esc_attr( $smgr_m['href'] . ',' . $smgr_m['ext'] ); ?>" aria-label="Позвонить: <?php echo esc_attr( $smgr_m['name'] ); ?>">
+                  <?php echo $smgr_ic['phone']; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+                  <span class="smgr-line-v"><?php echo esc_html( $smgr_m['tel'] ); ?><em class="smgr-ext">доб. <?php echo esc_html( $smgr_m['ext'] ); ?></em></span>
+                </a>
+                <button class="smgr-copy" type="button" title="Скопировать"
+                        data-copy="<?php echo esc_attr( $smgr_m['tel'] . ', доб. ' . $smgr_m['ext'] ); ?>"
+                        aria-label="Скопировать телефон: <?php echo esc_attr( $smgr_m['name'] ); ?>">
+                  <?php echo $smgr_ic['copy'] . $smgr_ic['check']; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+                </button>
               </div>
-              <div class="smgr-body">
-                <h3 class="smgr-name"><?php echo esc_html( $smgr_m['name'] ); ?></h3>
-                <p class="smgr-role"><?php echo esc_html( $smgr_m['role'] ); ?></p>
-                <div class="smgr-lines">
-                  <?php /* Запятая — pause-dial: мобильный дайлер сам донабирает добавочный после ответа IVR. */ ?>
-                  <div class="smgr-line">
-                    <a class="smgr-line-link" href="tel:<?php echo esc_attr( $smgr_m['href'] . ',' . $smgr_m['ext'] ); ?>" aria-label="Позвонить: <?php echo esc_attr( $smgr_m['name'] ); ?>">
-                      <?php echo $smgr_ic['phone']; // phpcs:ignore WordPress.Security.EscapeOutput ?>
-                      <span class="smgr-line-v"><?php echo esc_html( $smgr_m['tel'] ); ?><em class="smgr-ext">доб. <?php echo esc_html( $smgr_m['ext'] ); ?></em></span>
-                    </a>
-                    <button class="smgr-copy" type="button" title="Скопировать"
-                            data-copy="<?php echo esc_attr( $smgr_m['tel'] . ', доб. ' . $smgr_m['ext'] ); ?>"
-                            aria-label="Скопировать телефон: <?php echo esc_attr( $smgr_m['name'] ); ?>">
-                      <?php echo $smgr_ic['copy'] . $smgr_ic['check']; // phpcs:ignore WordPress.Security.EscapeOutput ?>
-                    </button>
-                  </div>
-                  <div class="smgr-line">
-                    <a class="smgr-line-link" href="mailto:<?php echo esc_attr( $smgr_m['email'] ); ?>" aria-label="Написать: <?php echo esc_attr( $smgr_m['name'] ); ?>">
-                      <?php echo $smgr_ic['mail']; // phpcs:ignore WordPress.Security.EscapeOutput ?>
-                      <span class="smgr-line-v"><?php echo esc_html( $smgr_m['email'] ); ?></span>
-                    </a>
-                    <button class="smgr-copy" type="button" title="Скопировать"
-                            data-copy="<?php echo esc_attr( $smgr_m['email'] ); ?>"
-                            aria-label="Скопировать почту: <?php echo esc_attr( $smgr_m['name'] ); ?>">
-                      <?php echo $smgr_ic['copy'] . $smgr_ic['check']; // phpcs:ignore WordPress.Security.EscapeOutput ?>
-                    </button>
-                  </div>
-                </div>
+              <div class="smgr-line">
+                <a class="smgr-line-link" href="mailto:<?php echo esc_attr( $smgr_m['email'] ); ?>" aria-label="Написать: <?php echo esc_attr( $smgr_m['name'] ); ?>">
+                  <?php echo $smgr_ic['mail']; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+                  <span class="smgr-line-v"><?php echo esc_html( $smgr_m['email'] ); ?></span>
+                </a>
+                <button class="smgr-copy" type="button" title="Скопировать"
+                        data-copy="<?php echo esc_attr( $smgr_m['email'] ); ?>"
+                        aria-label="Скопировать почту: <?php echo esc_attr( $smgr_m['name'] ); ?>">
+                  <?php echo $smgr_ic['copy'] . $smgr_ic['check']; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+                </button>
               </div>
-            </article>
-          <?php endforeach; ?>
-        </div>
-      </div>
-    <?php endforeach; ?>
+            </div>
+          </div>
+        </article>
+      <?php endforeach; ?>
+    </div>
 
     <div class="smgr-foot">
       <div class="smgr-foot-q">
