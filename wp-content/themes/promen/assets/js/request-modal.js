@@ -36,7 +36,9 @@
       title: 'Запросить расчёт\nстоимости',
       sub: 'Укажите параметры изделия — подготовим коммерческое предложение и срок изготовления.',
       fields: [
-        { id: 'name', label: 'НАИМЕНОВАНИЕ', placeholder: 'Отвод 90°, тройник, переход…' },
+        /* id остаётся name ради префилла ctx.name, но на сервер уходит как
+           product: иначе изделие попадало в письмо под подписью «ФИО». */
+        { id: 'name', field: 'product', label: 'НАИМЕНОВАНИЕ', placeholder: 'Отвод 90°, тройник, переход…' },
         { id: 'std', label: 'СТАНДАРТ', placeholder: 'ГОСТ 17375-2001, ОСТ 108, СТО…' },
         { id: 'dn', label: 'DN / D, мм', placeholder: 'DN 100 / Ø 108' },
         { id: 'pn', label: 'ДАВЛЕНИЕ, МПа', placeholder: 'PN 160 / 16 МПа' },
@@ -66,7 +68,7 @@
       title: 'Запросить\nпозицию',
       sub: 'Укажите количество и срок — подготовим коммерческое предложение по выбранной позиции.',
       fields: [
-        { id: 'name', label: 'НАИМЕНОВАНИЕ', placeholder: '', readonly: true, wide: true },
+        { id: 'name', field: 'product', label: 'НАИМЕНОВАНИЕ', placeholder: '', readonly: true, wide: true },
         { id: 'qty', label: 'КОЛИЧЕСТВО, шт', placeholder: '100' },
         { id: 'deadline', label: 'СРОК', placeholder: '30 календарных дней' },
         { id: 'contact', label: 'EMAIL / ТЕЛЕФОН', placeholder: 'ivanov@company.ru', wide: true }
@@ -79,7 +81,7 @@
       title: 'Запросить\nдокументацию',
       sub: 'Укажите email — вышлем технический паспорт изделия и технические условия (ТУ).',
       fields: [
-        { id: 'name', label: 'НАИМЕНОВАНИЕ', placeholder: '', readonly: true, wide: true },
+        { id: 'name', field: 'product', label: 'НАИМЕНОВАНИЕ', placeholder: '', readonly: true, wide: true },
         { id: 'contact', label: 'EMAIL', placeholder: 'ivanov@company.ru', wide: true }
       ],
       submitLabel: 'ЗАПРОСИТЬ ДОКУМЕНТЫ →',
@@ -378,7 +380,7 @@
     preset.fields.forEach(function (f) {
       var input = document.getElementById('rm-f-' + f.id);
       if (!input) return;
-      fd.append(FIELD_NAMES[f.id] || f.id, input.value || '');
+      fd.append(f.field || FIELD_NAMES[f.id] || f.id, input.value || '');
     });
     var fileInput = document.getElementById('rmFile');
     if (preset.file && fileInput.files.length) {

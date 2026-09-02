@@ -113,6 +113,18 @@ add_filter( 'wp_mail_from_name', function ( $name ) {
 }, 20 );
 
 add_action( 'phpmailer_init', function ( $mailer ) {
+	/*
+	 * Reply-To на адрес заявителя, если он оставил email. Иначе менеджер
+	 * отвечает на no-reply@ и ответ уходит в никуда — а это единственный
+	 * канал связи по заявке. Ставится до проверки SMTP-конфига: без него
+	 * письмо всё равно уходит через mail(), и Reply-To нужен так же.
+	 */
+	$reply = apply_filters( 'promen_mail_reply_to', '' );
+	if ( is_email( $reply ) ) {
+		$mailer->clearReplyTos();
+		$mailer->addReplyTo( $reply );
+	}
+
 	$c = promen_smtp_config();
 	if ( ! $c ) {
 		return;
@@ -126,17 +138,6 @@ add_action( 'phpmailer_init', function ( $mailer ) {
 	$mailer->Password   = $c['pass'];
 	$mailer->CharSet    = 'UTF-8';
 	$mailer->Timeout    = 15;                 // шаред-хостинг: не висим на форме
-
-	/*
-	 * Reply-To на адрес заявителя, если он оставил email. Иначе менеджер
-	 * отвечает на no-reply@ и ответ уходит в никуда — а это единственный
-	 * канал связи по заявке.
-	 */
-	$reply = apply_filters( 'promen_mail_reply_to', '' );
-	if ( is_email( $reply ) ) {
-		$mailer->clearReplyTos();
-		$mailer->addReplyTo( $reply );
-	}
 } );
 
 /*
