@@ -53,3 +53,9 @@ migration/verify-report.txt
 # наезда — они версионируются). Забрать их с сервера: ssh promen-prod tar.
 wp-content/themes/promen/assets/video/managers/*.mp4
 wp-content/themes/promen/assets/video/managers/*.webm
+
+# Байт-код Python: интерпретатор складывает сюда скомпилированные scripts/seo/*.py
+# при импорте одного скрипта из другого. Файл привязан к версии интерпретатора
+# (yandex.cpython-313.pyc), пересобирается сам, в репозитории не нужен.
+__pycache__/
+*.pyc
