@@ -606,6 +606,10 @@ add_action( 'template_redirect', function () {
  * У карточки — фото изделия, у остальных страниц — первое фото из контента,
  * иначе общий снимок производства. Логотип в og:image не ставим: в превью
  * мессенджера он выглядит пустой плашкой.
+ *
+ * Общий снимок — отдельный файл 1200×630 (og/og-default.jpg): галерейные
+ * фото вертикальные, мессенджер резал их как хотел. До 2026-09-03 подставлялся
+ * promen-photo-hor-1.jpg — балки цеха, по которым тематика сайта не читалась.
  */
 function promen_og_image(): string {
 	if ( function_exists( 'is_product' ) && is_product() ) {
@@ -625,7 +629,7 @@ function promen_og_image(): string {
 			return $m[1];
 		}
 	}
-	return get_theme_file_uri( 'assets/img/photos/promen-photo-hor-1.jpg' );
+	return get_theme_file_uri( 'assets/img/og/og-default.jpg' );
 }
 
 /**
@@ -646,6 +650,7 @@ add_action( 'wp_head', function () {
 	$desc  = function_exists( 'promen_meta_description_text' ) ? promen_meta_description_text() : '';
 	$type  = ( function_exists( 'is_product' ) && is_product() ) ? 'product' : ( is_singular() ? 'article' : 'website' );
 	$url   = home_url( add_query_arg( [] ) );
+	$image = promen_og_image();
 
 	$tags = [
 		'og:site_name'   => 'PROM-EN — Промышленная Энергетика',
@@ -653,8 +658,16 @@ add_action( 'wp_head', function () {
 		'og:type'        => $type,
 		'og:title'       => $title,
 		'og:url'         => $url,
-		'og:image'       => promen_og_image(),
+		'og:image'       => $image,
 	];
+	// Размеры отдаём только у общего снимка: у него они известны заранее.
+	// Facebook и LinkedIn без них рисуют маленькую карточку до тех пор, пока
+	// сами не скачают файл, а это уже второй заход краулера.
+	if ( $image === get_theme_file_uri( 'assets/img/og/og-default.jpg' ) ) {
+		$tags['og:image:width']  = '1200';
+		$tags['og:image:height'] = '630';
+		$tags['og:image:alt']    = 'Сварка фланцевого соединения трубопровода на заводе «Промышленная Энергетика»';
+	}
 	if ( '' !== $desc ) {
 		$tags['og:description'] = $desc;
 	}
