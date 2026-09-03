@@ -675,6 +675,7 @@ function promen_delivery_quote_for_cargo( array $cargo, string $city_code, array
 	// нужен), сдачу на терминал — по id терминала в городе отправления. Нет
 	// ни того ни другого — остаётся наша площадка: так считает калькулятор
 	// в карточке товара.
+	$from_ours = false;
 	if ( $from === 'address' && $from_addr !== '' ) {
 		$derival = [ 'variant' => 'address', 'address' => [ 'search' => $from_addr ] ];
 	} elseif ( $from_city !== '' ) {
@@ -684,14 +685,23 @@ function promen_delivery_quote_for_cargo( array $cargo, string $city_code, array
 		}
 		$derival = [ 'variant' => 'terminal', 'terminalID' => $tid ];
 	} else {
-		$derival = promen_dellin_derival();
+		$derival   = promen_dellin_derival();
+		$from_ours = true;
 	}
 	$dated   = $derival;
 	$dated['produceDate'] = promen_delivery_produce_date();
 	if ( ( $dated['variant'] ?? '' ) === 'address' ) {
-		$dated['time'] = [ 'worktimeStart' => '9:00', 'worktimeEnd' => '18:00' ];
+		// Окно, когда машина может приехать за грузом. У нашей площадки это
+		// фактический график завода (08:00–17:00, как на странице контактов);
+		// у чужого адреса отправителя — обычный рабочий день, свой график ему
+		// навязывать нечего.
+		$dated['time'] = $from_ours
+			? [ 'worktimeStart' => '8:00', 'worktimeEnd' => '17:00' ]
+			: [ 'worktimeStart' => '9:00', 'worktimeEnd' => '18:00' ];
 	}
 
+	// Окно приёма у получателя — его рабочий день, а не наш: график завода
+	// здесь ни при чём, поэтому при смене графика эти часы не трогаем.
 	$arrival = $to === 'address'
 		? [
 			'variant' => 'address',

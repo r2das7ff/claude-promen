@@ -69,7 +69,7 @@ get_header();
           </div>
           <div class="cnt-row">
             <span class="cnt-row-k">Режим</span>
-            <span class="cnt-row-v">Пн–Пт, 09:00–18:00 МСК</span>
+            <span class="cnt-row-v">Пн–Пт, 08:00–17:00</span>
           </div>
           <div class="cnt-row">
             <span class="cnt-row-k">Декларация</span>

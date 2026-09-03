@@ -47,7 +47,7 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
         </div>
         <div class="s10-contact-row">
           <span class="s10-contact-k">ВРЕМЯ</span>
-          <span class="s10-contact-v">Пн–Пт, 09:00–18:00 МСК</span>
+          <span class="s10-contact-v">Пн–Пт, 08:00–17:00</span>
         </div>
       </div>
     </div>
@@ -142,7 +142,7 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
       <div class="ft-cell-val mono">
         <a href="mailto:zakaz@prom-en.com">zakaz@prom-en.com</a><br>
         <a href="tel:+73512170099">+7 (351) 217-00-99</a><br>
-        Пн–Пт, 09:00–18:00 МСК
+        Пн–Пт, 08:00–17:00
       </div>
     </div>
     <div class="ft-cell ft-cell--extra">

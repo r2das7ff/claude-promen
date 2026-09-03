@@ -181,7 +181,7 @@ $smgr_ic = [
       <div class="smgr-foot-lines">
         <a href="tel:+73512170099">+7 (351) 217-00-99</a>
         <a href="mailto:zakaz@prom-en.com">zakaz@prom-en.com</a>
-        <span>Пн–Пт, 09:00–18:00 МСК</span>
+        <span>Пн–Пт, 08:00–17:00</span>
       </div>
     </div>
   </div>
