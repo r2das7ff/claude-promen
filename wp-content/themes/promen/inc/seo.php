@@ -434,11 +434,39 @@ add_filter( 'robots_txt', function ( string $output, $public ): string {
 	if ( ! $public ) {
 		return $output; // сайт закрыт настройкой — не переопределяем
 	}
-	// Своя группа User-agent: ядро дописывает Sitemap: в конец, и правила
-	// после него оказались бы вне группы — Clean-param Яндекс тогда не прочтёт.
+
+	// Правила дописываем в конец группы ядра, а Sitemap переносим под неё.
+	// Раньше здесь открывалась вторая группа `User-agent: *`: по стандарту
+	// одинаковые группы объединяются, так что работало, но правило легко
+	// потерять при следующей правке — и Clean-param оказывался в другой
+	// группе, чем Disallow, к которым относится.
+	$sitemaps = [];
+	$body     = [];
+	foreach ( explode( "\n", $output ) as $line ) {
+		if ( 0 === stripos( ltrim( $line ), 'sitemap:' ) ) {
+			$sitemaps[] = trim( $line );
+			continue;
+		}
+		$body[] = rtrim( $line );
+	}
+	$output = rtrim( implode( "\n", $body ) ) . "\n";
+
 	$extra = [
 		'',
-		'User-agent: *',
+		// Стили, скрипты и шрифты темы обязаны быть открыты.
+		//
+		// WordPress вешает на каждый ассет `?ver=…`, а правило `Disallow: /*?`
+		// ниже закрывает любой адрес с параметрами — под запрет попадал весь
+		// CSS и JS сайта. Робот рендерил страницы без оформления, и Яндекс
+		// 31.08.2026 выставил диагноз «не оптимизирован для мобильных».
+		// Правило длиннее `/*?`, поэтому по приоритету самого длинного
+		// совпадения выигрывает оно; частные Disallow на wc-logs и
+		// woocommerce_uploads длиннее и продолжают действовать.
+		'Allow: /wp-content/',
+		'',
+		// Данные калькуляторов приходят из своего пространства REST. Без него
+		// рендерер видит пустые формы: содержимое страницы строит JS.
+		'Allow: /wp-json/promen/v1/calc/',
 		'Disallow: /wp-json/',
 		'Disallow: /xmlrpc.php',
 		'Disallow: */feed/',
@@ -470,7 +498,9 @@ add_filter( 'robots_txt', function ( string $output, $public ): string {
 		'Clean-param: gost&steel&dn&pn&s&angle&industry&group&q&paged',
 		'',
 	];
-	return $output . implode( "\n", $extra ) . "\n";
+
+	// Sitemap — межгрупповая директива, её место в самом конце файла.
+	return $output . implode( "\n", $extra ) . implode( "\n", $sitemaps ) . "\n";
 }, 10, 2 );
 
 /**
