@@ -59,3 +59,8 @@ wp-content/themes/promen/assets/video/managers/*.webm
 # (yandex.cpython-313.pyc), пересобирается сам, в репозитории не нужен.
 __pycache__/
 *.pyc
+
+# Сырые выгрузки рекламных кабинетов: 17 МБ на снимок и перегенерируются
+# скриптами scripts/ads/. В репозиторий едет только сводный отчёт.
+perf-reports/ads/*/*.json
+perf-reports/ads/*/*.tsv

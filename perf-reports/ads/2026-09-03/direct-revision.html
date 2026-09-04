@@ -1,0 +1,555 @@
+<title>Ревизия Директа PROM-EN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#E9EDEF; --surface:#FFFFFF; --surface-2:#F4F7F8;
+  --ink:#13181B; --ink-2:#3D484E; --muted:#66757C;
+  --line:#C9D3D8; --line-soft:#DEE5E8;
+  --accent:#0E5A72; --accent-soft:#E2EEF2;
+  --signal:#B26A15; --signal-soft:#F7EBDB;
+  --crit:#9E2A20; --crit-soft:#F8E4E2;
+  --ok:#26654B; --ok-soft:#E1F0E8;
+  --bar-bad:#B0603B; --bar-mid:#9A8B5E; --bar-good:#2C7690;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E1315; --surface:#161C1F; --surface-2:#1C2427;
+    --ink:#E7ECEE; --ink-2:#BCC7CC; --muted:#8B9AA1;
+    --line:#2C373C; --line-soft:#232C30;
+    --accent:#5EAFC9; --accent-soft:#15323C;
+    --signal:#DFA155; --signal-soft:#33260F;
+    --crit:#E0796C; --crit-soft:#361A16;
+    --ok:#5FBE93; --ok-soft:#0F2B21;
+    --bar-bad:#C0714B; --bar-mid:#B0A06E; --bar-good:#4E9DB8;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E1315; --surface:#161C1F; --surface-2:#1C2427;
+  --ink:#E7ECEE; --ink-2:#BCC7CC; --muted:#8B9AA1;
+  --line:#2C373C; --line-soft:#232C30;
+  --accent:#5EAFC9; --accent-soft:#15323C;
+  --signal:#DFA155; --signal-soft:#33260F;
+  --crit:#E0796C; --crit-soft:#361A16;
+  --ok:#5FBE93; --ok-soft:#0F2B21;
+  --bar-bad:#C0714B; --bar-mid:#B0A06E; --bar-good:#4E9DB8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  font-size:15.5px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px; margin:0 auto; padding:0 24px 96px}
+h1,h2,h3{font-family:Oswald,"Arial Narrow",sans-serif; font-weight:600; text-wrap:balance; margin:0}
+h1{font-size:clamp(30px,4.6vw,50px); line-height:1.05; letter-spacing:.005em}
+h2{font-size:clamp(21px,2.6vw,27px); line-height:1.15}
+h3{font-size:17px; font-weight:500; letter-spacing:.02em}
+p{margin:0}
+a{color:var(--accent)}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:.88em}
+.num{font-variant-numeric:tabular-nums}
+
+.stamp{background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--accent); margin-top:34px}
+.stamp-top{padding:30px 30px 24px; display:flex; flex-direction:column; gap:14px}
+.eyebrow{font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted)}
+.lede{max-width:66ch; color:var(--ink-2); font-size:16.5px}
+.stamp-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(158px,1fr)); border-top:1px solid var(--line)}
+.stamp-cell{padding:14px 18px 16px; border-right:1px solid var(--line-soft)}
+.stamp-cell:last-child{border-right:0}
+.stamp-cell .k{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--muted)}
+.stamp-cell .v{font-family:Oswald,sans-serif; font-size:19px; margin-top:3px; font-variant-numeric:tabular-nums}
+.stamp-cell .v small{font-family:"IBM Plex Sans",sans-serif; font-size:12.5px; color:var(--muted); font-weight:400}
+
+section{margin-top:56px}
+.sec-head{display:flex; align-items:baseline; gap:14px; border-bottom:2px solid var(--ink); padding-bottom:9px; margin-bottom:22px}
+.sec-num{font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--accent); letter-spacing:.08em}
+.sec-note{margin-left:auto; font-size:12.5px; color:var(--muted); font-family:"IBM Plex Mono",monospace}
+.prose{max-width:68ch; display:flex; flex-direction:column; gap:14px; color:var(--ink-2)}
+.prose strong{color:var(--ink); font-weight:600}
+
+.scroll{overflow-x:auto; border:1px solid var(--line); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:640px; font-size:14px}
+th{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:500; text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); white-space:nowrap; background:var(--surface-2)}
+td{padding:10px 14px; border-bottom:1px solid var(--line-soft); vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--surface-2)}
+.r{text-align:right; font-variant-numeric:tabular-nums; font-family:"IBM Plex Mono",monospace; font-size:13px}
+.name{font-weight:500; color:var(--ink)}
+tfoot td{padding:10px 14px; border-top:1px solid var(--line); font-weight:600; background:var(--surface-2)}
+.bad{color:var(--crit); font-weight:600}
+.good{color:var(--ok); font-weight:600}
+.tag{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.06em; padding:2px 7px; border-radius:2px; white-space:nowrap}
+.tag-net{background:var(--signal-soft); color:var(--signal)}
+.tag-search{background:var(--accent-soft); color:var(--accent)}
+.tag-404{background:var(--crit-soft); color:var(--crit)}
+.tag-301{background:var(--surface-2); color:var(--muted); border:1px solid var(--line-soft)}
+.tag-ok{background:var(--ok-soft); color:var(--ok)}
+.tag-no{background:var(--crit-soft); color:var(--crit)}
+
+.bars{display:flex; flex-direction:column; gap:2px; background:var(--surface); border:1px solid var(--line); padding:20px 22px}
+.bar-row{display:grid; grid-template-columns:minmax(150px,220px) 1fr 132px; align-items:center; gap:14px; padding:7px 0}
+.bar-label{font-size:13.5px; line-height:1.3}
+.bar-label .sub{display:block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--muted)}
+.bar-track{height:19px; background:var(--surface-2); border:1px solid var(--line-soft); position:relative}
+.bar-fill{height:100%; display:block}
+.bar-val{font-family:"IBM Plex Mono",monospace; font-size:12.5px; text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-2)}
+.legend{display:flex; flex-wrap:wrap; gap:16px; margin-top:14px; padding-top:13px; border-top:1px solid var(--line-soft); font-size:12.5px; color:var(--muted)}
+.legend span{display:flex; align-items:center; gap:7px}
+.swatch{width:11px; height:11px; display:inline-block}
+.pair-row{display:grid; grid-template-columns:minmax(130px,190px) 1fr; gap:14px; padding:9px 0; align-items:center}
+.pair-bars{display:flex; flex-direction:column; gap:4px}
+.pair-line{display:grid; grid-template-columns:1fr 104px; gap:10px; align-items:center}
+.pair-track{height:13px; background:var(--surface-2); border:1px solid var(--line-soft)}
+
+.findings{display:flex; flex-direction:column; gap:14px}
+.finding{background:var(--surface); border:1px solid var(--line); border-left:5px solid var(--muted); padding:17px 20px; display:flex; flex-direction:column; gap:9px}
+.finding.crit{border-left-color:var(--crit)}
+.finding.warn{border-left-color:var(--signal)}
+.finding.info{border-left-color:var(--accent)}
+.f-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+.f-id{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted); letter-spacing:.08em}
+.f-sev{margin-left:auto; font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase}
+.crit .f-sev{color:var(--crit)} .warn .f-sev{color:var(--signal)} .info .f-sev{color:var(--accent)}
+.f-body{color:var(--ink-2); font-size:14.5px; max-width:74ch}
+.f-body strong{color:var(--ink)}
+.f-facts{display:flex; flex-wrap:wrap; gap:8px 10px; margin-top:2px}
+.chip{font-family:"IBM Plex Mono",monospace; font-size:11.5px; padding:3px 9px; background:var(--surface-2); border:1px solid var(--line-soft); color:var(--ink-2); font-variant-numeric:tabular-nums}
+
+.plan{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line)}
+.plan-item{background:var(--surface); padding:18px 20px; display:flex; flex-direction:column; gap:8px}
+.plan-id{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--accent); letter-spacing:.1em}
+.plan-item h3{color:var(--ink)}
+.plan-item p{font-size:13.8px; color:var(--ink-2)}
+.plan-item .dest{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--muted); margin-top:auto; padding-top:8px; border-top:1px dashed var(--line-soft); word-break:break-all}
+
+.road{display:flex; flex-direction:column}
+.road-step{display:grid; grid-template-columns:118px 1fr; gap:20px; padding:18px 0; border-top:1px solid var(--line-soft)}
+.road-step:first-child{border-top:2px solid var(--ink)}
+.road-when{font-family:Oswald,sans-serif; font-size:16px; color:var(--accent); letter-spacing:.02em}
+.road-when small{display:block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-top:2px}
+.road-body{display:flex; flex-direction:column; gap:7px}
+.road-body h3{color:var(--ink)}
+.road-body ul{margin:0; padding-left:19px; color:var(--ink-2); font-size:14.2px; display:flex; flex-direction:column; gap:5px}
+
+.kill{display:grid; grid-template-columns:repeat(auto-fit,minmax(232px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line)}
+.kill-item{background:var(--surface); padding:15px 18px; display:flex; flex-direction:column; gap:4px}
+.kill-sum{font-family:Oswald,sans-serif; font-size:22px; color:var(--crit); font-variant-numeric:tabular-nums}
+.kill-what{font-size:13.6px; color:var(--ink-2)}
+
+footer{margin-top:60px; padding-top:20px; border-top:1px solid var(--line); color:var(--muted); font-size:12.8px; display:flex; flex-direction:column; gap:6px}
+footer code{color:var(--ink-2)}
+@media (max-width:640px){
+  .bar-row{grid-template-columns:1fr; gap:5px}
+  .bar-val{text-align:left}
+  .road-step{grid-template-columns:1fr; gap:8px}
+  .pair-row{grid-template-columns:1fr; gap:6px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+
+<div class="wrap">
+
+  <header class="stamp">
+    <div class="stamp-top">
+      <div class="eyebrow">Ревизия контекстной рекламы · PROM-EN · 03.09.2026</div>
+      <h1>671 тысяча за год,<br>из них 270 — впустую</h1>
+      <p class="lede">Из 748 условий показа 709 не принесли ни одной заявки, и на них ушло 40% бюджета. Причина видна в настройках: девятнадцати кампаниям задана средняя цена клика 100 ₽, ещё двум — стратегия «наивысшая позиция» без потолка, а точное соответствие фразам выключено во всех двадцати пяти. Отсюда клики по 736 ₽ по задвижкам, которых в каталоге двенадцать штук.</p>
+    </div>
+    <div class="stamp-grid">
+      <div class="stamp-cell"><div class="k">Расход за 12 мес</div><div class="v">671 337 ₽ <small>03.09.25 — 03.09.26</small></div></div>
+      <div class="stamp-cell"><div class="k">Клики</div><div class="v">38 205 <small>CPC 17,6 ₽</small></div></div>
+      <div class="stamp-cell"><div class="k">Визиты</div><div class="v">27 248 <small>недоезд 28,7%</small></div></div>
+      <div class="stamp-cell"><div class="k">Заявок</div><div class="v">266 <small>CPA 2 524 ₽</small></div></div>
+      <div class="stamp-cell"><div class="k">Сделок из CRM</div><div class="v">0 <small>за весь год</small></div></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>Куда ушли деньги</h2><span class="sec-note">Метрика · ym:ad · логин promenergetics</span></div>
+    <div class="prose" style="margin-bottom:20px">
+      <p>По визитам кажется, что бюджет съедает РСЯ: 81,5% трафика идёт оттуда. По деньгам всё наоборот. <strong>Поиск — 77,8% расхода при CPC 88,6 ₽</strong>, сети — 22,2% при CPC 4,6 ₽. Мусорный трафик из мобильных игр заметен глазом, но стоит копейки; сгорело на поиске.</p>
+    </div>
+    <div class="scroll" style="margin-bottom:20px">
+      <table>
+        <thead><tr><th>Площадка</th><th class="r">Расход</th><th class="r">Доля</th><th class="r">Клики</th><th class="r">CPC</th><th class="r">Визиты</th><th class="r">Заявки</th><th class="r">CPA</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Поиск</td><td class="r">522 385 ₽</td><td class="r">77,8%</td><td class="r">5 895</td><td class="r bad">88,6 ₽</td><td class="r">5 035</td><td class="r">104</td><td class="r bad">5 023 ₽</td></tr>
+          <tr><td class="name">Сети (РСЯ)</td><td class="r">148 952 ₽</td><td class="r">22,2%</td><td class="r">32 310</td><td class="r">4,6 ₽</td><td class="r">22 213</td><td class="r">162</td><td class="r">919 ₽</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Кампания</th><th>Тип</th><th class="r">Расход</th><th class="r">Доля</th><th class="r">Клики</th><th class="r">CPC</th><th class="r">Заявки</th><th class="r">CPA</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Оптимизация ТГО — коммерческие запросы</td><td><span class="tag tag-search">Поиск</span></td><td class="r">215 209 ₽</td><td class="r">32,1%</td><td class="r">2 171</td><td class="r">99,1 ₽</td><td class="r">19</td><td class="r bad">11 327 ₽</td></tr>
+          <tr><td class="name">Запорная арматура</td><td><span class="tag tag-search">Поиск</span></td><td class="r">197 966 ₽</td><td class="r">29,5%</td><td class="r">1 090</td><td class="r bad">181,6 ₽</td><td class="r">29</td><td class="r bad">6 826 ₽</td></tr>
+          <tr><td class="name">Детали для АЭС / РСЯ</td><td><span class="tag tag-net">РСЯ</span></td><td class="r">93 081 ₽</td><td class="r">13,9%</td><td class="r">24 856</td><td class="r">3,7 ₽</td><td class="r">108</td><td class="r">862 ₽</td></tr>
+          <tr><td class="name">Ретаргетинг — РК от Яндекса</td><td><span class="tag tag-net">РСЯ</span></td><td class="r">55 871 ₽</td><td class="r">8,3%</td><td class="r">7 454</td><td class="r">7,5 ₽</td><td class="r">54</td><td class="r">1 035 ₽</td></tr>
+          <tr><td class="name">Стандарты АЭС и ТЭЦ · Россия</td><td><span class="tag tag-search">Поиск</span></td><td class="r">34 488 ₽</td><td class="r">5,1%</td><td class="r">694</td><td class="r">49,7 ₽</td><td class="r">23</td><td class="r good">1 499 ₽</td></tr>
+          <tr><td class="name">Стандарты АЭС и ТЭЦ · ДНР / ЛНР</td><td><span class="tag tag-search">Поиск</span></td><td class="r">20 211 ₽</td><td class="r">3,0%</td><td class="r">414</td><td class="r">48,8 ₽</td><td class="r">3</td><td class="r bad">6 737 ₽</td></tr>
+          <tr><td class="name">Опоры трубопровода</td><td><span class="tag tag-search">Поиск</span></td><td class="r">14 331 ₽</td><td class="r">2,1%</td><td class="r">379</td><td class="r">37,8 ₽</td><td class="r">5</td><td class="r">2 866 ₽</td></tr>
+          <tr><td class="name">Отводы крутоизогнутые</td><td><span class="tag tag-search">Поиск</span></td><td class="r">8 703 ₽</td><td class="r">1,3%</td><td class="r">231</td><td class="r">37,7 ₽</td><td class="r">6</td><td class="r good">1 451 ₽</td></tr>
+          <tr><td class="name">Тройники</td><td><span class="tag tag-search">Поиск</span></td><td class="r">6 754 ₽</td><td class="r">1,0%</td><td class="r">259</td><td class="r">26,1 ₽</td><td class="r">5</td><td class="r good">1 351 ₽</td></tr>
+          <tr><td class="name" style="color:var(--muted)">Ещё 13 кампаний</td><td><span class="tag tag-search">Поиск</span></td><td class="r">24 723 ₽</td><td class="r">3,7%</td><td class="r">627</td><td class="r">39,4 ₽</td><td class="r">14</td><td class="r">1 766 ₽</td></tr>
+        </tbody>
+        <tfoot><tr><td>Итого</td><td></td><td class="r">671 337 ₽</td><td class="r">100%</td><td class="r">38 205</td><td class="r">17,6 ₽</td><td class="r">266</td><td class="r">2 524 ₽</td></tr></tfoot>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>Что резать в первую очередь</h2><span class="sec-note">суммы за 12 месяцев</span></div>
+    <div class="kill">
+      <div class="kill-item"><div class="kill-sum">98 291 ₽</div><div class="kill-what">18 условий показа, где набралось 20+ кликов и ни одной заявки. Ещё 171 578 ₽ в мелком хвосте — под наблюдение, там статистики нет.</div></div>
+      <div class="kill-item"><div class="kill-sum">280 487 ₽</div><div class="kill-what">Автоматически добавленные фразы: CPC 118,4 ₽, CPA 6 841 ₽.</div></div>
+      <div class="kill-item"><div class="kill-sum">197 966 ₽</div><div class="kill-what">Кампания «Запорная арматура» под 12 задвижек в каталоге. Посадочная — 404.</div></div>
+      <div class="kill-item"><div class="kill-sum">≈ 119 000 ₽</div><div class="kill-what">10 834 оплаченных клика, не доехавших до сайта.</div></div>
+      <div class="kill-item"><div class="kill-sum">≈ 50 000 ₽</div><div class="kill-what">Прайсовые запросы по трубам. Ноль заявок за год.</div></div>
+      <div class="kill-item"><div class="kill-sum">99 133 ₽</div><div class="kill-what">Внешние DSP и мобильные приложения. Качество не подтверждено ни одной сделкой.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>Настройки, которые это произвели</h2><span class="sec-note">API Директа · 25 кампаний</span></div>
+    <div class="prose" style="margin-bottom:20px">
+      <p>Все 25 кампаний сейчас выключены — 17 в статусе OFF, 8 в архиве. Все до одной старого типа <code>TEXT_CAMPAIGN</code>: ни одной единой перфоманс-кампании, на которую Директ переводит аккаунты с 2025 года. Цена клика в 88 ₽ — не рыночная данность, а прямая настройка.</p>
+    </div>
+    <div class="scroll" style="margin-bottom:20px">
+      <table>
+        <thead><tr><th>Стратегия</th><th class="r">Кампаний</th><th>Что это значит</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">AVERAGE_CPC · 100 ₽ · 3 000 ₽/нед</td><td class="r">19</td><td>Директу прямо задано платить в среднем 100 ₽ за клик</td></tr>
+          <tr><td class="mono">HIGHEST_POSITION</td><td class="r">2</td><td class="bad">Наивысшая позиция без потолка ставки — это «Оптимизация ТГО», 215 209 ₽</td></tr>
+          <tr><td class="mono">WB_MAXIMUM_CLICKS · 7 500 ₽/нед</td><td class="r">2</td><td>«Запорная арматура» и РСЯ «Детали для АЭС»</td></tr>
+          <tr><td class="mono">WB_MAXIMUM_CONVERSION_RATE · GoalId 13</td><td class="r">1</td><td>Единственная конверсионная стратегия — и та обучалась на системной цели «вовлечённые сессии», а не на заявках</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose" style="margin-bottom:20px">
+      <p>Медиана ставки по 8 195 ключам — <strong>85 ₽</strong>, максимум 235 ₽. Четыре флага довершают картину:</p>
+    </div>
+    <div class="scroll" style="margin-bottom:20px">
+      <table>
+        <thead><tr><th>Настройка</th><th>Значение</th><th>Следствие</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">CAMPAIGN_EXACT_PHRASE_MATCHING</td><td><span class="tag tag-no">NO во всех 25</span></td><td class="bad">Точное соответствие выключено — отсюда синонимы и автодобавленные фразы</td></tr>
+          <tr><td class="mono">ENABLE_AREA_OF_INTEREST_TARGETING</td><td><span class="tag tag-301">YES во всех 25</span></td><td>Расширенный геотаргетинг: показы за пределами заданных регионов</td></tr>
+          <tr><td class="mono">ADD_METRICA_TAG</td><td><span class="tag tag-no">NO у 5</span></td><td>Часть трафика уходила без разметки Метрики</td></tr>
+          <tr><td class="mono">ALTERNATIVE_TEXTS_ENABLED</td><td><span class="tag tag-301">YES у 19</span></td><td>Директ сам переписывал тексты объявлений</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose" style="margin-bottom:20px">
+      <p>Что из этого вышло, видно в отчёте по поисковым запросам. Он покрывает 276 849 ₽ из 522 385 ₽ поискового расхода — детализация по запросам хранится ограниченный срок:</p>
+    </div>
+    <div class="scroll" style="margin-bottom:20px">
+      <table>
+        <thead><tr><th>Тип соответствия</th><th class="r">Показы</th><th class="r">Клики</th><th class="r">CTR</th><th class="r">Расход</th><th class="r">Доля</th><th class="r">CPC</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Синонимы</td><td class="r">16 356</td><td class="r">964</td><td class="r">5,89%</td><td class="r">138 833 ₽</td><td class="r bad">50,1%</td><td class="r bad">144,0 ₽</td></tr>
+          <tr><td class="name">Автотаргетинг</td><td class="r">21 992</td><td class="r">1 329</td><td class="r">6,04%</td><td class="r">102 848 ₽</td><td class="r">37,1%</td><td class="r">77,4 ₽</td></tr>
+          <tr><td class="name">Точное совпадение с ключом</td><td class="r">6 061</td><td class="r">359</td><td class="r">5,92%</td><td class="r">35 168 ₽</td><td class="r">12,7%</td><td class="r">98,0 ₽</td></tr>
+        </tbody>
+        <tfoot><tr><td>Всего в отчёте</td><td class="r">44 409</td><td class="r">2 652</td><td class="r">5,97%</td><td class="r">276 849 ₽</td><td class="r">100%</td><td class="r">104,4 ₽</td></tr></tfoot>
+      </table>
+    </div>
+    <div class="prose" style="margin-bottom:20px">
+      <p>Половина поисковых денег ушла на <strong>синонимы по 144 ₽ за клик</strong> — прямое следствие выключенного точного соответствия. Из 29 430 уникальных запросов <strong>28 834 не дали ни одной конверсии: 192 239 ₽</strong>. Вот как выглядят самые дорогие клики года:</p>
+    </div>
+    <div class="scroll" style="margin-bottom:20px">
+      <table>
+        <thead><tr><th>Запрос</th><th class="r">Показы</th><th class="r">Клики</th><th class="r">Расход</th><th class="r">CPC</th></tr></thead>
+        <tbody>
+          <tr><td>задвижки купить</td><td class="r">7</td><td class="r">3</td><td class="r">2 209 ₽</td><td class="r bad">736 ₽</td></tr>
+          <tr><td>задвижка клиновая стальная 30лс76нж ду 150 ру6</td><td class="r">1</td><td class="r">1</td><td class="r">900 ₽</td><td class="r bad">900 ₽</td></tr>
+          <tr><td>задвижка abra а4016 080 с обрезиненным клином</td><td class="r">1</td><td class="r">1</td><td class="r">881 ₽</td><td class="r bad">881 ₽</td></tr>
+          <tr><td>производство задвижек из нержавейки</td><td class="r">1</td><td class="r">1</td><td class="r">848 ₽</td><td class="r bad">848 ₽</td></tr>
+          <tr><td>калькулятор металла</td><td class="r">448</td><td class="r">16</td><td class="r">1 095 ₽</td><td class="r">68 ₽</td></tr>
+          <tr><td>гост 10704 91</td><td class="r">242</td><td class="r">24</td><td class="r">1 090 ₽</td><td class="r">45 ₽</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose">
+      <p><strong>Минус-слова собраны не там, где нужно.</strong> В крупных кампаниях их 274–310: <code>dwg</code>, <code>dxf</code>, <code>autocad</code>, «своими руками», марки чужих брендов. «скачать» и «вес» стоят в 22 кампаниях из 25, «бу» — в 12. А вот <strong>«прайс» — ни в одной</strong>, хотя прайсовые запросы съели около 50 000 ₽ без единой заявки; «теплица» — тоже ни в одной; «калькулятор» — в одной. У кампаний «Ретаргетинг» и «Тройники» минус-слов нет вовсе.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>Ведомость находок</h2><span class="sec-note">10 позиций</span></div>
+    <div class="prose" style="margin-bottom:20px">
+      <p><strong>Что здесь значит «заявка».</strong> Это достижение цели Метрики «Автоцель: отправка формы», привязанное к клику по последнему переходу из Директа. Продажи в эту цепочку не входят: цель <code>CRM: Заказ создан</code> пуста весь год, звонки не отслеживаются, письма напрямую на почту не видны. Поэтому «ноль заявок» читается как «Метрика не зафиксировала отправку формы», а не как «не принесло денег» — и на маленьких выборках не значит ничего.</p>
+    </div>
+    <div class="findings">
+
+      <div class="finding crit">
+        <div class="f-head"><span class="f-id">Д-1</span><h3>98 000 ₽ там, где ноль заявок уже что-то значит</h3><span class="f-sev">критично</span></div>
+        <p class="f-body">Формально 709 условий показа из 748 не дали ни одной отправки формы, и через них прошло 269 869 ₽. Но почти вся эта сумма размазана по хвосту, где выводы делать не на чем: <strong>577 условий имели 1–4 клика</strong> — при среднем CR 0,70% ноль заявок там ничего не доказывает. Твёрдый вывод дают <strong>18 условий, набравших 20+ кликов и не давших ни одной заявки: 98 291 ₽</strong>. Четыре прайсовых условия из них — 51 769 ₽ вчистую; вели они на страницу прайса, которой больше нет.</p>
+        <div class="f-facts"><span class="chip">18 условий · 98 291 ₽</span><span class="chip">хвост 691 · 171 578 ₽</span><span class="chip">CR формы 0,70%</span></div>
+      </div>
+
+      <div class="finding crit">
+        <div class="f-head"><span class="f-id">Д-2</span><h3>Автоматически добавленные фразы — самая дорогая механика в аккаунте</h3><span class="f-sev">критично</span></div>
+        <p class="f-body">Автоматическое расширение ключей забрало <strong>280 487 ₽ — 41,8% бюджета</strong> — по <strong>118,4 ₽ за клик</strong>, CPA 6 841 ₽. Для сравнения: собственные ключевые фразы стоили 73 430 ₽ при CPC 74,6 ₽ и CPA 2 295 ₽ — втрое дешевле за заявку. Автотаргетинг в сетях, наоборот, дёшев: 240 962 ₽ за 22 437 кликов, CPC 10,7 ₽.</p>
+        <div class="f-facts"><span class="chip">автофразы 118,4 ₽/клик</span><span class="chip">свои ключи 74,6 ₽/клик</span><span class="chip">CPA 6 841 vs 2 295 ₽</span></div>
+      </div>
+
+      <div class="finding crit">
+        <div class="f-head"><span class="f-id">Д-3</span><h3>198 000 ₽ на арматуру, которой в каталоге двенадцать позиций</h3><span class="f-sev">критично</span></div>
+        <p class="f-body">Кампания покупала «задвижки стальные» по 131–325 ₽ за клик: «задвижки стальные купить» — 325,5 ₽, «задвижки стальные клиновые цена» — 267 ₽, автотаргетинг внутри кампании — 214,5 ₽ и ноль заявок при расходе 10 296 ₽. В каталоге нового сайта <strong>12 задвижек, 12 кранов, 9 клапанов</strong>. Вдобавок посадочная <code>/zapornaya-armatura/</code> отдаёт <strong>404</strong>, и редиректа на неё в карте нет.</p>
+        <div class="f-facts"><span class="chip">29,5% бюджета</span><span class="chip">CPC до 325 ₽</span><span class="chip">33 SKU в разделе</span><span class="chip">посадочная 404</span></div>
+      </div>
+
+      <div class="finding warn">
+        <div class="f-head"><span class="f-id">Д-4</span><h3>Треть оплаченных кликов не доехала до сайта</h3><span class="f-sev">важно</span></div>
+        <p class="f-body">38 205 кликов превратились в 27 248 визитов: <strong>10 834 клика оплачены впустую, ≈ 119 000 ₽</strong>. В сетях 26–34% — обычная механика случайных тапов, но <strong>14,6% на поиске при CPC 88 ₽ дают ≈ 74 000 ₽</strong> и говорят уже о скорости загрузки посадочных и мобильной версии старого сайта.</p>
+        <div class="f-facts"><span class="chip">поиск 848 кликов ≈ 74 456 ₽</span><span class="chip">DSP 7 853 ≈ 21 139 ₽</span><span class="chip">приложения 1 377 ≈ 9 461 ₽</span></div>
+      </div>
+
+      <div class="finding warn">
+        <div class="f-head"><span class="f-id">Д-5</span><h3>Трафик из мобильных игр дёшев, но проверить его нечем</h3><span class="f-sev">важно</span></div>
+        <p class="f-body">Внешние DSP дали 23 455 кликов за 63 138 ₽ — CPA 471 ₽, формально лучший показатель аккаунта. Но это площадки вида <code>com.outfit7.mytalkingtom2</code> и <code>com.vitastudio.mahjong</code>, отказы 68%, глубина 1,00, планшеты 58,9% визитов. <strong>Прежде чем масштабировать этот CPA, нужно поднять в CRM, чем стали эти 134 заявки.</strong> Пока сделок из CRM ноль, считать их продажами нельзя.</p>
+        <div class="f-facts"><span class="chip">770 приложений</span><span class="chip">DSP CPA 471 ₽</span><span class="chip">отказы 68,2%</span><span class="chip">CRM: 0 сделок</span></div>
+      </div>
+
+      <div class="finding warn">
+        <div class="f-head"><span class="f-id">Д-6</span><h3>Объявления ведут на страницы, которых больше нет</h3><span class="f-sev">важно</span></div>
+        <p class="f-body">После переезда 1 сентября <strong>19 217 визитов (70% рекламы)</strong> редиректятся в общий <code>/catalog/</code> вместо профильной категории, с потерей якоря и контекста объявления. Ещё 320 визитов бьют в 404: <code>/zapornaya-armatura/</code> и <code>/izoljacija/</code>.</p>
+        <div class="f-facts"><span class="chip">43 адреса проверено</span><span class="chip">2 адреса → 404</span><span class="chip">19 217 → витрина</span></div>
+      </div>
+
+      <div class="finding warn">
+        <div class="f-head"><span class="f-id">Д-7</span><h3>Рекламируется не то, что есть в каталоге</h3><span class="f-sev">важно</span></div>
+        <p class="f-body">На 65 позиций арматуры и опор потрачено <strong>212 000 ₽</strong>. На 7 492 позиции крепежа и фланцев — <strong>ноль</strong>. Крепёж — 43,8% ассортимента и ни одной кампании за год; изоляция ППУ (513 позиций) — тоже.</p>
+        <div class="f-facts"><span class="chip">15 394 SKU</span><span class="chip">крепёж 6 737 → 0 ₽</span><span class="chip">арматура 33 → 197 966 ₽</span></div>
+      </div>
+
+      <div class="finding info">
+        <div class="f-head"><span class="f-id">Д-8</span><h3>Поиск покупает справочные запросы</h3><span class="f-sev">на переработку</span></div>
+        <p class="f-body">В разрезе реальных запросов пользователей (129 099 ₽): номера ГОСТ, ОСТ и СТО — <strong>36 624 ₽, 28,4%</strong>, 12 заявок; «купить» и «заказать» — 16 742 ₽ по 137 ₽ за клик, 5 заявок; прайс и цена — 8 815 ₽, одна заявка; калькулятор и вес — 6 196 ₽, ноль. Четверть расхода по фразам — это читатели документации. На старом сайте им нечего было дать, на новом есть <code>/normativnaya-baza/</code> и калькуляторы, но продавать им сразу нельзя.</p>
+        <div class="f-facts"><span class="chip">ГОСТ 36 624 ₽ → 12 заявок</span><span class="chip">«купить» 137 ₽/клик</span><span class="chip">калькуляторы 0 заявок</span></div>
+      </div>
+
+      <div class="finding info">
+        <div class="f-head"><span class="f-id">Д-9</span><h3>CPA гулял в девять раз при ровном бюджете</h3><span class="f-sev">на контроль</span></div>
+        <p class="f-body">Расход держался в коридоре 44–73 тысячи в месяц, а стоимость заявки менялась от <strong>1 286 ₽ в марте до 11 477 ₽ в январе</strong>. Лучшие месяцы — февраль–апрель, когда основной объём давала дешёвая РСЯ. Менялось не количество денег, а качество закупки. С 1 сентября расход нулевой: кампании стоят.</p>
+        <div class="f-facts"><span class="chip">янв: 34 430 ₽ → 3 заявки</span><span class="chip">мар: 69 444 ₽ → 54 заявки</span><span class="chip">сен: 0 ₽</span></div>
+      </div>
+
+      <div class="finding info">
+        <div class="f-head"><span class="f-id">Д-10</span><h3>Стратегиям не на чем учиться</h3><span class="f-sev">блокирует автостратегии</span></div>
+        <p class="f-body">Цель <code>CRM: Заказ создан</code> — 0 достижений за год. Кликов по телефону — 4, то есть звонки не считаются вовсе. Семь целей нового сайта (<code>request_kp</code>, <code>request_tz</code>, <code>request_calc</code> и другие) заведены верно и код темы их шлёт, но статистики пока нет — сайт запущен 1 сентября. Для «Максимума конверсий» нужно 10 целевых действий в неделю; сейчас их около пяти в месяц.</p>
+        <div class="f-facts"><span class="chip">CRM: 0</span><span class="chip">телефон: 4 за год</span><span class="chip">нужно 10/нед</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Расход против ассортимента</h2><span class="sec-note">доля SKU / доля денег</span></div>
+    <div class="prose" style="margin-bottom:20px">
+      <p>Верхняя полоса — доля группы в каталоге, нижняя — доля годового расхода на её продвижение. Совпадать они не обязаны: маржа и спрос разные. Но нулевая полоса под 43,8% ассортимента и 29,5% бюджета под 0,2% — это не приоритизация.</p>
+    </div>
+    <div class="bars">
+      <div class="pair-row">
+        <div class="bar-label">Крепёж<span class="sub">болты 4 598 · шпильки 1 778</span></div>
+        <div class="pair-bars">
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:43.8%;background:var(--accent)"></span></div><span class="bar-val">43,8% SKU</span></div>
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:0.3%;background:var(--bar-bad)"></span></div><span class="bar-val">0 ₽</span></div>
+        </div>
+      </div>
+      <div class="pair-row">
+        <div class="bar-label">СДТ<span class="sub">отводы 3 247 · тройники 1 398</span></div>
+        <div class="pair-bars">
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:37.4%;background:var(--accent)"></span></div><span class="bar-val">37,4% SKU</span></div>
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:25.0%;background:var(--bar-mid)"></span></div><span class="bar-val">≈ 168 000 ₽</span></div>
+        </div>
+      </div>
+      <div class="pair-row">
+        <div class="bar-label">Трубы<span class="sub">ЭС · БШ · ВГП</span></div>
+        <div class="pair-bars">
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:9.5%;background:var(--accent)"></span></div><span class="bar-val">9,5% SKU</span></div>
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:32.8%;background:var(--bar-mid)"></span></div><span class="bar-val">≈ 220 000 ₽</span></div>
+        </div>
+      </div>
+      <div class="pair-row">
+        <div class="bar-label">Фланцы<span class="sub">4 типа, 755 позиций</span></div>
+        <div class="pair-bars">
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:4.9%;background:var(--accent)"></span></div><span class="bar-val">4,9% SKU</span></div>
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:0.3%;background:var(--bar-bad)"></span></div><span class="bar-val">0 ₽</span></div>
+        </div>
+      </div>
+      <div class="pair-row">
+        <div class="bar-label">Изоляция ППУ<span class="sub">трубы 441 · тройники 72</span></div>
+        <div class="pair-bars">
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:3.3%;background:var(--accent)"></span></div><span class="bar-val">3,3% SKU</span></div>
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:0.3%;background:var(--bar-bad)"></span></div><span class="bar-val">0 ₽</span></div>
+        </div>
+      </div>
+      <div class="pair-row">
+        <div class="bar-label">Арматура<span class="sub">задвижки, краны, клапаны</span></div>
+        <div class="pair-bars">
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:0.4%;background:var(--accent)"></span></div><span class="bar-val">0,2% SKU</span></div>
+          <div class="pair-line"><div class="pair-track"><span class="bar-fill" style="width:29.5%;background:var(--bar-bad)"></span></div><span class="bar-val">197 966 ₽</span></div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><i class="swatch" style="background:var(--accent)"></i>доля в каталоге, 15 394 позиции</span>
+        <span><i class="swatch" style="background:var(--bar-mid)"></i>расход по назначению</span>
+        <span><i class="swatch" style="background:var(--bar-bad)"></i>перекос</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><h2>Судьба посадочных после переезда</h2><span class="sec-note">проверено 03.09.2026</span></div>
+    <div class="prose" style="margin-bottom:20px">
+      <p>Отдельно проверены все 3 231 объявление из аккаунта — 107 уникальных адресов. Тут новость хорошая: <strong>2 915 объявлений редиректятся по назначению</strong> (1 141 на тройники, 786 на трубы, 551 на отводы), и лишь <strong>4 объявления бьют в 404</strong>. Проблема не в массовых битых ссылках, а в том, что 54 объявления ведут в общую витрину, и ни одно — на калькуляторы, нормативную базу и проекты. Ниже — та же картина со стороны трафика, по визитам за год.</p>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Старый адрес из объявлений</th><th class="r">Визиты за год</th><th>Ответ</th><th>Куда ведёт сейчас</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">/rubric-products/detali-dlya-tes-i-aes/#otvodygost17375</td><td class="r">18 768</td><td><span class="tag tag-301">301</span></td><td class="mono">/catalog/ — витрина, якорь потерян</td></tr>
+          <tr><td class="mono">/</td><td class="r">6 375</td><td><span class="tag tag-ok">200</span></td><td class="mono">главная, новая</td></tr>
+          <tr><td class="mono">/prajs-list-truby/</td><td class="r">561</td><td><span class="tag tag-301">301</span></td><td class="mono">/catalog/truby/ — прайса больше нет</td></tr>
+          <tr><td class="mono">/rubric-products/truby/</td><td class="r">467</td><td><span class="tag tag-301">301</span></td><td class="mono">/catalog/truby/</td></tr>
+          <tr><td class="mono">/products/</td><td class="r">445</td><td><span class="tag tag-301">301</span></td><td class="mono">/catalog/</td></tr>
+          <tr><td class="mono" style="color:var(--crit)">/zapornaya-armatura/</td><td class="r">291</td><td><span class="tag tag-404">404</span></td><td class="mono">нужен редирект на /catalog/armatura/</td></tr>
+          <tr><td class="mono">/rubric-products/trojniki/</td><td class="r">119</td><td><span class="tag tag-301">301</span></td><td class="mono">/catalog/sdt/troyniki/</td></tr>
+          <tr><td class="mono">/rubric-products/opory-a14b-serii-5-900-7/</td><td class="r">78</td><td><span class="tag tag-301">301</span></td><td class="mono">/catalog/opory/</td></tr>
+          <tr><td class="mono">/rubric-products/otvody-krutoizognutye-gost-17375-2001/</td><td class="r">46</td><td><span class="tag tag-301">301</span></td><td class="mono">/catalog/sdt/otvody/</td></tr>
+          <tr><td class="mono" style="color:var(--crit)">/izoljacija/</td><td class="r">29</td><td><span class="tag tag-404">404</span></td><td class="mono">нужен редирект на /catalog/izolyatsiya/</td></tr>
+          <tr><td class="mono" style="color:var(--muted)">ещё 33 адреса</td><td class="r">~290</td><td><span class="tag tag-301">301</span></td><td class="mono">в основном /catalog/ и /catalog/sdt/*</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">07</span><h2>Что даёт новый сайт</h2><span class="sec-note">страницы, которых раньше не было</span></div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Куда уходили деньги впустую</th><th>Чем закрывается</th></tr></thead>
+        <tbody>
+          <tr><td>6 196 ₽ на «калькулятор металла», «вес трубы» — ноль заявок, вести было некуда</td><td class="mono">/kalkulyatory/ — вес СДТ, вес труб, фланцевый крепёж, метизы, ДН↔дюйм, аналоги сталей, доставка</td></tr>
+          <tr><td>36 624 ₽ на номера ГОСТ — читатели документации в товарной рубрике</td><td class="mono">/normativnaya-baza/ + карточки нормативов и серий</td></tr>
+          <tr><td>≈ 50 000 ₽ на прайсовые запросы, посадочная-прайс закрыта</td><td class="mono">карточки с характеристиками и запрос КП по позиции</td></tr>
+          <tr><td>нечем подтвердить допуск к энергообъектам</td><td class="mono">/proekty/ — Курская АЭС, Аккую, Руппур, Черепетская ГРЭС, ТЭЦ-3</td></tr>
+          <tr><td>одна рубрика на весь ассортимент</td><td class="mono">33 категории /catalog/&lt;группа&gt;/&lt;категория&gt;/ с фасетами</td></tr>
+          <tr><td>запрос «подберите под задачу» некуда было принять</td><td class="mono">/podbor/ · /production/ · /stati/</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">08</span><h2>Целевая структура</h2><span class="sec-note">7 кампаний вместо 21</span></div>
+    <div class="prose" style="margin-bottom:20px">
+      <p>Дробить при 266 заявках в год вредно: каждая кампания должна набирать статистику, а не делить её. Семь сущностей, у каждой своя посадочная и своя роль в воронке.</p>
+    </div>
+    <div class="plan">
+      <div class="plan-item"><span class="plan-id">П-1</span><h3>Поиск: СДТ</h3><p>Группы по типу изделия × ГОСТ (17375, 17376, 17378, 17379). Посадочная — конечная категория, не витрина.</p><div class="dest">/catalog/sdt/otvody/ · /troyniki/ · /perekhody/ · /zaglushki/ · /dnishcha/</div></div>
+      <div class="plan-item"><span class="plan-id">П-2</span><h3>Поиск: крепёж и фланцы</h3><p>7 492 позиции, на которые не потрачено ни рубля. Тексты по нормативу, а не по подписи в базе: 1 561 «болт фундаментный» — по ГОСТ шпилька.</p><div class="dest">/catalog/krepezh/bolty/ · /shpilki/ · /catalog/flancy/*</div></div>
+      <div class="plan-item"><span class="plan-id">П-3</span><h3>Поиск: трубы и изоляция ППУ</h3><p>Прайсовые запросы — в минус-слова: 50 000 ₽ и ноль заявок. Изоляция не рекламировалась вовсе, а это 513 позиций и спрос теплосетей.</p><div class="dest">/catalog/truby/* · /catalog/izolyatsiya/*</div></div>
+      <div class="plan-item"><span class="plan-id">П-4</span><h3>Поиск: АЭС, ТЭС, нестандарт</h3><p>Продаётся не деталь, а допуск и опыт: поставка на энергообъекты, изготовление по чертежу заказчика, СТО ЦКТИ и ОСТ 108.</p><div class="dest">/proekty/ · /production/</div></div>
+      <div class="plan-item"><span class="plan-id">П-5</span><h3>Динамические объявления по сайту</h3><p>Длинный хвост 15 407 карточек. Товарная кампания и смарт-баннеры отпадают: каталог B2B без цен, фид без цены под товарные форматы не принимается.</p><div class="dest">/catalog/ с фильтром по разделам</div></div>
+      <div class="plan-item"><span class="plan-id">П-6</span><h3>Ретаргетинг по сегментам</h3><p>Вместо «все, кто не сконвертировался»: смотрел ≥2 карточек одной категории, открыл калькулятор без заявки, скачал прайс, был на проектах.</p><div class="dest">сегменты Метрики 62844301</div></div>
+      <div class="plan-item"><span class="plan-id">П-7</span><h3>Лид-магниты</h3><p>Калькуляторы и нормативная база. Цель — микроконверсия и пополнение сегментов для П-6, а не прямая заявка. Отдельный бюджет и отдельная оценка.</p><div class="dest">/kalkulyatory/* · /normativnaya-baza/</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">09</span><h2>Порядок работ</h2><span class="sec-note">кампании стоят с 1 сентября</span></div>
+    <div class="road">
+      <div class="road-step">
+        <div class="road-when">До запуска<small>обязательно</small></div>
+        <div class="road-body">
+          <h3>Не включать кампании как есть</h3>
+          <ul>
+            <li>Переписать посадочные на новые адреса; снять всё, что ведёт на <code>/zapornaya-armatura/</code> и <code>/izoljacija/</code>.</li>
+            <li>Отключить автоматически добавленные фразы во всех кампаниях — 280 487 ₽ по 118 ₽ за клик.</li>
+            <li>Остановить «Запорную арматуру», пока в каталоге 12 задвижек.</li>
+            <li>Залить минус-слова: прайс, б/у, теплица, работа, чертёж, скачать.</li>
+            <li>Проставить единую UTM-разметку.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="road-step">
+        <div class="road-when">Неделя 1<small>ревизия</small></div>
+        <div class="road-body">
+          <h3>Разобрать кампании по одной</h3>
+          <ul>
+            <li>Стратегии, ставки, минус-слова и настройки уже сняты — они в разделе 03.</li>
+            <li>Сверить с ними каждую кампанию перед пересборкой: что оставляем, что удаляем, что переносим в ЕПК.</li>
+            <li>Не отзывать доступ приложению, чьим токеном ходим в API, и обновить токен до истечения срока.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="road-step">
+        <div class="road-when">Недели 2–3<small>пересборка</small></div>
+        <div class="road-body">
+          <h3>Собрать П-1 … П-4 на новых посадочных</h3>
+          <ul>
+            <li>Объявления под конечные категории: ГОСТ, Ду и Ру, марка стали в тексте.</li>
+            <li>Быстрые ссылки на калькуляторы и нормативы, уточнения по срокам и документам.</li>
+            <li>Запустить крепёж и фланцы — половину ассортимента, на которую не потрачено ни рубля.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="road-step">
+        <div class="road-when">Недели 4–6<small>обучение</small></div>
+        <div class="road-body">
+          <h3>Перевести на конверсионные стратегии</h3>
+          <ul>
+            <li>Старт на «Максимуме кликов» с потолком CPC заметно ниже нынешних 88 ₽ на поиске.</li>
+            <li>Составная цель: «Заявка: любая форма» + «по карточке товара» + «из калькулятора».</li>
+            <li>Настроить передачу сделок из CRM — иначе стратегия оптимизирует на скачивания прайса.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="road-step">
+        <div class="road-when">Недели 7+<small>масштабирование</small></div>
+        <div class="road-body">
+          <h3>Расширять по факту заявок</h3>
+          <ul>
+            <li>Запустить П-5 и П-6 на накопленных сегментах.</li>
+            <li>География — по городам, где приходят заявки, а не где дешевле показ.</li>
+            <li>Еженедельный отчёт: <code>python scripts/ads/direct_audit.py --days 7</code>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="prose" style="margin-top:22px">
+      <p><strong>Ориентир по экономике.</strong> Резерв неоднороден. Твёрдая часть — 98 291 ₽ в 18 условиях, где объём кликов набран, а заявок нет. Отдельно 413 175 ₽ в двух самых дорогих кампаниях: их не отключать, а привести ставки в чувство — сейчас там «наивысшая позиция» без потолка и средний CPC 100 ₽. И 171 578 ₽ в мелком хвосте, где статистики нет и резать вслепую нельзя. При том же годовом бюджете и CPA на уровне лучших кампаний аккаунта (1 351–1 499 ₽) те же деньги дают не 266 заявок, а 350–450. Это ориентир, а не обещание: заявка здесь — отправка формы в Метрике, её связь с продажей не прослеживается, пока не подключены CRM и коллтрекинг.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">10</span><h2>Доступы</h2><span class="sec-note">состояние на 03.09.2026</span></div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Данные</th><th>Статус</th><th>Что нужно</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Метрика: визиты, поведение, цели</td><td><span class="tag tag-ok">есть</span></td><td>—</td></tr>
+          <tr><td class="name">Метрика: расход, клики, CPA</td><td><span class="tag tag-ok">есть</span></td><td class="mono">параметр direct_client_logins=promenergetics</td></tr>
+          <tr><td class="name">Вебмастер</td><td><span class="tag tag-ok">есть</span></td><td>—</td></tr>
+          <tr><td class="name">API Директа: минус-слова, ставки, стратегии, статусы</td><td><span class="tag tag-ok">есть</span></td><td class="mono">токен приложения Cursor — заявка одобрена 03.06.2026</td></tr>
+          <tr><td class="name">Wordstat: частотность под новую семантику</td><td><span class="tag tag-no">нет ключа</span></td><td class="mono">Yandex AI Studio: сервисный аккаунт, роль search-api.webSearch.user</td></tr>
+          <tr><td class="name">Roistat: расходы и сделки</td><td><span class="tag tag-no">нет</span></td><td>доступ к кабинету — метки roistat видны в посадочных</td></tr>
+          <tr><td class="name">Коллтрекинг</td><td><span class="tag tag-no">нет</span></td><td>4 клика по телефону за год — звонки не считаются</td></tr>
+          <tr><td class="name">Офлайн-конверсии из CRM</td><td><span class="tag tag-no">нет</span></td><td>передача сделок в цель «CRM: Заказ создан»</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>Данные: Яндекс.Метрика, счётчик 62844301, период 03.09.2025 — 03.09.2026, точность full. Расход, клики и конверсии — рекламное пространство <code>ym:ad:*</code> с параметром <code>direct_client_logins=promenergetics</code>; без него Метрика отвечает 403. Коды ответа посадочных сняты с prom-en.com 03.09.2026.</p>
+    <p>Стратегии, ставки, минус-слова, настройки кампаний и отчёт по поисковым запросам — API Директа v5 (25 кампаний, 3 212 групп, 8 195 ключей, 3 231 объявление, 31 347 строк отчёта). Токен выпущен приложением с одобренной заявкой на доступ к API.</p>
+    <p>Выгрузки: <code>site/perf-reports/ads/2026-09-03/</code> · инструмент: <code>site/scripts/ads/direct_audit.py</code> и <code>direct_api.py</code> · рабочий документ: <code>site/PLAN-DIRECT.md</code></p>
+  </footer>
+
+</div>
