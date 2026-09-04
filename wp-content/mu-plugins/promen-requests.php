@@ -221,6 +221,19 @@ function promen_request_collect( string $preset, ?array $attachment ): array {
 }
 
 /**
+ * Идентификаторы визита для офлайн-конверсий Метрики: ClientID счётчика
+ * и yclid клика по объявлению Директа. Без них сделку не привязать
+ * к кампании, и стоимость клиента посчитать нечем — остаётся только
+ * стоимость отправки формы. Значения приходят из request-modal.js.
+ */
+function promen_request_attribution(): array {
+	return [
+		'ym_client_id' => substr( preg_replace( '/\D/', '', (string) ( $_POST['ym_client_id'] ?? '' ) ), 0, 40 ),
+		'yclid'        => substr( preg_replace( '/[^A-Za-z0-9_-]/', '', (string) ( $_POST['yclid'] ?? '' ) ), 0, 64 ),
+	];
+}
+
+/**
  * Запрос пришёл с самого сайта: хост Origin (или Referer, если Origin нет)
  * совпадает с хостом сайта. Без обоих заголовков — нет.
  */
@@ -318,6 +331,11 @@ function promen_handle_request(): void {
 			}
 		}
 		update_post_meta( (int) $post_id, '_promen_contact', $contact );
+		foreach ( promen_request_attribution() as $key => $val ) {
+			if ( '' !== $val ) {
+				update_post_meta( (int) $post_id, '_promen_' . $key, $val );
+			}
+		}
 		if ( '' !== $spam ) {
 			update_post_meta( (int) $post_id, '_promen_spam', $spam );
 		}

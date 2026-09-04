@@ -362,6 +362,67 @@
     calc:     'request_calc'
   };
 
+  /*
+   * Атрибуция: чем потом склеить заявку с рекламным визитом.
+   * Офлайн-конверсии Метрики принимают ClientID счётчика или yclid клика.
+   * yclid живёт только в адресе первого захода с Директа, а заявку человек
+   * оставляет позже и с другой страницы, поэтому кладём его в cookie
+   * на 90 дней — это окно атрибуции Метрики.
+   */
+  var YCLID_COOKIE = 'promen_yclid';
+  var ymClientId = '';
+
+  function cookie(name) {
+    var m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return m ? decodeURIComponent(m[2]) : '';
+  }
+
+  function captureYclid() {
+    var m = window.location.search.match(/[?&]yclid=([^&]+)/i);
+    if (!m) return;
+    var till = new Date();
+    till.setTime(till.getTime() + 90 * 864e5);
+    document.cookie = YCLID_COOKIE + '=' + m[1] + ';expires=' + till.toUTCString() +
+      ';path=/;SameSite=Lax';
+  }
+
+  /* ClientID спрашиваем у самой Метрики: cookie _ym_uid к этому моменту
+     может ещё не появиться, а getClientID вернёт значение в любом случае. */
+  function captureClientId() {
+    if (typeof window.ym !== 'function' || !window.PROMEN_YM_ID) return;
+    try {
+      window.ym(window.PROMEN_YM_ID, 'getClientID', function (id) {
+        ymClientId = String(id || '');
+        fillHiddenFields();
+      });
+    } catch (err) { /* аналитика не должна ронять форму */ }
+  }
+
+  function attribution() {
+    return {
+      ym_client_id: ymClientId || cookie('_ym_uid'),
+      yclid: cookie(YCLID_COOKIE)
+    };
+  }
+
+  /* Форма секции 11 уходит обычным POST, без FormData, — ей нужны
+     скрытые поля прямо в разметке. */
+  function fillHiddenFields() {
+    var form = document.getElementById('s10-form');
+    if (!form) return;
+    var data = attribution();
+    Object.keys(data).forEach(function (key) {
+      var el = form.querySelector('input[name="' + key + '"]');
+      if (!el) {
+        el = document.createElement('input');
+        el.type = 'hidden';
+        el.name = key;
+        form.appendChild(el);
+      }
+      el.value = data[key];
+    });
+  }
+
   function reachGoal(preset) {
     if (typeof window.ym !== 'function' || !window.PROMEN_YM_ID) return;
     var id = window.PROMEN_YM_ID;
@@ -409,6 +470,9 @@
     fd.append('pd_consent', '1');
     fd.append('company_url', ''); /* honeypot — пустой у людей */
     if (currentCtx.sku) fd.append('sku', currentCtx.sku);
+    var attr = attribution();
+    if (attr.ym_client_id) fd.append('ym_client_id', attr.ym_client_id);
+    if (attr.yclid) fd.append('yclid', attr.yclid);
     preset.fields.forEach(function (f) {
       var input = document.getElementById('rm-f-' + f.id);
       if (!input) return;
@@ -539,9 +603,16 @@
 
   /* Счётчик Метрики инициализируется в подвале, то есть позже этого файла —
      ждём готовности документа, иначе ym() ещё не существует. */
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', goalFromRedirect);
-  } else {
+  function init() {
     goalFromRedirect();
+    captureYclid();
+    captureClientId();
+    fillHiddenFields();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();
