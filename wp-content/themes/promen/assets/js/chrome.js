@@ -4,12 +4,32 @@
 (function () {
   'use strict';
 
-  /* CLOCK (нав + drawer) */
+  /* CLOCK (нав + drawer) — время ЗАВОДА, не посетителя.
+     До 2026-09-03 часы брали локальное время браузера и подписывали его
+     «ЧЛБ»: у заказчика из Москвы завод «работал» на два часа раньше, чем
+     на самом деле. Считаем в зоне площадки (UTC+5) и называем город
+     полностью — «ЧЛБ» читается как код аэропорта. Город идёт первым:
+     .nav-meta обрезает текст справа, и при нехватке ширины уходят
+     секунды, а не название города. */
   function startClock(el) {
     if (!el) return;
+    var fmt = null;
+    try {
+      fmt = new Intl.DateTimeFormat('ru-RU', {
+        timeZone: 'Asia/Yekaterinburg', hour12: false,
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+    } catch (e) { /* без поддержки IANA-зон считаем смещение вручную */ }
     var t = function () {
-      var d = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
-      el.textContent = p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()) + ' · ЧЛБ';
+      var d = new Date(), s;
+      if (fmt) {
+        s = fmt.format(d);
+      } else {
+        var p = function (n) { return String(n).padStart(2, '0'); };
+        var z = new Date(d.getTime() + (d.getTimezoneOffset() + 300) * 60000);
+        s = p(z.getHours()) + ':' + p(z.getMinutes()) + ':' + p(z.getSeconds());
+      }
+      el.textContent = 'ЧЕЛЯБИНСК · ' + s;
     };
     t();
     setInterval(t, 1000);

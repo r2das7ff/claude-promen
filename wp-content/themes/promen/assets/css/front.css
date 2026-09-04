@@ -82,6 +82,30 @@ img { display:block; }
 }
 .ey-label::before { content:none; }
 
+/* Чип расположения — отдельная строка под .eyebrow. Вход между eyebrow (.06s)
+   и h1 (.12s), отсюда .09s: цепочка первого экрана остаётся равномерной.
+   Тёмная плашка — единственное плотное пятно выше h1, поэтому город виден
+   до того, как читатель дошёл до заголовка, а сам чип остаётся мелким и с
+   заголовком по весу не спорит. */
+.hero-chip {
+  /* .left — flex-колонка: без align-self плашка растянулась бы во всю ширину
+     колонки и перестала читаться чипом. */
+  align-self:flex-start;
+  margin:0 0 24px;
+  padding:9px 16px;
+  background:var(--dark);
+  font-family:'DINProCond','DINPro',sans-serif;
+  font-weight:700;
+  font-size:16px;
+  letter-spacing:.12em;
+  line-height:1;
+  text-transform:uppercase;
+  color:var(--white);
+  opacity:0;
+  transform:translateY(14px);
+  animation:revealUp var(--dur-entrance) var(--ease-out) .09s forwards;
+}
+
 /* Massive headline — matches reference's dominant typography */
 .h1 {
   font-family:'DINProCond','DINPro',sans-serif;
@@ -430,7 +454,7 @@ img { display:block; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .eyebrow,.h1,.tagline,.rule,.body,.ctas {
+  .eyebrow,.hero-chip,.h1,.tagline,.rule,.body,.ctas {
     animation:none !important; opacity:1 !important; transform:none !important;
   }
   .pe-img { animation:none !important; }
