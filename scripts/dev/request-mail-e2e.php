@@ -3,7 +3,7 @@
  * Локальная сквозная проверка обработчика заявки без SMTP: перехватываем письмо
  * на phpmailer_init и печатаем тему, тип, HTML, AltBody и Reply-To между маркерами.
  * Запуск (из site/): docker exec -i -e SCENARIO=calc site-wordpress-1 php < scripts/dev/request-mail-e2e.php
- * Сценарии: calc, product, contact, tz, nonce_stale_guest, nonce_stale_foreign, nonce_stale_noheaders.
+ * Сценарии: calc, product, contact, tz, spam, spam_clean, nonce_stale_guest, nonce_stale_foreign, nonce_stale_noheaders.
  * После прогона удалить тестовые записи CPT «Заявки КП» по явным ID (wp post delete ID --force).
  */
 $_SERVER['HTTP_HOST']       = 'localhost:8080';
@@ -63,6 +63,22 @@ switch ( $scenario ) {
 		unset( $_SERVER['HTTP_REFERER'] );
 		$_POST = [ 'action' => 'promen_request', 'promen_nonce' => 'deadbeef00', 'pd_consent' => '1', 'company_url' => '',
 			'promen_ajax' => '1', 'preset' => 'contact', 'name' => 'Nonce none', 'contact' => 'none@example.com', 'task' => 'x' ];
+		break;
+	case 'spam': // рассылка «промокод + ссылка» — антиспам должен отсеять без письма
+		$_SERVER['HTTP_REFERER'] = 'http://localhost:8080/contacts/';
+		$_POST = $base + [
+			'promen_ajax' => '1', 'preset' => 'contact', 'name' => 'RobertHoisp', 'company' => 'google',
+			'topic' => 'Сотрудничество / поставщикам', 'contact' => 'wjip@mraedlh.af',
+			'task' => 'A $25,000 promo code for the bold https://telegra.ph/Win-the-1000000-jackpot-today-Message-ID-497339-08-30',
+		];
+		break;
+	case 'spam_clean': // русский текст со ссылкой на чертёж — заявка живая, письмо уходит
+		$_SERVER['HTTP_REFERER'] = 'http://localhost:8080/contacts/';
+		$_POST = $base + [
+			'promen_ajax' => '1', 'preset' => 'contact', 'name' => 'Сергей Кузнецов', 'company' => 'ООО «Теплосети»',
+			'topic' => 'Коммерческий запрос / расчёт', 'contact' => 'no-reply@prom-en.com',
+			'task' => 'Чертёж лежит тут: https://disk.yandex.ru/d/abc123 — посчитайте, пожалуйста, отводы DN 100.',
+		];
 		break;
 	case 'tz': // модалка «ТЗ» из подборщика
 		$_SERVER['HTTP_REFERER'] = 'http://localhost:8080/podbor/';

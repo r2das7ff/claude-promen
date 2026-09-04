@@ -148,6 +148,8 @@ get_header();
             <input type="checkbox" id="c-consent" name="pd_consent" value="1" required>
             <span>Соглашаюсь на обработку персональных данных согласно<?php if ( $promen_privacy_url ) : ?> <a href="<?php echo esc_url( $promen_privacy_url ); ?>">Политике обработки ПДн</a><?php else : ?> Политике обработки ПДн<?php endif; ?></span>
           </label>
+          <?php // Невидимая SmartCaptcha (mu-plugin promen-antispam): без ключей ничего не печатает. ?>
+          <?php if ( function_exists( 'promen_captcha_field' ) ) { promen_captcha_field(); } ?>
           <div class="cnt-actions">
             <button type="submit" class="cnt-submit">Отправить сообщение →</button>
             <a class="cnt-ghost" href="mailto:zakaz@prom-en.com">Написать напрямую</a>

@@ -116,6 +116,8 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
           <input type="checkbox" name="pd_consent" value="1" required>
           <span class="s10-consent-txt">Соглашаюсь на обработку персональных данных<?php if ( $promen_privacy_url ) : ?> согласно <a href="<?php echo esc_url( $promen_privacy_url ); ?>" target="_blank" rel="noopener">Политике обработки ПДн</a><?php endif; ?>.</span>
         </label>
+        <?php // Невидимая SmartCaptcha (mu-plugin promen-antispam): без ключей ничего не печатает. ?>
+        <?php if ( function_exists( 'promen_captcha_field' ) ) { promen_captcha_field(); } ?>
         <div class="s10-actions">
           <button type="submit" class="s10-submit cta-grow">ОТПРАВИТЬ ЗАПРОС →</button>
           <a class="s10-ghost-link" href="mailto:zakaz@prom-en.com">Написать напрямую</a>

@@ -23,8 +23,14 @@ require_once __DIR__ . '/stubs/catalog-search-stubs.php';
 // поэтому справочник марок подключается напрямую, без WordPress.
 // selector.php регистрирует REST-маршрут на уровне файла — заглушка хука
 // нужна только чтобы require прошёл; сам маршрут в юнит-тестах не участвует.
+// Тем же приёмом подключается антиспам (mu-plugins/promen-antispam.php):
+// он вешает фильтр и колонку админки на уровне файла, а под тест идут
+// только чистые эвристики promen_antispam_reason().
 if ( ! function_exists( 'add_action' ) ) {
 	function add_action( ...$args ) {}
+}
+if ( ! function_exists( 'add_filter' ) ) {
+	function add_filter( ...$args ) {}
 }
 require_once __DIR__ . '/../wp-content/themes/promen/inc/steel-reference.php';
 require_once __DIR__ . '/../wp-content/themes/promen/inc/selector.php';

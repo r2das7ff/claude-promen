@@ -314,12 +314,25 @@ add_action( 'wp_enqueue_scripts', function () {
 	// Подменяющий выпадающий список: включается атрибутом data-select у <select>,
 	// стили — base.css. Глобально, чтобы новые страницы получали его сами.
 	wp_enqueue_script( 'promen-select', get_theme_file_uri( 'assets/js/select.js' ), [], PROMEN_ASSET_VER, [ 'in_footer' => true ] );
-	wp_enqueue_script( 'promen-request-modal', get_theme_file_uri( 'assets/js/request-modal.js' ), [], PROMEN_ASSET_VER, [ 'in_footer' => true ] );
+	/*
+	 * Антиспам форм: невидимая Яндекс SmartCaptcha. Скрипт свой, лёгкий —
+	 * сам виджет Яндекса он подгружает лениво (assets/js/captcha.js).
+	 * Без ключей (mu-plugin promen-antispam) не грузится вовсе.
+	 */
+	$promen_captcha = function_exists( 'promen_captcha_enabled' ) && promen_captcha_enabled();
+	if ( $promen_captcha ) {
+		wp_enqueue_script( 'promen-captcha', get_theme_file_uri( 'assets/js/captcha.js' ), [], PROMEN_ASSET_VER, [ 'in_footer' => true ] );
+		wp_localize_script( 'promen-captcha', 'promenCaptchaCfg', [ 'sitekey' => promen_captcha_key() ] );
+	}
+
+	wp_enqueue_script( 'promen-request-modal', get_theme_file_uri( 'assets/js/request-modal.js' ), $promen_captcha ? [ 'promen-captcha' ] : [], PROMEN_ASSET_VER, [ 'in_footer' => true ] );
 	wp_localize_script( 'promen-request-modal', 'promenRM', [
-		'ajaxUrl'    => admin_url( 'admin-post.php' ),
-		'nonce'      => wp_create_nonce( 'promen_request' ),
-		'privacyUrl' => promen_privacy_url(),
-		'email'      => 'zakaz@prom-en.com',
+		'ajaxUrl'     => admin_url( 'admin-post.php' ),
+		'nonce'       => wp_create_nonce( 'promen_request' ),
+		'privacyUrl'  => promen_privacy_url(),
+		'email'       => 'zakaz@prom-en.com',
+		'captchaKey'  => $promen_captcha ? promen_captcha_key() : '',
+		'captchaNote' => $promen_captcha && defined( 'PROMEN_CAPTCHA_NOTICE' ) ? PROMEN_CAPTCHA_NOTICE : '',
 	] );
 
 	// Подбор изделия: плавающая кнопка + панель. Зависит от request-modal

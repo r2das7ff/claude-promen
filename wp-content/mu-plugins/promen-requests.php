@@ -267,6 +267,20 @@ function promen_handle_request(): void {
 		promen_request_fail( 'Для отправки запроса требуется согласие на обработку персональных данных.' );
 	}
 
+	/*
+	 * Антиспам (mu-plugin promen-antispam): SmartCaptcha + эвристики по ссылкам.
+	 * Стоит до rate-limit: отказ капчи не должен сжигать минуту ожидания
+	 * живому человеку, который сейчас отправит форму заново.
+	 *   reject     — показываем причину, заявку не принимаем;
+	 *   quarantine — отвечаем «успехом», но письма не шлём: заявка ложится
+	 *                в админку с пометкой «СПАМ», бот не понимает, что отсеян.
+	 */
+	$verdict = apply_filters( 'promen_request_verdict', [ 'action' => 'accept' ], $_POST );
+	if ( 'reject' === ( $verdict['action'] ?? '' ) ) {
+		promen_request_fail( (string) ( $verdict['message'] ?? 'Проверка не пройдена.' ), 403 );
+	}
+	$spam = 'quarantine' === ( $verdict['action'] ?? '' ) ? (string) ( $verdict['reason'] ?? 'спам' ) : '';
+
 	// Простейший rate-limit: не чаще 1 заявки / 60 с с одного IP.
 	$ip  = $_SERVER['REMOTE_ADDR'] ?? '0';
 	$key = 'promen_req_' . md5( $ip );
@@ -286,10 +300,12 @@ function promen_handle_request(): void {
 	 * Сначала запись в CPT: её ID становится номером заявки в теме письма,
 	 * и даже если SMTP откажет, заявка останется в админке.
 	 */
+	$prefix = '' !== $spam ? 'СПАМ · ' : '';
+
 	$post_id = wp_insert_post( [
 		'post_type'    => 'promen_request',
 		'post_status'  => 'private',
-		'post_title'   => promen_request_mail_subject( $req ) . ' — ' . $req['time'],
+		'post_title'   => $prefix . promen_request_mail_subject( $req ) . ' — ' . $req['time'],
 		'post_content' => promen_request_mail_text( $req ),
 	] );
 	if ( $post_id && ! is_wp_error( $post_id ) ) {
@@ -302,11 +318,23 @@ function promen_handle_request(): void {
 			}
 		}
 		update_post_meta( (int) $post_id, '_promen_contact', $contact );
+		if ( '' !== $spam ) {
+			update_post_meta( (int) $post_id, '_promen_spam', $spam );
+		}
 		// Заголовок с номером — чтобы в списке админки совпадал с темой письма.
 		wp_update_post( [
 			'ID'         => (int) $post_id,
-			'post_title' => promen_request_mail_subject( $req ) . ' — ' . $req['time'],
+			'post_title' => $prefix . promen_request_mail_subject( $req ) . ' — ' . $req['time'],
 		] );
+	}
+
+	/*
+	 * Отсеянная заявка дальше не идёт: письма нет, ответ — обычный «успех».
+	 * Запись в CPT осталась выше, поэтому ложное срабатывание фильтра
+	 * не теряет обращение — его видно в «Заявки КП» с пометкой.
+	 */
+	if ( '' !== $spam ) {
+		promen_request_done();
 	}
 
 	/*

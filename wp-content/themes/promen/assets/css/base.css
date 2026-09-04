@@ -273,6 +273,14 @@ a.s10-contact-v:hover{color:var(--blue);}
   .s10-consent-txt a:hover{background-image:linear-gradient(var(--dark),var(--dark));animation:linkRedraw var(--dur-entrance) var(--ease-flow) both;}
 }
 .s10-consent.err input{outline:2px solid var(--g1);outline-offset:2px;}
+/* Невидимая SmartCaptcha (assets/js/captcha.js): сам виджет места не занимает,
+   видна только строка уведомления Яндекса — шильдик скрыт через hideShield,
+   а уведомление обязательно. grid-column — для форм-сеток (контакты):
+   без него строка встала бы в одну колонку из двух. */
+.promen-captcha{grid-column:1/-1;}
+.promen-captcha-note{grid-column:1/-1;margin:12px 0 0;font-family:'DINPro',sans-serif;font-size:12px;line-height:1.5;color:var(--g1-text);}
+.promen-captcha-note a{color:inherit;text-decoration:underline;text-decoration-color:var(--ln2);text-underline-offset:3px;}
+.promen-captcha-note a:hover{color:var(--dark);}
 .s10-actions{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap;}
 .s10-submit{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--dark);color:var(--white);font-family:'DINPro',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--dark);cursor:pointer;transition:background var(--dur-fast),color var(--dur-fast),border-color var(--dur-fast),transform var(--dur-press) var(--ease-out);}
 .s10-submit:hover{background:var(--blue);border-color:var(--blue);}

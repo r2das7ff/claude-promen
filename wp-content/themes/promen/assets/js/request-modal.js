@@ -260,6 +260,20 @@
     return '<span class="rm-consent-txt">Соглашаюсь на обработку персональных данных согласно ' + link + '.</span>';
   }
 
+  /*
+   * Контейнер невидимой SmartCaptcha (assets/js/captcha.js). Без ключа —
+   * пустая строка: модалка работает как раньше. Уведомление Яндекса
+   * обязательно, раз шильдик виджета скрыт.
+   */
+  function captchaHtml() {
+    if (!CFG.captchaKey) return '';
+    var note = CFG.captchaNote
+      ? ' — <a href="' + CFG.captchaNote + '" target="_blank" rel="noopener nofollow">условия обработки данных</a>'
+      : '';
+    return '<div class="promen-captcha" id="rmCaptcha"></div>' +
+      '<p class="promen-captcha-note">Форма защищена Яндекс SmartCaptcha' + note + '.</p>';
+  }
+
   function buildDom() {
     if (document.getElementById('rmOverlay')) return;
     var email = CFG.email || 'zakaz@prom-en.com';
@@ -287,6 +301,7 @@
               '<input type="checkbox" id="rmConsent">' +
               consentHtml() +
             '</label>' +
+            captchaHtml() +
             '<div class="rm-actions">' +
               '<button type="submit" class="rm-submit" id="rmSubmitBtn">ОТПРАВИТЬ →</button>' +
               '<a class="rm-ghost-link" href="mailto:' + email + '">Написать напрямую</a>' +
@@ -407,26 +422,47 @@
     var btn = document.getElementById('rmSubmitBtn');
     var btnLabel = btn.textContent;
     btn.disabled = true;
-    btn.textContent = 'ОТПРАВКА…';
 
-    fetch(CFG.ajaxUrl || '/wp-admin/admin-post.php', { method: 'POST', body: fd, credentials: 'same-origin' })
-      .then(function (r) { return r.json().catch(function () { return { success: r.ok }; }); })
-      .then(function (json) {
-        if (json && json.success) {
-          document.getElementById('rmForm').style.display = 'none';
-          document.getElementById('rmSuccess').classList.add('show');
-          reachGoal(currentPreset);
-        } else {
-          showError((json && json.data && json.data.message) || 'Не удалось отправить запрос. Напишите нам напрямую: ' + (CFG.email || 'zakaz@prom-en.com'));
-        }
-      })
-      .catch(function () {
-        showError('Сеть недоступна. Напишите нам напрямую: ' + (CFG.email || 'zakaz@prom-en.com'));
-      })
-      .finally(function () {
-        btn.disabled = false;
-        btn.textContent = btnLabel;
-      });
+    /*
+     * Токен невидимой капчи — перед отправкой. Проверку не прошли (закрыли
+     * окно, сеть) — просто отпускаем кнопку: пустой токен сервер отклонит,
+     * а ругаться раньше сервера незачем.
+     */
+    var send = function () {
+      btn.textContent = 'ОТПРАВКА…';
+      fetch(CFG.ajaxUrl || '/wp-admin/admin-post.php', { method: 'POST', body: fd, credentials: 'same-origin' })
+        .then(function (r) { return r.json().catch(function () { return { success: r.ok }; }); })
+        .then(function (json) {
+          if (json && json.success) {
+            document.getElementById('rmForm').style.display = 'none';
+            document.getElementById('rmSuccess').classList.add('show');
+            reachGoal(currentPreset);
+          } else {
+            showError((json && json.data && json.data.message) || 'Не удалось отправить запрос. Напишите нам напрямую: ' + (CFG.email || 'zakaz@prom-en.com'));
+          }
+        })
+        .catch(function () {
+          showError('Сеть недоступна. Напишите нам напрямую: ' + (CFG.email || 'zakaz@prom-en.com'));
+        })
+        .finally(function () {
+          btn.disabled = false;
+          btn.textContent = btnLabel;
+        });
+    };
+
+    var box = document.getElementById('rmCaptcha');
+    if (!box || !window.promenCaptcha) {
+      send();
+      return;
+    }
+    btn.textContent = 'ПРОВЕРКА…';
+    window.promenCaptcha.token(box).then(function (token) {
+      fd.append('smart_token', token || '');
+      send();
+    }, function () {
+      btn.disabled = false;
+      btn.textContent = btnLabel;
+    });
   }
 
   var eyeCounter = 0;
