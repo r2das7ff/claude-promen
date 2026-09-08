@@ -1,17 +1,28 @@
 # -*- coding: utf-8 -*-
-"""Отдельная кампания ретаргетинга по клиентской базе из CRM.
+"""Кампания ретаргетинга по клиентской базе: сборка по частям.
 
-Зачем отдельная. Сегменты «база» и «лал база» сидели группами внутри
-РСЯ-кампании «Детали для АЭС» и делили с автотаргетингом один недельный
-лимит. Директ льёт бюджет туда, где клик дешевле, поэтому за год на базу
-из 7 019 закупщиков ушло 278 ₽ — 0,04% бюджета. Собственный кошелёк
+Зачем отдельная кампания. Сегменты «база» и «лал база» сидели группами
+внутри РСЯ-кампании «Детали для АЭС» и делили недельный лимит с
+автотаргетингом. Директ льёт бюджет туда, где клик дешевле, поэтому за год
+на базу из 7 019 закупщиков ушло 278 ₽ — 0,04% расхода. Свой кошелёк
 решает это одним движением.
 
-Кампания создаётся **остановленной**: после создания её надо посмотреть
-глазами в интерфейсе и запустить руками.
+Две группы с разной логикой:
 
-    python scripts/ads/direct_retargeting.py            # показать план
-    python scripts/ads/direct_retargeting.py --apply    # создать
+* **Клиенты Промэнергетики** — узкий сегмент из CRM (только отделы 23, 25,
+  47): те, кто уже покупал именно эти изделия.
+* **Похожие на клиентов** — look-alike по широкой выгрузке всей группы
+  «Титан». Для поиска похожих чем больше исходных данных, тем лучше
+  модель, поэтому здесь широкая база уместна, а в прямом ретаргетинге нет.
+
+Сборка идёт этапами и каждый раз продолжается с того места, где встала:
+Яндекс считает совпадения часами, а look-alike строится только по готовому
+сегменту. Запускайте повторно — уже созданное переиспользуется.
+
+Кампания создаётся **остановленной**: смотреть глазами и запускать руками.
+
+    python scripts/ads/direct_retargeting.py            # состояние
+    python scripts/ads/direct_retargeting.py --apply    # собрать, что уже можно
 """
 import argparse
 import datetime as dt
@@ -28,70 +39,34 @@ if hasattr(sys.stderr, "reconfigure"):
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 API = "https://api.direct.yandex.com/json/v5/"
+AUDIENCE = "https://api-audience.yandex.ru/v1/management"
 
-# Только то, что нужно для сборки кампании. Ничего не удаляем и не правим
-# в существующих кампаниях.
 ALLOWED = {
     "sitelinks.add", "retargetinglists.add", "campaigns.add", "campaigns.suspend",
     "adgroups.add", "audiencetargets.add", "ads.add",
-    "sitelinks.get", "retargetinglists.get", "campaigns.get",
+    "sitelinks.get", "retargetinglists.get", "campaigns.get", "adgroups.get", "ads.get",
 }
 
-SEGMENT_ID = 59511283          # «База клиентов из CRM от 08.09.2026 (MD5)»
+SEGMENT_NARROW = 59513096   # клиенты Промэнергетики, отделы 23/25/47
+SEGMENT_WIDE = 59511283     # вся группа «Титан» — только как основа для look-alike
+LOOKALIKE_VALUE = 3         # 1 — точнее и уже, 5 — шире; у прошлого стояла 1
 COUNTER_ID = 62844301
 REGION_RUSSIA = 225
-WEEKLY_BUDGET = 5_000          # ₽
+WEEKLY_BUDGET = 5_000       # ₽
 LANDING = "https://prom-en.com/catalog/sdt/"
-CAMPAIGN_NAME = "Ретаргетинг: база клиентов CRM | РСЯ | Россия"
+CAMPAIGN_NAME = "Ретаргетинг: клиенты Промэнергетики | РСЯ | Россия"
+LOOKALIKE_NAME = "Похожие на клиентов группы (08.09.2026)"
 
-# Разметка без roistat: его скрипт при переезде на новый сайт не перенесён,
-# метки в адресе остались бы мусором. Макрос retargeting_id вместо keyword —
-# в ретаргетинге ключевых фраз нет.
+GROUPS = [
+    ("Клиенты Промэнергетики", "Клиенты Промэнергетики из CRM (08.09.2026)", "narrow"),
+    ("Похожие на клиентов", "Похожие на клиентов группы (08.09.2026)", "lookalike"),
+]
+
+# Без roistat: его скрипт при переезде не перенесён, метки были бы мусором.
+# retargeting_id вместо keyword — в ретаргетинге ключевых фраз нет.
 UTM = ("?utm_source=yandex&utm_medium=cpc"
        "&utm_campaign=cid|{campaign_id}|{source_type}"
        "&utm_content=gid|{gbid}|aid|{ad_id}|{retargeting_id}")
-
-
-def env(key, default=None):
-    if os.environ.get(key):
-        return os.environ[key]
-    try:
-        with open(os.path.join(ROOT, ".env"), encoding="utf-8") as f:
-            for line in f:
-                if line.strip().startswith(key + "="):
-                    return line.split("=", 1)[1].strip().strip("\"'")
-    except OSError:
-        pass
-    return default
-
-
-HEADERS = {
-    "Authorization": f"Bearer {env('YANDEX_DIRECT_TOKEN')}",
-    "Client-Login": env("YANDEX_DIRECT_LOGIN") or "",
-    "Accept-Language": "ru",
-    "Content-Type": "application/json; charset=utf-8",
-}
-
-
-def call(service, method, params):
-    full = f"{service}.{method}"
-    if full not in ALLOWED:
-        sys.exit(f"ОТКАЗ: {full} вне списка разрешённых")
-    r = requests.post(API + service, headers=HEADERS,
-                      data=json.dumps({"method": method, "params": params}).encode("utf-8"),
-                      timeout=120)
-    d = r.json()
-    if "error" in d:
-        e = d["error"]
-        sys.exit(f"{full} → {e.get('error_code')}: {e.get('error_string')} | {e.get('error_detail')}")
-    res = d.get("result", {})
-    for item in (res.get("AddResults") or []):
-        for w in item.get("Warnings") or []:
-            print(f"    предупреждение: {w.get('Message')} {w.get('Details','')}")
-        for x in item.get("Errors") or []:
-            sys.exit(f"    ошибка: {x.get('Message')} {x.get('Details','')}")
-    return res
-
 
 SITELINKS = [
     ("Каталог СДТ", "/catalog/sdt/", "Отводы, тройники, переходы, заглушки"),
@@ -108,112 +83,124 @@ AD = {
 }
 
 
-def plan():
-    budget = f"{WEEKLY_BUDGET:,}".replace(",", " ")
-    print(f"""ПЛАН
-
-1. Быстрые ссылки — новый набор (старый ведёт на /prajs-list-truby/,
-   /uslugi/, /trust-us/, которых больше нет):""")
-    for title, path, desc in SITELINKS:
-        print(f"     «{title}» → {path}  ({desc})")
-
-    print(f"""
-2. Условие ретаргетинга «База клиентов из CRM (08.09.2026)»
-     сегмент {SEGMENT_ID}, срок жизни 540 дней
-
-3. Кампания «{CAMPAIGN_NAME}»
-     поиск:  выключен (ретаргетинг работает только в сетях)
-     сети:   максимум кликов, недельный бюджет {budget} ₽
-     счётчик Метрики: {COUNTER_ID}
-     расширенный геотаргетинг: выключен
-     состояние: ОСТАНОВЛЕНА — запускать руками после проверки
-
-4. Группа «База клиентов из CRM», регион: Россия ({REGION_RUSSIA})
-
-5. Объявление:
-     {AD['Title']} · {AD['Title2']}
-     {AD['Text']}
-     → {LANDING}
-     изображение: {AD['AdImageHash']}
-""")
+def env(key, default=None):
+    if os.environ.get(key):
+        return os.environ[key]
+    try:
+        with open(os.path.join(ROOT, ".env"), encoding="utf-8") as f:
+            for line in f:
+                if line.strip().startswith(key + "="):
+                    return line.split("=", 1)[1].strip().strip("\"'")
+    except OSError:
+        pass
+    return default
 
 
-def segment_ready() -> bool:
-    """Директ не видит сегмент, пока Аудитории не досчитают совпадения:
-    попытка создать условие на необработанный сегмент падает с 8800
-    «Объект не найден»."""
-    r = requests.get("https://api-audience.yandex.ru/v1/management/segments",
-                     headers={"Authorization": f"OAuth {env('YANDEX_METRIKA_TOKEN')}"},
-                     timeout=60)
-    for seg in r.json().get("segments", []):
-        if seg.get("id") == SEGMENT_ID:
-            status = seg.get("status")
-            matched = seg.get("matched_quantity")
-            print(f"   сегмент {SEGMENT_ID}: статус {status}, "
-                  f"сматчено {matched if matched is not None else 'ещё считается'}")
-            return status == "processed"
-    print(f"   сегмент {SEGMENT_ID} не найден в Аудиториях")
-    return False
+DIRECT_HEADERS = {
+    "Authorization": f"Bearer {env('YANDEX_DIRECT_TOKEN')}",
+    "Client-Login": env("YANDEX_DIRECT_LOGIN") or "",
+    "Accept-Language": "ru",
+    "Content-Type": "application/json; charset=utf-8",
+}
+AUD_HEADERS = {"Authorization": f"OAuth {env('YANDEX_METRIKA_TOKEN')}"}
 
 
-def existing_sitelinks():
-    """Набор мог остаться от прерванного запуска — второй такой же не нужен."""
+def call(service, method, params):
+    full = f"{service}.{method}"
+    if full not in ALLOWED:
+        sys.exit(f"ОТКАЗ: {full} вне списка разрешённых")
+    r = requests.post(API + service, headers=DIRECT_HEADERS,
+                      data=json.dumps({"method": method, "params": params}).encode("utf-8"),
+                      timeout=120)
+    d = r.json()
+    if "error" in d:
+        e = d["error"]
+        sys.exit(f"{full} → {e.get('error_code')}: {e.get('error_string')} | {e.get('error_detail')}")
+    res = d.get("result", {})
+    for item in (res.get("AddResults") or []):
+        for w in item.get("Warnings") or []:
+            print(f"    предупреждение: {w.get('Message')} {w.get('Details', '')}")
+        for x in item.get("Errors") or []:
+            sys.exit(f"    ошибка {x.get('Code')}: {x.get('Message')} {x.get('Details', '')}")
+    return res
+
+
+def segments():
+    r = requests.get(f"{AUDIENCE}/segments", headers=AUD_HEADERS, timeout=60)
+    if r.status_code >= 400:
+        sys.exit(f"Аудитории → {r.status_code}: {r.text[:200]}")
+    return r.json().get("segments", [])
+
+
+def segment(seg_id):
+    for s in segments():
+        if s.get("id") == seg_id:
+            return s
+    return None
+
+
+def find_lookalike():
+    """Ищем по исходному сегменту, а не по имени: имя могли поменять руками."""
+    for s in segments():
+        if s.get("type") == "lookalike" and s.get("lookalike_link") == SEGMENT_WIDE:
+            return s
+    return None
+
+
+def create_lookalike():
+    body = {"segment": {
+        "name": LOOKALIKE_NAME,
+        "lookalike_link": SEGMENT_WIDE,
+        "lookalike_value": LOOKALIKE_VALUE,
+        "maintain_device_distribution": True,
+        "maintain_geo_distribution": True,
+    }}
+    r = requests.post(f"{AUDIENCE}/segments/create_lookalike",
+                      headers={**AUD_HEADERS, "Content-Type": "application/json"},
+                      data=json.dumps(body).encode("utf-8"), timeout=120)
+    if r.status_code >= 400:
+        sys.exit(f"создание look-alike → {r.status_code}: {r.text[:300]}")
+    return r.json().get("segment", {})
+
+
+# ─────────────────────────────────────────── идемпотентные шаги сборки
+
+def ensure_sitelinks():
     res = call("sitelinks", "get", {"SelectionCriteria": {},
                                     "FieldNames": ["Id", "Sitelinks"], "Limit": 500})
     want = {t for t, _, _ in SITELINKS}
     for st in res.get("SitelinksSets", []):
-        titles = {l.get("Title") for l in st.get("Sitelinks", [])}
-        if want == titles:
-            return st["Id"]
-    return None
+        if want == {l.get("Title") for l in st.get("Sitelinks", [])}:
+            return st["Id"], False
+    res = call("sitelinks", "add", {"SitelinksSets": [{"Sitelinks": [
+        {"Title": t, "Href": "https://prom-en.com" + p + UTM, "Description": d}
+        for t, p, d in SITELINKS
+    ]}]})
+    return res["AddResults"][0]["Id"], True
 
 
-def existing_campaign():
-    res = call("campaigns", "get", {"SelectionCriteria": {},
-                                    "FieldNames": ["Id", "Name"]})
-    for c in res.get("Campaigns", []):
-        if c.get("Name") == CAMPAIGN_NAME:
-            return c["Id"]
-    return None
-
-
-def apply():
-    print("0. проверяю готовность сегмента…")
-    if not segment_ready():
-        print("\nСегмент ещё обрабатывается — Яндекс считает совпадения.")
-        print("Обычно это занимает несколько часов. Запустите скрипт повторно,")
-        print("когда статус станет processed: всё уже созданное переиспользуется.")
-        return
-
-    if existing_campaign():
-        print(f"\nКампания «{CAMPAIGN_NAME}» уже существует — выходим, чтобы не плодить дубли.")
-        return
-
-    print("1. быстрые ссылки…")
-    sitelink_id = existing_sitelinks()
-    if sitelink_id:
-        print(f"   набор уже есть: {sitelink_id}")
-    else:
-        res = call("sitelinks", "add", {"SitelinksSets": [{"Sitelinks": [
-            {"Title": t, "Href": "https://prom-en.com" + p + UTM, "Description": d}
-            for t, p, d in SITELINKS
-        ]}]})
-        sitelink_id = res["AddResults"][0]["Id"]
-        print(f"   набор {sitelink_id}")
-
-    print("2. условие ретаргетинга…")
+def ensure_retargeting_list(name, seg_id, description):
+    res = call("retargetinglists", "get", {"SelectionCriteria": {},
+                                           "FieldNames": ["Id", "Name"]})
+    for l in res.get("RetargetingLists", []):
+        if l.get("Name") == name:
+            return l["Id"], False
     res = call("retargetinglists", "add", {"RetargetingLists": [{
-        "Name": "База клиентов из CRM (08.09.2026)",
-        "Description": "Хешированная выгрузка контактов, 16 236 записей",
+        "Name": name,
+        "Description": description,
         "Type": "RETARGETING",
         "Rules": [{"Operator": "ALL", "Arguments": [
-            {"MembershipLifeSpan": 540, "ExternalId": SEGMENT_ID}
+            {"MembershipLifeSpan": 540, "ExternalId": seg_id}
         ]}],
     }]})
-    retargeting_id = res["AddResults"][0]["Id"]
-    print(f"   условие {retargeting_id}")
+    return res["AddResults"][0]["Id"], True
 
-    print("3. кампания…")
+
+def ensure_campaign():
+    res = call("campaigns", "get", {"SelectionCriteria": {}, "FieldNames": ["Id", "Name"]})
+    for c in res.get("Campaigns", []):
+        if c.get("Name") == CAMPAIGN_NAME:
+            return c["Id"], False
     res = call("campaigns", "add", {"Campaigns": [{
         "Name": CAMPAIGN_NAME,
         "StartDate": dt.date.today().isoformat(),
@@ -233,53 +220,109 @@ def apply():
         },
         "CounterIds": {"Items": [COUNTER_ID]},
     }]})
-    campaign_id = res["AddResults"][0]["Id"]
-    print(f"   кампания {campaign_id}")
+    cid = res["AddResults"][0]["Id"]
+    call("campaigns", "suspend", {"SelectionCriteria": {"Ids": [cid]}})
+    return cid, True
 
-    print("4. останавливаем до проверки…")
-    call("campaigns", "suspend", {"SelectionCriteria": {"Ids": [campaign_id]}})
 
-    print("5. группа…")
+def ensure_adgroup(campaign_id, name):
+    res = call("adgroups", "get", {"SelectionCriteria": {"CampaignIds": [campaign_id]},
+                                   "FieldNames": ["Id", "Name"]})
+    for g in res.get("AdGroups", []):
+        if g.get("Name") == name:
+            return g["Id"], False
     res = call("adgroups", "add", {"AdGroups": [{
-        "Name": "База клиентов из CRM",
-        "CampaignId": campaign_id,
-        "RegionIds": [REGION_RUSSIA],
+        "Name": name, "CampaignId": campaign_id, "RegionIds": [REGION_RUSSIA],
     }]})
-    adgroup_id = res["AddResults"][0]["Id"]
-    print(f"   группа {adgroup_id}")
+    return res["AddResults"][0]["Id"], True
 
-    print("6. привязка аудитории…")
-    call("audiencetargets", "add", {"AudienceTargets": [{
-        "AdGroupId": adgroup_id,
-        "RetargetingListId": retargeting_id,
-    }]})
 
-    print("7. объявление…")
+def ensure_ad(adgroup_id, sitelink_id):
+    res = call("ads", "get", {"SelectionCriteria": {"AdGroupIds": [adgroup_id]},
+                              "FieldNames": ["Id"]})
+    if res.get("Ads"):
+        return res["Ads"][0]["Id"], False
     res = call("ads", "add", {"Ads": [{
         "AdGroupId": adgroup_id,
         "TextAd": {
-            "Title": AD["Title"],
-            "Title2": AD["Title2"],
-            "Text": AD["Text"],
-            "Mobile": "NO",
-            "Href": LANDING + UTM,
-            "AdImageHash": AD["AdImageHash"],
-            "SitelinkSetId": sitelink_id,
+            "Title": AD["Title"], "Title2": AD["Title2"], "Text": AD["Text"],
+            "Mobile": "NO", "Href": LANDING + UTM,
+            "AdImageHash": AD["AdImageHash"], "SitelinkSetId": sitelink_id,
         },
     }]})
-    print(f"   объявление {res['AddResults'][0]['Id']}")
+    return res["AddResults"][0]["Id"], True
 
-    print(f"\nГОТОВО. Кампания {campaign_id} создана и остановлена.")
-    print(f"https://direct.yandex.ru/dna/grid/campaign?cid={campaign_id}")
+
+def state():
+    narrow = segment(SEGMENT_NARROW) or {}
+    wide = segment(SEGMENT_WIDE) or {}
+    lal = find_lookalike() or {}
+
+    def line(title, s):
+        st = s.get("status", "нет")
+        m = s.get("matched_quantity")
+        tail = f"сматчено {m}" if m is not None else "совпадения считаются"
+        return f"  {title:36} {st:14} {tail}"
+
+    print("СОСТОЯНИЕ СЕГМЕНТОВ")
+    print(line(f"узкий (Промэнергетика) {SEGMENT_NARROW}", narrow))
+    print(line(f"широкий (вся группа) {SEGMENT_WIDE}", wide))
+    print(line(f"look-alike {lal.get('id', '—')}", lal))
+    return narrow, wide, lal
+
+
+def apply():
+    narrow, wide, lal = state()
+    print()
+
+    if wide.get("status") == "processed" and not lal:
+        print("создаю look-alike по широкой базе…")
+        lal = create_lookalike()
+        print(f"   сегмент {lal.get('id')}, точность {LOOKALIKE_VALUE} из 5")
+    elif not lal:
+        print("look-alike ждёт: широкий сегмент ещё обрабатывается")
+
+    ready = {"narrow": narrow.get("status") == "processed",
+             "lookalike": lal.get("status") == "processed"}
+    seg_ids = {"narrow": SEGMENT_NARROW, "lookalike": lal.get("id")}
+
+    if not any(ready.values()):
+        print("\nНи один сегмент не готов — Директ их пока не видит (ошибка 8800).")
+        print("Запустите позже: всё созданное переиспользуется.")
+        return
+
+    sitelink_id, made = ensure_sitelinks()
+    print(f"быстрые ссылки: {sitelink_id}{' — создан' if made else ''}")
+    campaign_id, made = ensure_campaign()
+    print(f"кампания: {campaign_id}{' — создана и остановлена' if made else ''}")
+
+    for group_name, list_name, kind in GROUPS:
+        if not ready.get(kind):
+            print(f"группа «{group_name}»: пропущена, сегмент не готов")
+            continue
+        description = ("Хеши MD5, выгрузка из Битрикс24, отделы 23/25/47"
+                       if kind == "narrow" else f"Look-alike по сегменту {SEGMENT_WIDE}")
+        rid, _ = ensure_retargeting_list(list_name, seg_ids[kind], description)
+        gid, made_g = ensure_adgroup(campaign_id, group_name)
+        if made_g:
+            call("audiencetargets", "add", {"AudienceTargets": [
+                {"AdGroupId": gid, "RetargetingListId": rid}
+            ]})
+        ad_id, made_a = ensure_ad(gid, sitelink_id)
+        print(f"группа «{group_name}»: {gid}, условие {rid}, "
+              f"объявление {ad_id}{' — создано' if made_a else ''}")
+
+    print(f"\nhttps://direct.yandex.ru/dna/grid/campaign?cid={campaign_id}")
+    print("Кампания остановлена — запускать руками после проверки.")
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--apply", action="store_true", help="создать (без флага только показывает план)")
+    ap.add_argument("--apply", action="store_true", help="собрать то, что уже возможно")
     a = ap.parse_args()
-    plan()
     if a.apply:
-        print("=" * 60)
         apply()
     else:
-        print("это только план. Для создания: --apply")
+        state()
+        print(f"\nбюджет {WEEKLY_BUDGET} ₽/нед · поиск выключен · посадочная {LANDING}")
+        print("для сборки: --apply")

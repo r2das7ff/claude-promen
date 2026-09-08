@@ -12,7 +12,8 @@
 Яндекс матчит строку в строку, и «+7 (999) 123-45-67» не совпадёт с тем же
 номером, записанным иначе.
 
-    python scripts/ads/crm_audience.py --out perf-reports/ads/audience
+    python scripts/ads/crm_audience.py                  # только Промэнергетика
+    python scripts/ads/crm_audience.py --all-group      # вся группа компаний
     python scripts/ads/crm_audience.py --only-clients   # только те, у кого есть сделки
 """
 import argparse
@@ -31,6 +32,18 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 
 # Только чтение CRM: выгрузка не имеет права ничего менять.
 ALLOWED = {"crm.contact.list", "crm.deal.list", "crm.company.list"}
+
+# В портале работает вся группа «Титан», контакты общие, поля «компания
+# группы» нет. Единственный рабочий признак — ответственный: клиенты
+# Промэнергетики закреплены за сотрудниками трёх отделов.
+#   23 «Завод ПромЭнергетика», 25 «ТД ПромЭнергетика», 47 «АтомЭнерго».
+# Состав снят через MCP (department_show) 08.09.2026; при перестановках
+# в штате список надо пересобрать — иначе в базу поедут чужие клиенты
+# или потеряются свои.
+PROMEN_OWNERS = {
+    31, 109, 111, 115, 175, 191, 213, 215, 257, 271,
+    299, 307, 315, 347, 349, 351, 353, 357, 381, 409,
+}
 
 
 def env(key, default=None):
@@ -97,16 +110,25 @@ def main():
     ap.add_argument("--out", default="perf-reports/ads/audience")
     ap.add_argument("--only-clients", action="store_true",
                     help="только контакты, у которых есть хотя бы одна сделка")
+    ap.add_argument("--all-group", action="store_true",
+                    help="вся группа компаний, а не только Промэнергетика")
     a = ap.parse_args()
     if not HOOK:
         sys.exit("Нет BITRIX_WEBHOOK в site/.env")
 
     print("читаю контакты…")
     contacts = paged("crm.contact.list", {
-        "select": ["ID", "EMAIL", "PHONE", "DATE_CREATE"],
+        "select": ["ID", "EMAIL", "PHONE", "ASSIGNED_BY_ID", "DATE_CREATE"],
         "order": {"ID": "ASC"},
     })
     print(f"  контактов в CRM: {len(contacts)}")
+
+    if not a.all_group:
+        before = len(contacts)
+        contacts = [c for c in contacts
+                    if int(c.get("ASSIGNED_BY_ID") or 0) in PROMEN_OWNERS]
+        print(f"  из них закреплено за Промэнергетикой: {len(contacts)} "
+              f"(отсеяно {before - len(contacts)} контактов других компаний группы)")
 
     keep = None
     if a.only_clients:
@@ -139,7 +161,8 @@ def main():
 
     out_dir = os.path.join(ROOT, a.out)
     os.makedirs(out_dir, exist_ok=True)
-    path = os.path.join(out_dir, "audience-crm.csv")
+    suffix = "group" if a.all_group else "promen"
+    path = os.path.join(out_dir, f"audience-crm-{suffix}.csv")
     with open(path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         # Формат Яндекс.Аудиторий: заголовок из имён типов, по строке на запись.
