@@ -382,6 +382,15 @@ function promen_handle_request(): void {
 
 	remove_action( 'phpmailer_init', $set_alt, 30 );
 
+	/*
+	 * Лид в CRM (mu-plugin promen-bitrix). Стоит после письма намеренно:
+	 * почта — гарантированный канал, лид дополнительный. Если Битрикс
+	 * недоступен или тормозит, заявка уже лежит у менеджеров, а ошибка
+	 * запишется в мету заявки. Карантинные сюда не доходят: их обработка
+	 * заканчивается выше.
+	 */
+	do_action( 'promen_request_accepted', $req, (int) $post_id, promen_request_attribution() );
+
 	promen_request_done();
 }
 add_action( 'admin_post_promen_request', 'promen_handle_request' );
