@@ -1,27 +1,52 @@
 # -*- coding: utf-8 -*-
-"""Аудит рекламы Яндекс.Директа по данным Метрики.
+"""Полный аудит кампаний: каждый элемент, а не выборочно.
 
-Два пространства данных:
+Поводом стала череда пропусков: организация не проставилась в одной
+кампании, уточнения не были привязаны нигде, счётчик профиля организации
+не попал в новые кампании, набор быстрых ссылок оказался общим и куцым.
+Каждый раз это находилось после вопроса заказчика, а не при проверке.
 
-* `ym:s:*` — визитное: посадочные, устройства, пол/возраст. Расхода нет.
-* `ym:ad:*` — рекламное: клики, **расход в рублях**, визиты, конверсии.
-  Открывается только с параметром `direct_client_logins=<логин Директа>`;
-  без него Метрика отвечает 403. Логин берётся из владельца счётчика
-  (`owner_login`) и задаётся флагом `--client-login`.
+Скрипт обходит **все** уровни — кампанию, группы, объявления, фразы,
+корректировки — и по каждому пункту говорит, что настроено, а что нет.
+Список полей взят у самого API (неверное значение в `FieldNames` заставляет
+Директ перечислить допустимые), поэтому пропустить элемент нельзя.
 
-Показов, CTR и ставок нет ни там, ни там — за ними нужен API самого
-Директа, а он требует одобренной заявки на доступ для OAuth-приложения.
-
-    python scripts/ads/direct_audit.py --days 365 --out perf-reports/ads/2026-09-03
+    python scripts/ads/direct_audit.py
+    python scripts/ads/direct_audit.py --campaigns 714272467,714275030
 """
-import argparse, datetime as dt, json, os, sys, time
+import argparse
+import collections
+import json
+import os
+import sys
+
 import requests
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-MET = "https://api-metrika.yandex.net/stat/v1/data"
+DATA = os.path.join(ROOT, "perf-reports", "ads", "2026-09-09")
+API = "https://api.direct.yandex.com/json/"
+ALLOWED = {"campaigns.get", "adgroups.get", "ads.get", "keywords.get", "bidmodifiers.get",
+           "sitelinks.get", "adextensions.get", "audiencetargets.get", "businesses.get"}
+
+NEW = [714272467, 714272480, 714272489, 714272498, 714272511, 714275030, 714267536]
+
+CAMPAIGN_FIELDS = ["Id", "Name", "State", "Status", "StatusPayment", "StartDate", "EndDate",
+                   "TimeZone", "TimeTargeting", "DailyBudget", "ExcludedSites", "BlockedIps",
+                   "NegativeKeywords", "Notification", "Currency", "Funds", "Type"]
+UNIFIED_FIELDS = ["CounterIds", "Settings", "BiddingStrategy", "PriorityGoals", "TrackingParams",
+                  "AttributionModel", "PackageBiddingStrategy", "NegativeKeywordSharedSetIds",
+                  "DefaultBusinessId", "DefaultPhoneId", "WeeklyBudgetRollover",
+                  "CanBeUsedAsPackageBiddingStrategySource"]
+AD_FIELDS = ["AdImageHash", "LogoExtensionHash", "DisplayDomain", "Href", "SitelinkSetId",
+             "Text", "Title", "Title2", "Mobile", "VCardId", "DisplayUrlPath", "AdExtensions",
+             "VideoExtension", "TurboPageId", "BusinessId", "TrackingPhoneId",
+             "PreferVCardOverBusiness", "ButtonExtension"]
+# TrackingParams есть у кампании, но не у объявления — с ним ads.get падает.
+GROUP_FIELDS = ["Id", "Name", "CampaignId", "RegionIds", "NegativeKeywords", "TrackingParams",
+                "Status", "Type", "Subtype", "ServingStatus"]
 
 
 def env(key, default=None):
@@ -37,126 +62,179 @@ def env(key, default=None):
     return default
 
 
-TOKEN = env("YANDEX_METRIKA_TOKEN")
-COUNTER = env("YANDEX_METRIKA_COUNTER")
-AD = "ym:s:lastTrafficSource=='ad'"
-
-# цели, по которым считаем заявки (id -> короткое имя)
-GOALS = {
-    "182776720": "форма",
-    "229699797": "телефон",
-    "180275119": "email",
-    "174609040": "файл",
-    "310490576": "CRM-заказ",
-}
-BASE = ["ym:s:visits", "ym:s:users", "ym:s:bounceRate", "ym:s:pageDepth",
-        "ym:s:avgVisitDurationSeconds"]
-CONV = [f"ym:s:goal{g}reaches" for g in GOALS]
-METRICS = ",".join(BASE + CONV)
-COLS = ["visits", "users", "bounce", "depth", "dur"] + list(GOALS.values())
-
-# рекламное пространство: те же цели, но с кликами и расходом
-AD_BASE = ["ym:ad:clicks", "ym:ad:RUBAdCost", "ym:ad:visits", "ym:ad:bounceRate"]
-AD_METRICS = ",".join(AD_BASE + [f"ym:ad:goal{g}reaches" for g in GOALS])
-AD_COLS = ["clicks", "cost", "visits", "bounce"] + list(GOALS.values())
-
-
-def query(dimensions, metrics=METRICS, filters=AD, date1=None, date2=None,
-          limit=1000, sort=None, client_login=None):
-    p = {"ids": COUNTER, "metrics": metrics, "dimensions": dimensions,
-         "date1": date1, "date2": date2, "limit": limit, "accuracy": "full"}
-    if filters:
-        p["filters"] = filters
-    if client_login:
-        # без этого параметра расходные метрики отдают 403 direct_client_logins
-        p["direct_client_logins"] = client_login
-    if sort:
-        p["sort"] = sort
-    for attempt in range(4):
-        r = requests.get(MET, headers={"Authorization": f"OAuth {TOKEN}"},
-                         params=p, timeout=120)
-        if r.status_code == 429:
-            time.sleep(5 * (attempt + 1)); continue
-        if r.status_code >= 400:
-            return {"error": r.status_code, "body": r.text[:400],
-                    "dimensions": dimensions}
-        d = r.json()
-        return {"dimensions": dimensions, "totals": d.get("totals"),
-                "rows": [{"key": [str(x.get("name")) for x in row["dimensions"]],
-                          "m": row["metrics"]} for row in d.get("data", [])]}
-    return {"error": 429, "dimensions": dimensions}
-
-
-REPORTS = {
-    "campaigns":      "ym:s:lastDirectClickOrderName,ym:s:lastDirectPlatformType",
-    "groups":         "ym:s:lastDirectClickOrderName,ym:s:lastDirectBannerGroup",
-    "banners":        "ym:s:lastDirectClickBanner",
-    "conditions":     "ym:s:lastDirectClickOrderName,ym:s:lastDirectPhraseOrCond",
-    "condition_type": "ym:s:lastDirectConditionType",
-    "platforms":      "ym:s:lastDirectPlatform",
-    "landing":        "ym:s:startURL",
-    "landing_by_camp": "ym:s:lastDirectClickOrderName,ym:s:startURL",
-    "regions":        "ym:s:regionCity",
-    "devices":        "ym:s:deviceCategory",
-    "months":         "ym:s:datePeriodMonth",
-    "search_phrase":  "ym:s:lastDirectSearchPhrase",
-    "gender_age":     "ym:s:gender,ym:s:ageInterval",
+HEADERS = {
+    "Authorization": f"Bearer {env('YANDEX_DIRECT_TOKEN')}",
+    "Client-Login": env("YANDEX_DIRECT_LOGIN") or "",
+    "Accept-Language": "ru",
+    "Content-Type": "application/json; charset=utf-8",
 }
 
-# отчёты с расходом; работают только при заданном --client-login
-AD_REPORTS = {
-    "ad_campaigns":      "ym:ad:lastDirectOrder",
-    "ad_platform_type":  "ym:ad:lastDirectPlatformType",
-    "ad_condition_type": "ym:ad:lastDirectConditionType",
-    "ad_conditions":     "ym:ad:lastDirectOrder,ym:ad:lastDirectPhraseOrCond",
-    "ad_groups":         "ym:ad:lastDirectOrder,ym:ad:lastDirectBannerGroup",
-    "ad_banners":        "ym:ad:lastDirectBanner",
-    "ad_platforms":      "ym:ad:lastDirectPlatform",
-    "ad_regions":        "ym:ad:regionCity",
-    "ad_months":         "ym:ad:datePeriodMonth",
-    "ad_search_phrase":  "ym:ad:lastDirectSearchPhrase",
-}
+
+def call(service, method, params, ver="v5"):
+    full = f"{service}.{method}"
+    if full not in ALLOWED:
+        sys.exit(f"ОТКАЗ: {full} вне списка разрешённых")
+    r = requests.post(API + ver + "/" + service, headers=HEADERS,
+                      data=json.dumps({"method": method, "params": params}).encode("utf-8"),
+                      timeout=300)
+    d = r.json()
+    if "error" in d:
+        # Молчаливый пустой результат — худшее, что может сделать аудит:
+        # таблица покажет нули, и решишь, что настройки нет. Падаем громко.
+        sys.exit(f"ОШИБКА {full}: {(d['error'].get('error_detail') or '')[:200]}")
+    return d.get("result", {})
+
+
+def paged(service, params, key, ver="v5"):
+    out, offset = [], 0
+    while True:
+        p = dict(params)
+        p["Page"] = {"Limit": 10000, "Offset": offset}
+        r = call(service, "get", p, ver=ver)
+        out.extend(r.get(key, []))
+        if not r.get("LimitedBy"):
+            return out
+        offset = r["LimitedBy"]
+
+
+def collect(ids):
+    """Всё, что API знает о кампаниях, группах, объявлениях и фразах."""
+    camps = call("campaigns", "get", {"SelectionCriteria": {"Ids": ids},
+                                      "FieldNames": CAMPAIGN_FIELDS,
+                                      "UnifiedCampaignFieldNames": UNIFIED_FIELDS},
+                 ver="v501").get("Campaigns", [])
+    groups = call("adgroups", "get", {"SelectionCriteria": {"CampaignIds": ids},
+                                      "FieldNames": GROUP_FIELDS}).get("AdGroups", [])
+    ads = call("ads", "get", {"SelectionCriteria": {"CampaignIds": ids},
+                              "FieldNames": ["Id", "CampaignId", "AdGroupId", "State", "Status",
+                                             "Type", "Subtype"],
+                              "TextAdFieldNames": AD_FIELDS}).get("Ads", [])
+    kws = paged("keywords", {"SelectionCriteria": {"CampaignIds": ids},
+                             "FieldNames": ["Id", "CampaignId", "AdGroupId", "Keyword", "Bid",
+                                            "ServingStatus", "State", "Status",
+                                            "AutotargetingSearchBidIsAuto"]}, "Keywords")
+    mods = call("bidmodifiers", "get", {
+        "SelectionCriteria": {"CampaignIds": ids, "Levels": ["CAMPAIGN", "AD_GROUP"]},
+        "FieldNames": ["Id", "CampaignId", "Type", "Level"],
+        "MobileAdjustmentFieldNames": ["BidModifier"],
+        "DesktopAdjustmentFieldNames": ["BidModifier"],
+        "DemographicsAdjustmentFieldNames": ["Age", "Gender", "BidModifier"],
+        "RetargetingAdjustmentFieldNames": ["RetargetingConditionId", "BidModifier"],
+        "RegionalAdjustmentFieldNames": ["RegionId", "BidModifier"],
+    }).get("BidModifiers", [])
+    audience = call("audiencetargets", "get", {
+        "SelectionCriteria": {"CampaignIds": ids},
+        "FieldNames": ["Id", "CampaignId", "AdGroupId", "RetargetingListId", "State"]}
+    ).get("AudienceTargets", [])
+    return camps, groups, ads, kws, mods, audience
+
+
+def check(camps, groups, ads, kws, mods, audience):
+    """По каждому пункту: что настроено в каждой кампании."""
+    by_group = collections.defaultdict(list)
+    for g in groups:
+        by_group[g["CampaignId"]].append(g)
+    by_ad = collections.defaultdict(list)
+    for a in ads:
+        by_ad[a["CampaignId"]].append(a)
+    by_kw = collections.defaultdict(list)
+    for k in kws:
+        by_kw[k["CampaignId"]].append(k)
+    by_mod = collections.defaultdict(list)
+    for m in mods:
+        by_mod[m["CampaignId"]].append(m)
+    by_aud = collections.defaultdict(list)
+    for x in audience:
+        by_aud[x["CampaignId"]].append(x)
+
+    rows = []
+    for c in camps:
+        uc = c.get("UnifiedCampaign") or {}
+        st = {s["Option"]: s["Value"] for s in (uc.get("Settings") or [])}
+        gs, adl = by_group[c["Id"]], by_ad[c["Id"]]
+        kwl = [k for k in by_kw[c["Id"]] if not k["Keyword"].startswith("---")]
+        auto = [k for k in by_kw[c["Id"]] if k["Keyword"].startswith("---")]
+        ml = by_mod[c["Id"]]
+        bs = (uc.get("BiddingStrategy") or {})
+        search = (bs.get("Search") or {}).get("BiddingStrategyType")
+        net = (bs.get("Network") or {}).get("BiddingStrategyType")
+        strat = (bs.get("Search") or {}).get("WbMaximumClicks") or \
+                (bs.get("Network") or {}).get("WbMaximumClicks") or {}
+        live_ads = [a for a in adl if a.get("State") != "SUSPENDED"]
+        regions = {tuple(sorted(g.get("RegionIds") or [])) for g in gs}
+        rows.append({
+            "id": c["Id"], "name": c["Name"],
+            "Состояние": f'{c.get("State")}/{c.get("Status")}',
+            "Стратегия": f'поиск {search}, сети {net}',
+            "Недельный лимит": f'{strat.get("WeeklySpendLimit", 0) / 1e6:.0f} ₽' if strat else "—",
+            "Потолок ставки": f'{strat.get("BidCeiling", 0) / 1e6:.0f} ₽' if strat.get("BidCeiling") else "нет",
+            "Дневной бюджет": c.get("DailyBudget") or "нет",
+            "Часовой пояс": c.get("TimeZone"),
+            "Расписание": "круглосуточно" if not (c.get("TimeTargeting") or {}).get("Schedule") else "по часам",
+            "Регионы групп": ", ".join(str(r) for r in sorted(regions)[0]) if regions else "нет",
+            "Групп": len(gs), "Фраз": len(kwl), "Автотаргетинг-записей": len(auto),
+            "Объявлений": len(live_ads),
+            "Минус-слов": len((c.get("NegativeKeywords") or {}).get("Items") or []),
+            "Общий стоп-лист": bool((uc.get("NegativeKeywordSharedSetIds") or {}).get("Items")),
+            "Счётчики": uc.get("CounterIds", {}).get("Items"),
+            "Ключевые цели": len((uc.get("PriorityGoals") or {}).get("Items") or []),
+            "Атрибуция": uc.get("AttributionModel"),
+            "Организация": uc.get("DefaultBusinessId") or "нет",
+            "Номер коллтрекинга": uc.get("DefaultPhoneId") or "нет",
+            "Запрещённых площадок": len((c.get("ExcludedSites") or {}).get("Items") or []),
+            "Заблокированных IP": len((c.get("BlockedIps") or {}).get("Items") or []),
+            "Метки кампании": uc.get("TrackingParams") or "нет",
+            "Перенос бюджета": uc.get("WeeklyBudgetRollover") or "нет",
+            "Пакетная стратегия": uc.get("PackageBiddingStrategy") or "нет",
+            "Мониторинг сайта": st.get("ENABLE_SITE_MONITORING"),
+            "Метка для Метрики": st.get("ADD_METRICA_TAG"),
+            "Альтернативные тексты": st.get("ALTERNATIVE_TEXTS_ENABLED"),
+            "Приоритет по фразе": st.get("CAMPAIGN_EXACT_PHRASE_MATCHING_ENABLED"),
+            "Область интересов": st.get("ENABLE_AREA_OF_INTEREST_TARGETING"),
+            "Уведомления": "да" if c.get("Notification") else "нет",
+            "Корректировки": ", ".join(sorted({m["Type"] for m in ml})) or "нет",
+            "Условия ретаргетинга": len(by_aud[c["Id"]]),
+            # объявления
+            "Заголовок 2": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("Title2")),
+            "Быстрые ссылки": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("SitelinkSetId")),
+            "Уточнения": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("AdExtensions")),
+            "Организация в объявл.": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("BusinessId")),
+            "Отображаемая ссылка": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("DisplayUrlPath")),
+            "Изображение": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("AdImageHash")),
+            "Видео": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("VideoExtension")),
+            "Кнопка": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("ButtonExtension")),
+            "Визитка": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("VCardId")),
+            "Турбо-страница": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("TurboPageId")),
+            "Телефон в объявл.": sum(1 for a in live_ads if (a.get("TextAd") or {}).get("TrackingPhoneId")),
+            "Фраз «мало показов»": sum(1 for k in kwl if k.get("ServingStatus") == "RARELY_SERVED"),
+            "Ставки на фразах": sum(1 for k in kwl if k.get("Bid")),
+        })
+    return rows
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--days", type=int, default=365)
-    ap.add_argument("--out", default="perf-reports/ads/latest")
-    ap.add_argument("--limit", type=int, default=1000)
-    ap.add_argument("--only", help="через запятую: campaigns,ad_campaigns,...")
-    ap.add_argument("--client-login", default=env("YANDEX_DIRECT_LOGIN"),
-                    help="логин Директа; без него расходные отчёты недоступны")
+    ap.add_argument("--campaigns", default="")
     a = ap.parse_args()
-    if not TOKEN or not COUNTER:
-        sys.exit("Нет YANDEX_METRIKA_TOKEN / YANDEX_METRIKA_COUNTER в site/.env")
-    d2 = dt.date.today().isoformat()
-    d1 = (dt.date.today() - dt.timedelta(days=a.days)).isoformat()
-    out = os.path.join(ROOT, a.out)
-    os.makedirs(out, exist_ok=True)
-    all_names = list(REPORTS) + (list(AD_REPORTS) if a.client_login else [])
-    names = a.only.split(",") if a.only else all_names
-    result = {"counter": COUNTER, "date1": d1, "date2": d2, "goals": GOALS,
-              "columns": COLS, "ad_columns": AD_COLS,
-              "client_login": a.client_login, "reports": {}}
-    for name in names:
-        if name in AD_REPORTS:
-            if not a.client_login:
-                print(f"{name:16} пропущен: нужен --client-login")
-                continue
-            res = query(AD_REPORTS[name], metrics=AD_METRICS, filters=None,
-                        date1=d1, date2=d2, limit=a.limit,
-                        client_login=a.client_login)
-            dims = AD_REPORTS[name]
-        else:
-            dims = REPORTS[name]
-            res = query(dims, date1=d1, date2=d2, limit=a.limit)
-        result["reports"][name] = res
-        n = len(res.get("rows", []))
-        print(f"{name:16} {dims:70} {'ERR '+str(res['error']) if 'error' in res else str(n)+' строк'}")
-    path = os.path.join(out, f"direct-metrika-{a.days}d.json")
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(result, f, ensure_ascii=False, indent=1)
-    print("\nсохранено:", path)
+    ids = [int(x) for x in a.campaigns.split(",")] if a.campaigns else NEW
+
+    camps, groups, ads, kws, mods, audience = collect(ids)
+    rows = check(camps, groups, ads, kws, mods, audience)
+    rows.sort(key=lambda r: r["id"])
+
+    keys = [k for k in rows[0] if k not in ("id", "name")]
+    short = [r["name"].split("|")[0].strip()[:13] for r in rows]
+    print(f'{"элемент":24} ' + " ".join(f'{n:>14}' for n in short))
+    print("-" * (24 + 15 * len(rows)))
+    for k in keys:
+        vals = [str(r[k]) for r in rows]
+        # ровные строки прячут расхождения — помечаем их явно
+        flag = " ←" if len(set(vals)) > 1 else ""
+        print(f'  {k:22} ' + " ".join(f'{v[:14]:>14}' for v in vals) + flag)
+
+    out = os.path.join(DATA, "audit-full.json")
+    json.dump(rows, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print(f"\nсохранено: {os.path.relpath(out, ROOT)}")
 
 
 if __name__ == "__main__":
