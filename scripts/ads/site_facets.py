@@ -47,18 +47,33 @@ def fetch(url):
         return None, str(e)[:60]
 
 
+# Пагинация, RSS и карточки товаров — не разделы. Карточку узнаём по
+# цифрам в последнем сегменте («otvod-108h4-…») и по его длине: имена
+# разделов короткие и без размеров.
+NOT_SECTION = re.compile(r"/(page|feed|comment-page-\d+|attachment)/")
+
+
+def is_section(path):
+    if NOT_SECTION.search(path):
+        return False
+    last = [x for x in path.split("/") if x]
+    if not last:
+        return True
+    tail = last[-1]
+    return not re.search(r"\d", tail) and len(tail) <= 24
+
+
 def section_links(html, site, root):
     """Ссылки на подразделы каталога — чтобы не перечислять их руками."""
     out = set()
-    for m in re.finditer(r'href="([^"#?]+)"', html):
-        href = m.group(1)
-        if href.startswith("/"):
-            path = href
-        elif href.startswith(site):
-            path = up.urlsplit(href).path
-        else:
-            continue
-        if path.startswith(root) and path.endswith("/") and path.count("/") <= root.count("/") + 2:
+    # Ищем пути по всему документу, а не только в href: на этом сайте
+    # разделы каталога попадают в HTML через data-атрибуты и JSON, и
+    # выборка по href нашла ровно одну ссылку из двенадцати разделов.
+    pattern = re.escape(root) + r'[a-z0-9\-]+/(?:[a-z0-9\-]+/)?'
+    for m in re.finditer(pattern, html):
+        path = m.group(0)
+        if (path.startswith(root) and path.endswith("/")
+                and path.count("/") <= root.count("/") + 2 and is_section(path)):
             out.add(path)
     return out
 
@@ -78,6 +93,8 @@ def main():
     ap.add_argument("--site", required=True, help="например https://prom-en.com")
     ap.add_argument("--roots", default="/catalog/", help="корни каталога через запятую")
     ap.add_argument("--out", default="")
+    ap.add_argument("--limit", type=int, default=40,
+                    help="потолок числа разделов: каталог может ссылаться сам на себя")
     a = ap.parse_args()
 
     site = a.site.rstrip("/")
@@ -86,21 +103,21 @@ def main():
     # Сначала корни, потом найденные в них подразделы: так карта строится
     # сама и не зависит от того, помню ли я структуру конкретного сайта.
     todo, seen, out = list(roots), set(), {}
-    while todo:
+    while todo and len(out) < a.limit:
         path = todo.pop(0)
         if path in seen:
             continue
         seen.add(path)
         code, html = fetch(site + path)
         if code != 200:
-            print(f'  {path:36} http {code}')
+            print(f'  {path:36} http {code}', flush=True)
             continue
         f = facets_of(html)
         out[path] = f
         found = section_links(html, site, path) - seen
         todo.extend(sorted(found))
         summary = ", ".join(f'{k}({len(v)})' for k, v in sorted(f.items())) or "фасетов нет"
-        print(f'  {path:36} {summary}')
+        print(f'  {path:36} {summary}', flush=True)
 
     dest = a.out or os.path.join(ROOT, "perf-reports", "ads", "facets.json")
     os.makedirs(os.path.dirname(dest), exist_ok=True)
