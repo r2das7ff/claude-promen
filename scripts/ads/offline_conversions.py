@@ -45,6 +45,9 @@ BASE = "https://api-metrika.yandex.net/management/v1/counter"
 # Цель создана в счётчике как «CRM: квалифицированная заявка» с условием
 # «идентификатор JavaScript-события = crm_qualified». Метрика связывает
 # загруженные события с целью именно по этой строке, а не по id цели.
+# Идентификатор цели по умолчанию. Разные события CRM ложатся на разные
+# цели: квалифицированный лид — одна, оплаченная сделка — другая, поэтому
+# значение переопределяется ключом --target.
 TARGET = "crm_qualified"
 
 
@@ -94,6 +97,7 @@ def read_rows(path):
                 "moment": parse_moment(row.get("datetime") or row.get("date") or ""),
                 "price": row.get("price", ""),
                 "comment": row.get("comment", ""),
+                "target": row.get("target", ""),
             }
             if yclid:
                 item["id"] = yclid
@@ -111,7 +115,7 @@ def make_csv(rows, id_column):
     w = csv.writer(buf)
     w.writerow(header)
     for r in rows:
-        line = [r["id"], TARGET, r["moment"]]
+        line = [r["id"], r.get("target") or TARGET, r["moment"]]
         if has_price:
             line += [r["price"] or "", "RUB" if r["price"] else ""]
         w.writerow(line)
