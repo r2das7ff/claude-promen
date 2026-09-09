@@ -22,7 +22,13 @@ add_action( 'init', function () {
 	if ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) || wp_doing_ajax() ) {
 		return;
 	}
-	if ( ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) !== 'GET' ) {
+	/*
+	 * GET и HEAD. HEAD — тот же GET без тела ответа, и не отвечать на него
+	 * редиректом нельзя: проверялки ссылок, мониторинги и часть краулеров
+	 * ходят именно HEAD и видели 404 там, где браузер получал корректный 301.
+	 * POST сюда попадать не должен — формы редиректить нельзя.
+	 */
+	if ( ! in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', [ 'GET', 'HEAD' ], true ) ) {
 		return;
 	}
 
