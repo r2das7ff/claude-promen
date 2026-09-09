@@ -56,6 +56,10 @@ WEEKLY_BUDGET = 5_000       # ₽
 LANDING = "https://prom-en.com/catalog/sdt/"
 CAMPAIGN_NAME = "Ретаргетинг: клиенты Промэнергетики | РСЯ | Россия"
 LOOKALIKE_NAME = "Похожие на клиентов группы (08.09.2026)"
+# Набор быстрых ссылок создан 08.09.2026. Перечислить существующие наборы
+# API не даёт: sitelinks.get требует явные Ids, поэтому храним свой.
+SITELINK_SET_ID = 1508803715
+AUDIENCE_ID_OFFSET = 2_000_000_000
 
 GROUPS = [
     ("Клиенты Промэнергетики", "Клиенты Промэнергетики из CRM (08.09.2026)", "narrow"),
@@ -166,8 +170,8 @@ def create_lookalike():
 # ─────────────────────────────────────────── идемпотентные шаги сборки
 
 def ensure_sitelinks():
-    res = call("sitelinks", "get", {"SelectionCriteria": {},
-                                    "FieldNames": ["Id", "Sitelinks"], "Limit": 500})
+    res = call("sitelinks", "get", {"SelectionCriteria": {"Ids": [SITELINK_SET_ID]},
+                                    "FieldNames": ["Id", "Sitelinks"]})
     want = {t for t, _, _ in SITELINKS}
     for st in res.get("SitelinksSets", []):
         if want == {l.get("Title") for l in st.get("Sitelinks", [])}:
@@ -185,12 +189,16 @@ def ensure_retargeting_list(name, seg_id, description):
     for l in res.get("RetargetingLists", []):
         if l.get("Name") == name:
             return l["Id"], False
+    # Директ адресует сегменты Аудиторий со смещением: ExternalId это
+    # 2 000 000 000 + id сегмента. Проверено на трёх существующих условиях
+    # аккаунта («база», «лал база», «Новые регионы»); без смещения API
+    # отвечает 8800 «Объект не найден», даже когда сегмент готов.
     res = call("retargetinglists", "add", {"RetargetingLists": [{
         "Name": name,
         "Description": description,
         "Type": "RETARGETING",
-        "Rules": [{"Operator": "ALL", "Arguments": [
-            {"MembershipLifeSpan": 540, "ExternalId": seg_id}
+        "Rules": [{"Operator": "ANY", "Arguments": [
+            {"MembershipLifeSpan": 540, "ExternalId": AUDIENCE_ID_OFFSET + seg_id}
         ]}],
     }]})
     return res["AddResults"][0]["Id"], True
@@ -217,8 +225,10 @@ def ensure_campaign():
                 {"Option": "ADD_OPENSTAT_TAG", "Value": "NO"},
                 {"Option": "ENABLE_AREA_OF_INTEREST_TARGETING", "Value": "NO"},
             ],
+            # Счётчик живёт внутри TextCampaign: на верхнем уровне кампании
+            # такого параметра нет, API отвечает 8000.
+            "CounterIds": {"Items": [COUNTER_ID]},
         },
-        "CounterIds": {"Items": [COUNTER_ID]},
     }]})
     cid = res["AddResults"][0]["Id"]
     call("campaigns", "suspend", {"SelectionCriteria": {"Ids": [cid]}})
