@@ -196,7 +196,12 @@ for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src =
 k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
 (window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
 window.PROMEN_YM_ID = 62844301; /* цели заявок шлёт request-modal.js */
-ym(62844301, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+/* Без ssr:true. Этот флаг говорит Метрике, что код счётчика отрендерен
+   на сервере особым образом; на обычной странице WordPress инициализация
+   с ним не проходит: вызовы копятся в очереди ym.a, yaCounter не создаётся,
+   данные не уходят. С 01.09 по 09.09.2026 из-за него потеряна вся
+   статистика — Вебмастер показывал 74 клика из поиска, Метрика 0 визитов. */
+ym(62844301, 'init', {webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/62844301" style="position:absolute; left:-9999px;" alt="" width="1" height="1"></div></noscript>
 	<?php
