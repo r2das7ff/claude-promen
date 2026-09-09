@@ -72,7 +72,7 @@ def call(service, method, params):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--campaign", type=int, required=True)
-    ap.add_argument("--mask", required=True, help="маска начала имени группы")
+    ap.add_argument("--mask", default="", help="маска начала имени группы; без неё — вся кампания")
     ap.add_argument("--apply", action="store_true")
     a = ap.parse_args()
 
@@ -80,7 +80,8 @@ def main():
         "SelectionCriteria": {"CampaignIds": [a.campaign]},
         "FieldNames": ["Id", "Name", "Status"],
     }).get("AdGroups", [])
-    hit = [g for g in groups if g["Name"].lower().startswith(a.mask.lower())]
+    hit = ([g for g in groups if g["Name"].lower().startswith(a.mask.lower())]
+           if a.mask else groups)
     if not hit:
         sys.exit(f"групп по маске «{a.mask}» не нашлось (всего в кампании {len(groups)})")
 
@@ -102,10 +103,11 @@ def main():
         by.setdefault(x["AdGroupId"], []).append(x)
     print(f"групп по маске «{a.mask}»: {len(hit)}, объявлений в них {len(ads)}, "
           f"из них показываются {len(live)}\n")
-    for g in sorted(hit, key=lambda g: g["Name"]):
-        mine = by.get(g["Id"], [])
-        on = sum(1 for x in mine if x.get("State") in ("ON", "OFF"))
-        print(f'  {g["Name"][:44]:44} объявлений {len(mine):3d}, к остановке {on:3d}')
+    if a.mask:
+        for g in sorted(hit, key=lambda g: g["Name"]):
+            mine = by.get(g["Id"], [])
+            on = sum(1 for x in mine if x.get("State") in ("ON", "OFF"))
+            print(f'  {g["Name"][:44]:44} объявлений {len(mine):3d}, к остановке {on:3d}')
 
     if not live:
         print("\nостанавливать нечего: показов ни у одного объявления нет")
