@@ -1729,9 +1729,15 @@ function promen_product_type_photo_rel( int $product_id ): string {
 		'24-125-57' => 'zaglushki-bb-bobyshka',
 		'24-125-21' => 'dnishcha-dn-donyshko-privarnoe',
 		'24-125-53' => 'dnishcha-dn-donyshko-privarnoe',
-		'34-10-428' => 'zaglushki-zf-flancevaya',
 		'34-42-666' => 'zaglushki-zp-ploskaya-privarnaya',
 		'34-42-667' => 'zaglushki-zr-ellipticheskaya-privarnaya',
+		// Две разные фланцевые заглушки, и путать их нельзя:
+		// ГОСТ 22815-83 — под линзовое уплотнение, в середине коническое
+		// гнездо под линзу (выемка, 20°±30' по чертежу);
+		// ОСТ 34-10-428-90 — «с соединительным выступом», середина наоборот
+		// приподнята над привалочной плоскостью.
+		'22815'     => 'zaglushki-zf-flancevaya',
+		'34-10-428' => 'zaglushki-zf-vystup',
 		// Сварные переходные тройники: корпус плюс приварной штуцер меньшего
 		// диаметра — ровно то, что на снимке.
 		'34-10-764' => 'troyniki-ts-svarnoy-perehodnyy',
@@ -1742,21 +1748,29 @@ function promen_product_type_photo_rel( int $product_id ): string {
 		'34-42-674' => 'troyniki-tp-shtampovannyy-perehodnyy',
 	];
 
+	/*
+	 * Порядок важен: сначала норматив, потом код типа. Норматив — самый точный
+	 * признак, а код типа у разных изделий совпадает. Под кодом «ЗФ» лежат две
+	 * непохожие детали: заглушка под линзу по ГОСТ 22815-83 (в середине
+	 * коническое гнездо) и заглушка с соединительным выступом по
+	 * ОСТ 34-10-428-90 (середина, наоборот, приподнята). При обратном порядке
+	 * обе получали один снимок, и половина карточек показывала выемку там,
+	 * где на изделии выступ.
+	 */
 	$name = '';
+	$core = mb_strtolower( trim( (string) get_post_meta( $product_id, '_promen_norm_key', true ) ), 'UTF-8' );
+	$core = preg_replace( '~^(гост\s*р?|гост|ост|сто\s*цкти|сто\s*сро-п|сто|серия|gost\s*r?|gost|ost|sto|seriya)[\s._-]*~u', '', $core );
+	$core = trim( preg_replace( '~-+~', '-', str_replace( [ '_', '.', ' ' ], '-', $core ) ), '-' );
+	$core = preg_replace( '~-(19|20)?\d\d$~', '', $core );
+	$name = $by_norm_core[ $core ] ?? '';
+
 	$dims = json_decode( (string) get_post_meta( $product_id, '_promen_dims', true ), true );
-	if ( is_array( $dims ) && ! empty( $dims['product_type'] ) ) {
+	if ( '' === $name && is_array( $dims ) && ! empty( $dims['product_type'] ) ) {
 		$name = $by_type[ $dims['product_type'] ] ?? '';
 	}
 	if ( '' === $name ) {
 		$fam  = (string) get_post_meta( $product_id, '_promen_family', true );
 		$name = $by_family[ $fam ] ?? '';
-	}
-	if ( '' === $name ) {
-		$core = mb_strtolower( trim( (string) get_post_meta( $product_id, '_promen_norm_key', true ) ), 'UTF-8' );
-		$core = preg_replace( '~^(гост\s*р?|гост|ост|сто\s*цкти|сто\s*сро-п|сто|серия|gost\s*r?|gost|ost|sto|seriya)[\s._-]*~u', '', $core );
-		$core = trim( preg_replace( '~-+~', '-', str_replace( [ '_', '.', ' ' ], '-', $core ) ), '-' );
-		$core = preg_replace( '~-(19|20)?\d\d$~', '', $core );
-		$name = $by_norm_core[ $core ] ?? '';
 	}
 	if ( '' === $name ) {
 		return '';
