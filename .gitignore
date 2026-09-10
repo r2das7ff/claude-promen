@@ -64,3 +64,6 @@ __pycache__/
 # скриптами scripts/ads/. В репозиторий едет только сводный отчёт.
 perf-reports/ads/*/*.json
 perf-reports/ads/*/*.tsv
+
+# Пакет выкладки правок ОТК — собирается из git archive, в истории не нужен
+scripts/otk-fix/deploy.tar
