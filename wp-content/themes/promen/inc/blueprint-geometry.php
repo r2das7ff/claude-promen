@@ -454,3 +454,118 @@ function promen_bp_axis( array $p1, array $p2, string $color ): string {
 		$p1[0], $p1[1], $p2[0], $p2[1], $color
 	);
 }
+
+/**
+ * Какую схему рисовать.
+ *
+ * Порядок: норматив -> код типа -> слово в названии семейства. Раньше был
+ * только третий шаг, и он врал: семейство «Заглушки» ловилось на «заглушк»
+ * и отправляло ВСЮ категорию на эллиптическое днище — включая фланцевые
+ * заглушки, плоские приварные, штуцеры и бобышки, которые куполом не
+ * являются. Замечание пользователя 10.09.2026 по карточке
+ * zaglushka-700h350-ost-34-10-428-1990.
+ */
+function promen_blueprint_type( string $family, array $dims, string $norm_key = '', string $cat = '' ): string {
+	if ( ! empty( $dims['angle'] ) ) {
+		return 'bend';
+	}
+
+	// 1. Норматив — самый точный признак; карта сверена по чертежам,
+	// см. scripts/otk-fix/norm_products.tsv.
+	static $by_norm = [
+		'22815'     => 'blind',   // заглушка под линзовое уплотнение
+		'34-10-428' => 'blind',   // заглушка с соединительным выступом
+		'34-10-509' => 'stub',    // штуцеры для ответвлений
+		'34-10-761' => 'stub',
+		'34-42-670' => 'stub',
+		'24-125-11' => 'stub',
+		'24-125-22' => 'stub',    // бобышка — короткий толстостенный цилиндр
+		'24-125-57' => 'stub',
+		'530-01'    => 'stub',
+		'34-42-666' => 'disc',    // заглушка плоская приварная
+		'24-125-23' => 'disc',    // пробка
+		// ОСТ 24.125.53 — донышко точёное из поковки, это сплошная пробка
+		// (СТО ЦКТИ 504.01, чертёж читан). А ОСТ 24.125.21 документа у нас нет:
+		// в названии стоит «эллиптическое», но высоты купола в данных нет, и
+		// источники говорят про штамповку. Не утверждаем ни купол, ни диск —
+		// общее сечение по D и стенке. Появится чертёж — уточнить.
+		'24-125-21' => 'section',
+		'24-125-53' => 'disc',
+		'504-01'    => 'disc',
+	];
+	$core = mb_strtolower( trim( $norm_key ), 'UTF-8' );
+	$core = preg_replace( '~^(гост\s*р?|гост|ост|сто\s*цкти|сто\s*сро-п|сто|серия|gost\s*r?|gost|ost|sto|seriya)[\s._-]*~u', '', $core );
+	$core = trim( preg_replace( '~-+~', '-', str_replace( [ '_', '.', ' ' ], '-', $core ) ), '-' );
+	$core = preg_replace( '~-(19|20)?\d\d$~', '', $core );
+	if ( '' !== $core && isset( $by_norm[ $core ] ) ) {
+		return $by_norm[ $core ];
+	}
+
+	// 2. Код типа изделия.
+	static $by_ptype = [
+		'ЗФ' => 'blind', 'ШТ' => 'stub', 'ББ' => 'stub',
+		'ЗП' => 'disc',  'ПР' => 'disc', 'ДН' => 'disc',
+	];
+	$pt = trim( (string) ( $dims['product_type'] ?? '' ) );
+	if ( '' !== $pt && isset( $by_ptype[ $pt ] ) ) {
+		return $by_ptype[ $pt ];
+	}
+
+	// 3. Категория. Надёжнее слова в названии семейства и покрывает весь
+	// каталог: у «Шпилька ДЛЯ ФЛАНЦЕВЫХ соединений» слово «фланц» стоит раньше
+	// слова «шпильк», и 662 шпильки рисовались фланцем; «Опоры ТРУБОПРОВОДОВ»
+	// ловились на «труб» и рисовались трубой.
+	static $by_cat = [
+		'troyniki'             => 'tee',
+		'izolyatsiya-troyniki' => 'tee',
+		'perekhody'            => 'reducer',
+		// «Точеные детали» — это переходы точёные по ГОСТ 22826 и ОСТ 34-42-664.
+		'tochenye'             => 'reducer',
+		'truby'                => 'pipe',
+		'truby-bsh'            => 'pipe',
+		'truby-es'             => 'pipe',
+		'truby-vgp'            => 'pipe',
+		'izolyatsiya-truby'    => 'pipe',
+		'flancy'               => 'flange',
+		'flancy-plosk'         => 'flange',
+		'flancy-vorot'         => 'flange',
+		'flancy-01'            => 'flange',
+		'flancy-11'            => 'flange',
+		'bolty'                => 'bolt',
+		'vinty'                => 'bolt',
+		'shpilki'              => 'stud',
+		'gayki'                => 'nut',
+		'shayby'               => 'washer',
+		'dnishcha'             => 'head',
+		'zaglushki'            => 'head',
+		// Опоры и арматура своей схемы не имеют: общее сечение честнее чужого контура.
+		'opory-nepodv'         => 'section',
+		'opory-skolz'          => 'section',
+		'opory-pruzh'          => 'section',
+		'armatura-zadvizhki'   => 'section',
+		'armatura-krany'       => 'section',
+		'armatura-klapany'     => 'section',
+		// Отвод с известным углом ушёл в 'bend' ещё первым шагом. Сюда попадает
+		// тот, у которого угла в данных нет: рисовать изгиб «примерно на 90°»
+		// значит выдумывать.
+		'otvody'               => 'section',
+	];
+	$cat = trim( $cat );
+	if ( '' !== $cat && isset( $by_cat[ $cat ] ) ) {
+		return $by_cat[ $cat ];
+	}
+
+	// 4. Старая эвристика по названию семейства — для всего остального.
+	$f = function_exists( 'mb_strtolower' ) ? mb_strtolower( $family ) : strtolower( $family );
+	$has = fn( $s ) => mb_strpos( $f, $s ) !== false;
+	if ( $has( 'тройник' ) )                    return 'tee';
+	if ( $has( 'переход' ) )                    return 'reducer';
+	if ( $has( 'днищ' ) || $has( 'заглушк' ) )  return 'head';
+	if ( $has( 'фланец' ) || $has( 'фланц' ) )  return 'flange';
+	if ( $has( 'гайка' ) )                      return 'nut';
+	if ( $has( 'шайба' ) )                      return 'washer';
+	if ( $has( 'болт' ) || $has( 'винт' ) )     return 'bolt';
+	if ( $has( 'шпильк' ) )                     return 'stud';
+	if ( $has( 'труб' ) )                       return 'pipe';
+	return 'section';
+}

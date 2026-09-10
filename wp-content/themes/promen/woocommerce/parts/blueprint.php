@@ -6,75 +6,8 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-if ( ! function_exists( 'promen_blueprint_type' ) ) {
-	/**
-	 * Какую схему рисовать.
-	 *
-	 * Порядок: норматив -> код типа -> слово в названии семейства. Раньше был
-	 * только третий шаг, и он врал: семейство «Заглушки» ловилось на «заглушк»
-	 * и отправляло ВСЮ категорию на эллиптическое днище — включая фланцевые
-	 * заглушки, плоские приварные, штуцеры и бобышки, которые куполом не
-	 * являются. Замечание пользователя 10.09.2026 по карточке
-	 * zaglushka-700h350-ost-34-10-428-1990.
-	 */
-	function promen_blueprint_type( string $family, array $dims, string $norm_key = '' ): string {
-		if ( ! empty( $dims['angle'] ) ) {
-			return 'bend';
-		}
-
-		// 1. Норматив — самый точный признак; карта сверена по чертежам,
-		// см. scripts/otk-fix/norm_products.tsv.
-		static $by_norm = [
-			'22815'     => 'blind',   // заглушка под линзовое уплотнение
-			'34-10-428' => 'blind',   // заглушка с соединительным выступом
-			'34-10-509' => 'stub',    // штуцеры для ответвлений
-			'34-10-761' => 'stub',
-			'34-42-670' => 'stub',
-			'24-125-11' => 'stub',
-			'24-125-22' => 'stub',    // бобышка — короткий толстостенный цилиндр
-			'24-125-57' => 'stub',
-			'530-01'    => 'stub',
-			'34-42-666' => 'disc',    // заглушка плоская приварная
-			'24-125-23' => 'disc',    // пробка
-			'24-125-21' => 'disc',    // донышко — точёная пробка, не купол
-			'24-125-53' => 'disc',
-			'504-01'    => 'disc',
-		];
-		$core = mb_strtolower( trim( $norm_key ), 'UTF-8' );
-		$core = preg_replace( '~^(гост\s*р?|гост|ост|сто\s*цкти|сто\s*сро-п|сто|серия|gost\s*r?|gost|ost|sto|seriya)[\s._-]*~u', '', $core );
-		$core = trim( preg_replace( '~-+~', '-', str_replace( [ '_', '.', ' ' ], '-', $core ) ), '-' );
-		$core = preg_replace( '~-(19|20)?\d\d$~', '', $core );
-		if ( '' !== $core && isset( $by_norm[ $core ] ) ) {
-			return $by_norm[ $core ];
-		}
-
-		// 2. Код типа изделия.
-		static $by_ptype = [
-			'ЗФ' => 'blind', 'ШТ' => 'stub', 'ББ' => 'stub',
-			'ЗП' => 'disc',  'ПР' => 'disc', 'ДН' => 'disc',
-		];
-		$pt = trim( (string) ( $dims['product_type'] ?? '' ) );
-		if ( '' !== $pt && isset( $by_ptype[ $pt ] ) ) {
-			return $by_ptype[ $pt ];
-		}
-
-		// 3. Старая эвристика по названию семейства — для всего остального.
-		$f = function_exists( 'mb_strtolower' ) ? mb_strtolower( $family ) : strtolower( $family );
-		$has = fn( $s ) => mb_strpos( $f, $s ) !== false;
-		if ( $has( 'тройник' ) )                    return 'tee';
-		if ( $has( 'переход' ) )                    return 'reducer';
-		if ( $has( 'днищ' ) || $has( 'заглушк' ) )  return 'head';
-		if ( $has( 'фланец' ) || $has( 'фланц' ) )  return 'flange';
-		if ( $has( 'гайка' ) )                      return 'nut';
-		if ( $has( 'шайба' ) )                      return 'washer';
-		if ( $has( 'болт' ) || $has( 'винт' ) )     return 'bolt';
-		if ( $has( 'шпильк' ) )                     return 'stud';
-		if ( $has( 'труб' ) )                       return 'pipe';
-		return 'section';
-	}
-}
-
-$bp_type = promen_blueprint_type( (string) $family, $dims, (string) ( $norm_key ?? '' ) );
+$bp_cat  = function_exists( 'promen_deepest_cat' ) ? promen_deepest_cat( (int) get_the_ID() ) : null;
+$bp_type = promen_blueprint_type( (string) $family, $dims, (string) ( $norm_key ?? '' ), $bp_cat ? $bp_cat->slug : '' );
 $fmt = fn( $v ) => promen_fmt_dim( (string) $v );
 
 // Значения-выноски (только реальные; пустые не показываем).
