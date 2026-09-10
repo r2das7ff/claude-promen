@@ -19,7 +19,7 @@ function promen_get_dims( int $product_id ): array {
 		$dims = promen_enrich_turned_reducer_dims( $dims, $sku );
 	}
 	if ( promen_product_needs_both_pipe_ends( $product_id ) ) {
-		$dims = promen_ensure_both_pipe_ends( $dims );
+		$dims = promen_ensure_both_pipe_ends( $dims, promen_equal_pass_possible( $product_id ) );
 	}
 	return $dims;
 }
@@ -126,7 +126,30 @@ function promen_product_needs_both_pipe_ends( int $product_id ): bool {
 /**
  * Дополняет второй торец перехода: пустой → копия первого; недостающую стенку зеркалит.
  */
-function promen_ensure_both_pipe_ends( array $dims ): array {
+/**
+ * Может ли изделие быть равнопроходным.
+ *
+ * Переход — не может по определению. Тройник — может, но не по нормативам,
+ * которые изданы только на переходные: ОСТ 34 10.764/765-97, ОСТ 34-10-511-90,
+ * ОСТ 34-42-674/676-84, ОСТ 24.125.18-89. Нужно, чтобы не дорисовывать
+ * недостающий второй торец там, где такой детали не существует.
+ */
+function promen_equal_pass_possible( int $product_id ): bool {
+	$slugs = wp_get_post_terms( $product_id, 'product_cat', [ 'fields' => 'slugs' ] );
+	if ( ! is_wp_error( $slugs ) && in_array( 'perekhody', $slugs, true ) ) {
+		return false;
+	}
+	static $reducing_only = [
+		'34-10-764', '34-10-765', '34-10-511', '34-42-674', '34-42-676', '24-125-18',
+	];
+	$core = mb_strtolower( trim( (string) get_post_meta( $product_id, '_promen_norm_key', true ) ), 'UTF-8' );
+	$core = preg_replace( '~^(гост\s*р?|гост|ост|сто\s*цкти|сто\s*сро-п|сто|серия|gost\s*r?|gost|ost|sto|seriya)[\s._-]*~u', '', $core );
+	$core = trim( preg_replace( '~-+~', '-', str_replace( [ '_', '.', ' ' ], '-', $core ) ), '-' );
+	$core = preg_replace( '~-(19|20)?\d\d$~', '', $core );
+	return ! in_array( $core, $reducing_only, true );
+}
+
+function promen_ensure_both_pipe_ends( array $dims, bool $allow_mirror = true ): array {
 	$od  = trim( (string) ( $dims['outer_diameter'] ?? '' ) );
 	$s   = trim( (string) ( $dims['wall_thickness'] ?? '' ) );
 	$od2 = trim( (string) ( $dims['outer_d_branch'] ?? '' ) );
@@ -144,8 +167,16 @@ function promen_ensure_both_pipe_ends( array $dims ): array {
 		}
 	}
 
-	// Нет второго торца (равнопроходной / недозаполнено) — дублируем первый.
-	if ( $od !== '' && $od2 === '' ) {
+	/*
+	 * Нет второго торца — дублируем первый, но ТОЛЬКО там, где равнопроходность
+	 * возможна. Раньше дублировали всегда, и недозаполненная строка выдавалась
+	 * за равнопроходное изделие: переход «23×3-23×3» (переход равнопроходным не
+	 * бывает) и тройник «820×11-820×11» под ОСТ 34 10.764-97, который вообще
+	 * только на переходные. Замечание ОТК от 2026-09-10; данные почищены
+	 * scripts/otk-fix/fix.php, но без этой правки тема дорисовывала пару заново
+	 * на каждом рендере.
+	 */
+	if ( $od !== '' && $od2 === '' && $allow_mirror ) {
 		$dims['outer_d_branch'] = $od;
 		$od2                    = $od;
 		if ( $s !== '' && $s2 === '' ) {
@@ -324,6 +355,30 @@ function promen_sanitize_dims( array $dims, array $opts = [] ): array {
 }
 
 /** DN из допуска/фигуры/мусора (0.63, 4, …) — не условный проход. */
+/**
+ * Стандартный ли условный проход.
+ *
+ * Функция вызывалась из promen_sanitize_dims, но не была определена нигде в
+ * теме: `$turned || promen_dn_is_standard($dy)` спасал короткий цикл — у точёных
+ * второй операнд не вычисляется. На любом НЕ точёном изделии с заполненным dy1
+ * это падало фатальной ошибкой. Обнаружено 2026-09-10 массовым обновлением
+ * карточек (scripts/otk-fix/fix.php).
+ *
+ * Ряд по ГОСТ 28338 (условные проходы) в пределах сортамента каталога.
+ */
+function promen_dn_is_standard( string $dn ): bool {
+	$v = str_replace( ',', '.', trim( $dn ) );
+	if ( ! is_numeric( $v ) ) {
+		return false;
+	}
+	static $row = [
+		6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 175, 200, 250,
+		300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1400,
+		1600, 1800, 2000,
+	];
+	return in_array( (int) round( (float) $v ), $row, true );
+}
+
 function promen_dn_looks_junk( string $dn ): bool {
 	if ( $dn === '' ) {
 		return true;
@@ -1625,6 +1680,92 @@ function promen_product_desc_fallback( WC_Product $product ): string {
 }
 
 /**
+ * Снимок по типу изделия внутри категории (или '' — тогда работает подбор по категории).
+ *
+ * Ключ ищем в трёх местах по убыванию точности: код типа в `_promen_dims`,
+ * семейство `_promen_family` (крепёж), ядро обозначения норматива. Последнее
+ * нужно точёным переходам: кода типа у них нет, а норматив однозначен.
+ */
+function promen_product_type_photo_rel( int $product_id ): string {
+	static $by_type = [
+		'ОГ'  => 'otvody-og-gnutyy',
+		'ОКШ' => 'otvody-oksh-shtamposvarnoy',
+		'ОСС' => 'otvody-oss-sektornyy',
+		// ТП — штампованный переходный (гладкий переход к горловине),
+		// ТС — сварной переходный (штуцер приварен угловым швом).
+		'ТП' => 'troyniki-tp-shtampovannyy-perehodnyy',
+		'ТС' => 'troyniki-ts-svarnoy-perehodnyy',
+		'ПС' => 'perekhody-ps-svarnoy',
+		'ЗФ' => 'zaglushki-zf-flancevaya',
+		'ЗП' => 'zaglushki-zp-ploskaya-privarnaya',
+		'ЗР' => 'zaglushki-zr-ellipticheskaya-privarnaya',
+		'ШТ' => 'zaglushki-sht-shtutser',
+		'ББ' => 'zaglushki-bb-bobyshka',
+		'ДН' => 'dnishcha-dn-donyshko-privarnoe',
+	];
+	static $by_family = [
+		'Болт фундаментный'                                  => 'bolty-fund-shpilka-vvinchivaemyy-konec',
+		'Болт с уменьшенной головкой'                        => 'bolty-um-umenshennaya-golovka',
+		'Болт высокопрочный'                                 => 'bolty-vp-bolshoy-diametr',
+		'Шпилька для фланцевых соединений'                   => 'shpilki-fl-s-protochkoy',
+		'Шпилька ОСТ'                                        => 'shpilki-ost-bez-protochki',
+		'Гайка шестигранная низкая'                          => 'gayki-nizk-nizkaya-klass-b',
+		'Гайка для фланцевых соединений'                     => 'gayki-fl-vysokaya',
+		'Гайка шестигранная с уменьшенным размером под ключ' => 'gayki-um-normalnaya-klass-a',
+		'Гайка шестигранная колпачковая'                     => 'gayki-proch-nizkaya-klass-a',
+		'Шайба усиленная'                                    => 'shayby-us-ploskaya-usilennaya',
+	];
+	static $by_norm_core = [
+		'34-10-423' => 'perekhody-pt-tochenyy',
+		'34-42-664' => 'perekhody-pt-tochenyy',
+		'318-01'    => 'perekhody-pt-tochenyy',
+		'34-10-424' => 'perekhody-ps-svarnoy',
+		'34-42-665' => 'perekhody-ps-svarnoy',
+		'36-22'     => 'perekhody-ps-svarnoy',
+		'34-10-509' => 'zaglushki-sht-shtutser',
+		'34-42-670' => 'zaglushki-sht-shtutser',
+		'24-125-11' => 'zaglushki-sht-shtutser',
+		'24-125-22' => 'zaglushki-bb-bobyshka',
+		'24-125-57' => 'zaglushki-bb-bobyshka',
+		'24-125-21' => 'dnishcha-dn-donyshko-privarnoe',
+		'24-125-53' => 'dnishcha-dn-donyshko-privarnoe',
+		'34-10-428' => 'zaglushki-zf-flancevaya',
+		'34-42-666' => 'zaglushki-zp-ploskaya-privarnaya',
+		'34-42-667' => 'zaglushki-zr-ellipticheskaya-privarnaya',
+		// Сварные переходные тройники: корпус плюс приварной штуцер меньшего
+		// диаметра — ровно то, что на снимке.
+		'34-10-764' => 'troyniki-ts-svarnoy-perehodnyy',
+		'34-10-765' => 'troyniki-ts-svarnoy-perehodnyy',
+		'34-10-511' => 'troyniki-ts-svarnoy-perehodnyy',
+		'34-42-676' => 'troyniki-ts-svarnoy-perehodnyy',
+		'24-125-18' => 'troyniki-tp-shtampovannyy-perehodnyy',
+		'34-42-674' => 'troyniki-tp-shtampovannyy-perehodnyy',
+	];
+
+	$name = '';
+	$dims = json_decode( (string) get_post_meta( $product_id, '_promen_dims', true ), true );
+	if ( is_array( $dims ) && ! empty( $dims['product_type'] ) ) {
+		$name = $by_type[ $dims['product_type'] ] ?? '';
+	}
+	if ( '' === $name ) {
+		$fam  = (string) get_post_meta( $product_id, '_promen_family', true );
+		$name = $by_family[ $fam ] ?? '';
+	}
+	if ( '' === $name ) {
+		$core = mb_strtolower( trim( (string) get_post_meta( $product_id, '_promen_norm_key', true ) ), 'UTF-8' );
+		$core = preg_replace( '~^(гост\s*р?|гост|ост|сто\s*цкти|сто\s*сро-п|сто|серия|gost\s*r?|gost|ost|sto|seriya)[\s._-]*~u', '', $core );
+		$core = trim( preg_replace( '~-+~', '-', str_replace( [ '_', '.', ' ' ], '-', $core ) ), '-' );
+		$core = preg_replace( '~-(19|20)?\d\d$~', '', $core );
+		$name = $by_norm_core[ $core ] ?? '';
+	}
+	if ( '' === $name ) {
+		return '';
+	}
+	$rel = 'assets/img/products/types/' . $name . '.webp';
+	return file_exists( get_theme_file_path( $rel ) ) ? $rel : '';
+}
+
+/**
  * Фото изделия: assets/img/products/<slug-категории>.<ext>.
  *
  * Идём от самой глубокой категории вверх по дереву — подкатегория без
@@ -1633,6 +1774,17 @@ function promen_product_desc_fallback( WC_Product $product ): string {
  * одну и ту же картинку: в schema.org поле image до 2026-08-26 не выводилось.
  */
 function promen_product_photo_url( int $product_id ): string {
+	/*
+	 * Сначала снимок по ТИПУ изделия. Категория «Заглушки» держит пять разных
+	 * предметов сразу — эллиптические заглушки, фланцевые, плоские, штуцеры и
+	 * бобышки, — и один снимок на всех показывал бобышке эллиптический колпак.
+	 * Снимки и таблица соответствия: assets/img/products/types/README.md.
+	 */
+	$rel = promen_product_type_photo_rel( $product_id );
+	if ( '' !== $rel ) {
+		return get_theme_file_uri( $rel );
+	}
+
 	$deep_cat = promen_deepest_cat( $product_id );
 	if ( ! $deep_cat ) {
 		return '';
@@ -1832,10 +1984,14 @@ function promen_series_type_name( string $norm_key, string $family = '' ): strin
 		'ГОСТ 17376-2001'  => 'Тройник бесшовный приварной',
 		'ГОСТ 22801-83'  => 'Тройник на Ру до 100 МПа',
 		'ГОСТ 22822-83'  => 'Тройник с опорой',
-		'ОСТ 34-10-762-97' => 'Тройник сварной ТЭС',
-		'ОСТ 34-10-763-97' => 'Тройник сварной переходный ТЭС',
-		'ОСТ 34-10-764-97' => 'Тройник сварной ТЭС',
-		'ОСТ 34-10-765-97' => 'Тройник сварной ТЭС',
+		// Сверено с титулами документов 2026-09-10: 762 и 763 — равнопроходные,
+		// 764 и 765 — переходные. Раньше все четыре звались «Тройник сварной
+		// ТЭС», а 763 и вовсе «переходный», из-за чего равнопроходный тройник
+		// выдавался за переходный и наоборот.
+		'ОСТ 34-10-762-97' => 'Тройник сварной равнопроходный',
+		'ОСТ 34-10-763-97' => 'Тройник сварной равнопроходный с накладкой',
+		'ОСТ 34-10-764-97' => 'Тройник сварной переходный',
+		'ОСТ 34-10-765-97' => 'Тройник сварной переходный с накладкой',
 		'СЕРИЯ 4.903-10'   => 'Тройник тепловых сетей',
 		// Переходы
 		'ГОСТ 17378-2001'  => 'Переход бесшовный приварной',
@@ -1843,7 +1999,7 @@ function promen_series_type_name( string $norm_key, string $family = '' ): strin
 		'ОСТ 36-22-77'     => 'Переход сварной',
 		'ОСТ 34-10-753-97' => 'Переход сварной ТЭС',
 		'ОСТ 34-10-754-97' => 'Переход сварной ТЭС',
-		'СТО ЦКТИ 318.01-2009'       => 'Переход ЦКТИ 318.01',
+		'СТО ЦКТИ 318.01-2009'       => 'Переход точёный',
 				// Трубы
 		'ГОСТ 8732-78'  => 'Труба бесшовная г/д',
 		'ГОСТ 8734-75'  => 'Труба бесшовная х/д',
@@ -1871,6 +2027,74 @@ function promen_series_type_name( string $norm_key, string $family = '' ): strin
 	if ( isset( $map[ $norm_key ] ) ) {
 		return $map[ $norm_key ];
 	}
+
+	/*
+	 * Второй слой — по «ядру» обозначения (номер без префикса и года).
+	 * Один и тот же норматив лежит в данных в трёх написаниях сразу:
+	 * «ost-34-10-764-97», «ОСТ 34-10-764-97», «ОСТ 34.10.764-1997». Карта выше
+	 * знает только одно из них, и остальные молча падали в фолбэк «Изделие»
+	 * или в имя семейства, которое у СДТ вообще не про тип изделия.
+	 *
+	 * Названия сверены 2026-09-10 с содержаниями сборников ОСТ 34-10 и с
+	 * паспортами документов; полная карта — scripts/otk-fix/norm_products.tsv.
+	 */
+	static $by_core = [
+		'34-10-418' => 'Отвод крутоизогнутый',
+		'34-10-419' => 'Отвод сварной',
+		'34-10-420' => 'Отвод гнутый',
+		'34-10-422' => 'Переход бесшовный',
+		'34-10-423' => 'Переход точёный',
+		'34-10-424' => 'Переход сварной листовой',
+		'34-10-425' => 'Фланец плоский приварной',
+		'34-10-426' => 'Фланец плоский приварной с рёбрами',
+		'34-10-428' => 'Заглушка фланцевая с соединительным выступом',
+		'34-10-432' => 'Тройник равнопроходный сверлёный',
+		'34-10-433' => 'Тройник переходный с усиленным штуцером',
+		'34-10-509' => 'Штуцер для ответвлений',
+		'34-10-510' => 'Тройник сварной равнопроходный',
+		'34-10-511' => 'Тройник сварной переходный',
+		'34-10-512' => 'Тройник сварной равнопроходный с накладкой',
+		'34-10-700' => 'Переход ТЭС',
+		'34-10-753' => 'Переход ТЭС',
+		'34-10-754' => 'Переход ТЭС',
+		'34-10-761' => 'Штуцер для ответвлений',
+		'34-10-762' => 'Тройник сварной равнопроходный',
+		'34-10-763' => 'Тройник сварной равнопроходный с накладкой',
+		'34-10-764' => 'Тройник сварной переходный',
+		'34-10-765' => 'Тройник сварной переходный с накладкой',
+		'34-42-661' => 'Отвод гнутый',
+		'34-42-664' => 'Переход точёный',
+		'34-42-665' => 'Переход сварной листовой',
+		'34-42-666' => 'Заглушка плоская приварная',
+		'34-42-670' => 'Штуцер ответвления',
+		'34-42-673' => 'Тройник точёный равнопроходный',
+		'34-42-674' => 'Тройник переходный с усиленным штуцером',
+		'34-42-675' => 'Тройник сварной равнопроходный',
+		'34-42-676' => 'Тройник сварной переходный',
+		'24-125-06' => 'Отвод крутоизогнутый',
+		'24-125-07' => 'Колено штампованное',
+		'24-125-09' => 'Переход штампованный',
+		'24-125-11' => 'Штуцер',
+		'24-125-12' => 'Штуцер',
+		'24-125-17' => 'Тройник штампованный равнопроходный',
+		'24-125-18' => 'Тройник штампованный переходный',
+		'24-125-21' => 'Донышко',
+		'24-125-22' => 'Бобышка',
+		'24-125-23' => 'Пробка',
+		'24-125-53' => 'Донышко приварное',
+		'24-125-57' => 'Бобышка',
+		'318-01'    => 'Переход точёный',
+		'504-01'    => 'Донышко приварное',
+		'530-01'    => 'Бобышка',
+	];
+	$core = mb_strtolower( trim( $norm_key ), 'UTF-8' );
+	$core = preg_replace( '~^(гост\s*р?|гост|ост|сто\s*цкти|сто\s*сро-п|сто|серия|gost\s*r?|gost|ost|sto|seriya)[\s._-]*~u', '', $core );
+	$core = trim( preg_replace( '~-+~', '-', str_replace( [ '_', '.', ' ' ], '-', $core ) ), '-' );
+	$core = preg_replace( '~-(19|20)?\d\d$~', '', $core );
+	if ( isset( $by_core[ $core ] ) ) {
+		return $by_core[ $core ];
+	}
+
 	// Крепёж и всё прочее: имя семейства из данных (ед. число не строим).
 	return $family !== '' ? $family : 'Изделие';
 }
