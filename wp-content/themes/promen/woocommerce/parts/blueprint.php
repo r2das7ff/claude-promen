@@ -7,10 +7,58 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( ! function_exists( 'promen_blueprint_type' ) ) {
-	function promen_blueprint_type( string $family, array $dims ): string {
+	/**
+	 * Какую схему рисовать.
+	 *
+	 * Порядок: норматив -> код типа -> слово в названии семейства. Раньше был
+	 * только третий шаг, и он врал: семейство «Заглушки» ловилось на «заглушк»
+	 * и отправляло ВСЮ категорию на эллиптическое днище — включая фланцевые
+	 * заглушки, плоские приварные, штуцеры и бобышки, которые куполом не
+	 * являются. Замечание пользователя 10.09.2026 по карточке
+	 * zaglushka-700h350-ost-34-10-428-1990.
+	 */
+	function promen_blueprint_type( string $family, array $dims, string $norm_key = '' ): string {
 		if ( ! empty( $dims['angle'] ) ) {
 			return 'bend';
 		}
+
+		// 1. Норматив — самый точный признак; карта сверена по чертежам,
+		// см. scripts/otk-fix/norm_products.tsv.
+		static $by_norm = [
+			'22815'     => 'blind',   // заглушка под линзовое уплотнение
+			'34-10-428' => 'blind',   // заглушка с соединительным выступом
+			'34-10-509' => 'stub',    // штуцеры для ответвлений
+			'34-10-761' => 'stub',
+			'34-42-670' => 'stub',
+			'24-125-11' => 'stub',
+			'24-125-22' => 'stub',    // бобышка — короткий толстостенный цилиндр
+			'24-125-57' => 'stub',
+			'530-01'    => 'stub',
+			'34-42-666' => 'disc',    // заглушка плоская приварная
+			'24-125-23' => 'disc',    // пробка
+			'24-125-21' => 'disc',    // донышко — точёная пробка, не купол
+			'24-125-53' => 'disc',
+			'504-01'    => 'disc',
+		];
+		$core = mb_strtolower( trim( $norm_key ), 'UTF-8' );
+		$core = preg_replace( '~^(гост\s*р?|гост|ост|сто\s*цкти|сто\s*сро-п|сто|серия|gost\s*r?|gost|ost|sto|seriya)[\s._-]*~u', '', $core );
+		$core = trim( preg_replace( '~-+~', '-', str_replace( [ '_', '.', ' ' ], '-', $core ) ), '-' );
+		$core = preg_replace( '~-(19|20)?\d\d$~', '', $core );
+		if ( '' !== $core && isset( $by_norm[ $core ] ) ) {
+			return $by_norm[ $core ];
+		}
+
+		// 2. Код типа изделия.
+		static $by_ptype = [
+			'ЗФ' => 'blind', 'ШТ' => 'stub', 'ББ' => 'stub',
+			'ЗП' => 'disc',  'ПР' => 'disc', 'ДН' => 'disc',
+		];
+		$pt = trim( (string) ( $dims['product_type'] ?? '' ) );
+		if ( '' !== $pt && isset( $by_ptype[ $pt ] ) ) {
+			return $by_ptype[ $pt ];
+		}
+
+		// 3. Старая эвристика по названию семейства — для всего остального.
 		$f = function_exists( 'mb_strtolower' ) ? mb_strtolower( $family ) : strtolower( $family );
 		$has = fn( $s ) => mb_strpos( $f, $s ) !== false;
 		if ( $has( 'тройник' ) )                    return 'tee';
@@ -26,7 +74,7 @@ if ( ! function_exists( 'promen_blueprint_type' ) ) {
 	}
 }
 
-$bp_type = promen_blueprint_type( (string) $family, $dims );
+$bp_type = promen_blueprint_type( (string) $family, $dims, (string) ( $norm_key ?? '' ) );
 $fmt = fn( $v ) => promen_fmt_dim( (string) $v );
 
 // Значения-выноски (только реальные; пустые не показываем).
@@ -68,6 +116,9 @@ $schem_labels = [
 	'nut' => 'Схема · гайка шестигранная',
 	'washer' => 'Схема · шайба (сечение)',
 	'pipe' => 'Схема · труба (наружный диаметр и стенка)',
+	'blind' => 'Схема · заглушка фланцевая (вид и сечение)',
+	'stub' => 'Схема · сечение патрубка (наружный диаметр и стенка)',
+	'disc' => 'Схема · сплошной диск (вид и сечение)',
 	'section' => 'Схема сечения · наружный диаметр и стенка',
 ];
 ?>
@@ -133,15 +184,20 @@ $schem_labels = [
               <?php echo promen_bp_dim( $g['d_dim'][0], $g['d_dim'][1], $D ? 'D ' . $D : 'D', $dim, $lbl, 16 ); ?>
               <?php if ( $g['h_known'] && $H ) { echo promen_bp_dim( $g['h_dim'][0], $g['h_dim'][1], 'H ' . $H, $dim, $lbl, -12 ); } ?>
 
-            <?php elseif ( $bp_type === 'flange' ) :
+            <?php elseif ( $bp_type === 'flange' || $bp_type === 'blind' ) :
+              // У заглушки прохода нет: -1 говорит геометрии рисовать сплошное сечение.
+              $bore_arg = $bp_type === 'blind' ? -1.0 : ( $n( 'bore_d' ) ?: $n( 'dn' ) );
               $g = promen_bp_flange_geometry(
                 $dO, $n( 'bolt_circle_d' ), $n( 'bolt_d' ), (int) ( $dims['stud_count'] ?? 0 ),
-                $n( 'flange_thickness' ), $n( 'bore_d' ) ?: $n( 'dn' ), (string) ( $dims['flange_type'] ?? '' ) === '11'
+                $n( 'flange_thickness' ) ?: $n( 'wall_thickness' ), $bore_arg,
+                $bp_type !== 'blind' && (string) ( $dims['flange_type'] ?? '' ) === '11'
               );
               ?>
               <circle cx="<?php echo $g['face_c'][0]; ?>" cy="<?php echo $g['face_c'][1]; ?>" r="<?php echo $g['face_r']; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></circle>
               <circle cx="<?php echo $g['face_c'][0]; ?>" cy="<?php echo $g['face_c'][1]; ?>" r="<?php echo $g['bolt_r']; ?>" fill="none" stroke="<?php echo $axis; ?>" stroke-width="1" stroke-dasharray="6 4"></circle>
+              <?php if ( $g['bore_r'] > 0.5 ) : ?>
               <circle cx="<?php echo $g['face_c'][0]; ?>" cy="<?php echo $g['face_c'][1]; ?>" r="<?php echo $g['bore_r']; ?>" fill="<?php echo $fill2; ?>" stroke="<?php echo $stroke; ?>" stroke-width="1.5"></circle>
+              <?php endif; ?>
               <?php foreach ( $g['holes'] as $h ) : ?>
                 <circle cx="<?php echo $h[0][0]; ?>" cy="<?php echo $h[0][1]; ?>" r="<?php echo max( 2.0, $h[1] ); ?>" fill="none" stroke="<?php echo $stroke; ?>" stroke-width="1.2"></circle>
               <?php endforeach; ?>
@@ -153,9 +209,10 @@ $schem_labels = [
               <?php echo promen_bp_axis( $g['face_axis_v'][0], $g['face_axis_v'][1], $axis ); ?>
               <?php echo promen_bp_dim( $g['d_dim'][0], $g['d_dim'][1], $D ? 'D ' . $D : 'D', $dim, $lbl, 16 ); ?>
               <?php echo promen_bp_dim( $g['sec_dim'][0], $g['sec_dim'][1], $Th ? 'b ' . $Th : 'b', $dim, $lbl, 16 ); ?>
-              <text x="<?php echo $g['face_c'][0]; ?>" y="<?php echo $g['face_c'][1] - $g['face_r'] - 8; ?>" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" text-anchor="middle"><?php echo (int) $g['holes_n']; ?> отв.<?php echo $boltD ? ' ⌀' . $e( $boltD ) : ''; ?></text>
+              <text x="<?php echo $g['face_c'][0]; ?>" y="<?php echo $g['face_c'][1] - $g['face_r'] - 8; ?>" fill="<?php echo $lbl; ?>" font-family="monospace" font-size="10" text-anchor="middle"><?php // Число отверстий печатаем, только если оно есть в данных: геометрия
+                    // подставляет восемь по умолчанию, и подпись выдавала догадку за факт. ?><?php echo $studs !== '' ? (int) $g['holes_n'] . ' отв.' : 'отверстия под болты'; ?><?php echo $boltD ? ' ⌀' . $e( $boltD ) : ''; ?></text>
 
-            <?php elseif ( $bp_type === 'pipe' ) :
+            <?php elseif ( $bp_type === 'pipe' || $bp_type === 'stub' ) :
               $g = promen_bp_pipe_geometry( $dO, $sW, $n( 'length_mm', 'length' ) );
               ?>
               <path d="<?php echo $g['body']; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></path>
@@ -164,16 +221,20 @@ $schem_labels = [
               <?php echo promen_bp_dim( $g['d_dim'][0], $g['d_dim'][1], $D ? 'D ' . $D : 'D', $dim, $lbl, -12 ); ?>
               <?php echo promen_bp_dim( $g['s_dim'][0], $g['s_dim'][1], $S ? 's ' . $S : 's', $dim, $lbl, 14 ); ?>
 
-            <?php elseif ( $bp_type === 'washer' ) :
-              $g = promen_bp_washer_geometry( $dO ?: promen_bp_num( $dims['outer_d'] ?? 0 ), promen_bp_num( $dims['nominal_d_mm'] ?? $dims['dn'] ?? 0 ), $sW );
+            <?php elseif ( $bp_type === 'washer' || $bp_type === 'disc' ) :
+              // Сплошной диск: -1 велит геометрии не рисовать отверстие.
+              $din = $bp_type === 'disc' ? -1.0 : promen_bp_num( $dims['nominal_d_mm'] ?? $dims['dn'] ?? 0 );
+              $g = promen_bp_washer_geometry( $dO ?: promen_bp_num( $dims['outer_d'] ?? 0 ), $din, $sW );
               ?>
               <circle cx="<?php echo $g['c'][0]; ?>" cy="<?php echo $g['c'][1]; ?>" r="<?php echo $g['r_out']; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2"></circle>
+              <?php if ( $g['r_in'] > 0.5 ) : ?>
               <circle cx="<?php echo $g['c'][0]; ?>" cy="<?php echo $g['c'][1]; ?>" r="<?php echo $g['r_in']; ?>" fill="<?php echo $fill2; ?>" stroke="<?php echo $stroke; ?>" stroke-width="1.5"></circle>
+              <?php endif; ?>
               <?php foreach ( $g['sec'] as $sp ) : ?>
                 <path d="<?php echo $sp; ?>" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="1.8"></path>
               <?php endforeach; ?>
               <?php // Подпись уводим за окружность: в центре она ложилась на отверстие. ?>
-              <?php echo promen_bp_dim( $g['d_dim'][0], $g['d_dim'][1], $wd ? 'd ' . $wd : 'd', $dim, $lbl, -( (int) $g['r_out'] + 16 ) ); ?>
+              <?php echo promen_bp_dim( $g['d_dim'][0], $g['d_dim'][1], $bp_type === 'disc' ? ( $D ? 'D ' . $D : 'D' ) : ( $wd ? 'd ' . $wd : 'd' ), $dim, $lbl, -( (int) $g['r_out'] + 16 ) ); ?>
 
             <?php elseif ( $bp_type === 'bolt' ) : ?>
               <polygon points="40,95 52,80 76,80 88,95 76,110 52,110" fill="<?php echo $fill; ?>" stroke="<?php echo $stroke; ?>" stroke-width="2.5"></polygon>

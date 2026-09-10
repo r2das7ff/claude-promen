@@ -286,7 +286,10 @@ function promen_bp_flange_geometry( float $d_out, float $d_bolt, float $d_hole, 
 	$dh = $d_hole > 0 ? $d_hole : max( 0.05 * $d, 0.09 * ( $d - $db ) );
 	$n  = $holes > 0 ? $holes : 8;
 	$b  = $thick > 0 ? $thick : 0.1 * $d;
-	$bore = $d_bore > 0 ? min( $d_bore, 0.7 * $d ) : 0.42 * $d;
+	// Отрицательный d_bore — глухая деталь: прохода нет, сечение выходит
+	// сплошным (обе половины полки смыкаются на оси). Так рисуется фланцевая
+	// заглушка, у которой отверстия в середине нет вовсе.
+	$bore = $d_bore < 0 ? 0.0 : ( $d_bore > 0 ? min( $d_bore, 0.7 * $d ) : 0.42 * $d );
 
 	$r  = $d / 2;
 	// Вид и сечение стоят рядом: общий габарит по обоим.
@@ -365,7 +368,10 @@ function promen_bp_pipe_geometry( float $d_out, float $wall, float $len ): array
  */
 function promen_bp_washer_geometry( float $d_out, float $d_in, float $thick ): array {
 	$d  = $d_out > 0 ? $d_out : 40.0;
-	$di = $d_in > 0 ? min( $d_in, 0.85 * $d ) : 0.45 * $d;
+	// Отрицательный d_in — сплошной диск без отверстия: донышко, пробка,
+	// плоская приварная заглушка. Нулём это не выразить: ноль означает
+	// «размер неизвестен» и подставляет 0,45D.
+	$di = $d_in < 0 ? 0.0 : ( $d_in > 0 ? min( $d_in, 0.85 * $d ) : 0.45 * $d );
 	$t  = $thick > 0 ? $thick : 0.08 * $d;
 
 	$gap = 0.3 * $d;
