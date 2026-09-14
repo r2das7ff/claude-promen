@@ -225,11 +225,23 @@ function promen_request_collect( string $preset, ?array $attachment ): array {
  * и yclid клика по объявлению Директа. Без них сделку не привязать
  * к кампании, и стоимость клиента посчитать нечем — остаётся только
  * стоимость отправки формы. Значения приходят из request-modal.js.
+ *
+ * Если в POST их нет, берём из cookie: `_ym_uid` ставит сама Метрика, и
+ * это и есть ClientID, а `promen_yclid` пишет request-modal.js при заходе
+ * с объявления. Cookie браузер шлёт с любой отправкой на свой домен, так
+ * что атрибуцию не теряет ни одна форма — даже та, которой скрипт скрытые
+ * поля не дописал. Именно так ушла заявка 250033 от 14.09.2026: форма
+ * страницы контактов отправлялась обычным POST, поля скрипт дописывал
+ * только в форму подвала, и лид пришёл в Битрикс пустым.
  */
 function promen_request_attribution(): array {
+	$pick = static function ( string $post_key, string $cookie_key ): string {
+		$val = (string) ( $_POST[ $post_key ] ?? '' );
+		return '' !== $val ? $val : (string) ( $_COOKIE[ $cookie_key ] ?? '' );
+	};
 	return [
-		'ym_client_id' => substr( preg_replace( '/\D/', '', (string) ( $_POST['ym_client_id'] ?? '' ) ), 0, 40 ),
-		'yclid'        => substr( preg_replace( '/[^A-Za-z0-9_-]/', '', (string) ( $_POST['yclid'] ?? '' ) ), 0, 64 ),
+		'ym_client_id' => substr( preg_replace( '/\D/', '', $pick( 'ym_client_id', '_ym_uid' ) ), 0, 40 ),
+		'yclid'        => substr( preg_replace( '/[^A-Za-z0-9_-]/', '', $pick( 'yclid', 'promen_yclid' ) ), 0, 64 ),
 	];
 }
 

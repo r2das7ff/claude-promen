@@ -405,11 +405,15 @@
     };
   }
 
-  /* Форма секции 11 уходит обычным POST, без FormData, — ей нужны
-     скрытые поля прямо в разметке. */
-  function fillHiddenFields() {
-    var form = document.getElementById('s10-form');
-    if (!form) return;
+  /* Все формы заявок, кроме модалки, уходят обычным POST, без FormData, —
+     им нужны скрытые поля прямо в разметке. Таких форм много: подвал,
+     страница контактов, опросные листы категорий, карточка товара. Раньше
+     поля дописывались только в подвальную #s10-form, и заявка со страницы
+     контактов 14.09.2026 пришла в Битрикс без ClientID и yclid. Поэтому
+     ищем формы по полю action, а не по id. Сервер подстрахован cookie
+     (promen_request_attribution), но поля в POST надёжнее: cookie может
+     не дойти, а ClientID из getClientID есть раньше, чем _ym_uid. */
+  function fillForm(form) {
     var data = attribution();
     Object.keys(data).forEach(function (key) {
       var el = form.querySelector('input[name="' + key + '"]');
@@ -422,6 +426,24 @@
       el.value = data[key];
     });
   }
+
+  function fillHiddenFields() {
+    var forms = document.querySelectorAll('form');
+    for (var i = 0; i < forms.length; i++) {
+      if (forms[i].querySelector('input[name="action"][value="promen_request"]')) {
+        fillForm(forms[i]);
+      }
+    }
+  }
+
+  /* Перед самой отправкой — ещё раз: ClientID мог прийти уже после
+     загрузки страницы, а форма могла появиться в разметке позже. */
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    if (form && form.querySelector && form.querySelector('input[name="action"][value="promen_request"]')) {
+      fillForm(form);
+    }
+  }, true);
 
   function reachGoal(preset) {
     if (typeof window.ym !== 'function' || !window.PROMEN_YM_ID) return;
