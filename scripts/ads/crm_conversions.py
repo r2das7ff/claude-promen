@@ -17,11 +17,17 @@
 но заполняются они только если сделка создана из лида — тогда сохраняется
 `LEAD_ID`, и скрипт дотягивает идентификаторы по нему.
 
-**Важное наблюдение на 09.09.2026:** в этом портале сделки заводят вручную,
-минуя лиды — из 50 сделок за три месяца ни одна не имеет `LEAD_ID`. Пока
-так, атрибутировать сделки не к чему, и в отчёте они попадут в графу «без
-идентификаторов». Лечится процессом: заявка с сайта должна конвертироваться
-в сделку через лид, а не заводиться заново.
+**Если сделка создана не из лида.** Менеджеры конвертируют заявку в контакт
+и компанию, а сделку заводят позже из их карточки — тогда у сделки нет
+`LEAD_ID`. Но контакт и компания, созданные конвертацией, свой `LEAD_ID`
+помнят (и копию идентификаторов в своих полях). Скрипт идёт по цепочке
+«сделка → контакт/компания → лид» и засчитывает **только первую сделку
+этого клиента после заявки** и не позже 90 дней после неё: у постоянного
+клиента сделок много, и все они — не заслуга одного клика.
+
+Наблюдение на 09.09.2026: из 50 сделок за три месяца ни одна не имела
+`LEAD_ID` — сделки заводили вручную, минуя лиды. Лучший вариант остаётся
+прежним: при конвертации заявки отмечать и «Сделку».
 
 Компания в портале определяется по ответственному: контакты и сделки общие
 на всю группу «Титан», отдельного поля «компания группы» нет.
@@ -55,6 +61,14 @@ LEAD_STAGE = "CONVERTED"
 DEAL_STAGE = "WON"
 UF_CLIENT = "UF_CRM_METRIKA_CLIENT_ID"
 UF_YCLID = "UF_CRM_YCLID"
+# У компании поля созданы Битриксом при первой конвертации лида 17.09.2026
+# (диалог «нет полей, выберите сущности») — со случайными кодами.
+UF_COMPANY_CLIENT = "UF_CRM_6AAB873743C45"
+UF_COMPANY_YCLID = "UF_CRM_6AAB8737D92B7"
+
+# Метрика связывает офлайн-конверсию с визитом не старше 90 дней
+# (расширенный период учёта включён 17.09.2026, по умолчанию — 21 день).
+MAX_DAYS_AFTER_LEAD = 90
 
 
 def env(key, default=None):
@@ -105,6 +119,56 @@ def moment(raw):
         return str(raw)[:19].replace("T", " ")
 
 
+def parse_dt(raw):
+    try:
+        return dt.datetime.fromisoformat(str(raw))
+    except (TypeError, ValueError):
+        return None
+
+
+def too_late(lead_date, deal_date):
+    a, b = parse_dt(lead_date), parse_dt(deal_date)
+    if not a or not b:
+        return False
+    if a.tzinfo is None or b.tzinfo is None:
+        a, b = a.replace(tzinfo=None), b.replace(tzinfo=None)
+    return (b - a).days > MAX_DAYS_AFTER_LEAD
+
+
+def link_via_client(deal):
+    """Лид сделки через контакт или компанию, созданные конвертацией лида.
+
+    Возвращает {"lead_id", "yclid", "client"} или {"skip": причина}. Засчитывается
+    только первая сделка клиента, созданная после заявки: у постоянного
+    клиента сделок много, и последующие — не заслуга того клика.
+    """
+    owners = []
+    if deal.get("CONTACT_ID") and deal["CONTACT_ID"] != "0":
+        c = call("crm.contact.get", {"id": deal["CONTACT_ID"]}).get("result") or {}
+        owners.append(("CONTACT_ID", deal["CONTACT_ID"], c.get("LEAD_ID"),
+                       c.get(UF_YCLID) or "", c.get(UF_CLIENT) or ""))
+    if deal.get("COMPANY_ID") and deal["COMPANY_ID"] != "0":
+        c = call("crm.company.get", {"id": deal["COMPANY_ID"]}).get("result") or {}
+        owners.append(("COMPANY_ID", deal["COMPANY_ID"], c.get("LEAD_ID"),
+                       c.get(UF_COMPANY_YCLID) or "", c.get(UF_COMPANY_CLIENT) or ""))
+    for field, owner_id, lead_id, yclid, client in owners:
+        if not lead_id or lead_id == "0":
+            continue
+        lead = call("crm.lead.get", {"id": lead_id}).get("result") or {}
+        since = lead.get("DATE_CREATE")
+        first = call("crm.deal.list", {"filter": {field: owner_id, ">=DATE_CREATE": since},
+                                       "select": ["ID"], "order": {"DATE_CREATE": "ASC", "ID": "ASC"}}
+                     ).get("result") or []
+        if not first or first[0]["ID"] != deal["ID"]:
+            return {"skip": "сделка клиента не первая после заявки"}
+        if too_late(since, deal.get("CLOSEDATE") or deal.get("DATE_CREATE")):
+            return {"skip": f"сделка закрыта позже {MAX_DAYS_AFTER_LEAD} дней после заявки"}
+        return {"lead_id": lead_id,
+                "yclid": lead.get(UF_YCLID) or yclid,
+                "client": lead.get(UF_CLIENT) or client}
+    return None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--from", dest="date_from", required=True, help="ГГГГ-ММ-ДД")
@@ -134,10 +198,26 @@ def main():
         "filter": {">=DATE_CREATE": a.date_from, "<=DATE_CREATE": date_to,
                    "STAGE_ID": DEAL_STAGE},
         "select": ["ID", "TITLE", "DATE_CREATE", "CLOSEDATE", "ASSIGNED_BY_ID",
-                   "OPPORTUNITY", "LEAD_ID", "CATEGORY_ID", UF_CLIENT, UF_YCLID],
+                   "OPPORTUNITY", "LEAD_ID", "CATEGORY_ID", "CONTACT_ID", "COMPANY_ID",
+                   UF_CLIENT, UF_YCLID],
         "order": {"ID": "DESC"}}) if mine(x)]
 
     print(f"качественных лидов: {len(leads)}, успешных сделок: {len(deals)}")
+
+    # Сделка без своих идентификаторов и без LEAD_ID: ищем лид через контакт
+    # или компанию, созданные конвертацией. Решение по каждой сделке — в via.
+    via = {}
+    for d in deals:
+        if d.get(UF_YCLID) or d.get(UF_CLIENT) or d.get("LEAD_ID"):
+            continue
+        link = link_via_client(d)
+        if link:
+            via[d["ID"]] = link
+            if link.get("lead_id"):
+                d["LEAD_ID"] = link["lead_id"]
+    if via:
+        print(f"сделок без LEAD_ID, связанных через контакт/компанию: "
+              f"{sum(1 for v in via.values() if v.get('lead_id'))} из {len(via)}")
 
     # Идентификаторы сделки: свои поля, иначе — из лида, из которого она выросла.
     need_leads = {int(d["LEAD_ID"]) for d in deals
@@ -147,7 +227,7 @@ def main():
         for chunk in [list(need_leads)[i:i + 50] for i in range(0, len(need_leads), 50)]:
             for l in fetch_all("crm.lead.list", {
                     "filter": {"ID": chunk},
-                    "select": ["ID", UF_CLIENT, UF_YCLID]}):
+                    "select": ["ID", "DATE_CREATE", UF_CLIENT, UF_YCLID]}):
                 source[int(l["ID"])] = l
         print(f"дотянуто лидов под сделки: {len(source)}")
 
@@ -164,10 +244,19 @@ def main():
                      "comment": f'лид {l["ID"]}'})
 
     for d in deals:
+        link = via.get(d["ID"])
+        if link and link.get("skip"):
+            missing[link["skip"]] += 1
+            continue
         yclid, client = d.get(UF_YCLID) or "", d.get(UF_CLIENT) or ""
         if not yclid and not client and d.get("LEAD_ID"):
             src = source.get(int(d["LEAD_ID"]), {})
             yclid, client = src.get(UF_YCLID) or "", src.get(UF_CLIENT) or ""
+            if src and too_late(src.get("DATE_CREATE"), d.get("CLOSEDATE") or d.get("DATE_CREATE")):
+                missing[f"сделка закрыта позже {MAX_DAYS_AFTER_LEAD} дней после заявки"] += 1
+                continue
+        if not yclid and not client and link:
+            yclid, client = link.get("yclid", ""), link.get("client", "")
         if not yclid and not client:
             missing["сделка без лида и без идентификаторов"
                     if not d.get("LEAD_ID") else "сделка из лида, но лид пустой"] += 1
