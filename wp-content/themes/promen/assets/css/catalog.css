@@ -131,7 +131,7 @@
 .cmd-bar{padding:11px 40px 12px;}
 .cb-search-row{display:flex;align-items:center;gap:12px;margin-bottom:9px;}
 .cb-search{
-  flex:1;display:flex;align-items:center;
+  flex:1;display:flex;align-items:center;position:relative;
   border:1.5px solid var(--g1);background:var(--white);
   height:40px;transition:border-color var(--dur-ui);
 }
@@ -139,6 +139,30 @@
 .cb-search-ic{width:40px;height:40px;display:flex;align-items:center;justify-content:center;color:var(--g1-text);flex-shrink:0;}
 .cb-search input{flex:1;background:none;border:none;outline:none;font-family:'DINPro',monospace;font-size:13.5px;letter-spacing:.04em;color:var(--dark);}
 .cb-search input::placeholder{color:var(--g2);}
+/* Крестик очистки — третий элемент флекс-строки поля, рядом с правой рамкой.
+   Ширина как у иконки лупы слева: поле остаётся симметричным. */
+.cb-search-x{width:40px;height:40px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:none;border:none;padding:0;cursor:pointer;color:var(--g1-text);font-size:13px;line-height:1;transition:color var(--dur-tap);}
+.cb-search-x:hover{color:var(--dark);}
+.cb-search-x:focus-visible{outline:1px solid var(--blue);outline-offset:-3px;}
+.cb-search-x[hidden]{display:none;}
+
+/* Строка-пояснение под поиском: что поняли и чего не учли. */
+.cb-note{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:-2px 0 9px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.06em;color:var(--g1-text);}
+.cb-note[hidden]{display:none;}
+.cb-note-drop::before{content:'—';margin-right:7px;color:var(--ln2);}
+.cb-note-hint{display:inline-flex;align-items:center;gap:10px;color:var(--blue);border-bottom:1px solid var(--ln2);padding-bottom:1px;transition:color var(--dur-tap),border-color var(--dur-tap);}
+.cb-note-hint:hover{color:var(--dark);border-bottom-color:var(--dark);}
+.cb-note-go{text-transform:uppercase;letter-spacing:.12em;}
+
+/* Подсказки при вводе: список поверх реестра, ширина ровно по полю. */
+.cb-sug{position:absolute;top:calc(100% + 1.5px);left:-1.5px;right:-1.5px;z-index:40;background:var(--white);border:1.5px solid var(--dark);border-top:none;max-height:322px;overflow:auto;}
+.cb-sug[hidden]{display:none;}
+.cb-sug-i{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:9px 14px;border-bottom:1px solid var(--ln);text-decoration:none;}
+.cb-sug-i:last-of-type{border-bottom:none;}
+.cb-sug-i:hover,.cb-sug-i.is-on{background:var(--bg2);}
+.cb-sug-t{font-family:'DINPro',monospace;font-size:12.5px;letter-spacing:.02em;color:var(--dark);}
+.cb-sug-n{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);white-space:nowrap;flex-shrink:0;}
+.cb-sug-all{display:block;padding:8px 14px;border-top:1px solid var(--ln2);background:var(--bg);font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1-text);}
 .cb-shortcut{display:inline-flex;align-items:center;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.06em;color:var(--blue);border:1px solid var(--ln2);padding:2px 7px;margin-right:10px;flex-shrink:0;background:var(--bg);font-style:normal;}
 .chips-count{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.16em;color:var(--blue);flex-shrink:0;white-space:nowrap;}
 .cb-filters{display:flex;align-items:center;flex-wrap:wrap;row-gap:5px;}
@@ -990,6 +1014,7 @@ button.c-chip--more:hover{color:var(--dark);border-color:var(--g1);}
   .cb-search input::placeholder{font-size:15px;}
   .cb-search{height:48px;}
   .cb-search-ic{width:44px;height:48px;}
+  .cb-search-x{width:44px;height:48px;}
   .cb-search input{height:48px;}   /* тап по всей высоте поля, а не по 17px строки */
   .search-clear{width:44px;height:48px;}
 
@@ -1107,6 +1132,7 @@ button.c-chip--more:hover{color:var(--dark);border-color:var(--g1);}
      влезать на 8px. Ужимаем отступы кнопки и иконку поиска. */
   .cb-toggle{padding:0 11px;gap:6px;}
   .cb-search-ic{width:38px;}
+  .cb-search-x{width:38px;}
 }
 
 @media (max-width:340px){

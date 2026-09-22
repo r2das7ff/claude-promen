@@ -80,6 +80,12 @@ class Promen_Catalog_Query {
 
 	public string $group = '';
 	public string $q = '';
+	/**
+	 * Что человек набрал до нормализации. Разбору в фильтры нужен именно он:
+	 * нормализация снимает приставку «ду100» → «100», и парсер уже не видит
+	 * в числе условный проход.
+	 */
+	public string $q_raw = '';
 	public ?float $dn_min = null;
 	public ?float $dn_max = null;
 	public ?float $pn_min = null;
@@ -104,7 +110,8 @@ class Promen_Catalog_Query {
 	public static function from_array( array $params ): self {
 		$q = new self();
 		$q->group = sanitize_title( (string) ( $params['group'] ?? '' ) );
-		$q->q     = promen_catalog_normalize_q( sanitize_text_field( (string) ( $params['q'] ?? '' ) ) );
+		$q->q_raw = trim( sanitize_text_field( (string) ( $params['q'] ?? '' ) ) );
+		$q->q     = promen_catalog_normalize_q( $q->q_raw );
 		$q->scope = ( (string) ( $params['scope'] ?? '' ) === 'all' ) ? 'all' : '';
 
 		foreach ( [ 'dn', 'pn', 's' ] as $p ) {
@@ -177,6 +184,14 @@ class Promen_Catalog_Search_Result {
 		public array $facets,
 		public string $engine
 	) {}
+
+	/**
+	 * Слова, отброшенные при ослаблении запроса (см. promen_catalog_search).
+	 * Витрина о них говорит вслух: молча подменять запрос нечестно.
+	 *
+	 * @var string[]
+	 */
+	public array $dropped = [];
 }
 
 interface Promen_Catalog_Search_Engine {
@@ -846,7 +861,12 @@ function promen_catalog_search_engine(): Promen_Catalog_Search_Engine {
 	return new Promen_Meili_Engine();
 }
 
-function promen_catalog_search( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result {
+/**
+ * @param bool $log_miss Писать ли пустой результат в журнал промахов.
+ *                       Подсказки при вводе шлют сюда каждый недобранный
+ *                       префикс — их в журнале быть не должно.
+ */
+function promen_catalog_search( Promen_Catalog_Query $query, bool $log_miss = true ): Promen_Catalog_Search_Result {
 	$result = promen_catalog_search_try( $query );
 	if ( $result->total > 0 || $query->q === '' ) {
 		return $result;
@@ -858,6 +878,7 @@ function promen_catalog_search( Promen_Catalog_Query $query ): Promen_Catalog_Se
 	// Типоразмер («108×4») не трогаем никогда — это самое точное, что он сказал,
 	// без него выдача превращается в весь раздел.
 	$tokens = promen_catalog_q_tokens( $query->q );
+	$all    = $tokens;
 	$size   = promen_catalog_q_size_token( $query->q );
 	while ( count( $tokens ) > 1 ) {
 		$drop = -1;
@@ -875,8 +896,20 @@ function promen_catalog_search( Promen_Catalog_Query $query ): Promen_Catalog_Se
 		$relaxed->q = implode( ' ', $tokens );
 		$result     = promen_catalog_search_try( $relaxed );
 		if ( $result->total > 0 ) {
+			$result->dropped = array_values( array_diff( $all, $tokens ) );
+			// Отброшенные слова — тоже сигнал: по ним в каталоге ничего нет.
+			if ( $log_miss && function_exists( 'promen_search_log_miss' ) ) {
+				promen_search_log_miss( $query->q, $query->group, $result->dropped );
+			}
 			return $result;
 		}
+	}
+
+	// Не нашлось даже по одному слову — это промах, и он нам интересен:
+	// из журнала растут синонимы, минус-слова Директа и понимание, чего
+	// в каталоге просто нет.
+	if ( $log_miss && function_exists( 'promen_search_log_miss' ) ) {
+		promen_search_log_miss( $query->q, $query->group );
 	}
 	return $result;
 }

@@ -70,6 +70,7 @@ require_once __DIR__ . '/inc/steel-reference.php';
 require_once __DIR__ . '/inc/catalog-filters.php';
 require_once __DIR__ . '/inc/category-page.php';
 require_once __DIR__ . '/inc/catalog-api.php';
+require_once __DIR__ . '/inc/catalog-search-ux.php';
 require_once __DIR__ . '/inc/selector.php';
 require_once __DIR__ . '/inc/delivery-calc.php';
 require_once __DIR__ . '/inc/calculators.php';
@@ -365,6 +366,7 @@ add_action( 'wp_enqueue_scripts', function () {
 		wp_enqueue_script( 'promen-catalog', get_theme_file_uri( 'assets/js/catalog.js' ), [], PROMEN_ASSET_VER, [ 'in_footer' => true ] );
 		wp_localize_script( 'promen-catalog', 'promenCatalog', [
 			'apiUrl'   => rest_url( 'promen/v1/catalog' ),
+			'suggestUrl' => rest_url( 'promen/v1/suggest' ),
 			'perPage'  => 30,
 			'group'    => function_exists( 'promen_catalog_active_group' ) ? promen_catalog_active_group() : '',
 			'labels'   => [

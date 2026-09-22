@@ -99,8 +99,13 @@ $embedded      = ! empty( $promen_registry_embedded );
               <div class="cb-search-ic">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
               </div>
-              <?php // data-ph-sm — короткий плейсхолдер для телефонов, подставляет catalog.js ?>
-              <input id="searchInput" name="q" type="text" value="<?php echo esc_attr( sanitize_text_field( wp_unslash( $_GET['q'] ?? '' ) ) ); ?>" placeholder="Поиск по наименованию, ГОСТ, типоразмеру…" data-ph-sm="Поиск по ГОСТ" autocomplete="off">
+              <?php
+              $promen_q = sanitize_text_field( wp_unslash( $_GET['q'] ?? '' ) );
+              // data-ph-sm — короткий плейсхолдер для телефонов, подставляет catalog.js
+              ?>
+              <input id="searchInput" name="q" type="text" value="<?php echo esc_attr( $promen_q ); ?>" placeholder="Поиск по наименованию, ГОСТ, типоразмеру…" data-ph-sm="Поиск по ГОСТ" autocomplete="off">
+              <?php // Крестик очистки: показывается только при непустом запросе. ?>
+              <button type="button" class="cb-search-x" id="searchClear" aria-label="Очистить поиск" title="Очистить поиск"<?php echo $promen_q === '' ? ' hidden' : ''; ?>>✕</button>
             </form>
             <div class="cb-tabs" id="cbTabs" aria-label="Фильтр по отрасли">
               <a class="cb-tab<?php echo $sel_ind === '' ? ' on' : ''; ?>" href="<?php echo esc_url( promen_clear_param_url( 'industry' ) ); ?>" data-industry="">Все отрасли</a>
@@ -118,6 +123,23 @@ $embedded      = ! empty( $promen_registry_embedded );
             </button>
             <a class="cb-reset" id="cbReset" href="<?php echo esc_url( promen_reset_url() ); ?>"<?php echo $active_n ? '' : ' hidden'; ?>><span class="cb-reset-x" aria-hidden="true">✕</span>Сбросить<span class="cb-reset-n"><?php echo esc_html( $active_n ); ?></span></a>
             <div class="chips-count" id="pCount" aria-live="polite"><?php echo esc_html( number_format_i18n( $total ) ); ?> позиций</div>
+          </div>
+
+          <?php
+          // Что поняли из запроса и чего в нём не учли. Молча подменять запрос
+          // нечестно: человек должен видеть, по чему ему показали выдачу.
+          $promen_note = function_exists( 'promen_catalog_search_note' )
+            ? promen_catalog_search_note( $promen_fq, $catalog )
+            : [ 'dropped' => [], 'hints' => [ 'labels' => [], 'url' => '' ] ];
+          $promen_has_note = ! empty( $promen_note['dropped'] ) || ! empty( $promen_note['hints']['labels'] );
+          ?>
+          <div class="cb-note" id="cbNote"<?php echo $promen_has_note ? '' : ' hidden'; ?>>
+            <?php if ( ! empty( $promen_note['dropped'] ) ) : ?>
+              <span class="cb-note-drop">Не учтены: <?php echo esc_html( implode( ', ', $promen_note['dropped'] ) ); ?> — по ним ничего не нашлось</span>
+            <?php endif; ?>
+            <?php if ( ! empty( $promen_note['hints']['labels'] ) ) : ?>
+              <a class="cb-note-hint" href="<?php echo esc_url( $promen_note['hints']['url'] ); ?>">Понято: <?php echo esc_html( implode( ' · ', $promen_note['hints']['labels'] ) ); ?><span class="cb-note-go" aria-hidden="true">применить фильтры →</span></a>
+            <?php endif; ?>
           </div>
           <div class="cb-filters is-collapsed" id="cbFilters" data-base="<?php echo esc_url( promen_filters_base_url() ); ?>"<?php echo $group !== '' ? ' data-group="' . esc_attr( $group ) . '"' : ''; ?>>
             <div class="cbf-sliders">

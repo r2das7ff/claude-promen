@@ -11,7 +11,50 @@ add_action( 'rest_api_init', function () {
 		'callback'            => 'promen_rest_catalog',
 		'permission_callback' => '__return_true',
 	] );
+	register_rest_route( 'promen/v1', '/suggest', [
+		'methods'             => 'GET',
+		'callback'            => 'promen_rest_suggest',
+		'permission_callback' => '__return_true',
+	] );
 } );
+
+/**
+ * Подсказки при вводе: несколько позиций и ничего лишнего.
+ *
+ * Фасеты и ряды диапазонов здесь не считаются — на проде без Meilisearch
+ * каждый из них отдельный скан таблицы, а подсказка обязана быть дешёвой.
+ * Плюс короткий кэш: на один и тот же префикс люди приходят пачками.
+ */
+function promen_rest_suggest( WP_REST_Request $request ): WP_REST_Response {
+	$q = trim( (string) $request->get_param( 'q' ) );
+	// Два символа отдают пол-каталога и ничего не подсказывают.
+	if ( mb_strlen( $q, 'UTF-8' ) < 3 ) {
+		return new WP_REST_Response( [ 'items' => [], 'total' => 0 ], 200 );
+	}
+
+	$group = sanitize_title( (string) $request->get_param( 'group' ) );
+	$ckey  = 'promen_sug_' . md5( $q . '|' . $group );
+	$cache = get_transient( $ckey );
+	if ( is_array( $cache ) ) {
+		return new WP_REST_Response( $cache, 200 );
+	}
+
+	$query  = Promen_Catalog_Query::from_array( [ 'group' => $group, 'q' => $q, 'per_page' => 6 ] );
+	$result = promen_catalog_search( $query, false );
+
+	$items = [];
+	foreach ( $result->hits as $hit ) {
+		$items[] = [
+			'title' => (string) ( $hit['title'] ?? '' ),
+			'norm'  => (string) ( $hit['norm'] ?? '' ),
+			'url'   => (string) ( $hit['url'] ?? '' ),
+		];
+	}
+
+	$out = [ 'items' => $items, 'total' => (int) $result->total ];
+	set_transient( $ckey, $out, 5 * MINUTE_IN_SECONDS );
+	return new WP_REST_Response( $out, 200 );
+}
 
 function promen_rest_catalog( WP_REST_Request $request ): WP_REST_Response {
 	$params = [
@@ -57,6 +100,9 @@ function promen_rest_catalog( WP_REST_Request $request ): WP_REST_Response {
 	$result->hits = $hits;
 
 	$state = promen_catalog_filter_state( $query, $result );
+	$note  = function_exists( 'promen_catalog_search_note' )
+		? promen_catalog_search_note( $query, $result )
+		: [ 'dropped' => [], 'hints' => [ 'labels' => [], 'url' => '' ] ];
 
 	return new WP_REST_Response( [
 		'hits'          => $result->hits,
@@ -71,6 +117,10 @@ function promen_rest_catalog( WP_REST_Request $request ): WP_REST_Response {
 		'facet_params'  => $facets,
 		'engine'        => $result->engine,
 		'group'         => $group,
+		// Что сказать про сам запрос: какие слова не учтены и какие фильтры
+		// за ним угадываются (промолчать — значит подменить запрос втихую).
+		'dropped'       => $note['dropped'],
+		'hints'         => $note['hints'],
 	], 200 );
 }
 

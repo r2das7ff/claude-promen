@@ -68,6 +68,13 @@ final class CatalogSearchQueryTest extends TestCase {
 		$this->assertSame( '', promen_catalog_q_size_token( 'отвод' ) );
 	}
 
+	/** Исходный текст запроса сохраняется: разбору в фильтры нужен именно он. */
+	public function test_query_keeps_raw_text(): void {
+		$query = Promen_Catalog_Query::from_array( [ 'q' => 'фланец ду100' ] );
+		$this->assertSame( 'фланец ду100', $query->q_raw );
+		$this->assertSame( 'фланец 100', $query->q );
+	}
+
 	/** Запрос нормализуется на разборе — движку уже приходит «×». */
 	public function test_query_normalizes_on_parse(): void {
 		$query = Promen_Catalog_Query::from_array( [ 'group' => 'troyniki', 'q' => 'тройник 108х4' ] );

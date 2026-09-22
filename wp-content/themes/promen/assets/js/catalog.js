@@ -420,6 +420,29 @@
     renderReset(pageUrl);
   }
 
+  /**
+   * Строка под поиском: что из запроса поняли и чего не учли.
+   * Зеркало серверного рендера в woocommerce/parts/catalog-registry.php.
+   */
+  function renderNote(data) {
+    var note = document.getElementById('cbNote');
+    if (!note) return;
+    var dropped = data.dropped || [];
+    var hints = data.hints || {};
+    var labels = hints.labels || [];
+    var html = '';
+    if (dropped.length) {
+      html += '<span class="cb-note-drop">Не учтены: ' + esc(dropped.join(', ')) + ' — по ним ничего не нашлось</span>';
+    }
+    if (labels.length && hints.url) {
+      html += '<a class="cb-note-hint" href="' + esc(hints.url) + '">Понято: ' + esc(labels.join(' · ')) +
+        '<span class="cb-note-go" aria-hidden="true">применить фильтры →</span></a>';
+    }
+    note.innerHTML = html;
+    if (html) note.removeAttribute('hidden');
+    else note.setAttribute('hidden', '');
+  }
+
   function renderPagination(data, pageUrl) {
     if (!pagination) return;
     var pages = data.pages || 0;
@@ -627,6 +650,7 @@
       .then(function (r) { return r.json(); })
       .then(function (data) {
         renderList(data, parsed.url.toString());
+        renderNote(data);
         renderFilters(data, parsed.url.toString());
         renderPagination(data, parsed.url.toString());
         updateCount(data.total || 0);
@@ -661,6 +685,22 @@
         swap(dest.toString(), true, { scroll: true });
         return;
       }
+    }
+
+    // «Применить фильтры» из строки-пояснения. Подсказка часто ведёт в другой
+    // раздел — у него своя страница категории, и подменять там одну выдачу
+    // нельзя: шапка и секции остались бы от прежнего раздела.
+    var hint = e.target.closest('a.cb-note-hint');
+    if (hint && hint.href) {
+      var hu = null;
+      try { hu = new URL(hint.href, location.origin); } catch (err) { hu = null; }
+      var samePath = hu && hu.pathname.replace(/\/$/, '') === location.pathname.replace(/\/$/, '');
+      if (samePath) {
+        e.preventDefault();
+        if (searchInput) { searchInput.value = ''; syncSearchClear(); }
+        swap(hint.href, true, { scroll: false });
+      }
+      return;
     }
 
     var a = e.target.closest('a.c-chip, .cat-pagination a, .ce-reset, .ce-all, a.sbn-filter, .cbs-tag, .cbs-reset, a.cb-tab, a.cb-reset');
@@ -911,21 +951,153 @@
     swap(url.toString(), true, { scroll: false });
   }
 
+  // Крестик очистки: живёт в самом поле, поэтому AJAX-перерисовка списка
+  // и фильтров его не трогает — хватает одной привязки.
+  var searchClear = document.getElementById('searchClear');
+  function syncSearchClear() {
+    if (!searchClear || !searchInput) return;
+    if (searchInput.value.trim() !== '') searchClear.removeAttribute('hidden');
+    else searchClear.setAttribute('hidden', '');
+  }
+
   if (searchInput) {
+    syncSearchClear();
     searchInput.addEventListener('input', function () {
       clearTimeout(qTimer);
+      clearTimeout(sugTimer);
+      syncSearchClear();
       var val = searchInput.value.trim();
       qTimer = setTimeout(function () {
         if (val.length === 1) return; // один символ — ждём продолжения
         applySearch(val);
       }, 350);
+      sugTimer = setTimeout(function () { sugFetch(val); }, 250);
     });
     searchInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && searchInput.value !== '') {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        if (sugMove(e.key === 'ArrowDown' ? 1 : -1)) e.preventDefault();
+        return;
+      }
+      if (e.key === 'Enter') {
+        var picked = sugActive();
+        if (picked) {
+          e.preventDefault();
+          location.href = picked.href;
+        }
+        return;
+      }
+      if (e.key !== 'Escape') return;
+      // Первый Escape закрывает подсказки, второй очищает поле.
+      if (sugBox && !sugBox.hasAttribute('hidden')) {
+        sugHide();
+        return;
+      }
+      if (searchInput.value !== '') {
         searchInput.value = '';
         clearTimeout(qTimer);
+        clearTimeout(sugTimer);
+        syncSearchClear();
         applySearch('');
       }
+    });
+  }
+
+  /* ── Подсказки при вводе ──────────────────────────────────────────
+     Список поверх реестра: клик ведёт сразу в карточку, минуя таблицу.
+     Порог в три символа и своя ручка /suggest — на проде без Meilisearch
+     каждый запрос это скан таблицы, и подсказка обязана быть дешёвой. */
+  var sugBox = null;
+  var sugSeq = 0;
+  var sugTimer = null;
+
+  function sugEnsure() {
+    if (sugBox || !searchForm) return sugBox;
+    sugBox = document.createElement('div');
+    sugBox.className = 'cb-sug';
+    sugBox.id = 'cbSug';
+    sugBox.setAttribute('hidden', '');
+    searchForm.appendChild(sugBox);
+    return sugBox;
+  }
+
+  function sugHide() {
+    if (!sugBox) return;
+    sugBox.setAttribute('hidden', '');
+    sugBox.innerHTML = '';
+  }
+
+  function sugRender(items, total) {
+    var box = sugEnsure();
+    if (!box) return;
+    if (!items.length) { sugHide(); return; }
+    var html = items.map(function (it) {
+      return '<a class="cb-sug-i" href="' + esc(it.url) + '">' +
+        '<span class="cb-sug-t">' + esc(it.title) + '</span>' +
+        '<span class="cb-sug-n">' + esc(it.norm || '') + '</span></a>';
+    }).join('');
+    if (total > items.length) {
+      html += '<span class="cb-sug-all">Ещё ' + Number(total - items.length).toLocaleString('ru-RU') + ' — в реестре ниже</span>';
+    }
+    box.innerHTML = html;
+    box.removeAttribute('hidden');
+  }
+
+  function sugFetch(val) {
+    if (!cfg.suggestUrl || val.length < 3) { sugHide(); return; }
+    var seq = ++sugSeq;
+    var params = new URLSearchParams();
+    params.set('q', val);
+    var grp = parsePageUrl(location.href).params.group || '';
+    if (grp) params.set('group', grp);
+    fetch(cfg.suggestUrl + '?' + params.toString(), { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        // Ответ на устаревший ввод и подсказки в поле, из которого уже ушли,
+        // показывать незачем.
+        if (seq !== sugSeq || document.activeElement !== searchInput) return;
+        sugRender(d.items || [], d.total || 0);
+      })
+      .catch(function () { sugHide(); });
+  }
+
+  function sugMove(step) {
+    if (!sugBox || sugBox.hasAttribute('hidden')) return false;
+    var items = sugBox.querySelectorAll('.cb-sug-i');
+    if (!items.length) return false;
+    var cur = -1;
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].classList.contains('is-on')) { cur = i; break; }
+    }
+    if (cur >= 0) items[cur].classList.remove('is-on');
+    var next = cur + step;
+    if (next < 0) next = items.length - 1;
+    if (next >= items.length) next = 0;
+    items[next].classList.add('is-on');
+    items[next].scrollIntoView({ block: 'nearest' });
+    return true;
+  }
+
+  function sugActive() {
+    return sugBox && !sugBox.hasAttribute('hidden') ? sugBox.querySelector('.cb-sug-i.is-on') : null;
+  }
+
+  // Закрываем по клику мимо поля, а не по blur: blur срабатывает раньше
+  // клика по самой подсказке и уводил бы список из-под курсора.
+  document.addEventListener('mousedown', function (e) {
+    if (!sugBox || sugBox.hasAttribute('hidden')) return;
+    if (searchForm && searchForm.contains(e.target)) return;
+    sugHide();
+  });
+
+  if (searchClear && searchInput) {
+    searchClear.addEventListener('click', function () {
+      searchInput.value = '';
+      clearTimeout(qTimer); // отложенный запрос по прежнему тексту отменяем
+      clearTimeout(sugTimer);
+      sugHide();
+      syncSearchClear();
+      applySearch('');
+      searchInput.focus();
     });
   }
 
