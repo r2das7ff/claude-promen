@@ -157,6 +157,9 @@
 .tbl-hd .th-sort.is-active{color:var(--blue);}
 .tbl-hd .th-sort:focus-visible{outline:1px solid var(--blue);outline-offset:2px;}
 .tbl-hd .th-arr{font-size:11px;opacity:.55;font-style:normal;}
+/* Индекс обозначения («Dн», «Dб»): шапка набрана заглавными, и строчная «н»
+   превращалась в «Н» — колонка читалась как латинское «DH». */
+.tbl-hd .th-ix{text-transform:none;letter-spacing:0;}
 .tbl-hd .th-sort.is-active .th-arr{opacity:1;}
 /* Тройники / переходы / точеные: DN D s DN2 d s2 */
 .tbl-hd.tbl-hd--branch,

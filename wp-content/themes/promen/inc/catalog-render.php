@@ -138,16 +138,20 @@ function promen_catalog_sortable_field( string $key ): string {
 function promen_catalog_header_cells( array $cols, string $sort_field, string $sort_dir ): string {
 	$html = '<span>Норматив</span><span>Наименование</span>';
 	foreach ( $cols as $col ) {
-		$sf    = promen_catalog_sortable_field( (string) $col['key'] );
-		$label = esc_html( (string) $col['label'] );
+		$sf = promen_catalog_sortable_field( (string) $col['key'] );
+		// html-вариант подписи — с индексом, который не уходит в верхний
+		// регистр: иначе «Dн» читается как латинское «DH» (спросил заказчик).
+		$label = isset( $col['html'] ) ? (string) $col['html'] : esc_html( (string) $col['label'] );
+		$hint  = (string) ( $col['hint'] ?? '' );
 		if ( $sf === '' ) {
-			$html .= '<span>' . $label . '</span>';
+			$html .= '<span' . ( $hint !== '' ? ' title="' . esc_attr( $hint ) . '"' : '' ) . '>' . $label . '</span>';
 			continue;
 		}
 		$active = ( $sf === $sort_field );
 		$arr    = $active ? ( $sort_dir === 'desc' ? '↓' : '↑' ) : '⇅';
+		$title  = $hint !== '' ? $hint . ' · сортировка' : 'Сортировать';
 		$html  .= '<span class="th-sort' . ( $active ? ' is-active' : '' ) . '" role="button" tabindex="0"'
-			. ' data-sort-field="' . esc_attr( $sf ) . '" title="Сортировать">' . $label
+			. ' data-sort-field="' . esc_attr( $sf ) . '" title="' . esc_attr( $title ) . '">' . $label
 			. '<i class="th-arr">' . $arr . '</i></span>';
 	}
 	$html .= '<span>Материал</span><span>Отрасль</span><span></span>';

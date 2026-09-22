@@ -5,6 +5,76 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Нормализация поисковой строки: любой знак умножения между числами → «×».
+ * В названиях каталога стоит именно он («Тройник 108×4-57×3»), а набирают
+ * русскую «х», латинскую «x» или звёздочку — и до этого ни один из вариантов
+ * не находил ничего.
+ *
+ * Границы из букв обязательны: без них марка «12Х18Н10Т» превращается
+ * в «12×18Н10Т» (та же ловушка описана в promen_selector_parse).
+ */
+function promen_catalog_normalize_q( string $q ): string {
+	$q = trim( (string) preg_replace( '/\s+/u', ' ', $q ) );
+	if ( $q === '' ) {
+		return '';
+	}
+	$q = (string) preg_replace_callback(
+		'/(?<![0-9a-zA-Zа-яёА-ЯЁ])(\d+(?:[.,]\d+)?)\s*[xх×*]\s*(\d+(?:[.,]\d+)?)(?![0-9a-zA-Zа-яёА-ЯЁ])/u',
+		static fn( array $m ): string => str_replace( ',', '.', $m[1] ) . '×' . str_replace( ',', '.', $m[2] ),
+		$q
+	);
+
+	// «ду100», «ду 100», «дн-100» → просто число: условный проход записан
+	// в данных цифрой (и «DN100» в названиях фланцев), а слова «ду100» нет
+	// нигде — без этого запрос «фланец ду100» не находил ни одного фланца.
+	return (string) preg_replace( '/(?<![0-9a-zA-Zа-яёА-ЯЁ])(?:ду|дн)\s*[-.]?\s*(\d+)/ui', '$1', $q );
+}
+
+/**
+ * Слова поисковой строки. Нужны SQL-фолбэку: он искал фразу одним куском
+ * (payload LIKE '%тройник 108 4%'), а в payload между словами лежат другие
+ * поля — поэтому «тройник 108×4» не находил ни одной из девяти реальных
+ * позиций. Meili разбивает запрос сам, но на проде его нет.
+ *
+ * Потолок в 6 слов — защита от фразы на пол-экрана: каждое слово добавляет
+ * свой LIKE по payload.
+ *
+ * @return string[]
+ */
+function promen_catalog_q_tokens( string $q ): array {
+	$parts = preg_split( '/[\s,;]+/u', trim( $q ) ) ?: [];
+	$out   = [];
+	foreach ( $parts as $part ) {
+		$part = trim( (string) $part, '.:;()№"' . "'" );
+		if ( $part === '' ) {
+			continue;
+		}
+		$out[] = $part;
+		if ( count( $out ) >= 6 ) {
+			break;
+		}
+	}
+	return $out ?: [ trim( $q ) ];
+}
+
+/**
+ * Типоразмер из запроса — для порядка выдачи, не для отбора.
+ *
+ * Поиск по словам находит и «Тройник 125×20-108», где 108 и 4 просто лежат
+ * в разных полях. Строки, где типоразмер стоит целиком («108×4»), должны быть
+ * первыми. Пара чисел через пробел («108 4») — тот же типоразмер: так набирают.
+ */
+function promen_catalog_q_size_token( string $q ): string {
+	if ( preg_match( '/(?<![0-9a-zA-Zа-яёА-ЯЁ])\d+(?:\.\d+)?×\d+(?:\.\d+)?/u', $q, $m ) ) {
+		return (string) $m[0];
+	}
+	if ( preg_match( '/(?<![0-9a-zA-Zа-яёА-ЯЁ])(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)(?![0-9a-zA-Zа-яёА-ЯЁ])/u', $q, $m ) ) {
+		return $m[1] . '×' . $m[2];
+	}
+	return '';
+}
+
 /** Запрос каталога (парсинг из REST/GET). */
 class Promen_Catalog_Query {
 
@@ -34,7 +104,7 @@ class Promen_Catalog_Query {
 	public static function from_array( array $params ): self {
 		$q = new self();
 		$q->group = sanitize_title( (string) ( $params['group'] ?? '' ) );
-		$q->q     = sanitize_text_field( (string) ( $params['q'] ?? '' ) );
+		$q->q     = promen_catalog_normalize_q( sanitize_text_field( (string) ( $params['q'] ?? '' ) ) );
 		$q->scope = ( (string) ( $params['scope'] ?? '' ) === 'all' ) ? 'all' : '';
 
 		foreach ( [ 'dn', 'pn', 's' ] as $p ) {
@@ -312,6 +382,10 @@ class Promen_Meili_Engine implements Promen_Catalog_Search_Engine {
 			'limit'  => $query->per_page,
 			'offset' => ( $query->page - 1 ) * $query->per_page,
 			'facets' => $this->facet_attrs( $query ),
+			// Все слова запроса обязательны — как в SQL-фолбэке. По умолчанию
+			// Meili добирает выдачу, отбрасывая слова с конца: на «тройник 108×4»
+			// он возвращал все 1396 тройников, и счётчик позиций это показывал.
+			'matchingStrategy' => 'all',
 		];
 		if ( $filter !== '' ) {
 			$body['filter'] = $filter;
@@ -578,10 +652,14 @@ class Promen_Sql_Fallback_Engine implements Promen_Catalog_Search_Engine {
 			$where[] = '(' . implode( ' OR ', $ind_w ) . ')';
 		}
 		if ( $query->q !== '' ) {
-			$like    = '%' . $wpdb->esc_like( $query->q ) . '%';
-			$where[] = '(payload LIKE %s OR sku LIKE %s)';
-			$args[]  = $like;
-			$args[]  = $like;
+			// Каждое слово запроса обязано встретиться в строке (AND), а не вся
+			// фраза целиком одним куском — см. promen_catalog_q_tokens().
+			foreach ( promen_catalog_q_tokens( $query->q ) as $token ) {
+				$like    = '%' . $wpdb->esc_like( $token ) . '%';
+				$where[] = '(payload LIKE %s OR sku LIKE %s)';
+				$args[]  = $like;
+				$args[]  = $like;
+			}
 		}
 
 		return [ 'sql' => implode( ' AND ', $where ), 'args' => $args ];
@@ -618,8 +696,21 @@ class Promen_Sql_Fallback_Engine implements Promen_Catalog_Search_Engine {
 		$sort_dir   = $query->sort_dir === 'desc' ? 'DESC' : 'ASC';
 		$offset     = ( $query->page - 1 ) * $query->per_page;
 
-		$list_sql = "SELECT payload FROM {$table} WHERE {$where_sql} ORDER BY {$sort_field} {$sort_dir} LIMIT %d OFFSET %d";
-		$list_args = array_merge( $args, [ $query->per_page, $offset ] );
+		// Порядок: сперва точный типоразмер (только при поиске и только пока
+		// пользователь не выбрал сортировку сам), затем (поле IS NULL) — иначе
+		// позиции без DN занимают верх реестра прочерками (16 тройников).
+		$rel_sql  = '';
+		$rel_args = [];
+		if ( $query->q !== '' && ! $query->sort_explicit ) {
+			$size = promen_catalog_q_size_token( $query->q );
+			if ( $size !== '' ) {
+				$rel_sql    = '(payload LIKE %s) DESC, ';
+				$rel_args[] = '%' . $wpdb->esc_like( $size ) . '%';
+			}
+		}
+		$list_sql = "SELECT payload FROM {$table} WHERE {$where_sql} ORDER BY {$rel_sql}({$sort_field} IS NULL), {$sort_field} {$sort_dir} LIMIT %d OFFSET %d";
+		// Плейсхолдеры подставляются по порядку в строке: WHERE, затем ORDER BY, затем LIMIT.
+		$list_args = array_merge( $args, $rel_args, [ $query->per_page, $offset ] );
 		$rows      = $wpdb->get_col( $wpdb->prepare( $list_sql, $list_args ) );
 
 		$hits = [];
@@ -756,6 +847,42 @@ function promen_catalog_search_engine(): Promen_Catalog_Search_Engine {
 }
 
 function promen_catalog_search( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result {
+	$result = promen_catalog_search_try( $query );
+	if ( $result->total > 0 || $query->q === '' ) {
+		return $result;
+	}
+
+	// Ни одного совпадения по всем словам — отбрасываем слова и пробуем снова.
+	// Без этого «фланец ду100» или «тройник стальной приварной 108×4» давали
+	// пустой экран: лишнее слово есть в голове у человека, но не в данных.
+	// Типоразмер («108×4») не трогаем никогда — это самое точное, что он сказал,
+	// без него выдача превращается в весь раздел.
+	$tokens = promen_catalog_q_tokens( $query->q );
+	$size   = promen_catalog_q_size_token( $query->q );
+	while ( count( $tokens ) > 1 ) {
+		$drop = -1;
+		for ( $i = count( $tokens ) - 1; $i >= 0; $i-- ) {
+			if ( $size === '' || $tokens[ $i ] !== $size ) {
+				$drop = $i;
+				break;
+			}
+		}
+		if ( $drop < 0 ) {
+			break;
+		}
+		array_splice( $tokens, $drop, 1 );
+		$relaxed    = clone $query;
+		$relaxed->q = implode( ' ', $tokens );
+		$result     = promen_catalog_search_try( $relaxed );
+		if ( $result->total > 0 ) {
+			return $result;
+		}
+	}
+	return $result;
+}
+
+/** Один заход поиска: движок по состоянию, при сбое — SQL-фолбэк. */
+function promen_catalog_search_try( Promen_Catalog_Query $query ): Promen_Catalog_Search_Result {
 	try {
 		return promen_catalog_search_engine()->search( $query );
 	} catch ( Throwable $e ) {

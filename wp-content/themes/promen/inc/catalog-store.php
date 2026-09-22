@@ -135,6 +135,15 @@ function promen_catalog_rebuild( ?callable $progress = null ): int {
 			$progress( $n, count( $ids ) );
 		}
 	}
+
+	// Пересборка идёт мимо save_post_product, на котором висит инвалидация,
+	// поэтому ряды слайдеров, универсум фасетов и счётчики групп ещё 15 минут
+	// отдавали бы доребилдовые значения — сразу после выкладки это выглядит
+	// как «правка не применилась».
+	if ( function_exists( 'promen_filters_cache_bump' ) ) {
+		promen_filters_cache_bump();
+	}
+
 	return $n;
 }
 

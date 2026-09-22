@@ -1087,3 +1087,39 @@ body.term-armatura {--cat-photo:url(../img/products/armatura-krany.webp);}
   /* На одну колонку hero и без того длинный — снимок только на десктопе. */
   .sdt-hero .hero-right::after{display:none;}
 }
+
+/* ── СЕМЕЙСТВА РАЗДЕЛА ─────────────────────────────────────────────
+   Полоса под первым экраном: до неё ближайшая ссылка на семейство лежала
+   в «Реестре исполнений», пятью экранами ниже. Плитка ведёт на страницу
+   семейства сразу к реестру. Сетка на 1px-зазорах — карточки разделяет
+   фон полосы, отдельные рамки не нужны. */
+.fam-strip{border-top:1px solid var(--ln2);background:var(--bg2);}
+.fam-hd{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 56px 14px;border-bottom:1px solid var(--ln2);}
+.fam-lbl{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--g1-text);}
+.fam-meta{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);text-align:right;}
+/* Не grid с 1px-зазорами: при пяти плитках и четырёх колонках хвост ряда
+   оставался пустыми ячейками — на их месте зияла серая полоса фона.
+   Flex растягивает последний ряд, разделители — рамки плиток, а лишние
+   внешние линии срезаются отрицательными отступами под overflow. */
+.fam-grid{display:flex;flex-wrap:wrap;overflow:hidden;background:var(--bg);}
+.fam-t{flex:1 1 210px;display:flex;flex-direction:column;gap:6px;padding:18px 20px 16px;background:var(--bg);text-decoration:none;border-left:1px solid var(--ln2);border-top:1px solid var(--ln2);margin-left:-1px;margin-top:-1px;transition:background var(--dur-ui);}
+.fam-t:hover,.fam-t:focus-visible{background:var(--white);}
+.fam-t:focus-visible{outline:1px solid var(--blue);outline-offset:-1px;}
+.fam-t-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+.fam-t-name{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:18px;text-transform:uppercase;color:var(--dark);line-height:1;}
+.fam-t-cnt{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.12em;color:var(--blue);flex-shrink:0;}
+.fam-t-dn{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1-text);}
+.fam-t-norm{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.04em;color:var(--g1-text);opacity:.8;line-height:1.5;}
+.fam-t-go{margin-top:auto;padding-top:12px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);display:inline-flex;align-items:center;gap:7px;}
+.fam-t-arr{transition:transform var(--dur-ui);}
+.fam-t:hover .fam-t-arr{transform:translateX(4px);}
+@media(max-width:900px){
+  .fam-hd{padding:16px 24px 12px;}
+  .fam-t{flex-basis:170px;}
+  .fam-t{padding:14px 16px 13px;}
+}
+@media(max-width:640px){
+  .fam-t{flex-basis:44%;}
+  .fam-t-name{font-size:15px;}
+  .fam-t-norm{display:none;}
+}

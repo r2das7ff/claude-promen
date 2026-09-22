@@ -71,6 +71,12 @@ function promen_render_category_page( string $slug ): void {
 	<?php
 	$config['hero']( $ctx );
 
+	// Полоса семейств — сразу под первым экраном: раздел без неё не давал
+	// ни одной ссылки на нужный тип изделия ближе пятого экрана.
+	if ( function_exists( 'promen_render_category_family_tiles' ) ) {
+		promen_render_category_family_tiles( $slug );
+	}
+
 	if ( isset( $config['series_custom'] ) ) {
 		$config['series_custom']( $ctx );
 	} elseif ( $config['series'] ?? true ) {

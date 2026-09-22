@@ -25,6 +25,14 @@
   var list = document.getElementById('productList');
   if (!list || !cfg.apiUrl) return;
 
+  // Параметры фильтров приходят из PHP (promen_range_params /
+  // promen_multi_taxonomies). Здесь они раньше были продублированы строками,
+  // и добавленная на сервере стенка s в эти списки не попала: запрос уходил
+  // без s_min/s_max, а кнопка «Сбросить» не появлялась. Литералы оставлены
+  // только как страховка на случай старого кеша конфигурации.
+  var RANGE_PARAMS = cfg.rangeParams || ['dn', 'pn', 's'];
+  var MULTI_PARAMS = cfg.multiParams || ['steel', 'industry', 'angle', 'gost'];
+
   var count = document.getElementById('pCount');
   var pagination = document.querySelector('.cat-pagination');
   var pathSub = document.getElementById('pathSub');
@@ -83,11 +91,11 @@
     if (params.q) q.set('q', params.q);
     if (params.page && params.page > 1) q.set('page', String(params.page));
     q.set('per_page', String(cfg.perPage || 30));
-    ['dn', 'pn'].forEach(function (p) {
+    RANGE_PARAMS.forEach(function (p) {
       if (params[p + '_min']) q.set(p + '_min', params[p + '_min']);
       if (params[p + '_max']) q.set(p + '_max', params[p + '_max']);
     });
-    ['steel', 'industry', 'angle', 'gost'].forEach(function (p) {
+    MULTI_PARAMS.forEach(function (p) {
       if (params[p]) q.set(p, params[p]);
     });
     if (params.sort) q.set('sort', params.sort);
@@ -152,7 +160,7 @@
       '<span class="pr-arr">›</span></a>';
   }
 
-  function renderList(data) {
+  function renderList(data, pageUrl) {
     var cols = data.columns || [];
     var tpl = gridTpl(cols);
     if (tblHd) {
@@ -161,29 +169,42 @@
       var hdr = '<span>Норматив</span><span>Наименование</span>';
       cols.forEach(function (c) {
         var sf = SORT_FIELDS[c.key];
-        if (!sf) { hdr += '<span>' + esc(c.label) + '</span>'; return; }
+        // Зеркало promen_catalog_header_cells(): c.html — подпись с индексом
+        // («Dн»), c.hint — расшифровка колонки. Оба приходят из схемы каталога
+        // на сервере, поэтому html здесь не из пользовательских данных.
+        var lbl = c.html || esc(c.label);
+        var hint = c.hint || '';
+        if (!sf) {
+          hdr += '<span' + (hint ? ' title="' + esc(hint) + '"' : '') + '>' + lbl + '</span>';
+          return;
+        }
         var active = sf === cs.field;
         var arr = active ? (cs.dir === 'desc' ? '↓' : '↑') : '⇅';
-        hdr += '<span class="th-sort' + (active ? ' is-active' : '') + '" role="button" tabindex="0" data-sort-field="' + esc(sf) + '" title="Сортировать">' +
-          esc(c.label) + '<i class="th-arr">' + arr + '</i></span>';
+        var title = hint ? hint + ' · сортировка' : 'Сортировать';
+        hdr += '<span class="th-sort' + (active ? ' is-active' : '') + '" role="button" tabindex="0" data-sort-field="' + esc(sf) + '" title="' + esc(title) + '">' +
+          lbl + '<i class="th-arr">' + arr + '</i></span>';
       });
       hdr += '<span>Материал</span><span>Отрасль</span><span></span>';
       tblHd.innerHTML = hdr;
     }
     if (!data.hits || !data.hits.length) {
-      var u = new URL(location.href);
+      var u = new URL(pageUrl || location.href);
       var qv = u.searchParams.get('q') || '';
       var grp = u.searchParams.get('group') || '';
       var allLink = '';
       if (qv && (grp || u.searchParams.get('scope') !== 'all')) {
-        var au = new URL(location.pathname, location.origin);
+        var au = new URL(u.pathname, location.origin);
         au.searchParams.set('q', qv);
         au.searchParams.set('scope', 'all');
         allLink = '<a class="ce-all" href="' + esc(au.toString()) + '">Искать «' + esc(qv) + '» во всём каталоге →</a>';
       }
+      // Сброс фильтров сохраняет группу: иначе с ?group=troyniki уводил
+      // в общий реестр всего каталога.
+      var ru = new URL(u.pathname, location.origin);
+      if (grp) ru.searchParams.set('group', grp);
       list.innerHTML = '<div class="cat-empty"><div class="ce-code">—</div>' +
         '<div class="ce-msg">Нет позиций по заданным параметрам</div>' + allLink +
-        '<a class="ce-reset" href="' + esc(location.pathname) + '">Сбросить фильтры</a></div>';
+        '<a class="ce-reset" href="' + esc(ru.toString()) + '">Сбросить фильтры</a></div>';
       return;
     }
     list.innerHTML = data.hits.map(function (h, i) { return renderRow(h, cols, tpl, i); }).join('');
@@ -210,11 +231,11 @@
 
   function activeFilterCount(u) {
     var n = 0;
-    ['steel', 'gost', 'angle', 'industry'].forEach(function (p) {
+    MULTI_PARAMS.forEach(function (p) {
       var v = u.searchParams.get(p);
       if (v) n += v.split(',').filter(Boolean).length;
     });
-    ['dn', 'pn'].forEach(function (p) {
+    RANGE_PARAMS.forEach(function (p) {
       if (u.searchParams.get(p + '_min') || u.searchParams.get(p + '_max')) n++;
     });
     return n;
@@ -605,7 +626,7 @@
     fetch(cfg.apiUrl + '?' + buildApiQuery(parsed.params), { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        renderList(data);
+        renderList(data, parsed.url.toString());
         renderFilters(data, parsed.url.toString());
         renderPagination(data, parsed.url.toString());
         updateCount(data.total || 0);

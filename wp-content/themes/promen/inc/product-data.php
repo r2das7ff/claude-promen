@@ -320,6 +320,18 @@ function promen_sanitize_dims( array $dims, array $opts = [] ): array {
 		}
 	}
 
+	// DN2 из мусора («1», «2» — остаток разбора названия). Раньше он доживал
+	// до витрины, если заменить его было нечем: в колонке стоял условный
+	// проход в один миллиметр.
+	if ( $dn_branch !== '' && promen_dn_looks_junk( $dn_branch ) ) {
+		unset( $dims['dn_branch'] );
+		$dn_branch = '';
+	}
+	if ( ! $turned && isset( $dims['dy1'] ) && promen_dn_looks_junk( (string) $dims['dy1'] ) ) {
+		// Ячейка DN2 падает на dy1, когда dn_branch пуст — там тот же мусор.
+		unset( $dims['dy1'] );
+	}
+
 	// Обогащение OD из DN, если в мете только условные проходы.
 	if ( ! $turned && $od === '' && $dn !== '' && ! promen_dn_looks_junk( $dn ) ) {
 		$filled = promen_pipe_od_from_dn( $dn );
@@ -334,6 +346,22 @@ function promen_sanitize_dims( array $dims, array $opts = [] ): array {
 			$dims['outer_d_branch'] = $filled_branch;
 			$od_branch             = $filled_branch;
 		}
+	}
+
+	// Обратный случай к «DN2 = Dн2»: в Dн2 лежит условный проход. Тройники
+	// ОСТ 34.10.511-1990 «220×7-125»: 125 — это DN ответвления, наружный
+	// диаметр у него 133. Наружного диаметра 125 в сортаменте нет, поэтому
+	// Dн2 снимаем: подставить величину из ряда вместо данных норматива —
+	// это уже выдумка, а прочерк честен.
+	if ( ! $turned && $od_branch !== '' && $dn_branch !== ''
+		&& is_numeric( str_replace( ',', '.', $od_branch ) )
+		&& is_numeric( str_replace( ',', '.', $dn_branch ) )
+		&& abs( (float) str_replace( ',', '.', $od_branch ) - (float) str_replace( ',', '.', $dn_branch ) ) < 1e-6
+		&& promen_pipe_dn_from_od( $od_branch ) === ''
+		&& promen_dn_is_standard( $dn_branch )
+	) {
+		unset( $dims['outer_d_branch'] );
+		$od_branch = '';
 	}
 
 	$angle = trim( (string) ( $dims['angle'] ?? '' ) );
@@ -407,7 +435,14 @@ function promen_angle_is_plausible( string $angle ): bool {
 	return in_array( $value, [ 15.0, 30.0, 45.0, 60.0, 90.0, 180.0 ], true );
 }
 
-/** Условный проход по наружному диаметру трубы (мм). */
+/**
+ * Условный проход по наружному диаметру трубы (мм).
+ *
+ * Ряд 1 ГОСТ 17375/17376-2001 (он же EN 10220): 21,3 = DN 15, 26,9 = DN 20,
+ * 33,7 = DN 25. Раньше таблица давала на ступень больше и расходилась
+ * с обратной promen_pipe_od_from_dn() в этом же файле — отводы «21.3×2 исп. 1»
+ * стояли в каталоге как DN 20 и не попадали в фильтр DN 15.
+ */
 function promen_pipe_dn_from_od( string $od ): string {
 	$raw = str_replace( ',', '.', trim( $od ) );
 	if ( $raw === '' ) {
@@ -423,25 +458,25 @@ function promen_pipe_dn_from_od( string $od ): string {
 		return '';
 	}
 	static $map = [
-		'10.2'  => '10',
-		'13.5'  => '10',
+		'10.2'  => '6',
+		'13.5'  => '8',
 		'14'    => '10',
 		'16'    => '15',
 		'17'    => '10',
-		'17.2'  => '15',
+		'17.2'  => '10',
 		'18'    => '15',
-		'21.3'  => '20',
+		'21.3'  => '15',
 		'22'    => '20',
 		'25'    => '20',
-		'26.7'  => '25',
-		'26.9'  => '25',
-		'27'    => '25',
+		'26.7'  => '20',
+		'26.9'  => '20',
+		'27'    => '20',
 		'32'    => '25',
-		'33.4'  => '32',
-		'33.7'  => '32',
+		'33.4'  => '25',
+		'33.7'  => '25',
 		'38'    => '32',
-		'42.2'  => '40',
-		'42.4'  => '40',
+		'42.2'  => '32',
+		'42.4'  => '32',
 		'45'    => '40',
 		'48.3'  => '40',
 		'57'    => '50',
@@ -461,7 +496,6 @@ function promen_pipe_dn_from_od( string $od ): string {
 		'168.3' => '150',
 		'219'   => '200',
 		'219.1' => '200',
-		'245'   => '150',
 		'273'   => '250',
 		'299'   => '300',
 		'323.9' => '300',
@@ -473,7 +507,6 @@ function promen_pipe_dn_from_od( string $od ): string {
 		'406.4' => '400',
 		'426'   => '400',
 		'457'   => '450',
-		'465'   => '350',
 		'480'   => '450',
 		'530'   => '500',
 		'630'   => '600',
@@ -490,12 +523,31 @@ function promen_pipe_dn_from_od( string $od ): string {
 		return $map[ $normalized ];
 	}
 	// Exact float key fallback (159.0 → 159). Целые не трогаем rtrim('0').
-	if ( preg_match( '/^\d+$/', $normalized ) ) {
-		return $map[ $normalized ] ?? '';
+	if ( ! preg_match( '/^\d+$/', $normalized ) ) {
+		$key = (string) (float) $normalized;
+		$key = rtrim( rtrim( $key, '0' ), '.' );
+		if ( isset( $map[ $key ] ) ) {
+			return $map[ $key ];
+		}
 	}
-	$key = (string) (float) $normalized;
-	$key = rtrim( rtrim( $key, '0' ), '.' );
-	return $map[ $key ] ?? $map[ $normalized ] ?? '';
+
+	// Точного ключа нет — допускаем округление обозначения в источнике:
+	// 220 вместо 219, 425 вместо 426, 75 вместо 76, 34 вместо 33,7. Дальше
+	// 1 мм не тянемся: иначе 50 «притянется» к 48,3 и получит чужой DN.
+	$value = (float) $normalized;
+	if ( $value <= 0 ) {
+		return '';
+	}
+	$best      = '';
+	$best_diff = 1.0 + 1e-9;
+	foreach ( $map as $od_key => $dn_val ) {
+		$diff = abs( (float) $od_key - $value );
+		if ( $diff < $best_diff ) {
+			$best_diff = $diff;
+			$best      = $dn_val;
+		}
+	}
+	return $best;
 }
 
 /** Наружный диаметр трубы по DN (обратная к promen_pipe_dn_from_od). */
@@ -792,6 +844,13 @@ function promen_dxs_label( array $dims ): string {
 		$one = $pair1 !== '' ? $pair1 : $pair2;
 		if ( ! empty( $dims['equal_pass'] ) ) {
 			return $one . '-' . $one;
+		}
+		// Наружного диаметра ответвления нет, а условный проход известен —
+		// пишем его явно: у тройников ОСТ 34.10.511 «220×7-125» число после
+		// дефиса это DN ответвления, и без пометки название теряло его вовсе.
+		$dn_branch = trim( (string) ( $dims['dn_branch'] ?? '' ) );
+		if ( $pair1 !== '' && $pair2 === '' && $dn_branch !== '' ) {
+			return $one . '-DN' . promen_fmt_dim( $dn_branch );
 		}
 		return $one;
 	}

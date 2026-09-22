@@ -386,6 +386,12 @@ add_action( 'wp_enqueue_scripts', function () {
 				'ngk' => 'НГК',
 			],
 			'views' => function_exists( 'promen_catalog_group_views_js' ) ? promen_catalog_group_views_js() : [],
+			// Списки параметров фильтров — из PHP, а не дублем в JS: стенка s
+			// была добавлена на сервере (promen_range_params), а в двух списках
+			// catalog.js остались только dn/pn — фильтр по стенке молча не
+			// доезжал до API и не считался активным (кнопка «Сбросить»).
+			'rangeParams' => function_exists( 'promen_range_params' ) ? array_values( promen_range_params() ) : [ 'dn', 'pn', 's' ],
+			'multiParams' => function_exists( 'promen_multi_taxonomies' ) ? array_keys( promen_multi_taxonomies() ) : [ 'steel', 'industry', 'angle', 'gost' ],
 		] );
 	}
 } );

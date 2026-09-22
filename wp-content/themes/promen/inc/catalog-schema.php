@@ -5,31 +5,38 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/** Базовые колонки реестра (ключ => определение). */
+/**
+ * Базовые колонки реестра (ключ => определение).
+ *
+ * label — простой текст, html — вариант с индексом для шапки: она набрана
+ * заглавными (CSS .tbl-hd), и «Dн» превращалось в «DН», которое читается
+ * как латинское «DH». Индекс живёт в span.th-ix, где uppercase отключён.
+ * hint — расшифровка колонки в подсказке при наведении.
+ */
 function promen_catalog_column_defs(): array {
 	return [
-		'dn'          => [ 'key' => 'dn', 'label' => 'DN', 'w' => '52px' ],
-		'd'           => [ 'key' => 'd', 'label' => 'Dн, мм', 'w' => '64px' ],
-		's'           => [ 'key' => 's', 'label' => 's, мм', 'w' => '54px' ],
-		'angle'       => [ 'key' => 'angle', 'label' => 'Угол', 'w' => '54px' ],
-		'radius'      => [ 'key' => 'radius', 'label' => 'R, мм', 'w' => '56px' ],
-		'height'      => [ 'key' => 'height', 'label' => 'H, мм', 'w' => '56px' ],
-		'mass'        => [ 'key' => 'mass', 'label' => 'Масса, кг', 'w' => '78px' ],
+		'dn'          => [ 'key' => 'dn', 'label' => 'DN', 'w' => '52px', 'hint' => 'Условный проход — номер из стандартного ряда, примерно равен внутреннему диаметру' ],
+		'd'           => [ 'key' => 'd', 'label' => 'Dн, мм', 'html' => 'D<span class="th-ix">н</span>, мм', 'w' => '64px', 'hint' => 'Наружный диаметр трубы, мм' ],
+		's'           => [ 'key' => 's', 'label' => 's, мм', 'w' => '54px', 'hint' => 'Толщина стенки, мм' ],
+		'angle'       => [ 'key' => 'angle', 'label' => 'Угол', 'w' => '54px', 'hint' => 'Угол поворота, градусы' ],
+		'radius'      => [ 'key' => 'radius', 'label' => 'R, мм', 'w' => '56px', 'hint' => 'Радиус гиба, мм' ],
+		'height'      => [ 'key' => 'height', 'label' => 'H, мм', 'w' => '56px', 'hint' => 'Высота, мм' ],
+		'mass'        => [ 'key' => 'mass', 'label' => 'Масса, кг', 'w' => '78px', 'hint' => 'Масса одного изделия, кг' ],
 		// 100px, не 90: подпись «Масса, кг/м» + стрелка сортировки на 11px шапки
 		// упиралась в край колонки и срывалась в перенос.
-		'massm'       => [ 'key' => 'mass', 'label' => 'Масса, кг/м', 'w' => '100px' ],
-		'pn'          => [ 'key' => 'pn', 'label' => 'PN', 'w' => '52px' ],
-		'flange_type' => [ 'key' => 'flange_type', 'label' => 'Тип', 'w' => '124px' ],
-		'b'           => [ 'key' => 'b', 'label' => 'b, мм', 'w' => '54px' ],
-		'dbolt'       => [ 'key' => 'dbolt', 'label' => 'Dб, мм', 'w' => '62px' ],
-		'bolts'       => [ 'key' => 'bolts', 'label' => 'Болты', 'w' => '76px' ],
-		'exec'        => [ 'key' => 'exec', 'label' => 'Исп.', 'w' => '52px' ],
-		'dn2'         => [ 'key' => 'dn2', 'label' => 'DN2', 'w' => '52px' ],
-		'd2'          => [ 'key' => 'd2', 'label' => 'Dн2, мм', 'w' => '62px' ],
-		's2'          => [ 'key' => 's2', 'label' => 's2, мм', 'w' => '54px' ],
-		'thread'      => [ 'key' => 'thread', 'label' => 'M', 'w' => '58px' ],
-		'length'      => [ 'key' => 'length', 'label' => 'L, мм', 'w' => '64px' ],
-		'strength'    => [ 'key' => 'strength', 'label' => 'Класс', 'w' => '64px' ],
+		'massm'       => [ 'key' => 'mass', 'label' => 'Масса, кг/м', 'w' => '100px', 'hint' => 'Масса погонного метра, кг/м' ],
+		'pn'          => [ 'key' => 'pn', 'label' => 'PN', 'w' => '52px', 'hint' => 'Условное давление, МПа' ],
+		'flange_type' => [ 'key' => 'flange_type', 'label' => 'Тип', 'w' => '124px', 'hint' => 'Тип фланца по нормативу' ],
+		'b'           => [ 'key' => 'b', 'label' => 'b, мм', 'w' => '54px', 'hint' => 'Толщина фланца, мм' ],
+		'dbolt'       => [ 'key' => 'dbolt', 'label' => 'Dб, мм', 'html' => 'D<span class="th-ix">б</span>, мм', 'w' => '62px', 'hint' => 'Диаметр окружности болтов, мм' ],
+		'bolts'       => [ 'key' => 'bolts', 'label' => 'Болты', 'w' => '76px', 'hint' => 'Количество и резьба болтов' ],
+		'exec'        => [ 'key' => 'exec', 'label' => 'Исп.', 'w' => '52px', 'hint' => 'Исполнение по нормативу' ],
+		'dn2'         => [ 'key' => 'dn2', 'label' => 'DN2', 'w' => '52px', 'hint' => 'Условный проход ответвления (у переходов — меньшего конца)' ],
+		'd2'          => [ 'key' => 'd2', 'label' => 'Dн2, мм', 'html' => 'D<span class="th-ix">н2</span>, мм', 'w' => '62px', 'hint' => 'Наружный диаметр ответвления (у переходов — меньшего конца), мм' ],
+		's2'          => [ 'key' => 's2', 'label' => 's2, мм', 'w' => '54px', 'hint' => 'Толщина стенки ответвления (у переходов — меньшего конца), мм' ],
+		'thread'      => [ 'key' => 'thread', 'label' => 'M', 'w' => '58px', 'hint' => 'Метрическая резьба' ],
+		'length'      => [ 'key' => 'length', 'label' => 'L, мм', 'w' => '64px', 'hint' => 'Длина, мм' ],
+		'strength'    => [ 'key' => 'strength', 'label' => 'Класс', 'w' => '64px', 'hint' => 'Класс прочности' ],
 	];
 }
 
@@ -125,7 +132,7 @@ function promen_catalog_group_schema( string $group ): array {
 	};
 }
 
-/** Колонки реестра для группы (массив key/label/w). */
+/** Колонки реестра для группы (массив key/label/w/hint). */
 function promen_catalog_schema_columns( string $group ): array {
 	$defs = promen_catalog_column_defs();
 	$keys = promen_catalog_group_schema( $group )['columns'];

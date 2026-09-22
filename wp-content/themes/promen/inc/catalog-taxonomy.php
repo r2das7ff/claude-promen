@@ -505,6 +505,137 @@ function promen_render_catalog_sidebar( string $active_group ): void {
 }
 
 /**
+ * Плитки семейств раздела: дети категории с числом позиций, рядом DN
+ * и главными нормативами. Один запрос по канону + кэш на 15 минут.
+ *
+ * @return list<array{slug:string,name:string,url:string,count:int,dn:string,norms:string}>
+ */
+function promen_catalog_family_tiles( string $parent ): array {
+	$defs = function_exists( 'promen_catalog_taxonomy_defs' ) ? promen_catalog_taxonomy_defs() : [];
+	$kids = (array) ( $defs[ $parent ]['children'] ?? [] );
+	if ( ! $kids ) {
+		return [];
+	}
+
+	$ckey   = function_exists( 'promen_filters_cache_key' )
+		? promen_filters_cache_key( 'family_tiles', [ $parent ] )
+		: 'promen_family_tiles_' . md5( $parent );
+	$cached = get_transient( $ckey );
+	if ( is_array( $cached ) ) {
+		return $cached;
+	}
+
+	global $wpdb;
+	$table = promen_catalog_table_name();
+	// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	$rows   = (array) $wpdb->get_results(
+		"SELECT category, COUNT(*) AS cnt, MIN(NULLIF(dn,0)) AS dn_min, MAX(NULLIF(dn,0)) AS dn_max
+		 FROM {$table} GROUP BY category",
+		ARRAY_A
+	);
+	$by_cat = [];
+	foreach ( $rows as $row ) {
+		$by_cat[ (string) $row['category'] ] = $row;
+	}
+
+	// Хвостовые нули срезаем только у дробей (21.30→21.3): у целых это
+	// превратило бы 800 в 8 (та же ловушка, что в promen_catalog_group_norm_stats).
+	$fmt = static function ( $v ): string {
+		$s = (string) (float) $v;
+		return strpos( $s, '.' ) !== false ? rtrim( rtrim( $s, '0' ), '.' ) : $s;
+	};
+
+	$out = [];
+	foreach ( $kids as $kid ) {
+		$cnt = 0;
+		$min = null;
+		$max = null;
+		foreach ( promen_catalog_group_slugs( (string) $kid ) as $slug ) {
+			if ( ! isset( $by_cat[ $slug ] ) ) {
+				continue;
+			}
+			$cnt += (int) $by_cat[ $slug ]['cnt'];
+			if ( null !== $by_cat[ $slug ]['dn_min'] ) {
+				$v   = (float) $by_cat[ $slug ]['dn_min'];
+				$min = ( null === $min ) ? $v : min( $min, $v );
+			}
+			if ( null !== $by_cat[ $slug ]['dn_max'] ) {
+				$v   = (float) $by_cat[ $slug ]['dn_max'];
+				$max = ( null === $max ) ? $v : max( $max, $v );
+			}
+		}
+		if ( $cnt <= 0 ) {
+			continue;
+		}
+
+		$norms = [];
+		if ( function_exists( 'promen_catalog_group_norm_stats' ) ) {
+			foreach ( array_slice( promen_catalog_group_norm_stats( (string) $kid, 2 ), 0, 2 ) as $norm ) {
+				$name = trim( (string) ( $norm['name'] ?? '' ) );
+				if ( $name !== '' ) {
+					$norms[] = $name;
+				}
+			}
+		}
+
+		$dn = '';
+		if ( null !== $min && null !== $max ) {
+			$dn = $fmt( $min ) === $fmt( $max ) ? $fmt( $min ) : $fmt( $min ) . '–' . $fmt( $max );
+		}
+
+		$out[] = [
+			'slug'  => (string) $kid,
+			'name'  => (string) ( $defs[ $kid ]['label'] ?? promen_term_label( 'product_cat', (string) $kid ) ),
+			'url'   => (string) ( promen_product_cat_link( (string) $kid ) ?: '' ),
+			'count' => $cnt,
+			'dn'    => $dn,
+			'norms' => implode( ' · ', $norms ),
+		];
+	}
+
+	set_transient( $ckey, $out, 15 * MINUTE_IN_SECONDS );
+	return $out;
+}
+
+/**
+ * Полоса семейств сразу под первым экраном раздела.
+ *
+ * Реклама приводит на страницу раздела, а первая ссылка на семейство лежала
+ * пятью экранами ниже — посетитель видел только шапку и уходил. Каждая плитка
+ * ведёт на страницу семейства, сразу к его реестру (#registry).
+ */
+function promen_render_category_family_tiles( string $slug ): void {
+	$tiles = promen_catalog_family_tiles( $slug );
+	if ( count( $tiles ) < 2 ) {
+		return;
+	}
+	$defs  = function_exists( 'promen_catalog_taxonomy_defs' ) ? promen_catalog_taxonomy_defs() : [];
+	$suffix = trim( (string) ( $defs[ $slug ]['meta_suffix'] ?? '' ) );
+	$total  = array_sum( array_column( $tiles, 'count' ) );
+	?>
+<nav class="fam-strip" id="families" aria-label="Семейства раздела">
+  <div class="fam-hd">
+    <span class="fam-lbl">Семейства раздела</span>
+    <span class="fam-meta"><?php echo esc_html( ( $suffix !== '' ? $suffix . ' · ' : '' ) . number_format_i18n( $total ) . ' позиций' ); ?></span>
+  </div>
+  <div class="fam-grid">
+    <?php foreach ( $tiles as $tile ) : ?>
+    <a class="fam-t" href="<?php echo esc_url( $tile['url'] . '#registry' ); ?>">
+      <span class="fam-t-top">
+        <span class="fam-t-name"><?php echo esc_html( $tile['name'] ); ?></span>
+        <span class="fam-t-cnt"><?php echo esc_html( number_format_i18n( $tile['count'] ) ); ?></span>
+      </span>
+      <?php if ( $tile['dn'] !== '' ) : ?><span class="fam-t-dn">DN <?php echo esc_html( $tile['dn'] ); ?></span><?php endif; ?>
+      <?php if ( $tile['norms'] !== '' ) : ?><span class="fam-t-norm"><?php echo esc_html( $tile['norms'] ); ?></span><?php endif; ?>
+      <span class="fam-t-go">В реестр<span class="fam-t-arr" aria-hidden="true">→</span></span>
+    </a>
+    <?php endforeach; ?>
+  </div>
+</nav>
+	<?php
+}
+
+/**
  * Встроить живой реестр на страницу категории (только таблица + фильтры + PDP).
  * Без сайдбара групп — иначе страница категории превращается в гибрид /catalog/.
  */
