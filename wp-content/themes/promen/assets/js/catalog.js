@@ -642,13 +642,20 @@
     });
   }
 
+  // Пока запрос летит, человек успевает набрать дальше или нажать крестик.
+  // Ответ на устаревший запрос применять нельзя: он возвращает выдачу,
+  // от которой уже отказались (ловилось на проде, где поиск идёт по секунде).
+  var swapSeq = 0;
+
   function swap(url, push, opts) {
     opts = opts || {};
     var parsed = parsePageUrl(url);
+    var seq = ++swapSeq;
     list.style.opacity = '.35';
     fetch(cfg.apiUrl + '?' + buildApiQuery(parsed.params), { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.json(); })
       .then(function (data) {
+        if (seq !== swapSeq) return;
         renderList(data, parsed.url.toString());
         renderNote(data);
         renderFilters(data, parsed.url.toString());
@@ -662,7 +669,10 @@
         if (push) history.pushState({ promen: true }, '', parsed.url.toString());
         if (opts.scroll !== false) scrollToCatalog();
       })
-      .catch(function () { location.href = url; });
+      .catch(function () {
+        if (seq !== swapSeq) return;
+        location.href = url;
+      });
   }
 
   document.addEventListener('click', function (e) {
@@ -942,10 +952,15 @@
   var searchInput = searchForm && searchForm.querySelector('input[name=q]');
   var qTimer = null;
 
-  function applySearch(val) {
+  /**
+   * @param {boolean} force Применить, даже если в адресе то же самое.
+   *                        Нужно крестику: запрос по набранному тексту может
+   *                        быть ещё в полёте, и в адресе его пока нет.
+   */
+  function applySearch(val, force) {
     var url = new URL(location.href);
     var cur = url.searchParams.get('q') || '';
-    if (val === cur) return;
+    if (!force && val === cur) return;
     url.searchParams.delete('paged');
     if (val) url.searchParams.set('q', val); else url.searchParams.delete('q');
     swap(url.toString(), true, { scroll: false });
@@ -997,7 +1012,7 @@
         clearTimeout(qTimer);
         clearTimeout(sugTimer);
         syncSearchClear();
-        applySearch('');
+        applySearch('', true);
       }
     });
   }
@@ -1096,7 +1111,7 @@
       clearTimeout(sugTimer);
       sugHide();
       syncSearchClear();
-      applySearch('');
+      applySearch('', true);
       searchInput.focus();
     });
   }
