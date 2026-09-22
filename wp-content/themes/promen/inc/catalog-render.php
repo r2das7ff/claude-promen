@@ -185,6 +185,49 @@ function promen_steel_cell_html( array $hit ): string {
 }
 
 /**
+ * Подсветить в тексте слова запроса.
+ *
+ * Режем исходный текст по совпадениям и экранируем куски по отдельности:
+ * подсветка по уже экранированной строке цепляла бы куски html-сущностей.
+ * Односимвольные слова пропускаем — подсвеченная «с» в каждой строке
+ * только мешает.
+ *
+ * @param string[] $tokens Слова запроса (promen_catalog_q_tokens).
+ */
+function promen_highlight_html( string $text, array $tokens ): string {
+	if ( $text === '' ) {
+		return '';
+	}
+	$parts = [];
+	foreach ( $tokens as $token ) {
+		$token = trim( (string) $token );
+		if ( mb_strlen( $token, 'UTF-8' ) < 2 ) {
+			continue;
+		}
+		$parts[] = preg_quote( $token, '/' );
+	}
+	if ( ! $parts ) {
+		return esc_html( $text );
+	}
+
+	$chunks = preg_split( '/(' . implode( '|', $parts ) . ')/iu', $text, -1, PREG_SPLIT_DELIM_CAPTURE );
+	if ( ! is_array( $chunks ) ) {
+		return esc_html( $text );
+	}
+	$out = '';
+	foreach ( $chunks as $i => $chunk ) {
+		if ( '' === $chunk ) {
+			continue;
+		}
+		// Нечётные куски — сами совпадения (PREG_SPLIT_DELIM_CAPTURE).
+		$out .= ( 1 === $i % 2 )
+			? '<mark class="hl">' . esc_html( $chunk ) . '</mark>'
+			: esc_html( $chunk );
+	}
+	return $out;
+}
+
+/**
  * HTML одной строки реестра из канон-документа.
  *
  * $cols — колонки СТРАНИЦЫ (те же, что в шапке и grid_tpl). Без них ячейки
@@ -192,10 +235,10 @@ function promen_steel_cell_html( array $hit ): string {
  * но в общем реестре широкий тип (отводы — 6 ячеек) разъезжается мимо шапки.
  * JS-собрат (renderRow в catalog.js) всегда маппит data.columns страницы.
  */
-function promen_render_catalog_row( array $hit, string $grid_tpl, int $index = 0, ?array $cols = null ): void {
+function promen_render_catalog_row( array $hit, string $grid_tpl, int $index = 0, ?array $cols = null, array $hl = [] ): void {
 	$url    = esc_url( (string) ( $hit['url'] ?? '#' ) );
-	$norm   = esc_html( (string) ( $hit['norm'] ?? '—' ) );
-	$title  = esc_html( (string) ( $hit['title'] ?? '' ) );
+	$norm   = promen_highlight_html( (string) ( $hit['norm'] ?? '—' ), $hl );
+	$title  = promen_highlight_html( (string) ( $hit['title'] ?? '' ), $hl );
 	$family = esc_html( (string) ( $hit['family'] ?? '' ) );
 	$sku    = esc_attr( (string) ( $hit['sku'] ?? '' ) );
 	$industries = (array) ( $hit['industries'] ?? [] );

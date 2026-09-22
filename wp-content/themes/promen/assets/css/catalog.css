@@ -145,6 +145,11 @@
 .cb-search-x:hover{color:var(--dark);}
 .cb-search-x:focus-visible{outline:1px solid var(--blue);outline-offset:-3px;}
 .cb-search-x[hidden]{display:none;}
+.cb-shortcut[hidden]{display:none;}
+
+/* Подсветка слов запроса в реестре: тон фона, а не жирность —
+   жирное начертание дёргало бы ширину колонок на каждый ввод. */
+mark.hl{background:rgba(109,140,166,.32);color:inherit;padding:0 1px;border-radius:1px;}
 
 /* Строка-пояснение под поиском: что поняли и чего не учли. */
 .cb-note{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;margin:-2px 0 9px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.06em;color:var(--g1-text);}
@@ -1015,6 +1020,7 @@ button.c-chip--more:hover{color:var(--dark);border-color:var(--g1);}
   .cb-search{height:48px;}
   .cb-search-ic{width:44px;height:48px;}
   .cb-search-x{width:44px;height:48px;}
+  .cb-shortcut{display:none;}
   .cb-search input{height:48px;}   /* тап по всей высоте поля, а не по 17px строки */
   .search-clear{width:44px;height:48px;}
 

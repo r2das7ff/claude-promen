@@ -121,6 +121,8 @@ function promen_rest_catalog( WP_REST_Request $request ): WP_REST_Response {
 		// за ним угадываются (промолчать — значит подменить запрос втихую).
 		'dropped'       => $note['dropped'],
 		'hints'         => $note['hints'],
+		// Слова запроса для подсветки в строках — ровно те, по которым искали.
+		'tokens'        => $query->q !== '' ? promen_catalog_q_tokens( $query->q ) : [],
 	], 200 );
 }
 

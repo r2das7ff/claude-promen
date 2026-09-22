@@ -131,6 +131,24 @@
     return '<span class="pr-tags">' + tags + '</span>';
   }
 
+  /**
+   * Подсветить слова запроса. Зеркало promen_highlight_html() на сервере:
+   * текст сначала экранируем, потом размечаем — и слова экранируем так же,
+   * иначе «&» из запроса не совпал бы с «&amp;» в тексте.
+   */
+  function hl(text, tokens) {
+    var safe = esc(text);
+    if (!tokens || !tokens.length) return safe;
+    var parts = [];
+    tokens.forEach(function (t) {
+      t = String(t || '').trim();
+      if (t.length < 2) return; // односимвольные подсвечивать бессмысленно
+      parts.push(esc(t).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    });
+    if (!parts.length) return safe;
+    return safe.replace(new RegExp('(' + parts.join('|') + ')', 'gi'), '<mark class="hl">$1</mark>');
+  }
+
   // TEST (2026-07-30): зеркало promen_steel_cell_html() из catalog-render.php —
   // без него подсказка живёт только до первой AJAX-перерисовки списка.
   function steelCellHtml(hit) {
@@ -143,7 +161,7 @@
       esc(labels.join(', ')) + '">' + esc(m[2]) + '</span>';
   }
 
-  function renderRow(hit, columns, tpl, i) {
+  function renderRow(hit, columns, tpl, i, tokens) {
     var cells = (columns || []).map(function (col) {
       var val = (hit.cells && hit.cells[col.key]) ? hit.cells[col.key] : '—';
       return '<span class="pr-' + esc(col.key) + '">' + esc(val) + '</span>';
@@ -152,8 +170,8 @@
       ' data-sku="' + esc(hit.sku) + '" data-title="' + esc(hit.title) + '"' +
       ' data-norm="' + esc(hit.norm) + '" data-steel="' + esc(hit.steel_display) + '"' +
       ' data-industry="' + esc(hit.industry_display) + '">' +
-      '<span class="pr-norm"><span class="pr-norm-code">' + esc(hit.norm || '—') + '</span></span>' +
-      '<span class="pr-name">' + esc(hit.title) + (hit.family ? '<small>' + esc(hit.family) + '</small>' : '') + '</span>' +
+      '<span class="pr-norm"><span class="pr-norm-code">' + hl(hit.norm || '—', tokens) + '</span></span>' +
+      '<span class="pr-name">' + hl(hit.title, tokens) + (hit.family ? '<small>' + esc(hit.family) + '</small>' : '') + '</span>' +
       cells +
       '<span class="pr-mat">' + steelCellHtml(hit) + '</span>' +
       '<span class="pr-ind">' + industryTagsHtml(hit.industries) + '</span>' +
@@ -207,7 +225,8 @@
         '<a class="ce-reset" href="' + esc(ru.toString()) + '">Сбросить фильтры</a></div>';
       return;
     }
-    list.innerHTML = data.hits.map(function (h, i) { return renderRow(h, cols, tpl, i); }).join('');
+    var tokens = data.tokens || [];
+    list.innerHTML = data.hits.map(function (h, i) { return renderRow(h, cols, tpl, i, tokens); }).join('');
     /* Фильтр сработал молча: выдача подменялась без единого признака, что
        она пересчиталась именно сейчас. Класс снимаем сразу после кадра —
        так анимация перезапускается на каждом обновлении, а не только на
@@ -969,14 +988,48 @@
   // Крестик очистки: живёт в самом поле, поэтому AJAX-перерисовка списка
   // и фильтров его не трогает — хватает одной привязки.
   var searchClear = document.getElementById('searchClear');
+  var searchHint = document.getElementById('searchHint');
   function syncSearchClear() {
-    if (!searchClear || !searchInput) return;
-    if (searchInput.value.trim() !== '') searchClear.removeAttribute('hidden');
-    else searchClear.setAttribute('hidden', '');
+    if (!searchInput) return;
+    var filled = searchInput.value.trim() !== '';
+    if (searchClear) {
+      if (filled) searchClear.removeAttribute('hidden');
+      else searchClear.setAttribute('hidden', '');
+    }
+    // Подсказку «/» убираем, как только в поле что-то есть или в нём работают:
+    // напоминать про клавишу тому, кто уже в поле, незачем.
+    if (searchHint) {
+      if (filled || document.activeElement === searchInput) searchHint.setAttribute('hidden', '');
+      else searchHint.removeAttribute('hidden');
+    }
   }
+
+  /* Горячая клавиша: «/» или Ctrl/⌘+K переводят курсор в поиск. В реестре
+     на 15 тысяч строк это главное действие страницы, а поле живёт в липкой
+     шапке — тянуться к нему мышью каждый раз не нужно. */
+  document.addEventListener('keydown', function (e) {
+    if (!searchInput) return;
+    var slash = e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey;
+    // «л» — та же клавиша K в русской раскладке.
+    var ctrlK = (e.ctrlKey || e.metaKey) && ['k', 'K', 'л', 'Л'].indexOf(e.key) >= 0;
+    if (!slash && !ctrlK) return;
+    var t = e.target;
+    var tag = t && t.tagName ? t.tagName.toLowerCase() : '';
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || (t && t.isContentEditable)) return;
+    e.preventDefault();
+    var r = searchInput.getBoundingClientRect();
+    if (r.top < 0 || r.bottom > (window.innerHeight || document.documentElement.clientHeight)) {
+      searchInput.scrollIntoView({ block: 'center' });
+    }
+    searchInput.focus();
+    searchInput.select();
+    syncSearchClear(); // событие focus приходит не всегда — значок гасим сами
+  });
 
   if (searchInput) {
     syncSearchClear();
+    searchInput.addEventListener('focus', syncSearchClear);
+    searchInput.addEventListener('blur', syncSearchClear);
     searchInput.addEventListener('input', function () {
       clearTimeout(qTimer);
       clearTimeout(sugTimer);

@@ -104,6 +104,8 @@ $embedded      = ! empty( $promen_registry_embedded );
               // data-ph-sm — короткий плейсхолдер для телефонов, подставляет catalog.js
               ?>
               <input id="searchInput" name="q" type="text" value="<?php echo esc_attr( $promen_q ); ?>" placeholder="Поиск по наименованию, ГОСТ, типоразмеру…" data-ph-sm="Поиск по ГОСТ" autocomplete="off">
+              <?php // Подсказка горячей клавиши: только на десктопе и только на пустом поле. ?>
+              <i class="cb-shortcut" id="searchHint" aria-hidden="true"<?php echo $promen_q === '' ? '' : ' hidden'; ?>>/</i>
               <?php // Крестик очистки: показывается только при непустом запросе. ?>
               <button type="button" class="cb-search-x" id="searchClear" aria-label="Очистить поиск" title="Очистить поиск"<?php echo $promen_q === '' ? ' hidden' : ''; ?>>✕</button>
             </form>
@@ -208,8 +210,14 @@ $embedded      = ! empty( $promen_registry_embedded );
 
       <div id="productList" aria-live="polite" aria-busy="false">
         <?php if ( $catalog->hits ) : ?>
+          <?php
+          // Слова запроса для подсветки — те же, по которым шёл поиск.
+          $promen_hl = ( $promen_fq->q !== '' && function_exists( 'promen_catalog_q_tokens' ) )
+            ? promen_catalog_q_tokens( $promen_fq->q )
+            : [];
+          ?>
           <?php foreach ( $catalog->hits as $i => $hit ) : ?>
-            <?php promen_render_catalog_row( $hit, $grid_tpl, (int) $i, $cat_cols ); ?>
+            <?php promen_render_catalog_row( $hit, $grid_tpl, (int) $i, $cat_cols, $promen_hl ); ?>
           <?php endforeach; ?>
         <?php else : ?>
           <div class="cat-empty">
