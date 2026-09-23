@@ -5,7 +5,8 @@
 scripts/krepezh-fix/moves.tsv (шпильки ГОСТ 22032/22043, 23.09.2026) и
 scripts/flancy-28759-fix/moves.tsv (фланцы ГОСТ 28759.2 с D1 вместо D, 23.09.2026),
 scripts/dnishcha-6533-fix/moves.tsv (днища ГОСТ 6533 с hв вместо D, 23.09.2026).
-Блок gone из прежней карты сохраняется как есть.
+Блок gone: прежние адреса из карты плюс scripts/junk-rows-fix/gone.tsv
+(фантомы импорта, сняты с публикации 23.09.2026).
 """
 import io
 import os
@@ -23,8 +24,10 @@ HEADER = """<?php
  *           (бобышка и пробка лежали под zaglushka-, донышко под dnische-;
  *           шпильки ГОСТ 22032/22043 — под bolty/bolt-; фланцы ГОСТ 28759.2 —
  *           с наружным диаметром D1 вместо D в адресе).
- *   gone  — типоразмера нет в нормативе, товар удалён; отдаём 410, чтобы
- *           поисковик выбросил адрес сразу, а не ждал повторных обходов.
+ *   gone  — типоразмера нет в нормативе, товар удалён или снят с публикации
+ *           (фантомы импорта: «заглушки» ОСТ 34.10.428, собранные из таблиц
+ *           тройников); отдаём 410, чтобы поисковик выбросил адрес сразу,
+ *           а не ждал повторных обходов.
  */
 return [
 'moved' => [
@@ -53,7 +56,19 @@ def existing_block(src, name):
 
 old_src = io.open(MAP, encoding='utf-8').read() if os.path.exists(MAP) else ''
 old_moved = existing_block(old_src, 'moved')
-gone = existing_block(old_src, 'gone')
+
+# gone: прежние адреса (правки ОТК) плюс фантомы из scripts/junk-rows-fix/gone.tsv.
+gone = set(re.findall(r"'([^']+)' => 1,", existing_block(old_src, 'gone')))
+gone_added = 0
+for src_file in ['junk-rows-fix/gone.tsv']:
+    path = os.path.join(ROOT, 'scripts', src_file)
+    if not os.path.exists(path):
+        continue
+    for line in io.open(path, encoding='utf-8'):
+        line = line.strip()
+        if line and line not in gone:
+            gone.add(line)
+            gone_added += 1
 
 pairs = {}
 for line in old_moved.split('\n'):
@@ -71,7 +86,10 @@ for src_file in ['otk-fix/moves.tsv', 'krepezh-fix/moves.tsv', 'flancy-28759-fix
 out = HEADER
 for a in sorted(pairs):
     out += "\t'%s' => '%s',\n" % (a, pairs[a])
-out += "],\n'gone' => [" + gone + "\n],\n];\n"
+out += "],\n'gone' => [\n"
+for g in sorted(gone):
+    out += "\t'%s' => 1,\n" % g
+out += "],\n];\n"
 
 io.open(MAP, 'w', encoding='utf-8', newline='').write(out)
-print('Карта: %d переездов (добавлено %d), gone-блок сохранён' % (len(pairs), added))
+print('Карта: %d переездов (добавлено %d), gone: %d (добавлено %d)' % (len(pairs), added, len(gone), gone_added))

@@ -7,8 +7,10 @@
  *           (бобышка и пробка лежали под zaglushka-, донышко под dnische-;
  *           шпильки ГОСТ 22032/22043 — под bolty/bolt-; фланцы ГОСТ 28759.2 —
  *           с наружным диаметром D1 вместо D в адресе).
- *   gone  — типоразмера нет в нормативе, товар удалён; отдаём 410, чтобы
- *           поисковик выбросил адрес сразу, а не ждал повторных обходов.
+ *   gone  — типоразмера нет в нормативе, товар удалён или снят с публикации
+ *           (фантомы импорта: «заглушки» ОСТ 34.10.428, собранные из таблиц
+ *           тройников); отдаём 410, чтобы поисковик выбросил адрес сразу,
+ *           а не ждал повторных обходов.
  */
 return [
 'moved' => [
@@ -1685,8 +1687,53 @@ return [
 	'/catalog/sdt/zaglushki/zaglushka-33h2-ost-24-125-23-1989/' => '/catalog/sdt/zaglushki/probka-33h2-ost-24-125-23-1989/',
 ],
 'gone' => [
-	'/catalog/sdt/troyniki/troynik-1320h14-ost-34-10-764-1997/' => 1,
 	'/catalog/sdt/perekhody/perehod-k-25h-25h15-ost-34-10-423-1990/' => 1,
+	'/catalog/sdt/troyniki/troynik-1200h000-585h000-ost-34-10-510-1990/' => 1,
+	'/catalog/sdt/troyniki/troynik-1320h14-ost-34-10-764-1997/' => 1,
+	'/catalog/sdt/troyniki/troynik-200h50-128h50-ost-34-10-510-1990/' => 1,
 	'/catalog/sdt/troyniki/troynik-245h19-ost-24-125-18-1989-3/' => 1,
+	'/catalog/sdt/troyniki/troynik-420h10-0h10-dy0-seriya-4-903-2010/' => 1,
+	'/catalog/sdt/troyniki/troynik-460h6-seriya-4-903-2010/' => 1,
+	'/catalog/sdt/troyniki/troynik-500h125-139h125-ost-34-10-510-1990/' => 1,
+	'/catalog/sdt/troyniki/troynik-700h000-189h000-ost-34-10-510-1990/' => 1,
+	'/catalog/sdt/troyniki/troynik-700h2-seriya-4-903-2010/' => 1,
+	'/catalog/sdt/troyniki/troynik-94h5-2h5-dy2-seriya-4-903-2010/' => 1,
+	'/catalog/sdt/troyniki/troynik-980h6-950h6-dy950-seriya-4-903-2010/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-0h100-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-1000h600-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-1000h700-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-1000h900-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-108h5-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-1200h000-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-150h125-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-150h150-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-150h50-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-150h65-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-150h80-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-1900h10001020-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-200h50-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-220h7-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-300h500-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-325h12-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-377h6-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-500h125-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-500h200-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-500h256-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-530h8-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-57h3-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-600h250-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-600h300-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-600h350-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-600h500-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-630h12-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-630h8-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-700h000-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-700h300-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-700h350-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-75h6-5-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-76h55-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-89h5-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-900h600-ost-34-10-428-1990/' => 1,
+	'/catalog/sdt/zaglushki/zaglushka-900h800-ost-34-10-428-1990/' => 1,
 ],
 ];
