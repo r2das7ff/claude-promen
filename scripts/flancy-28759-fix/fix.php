@@ -17,6 +17,10 @@
  * одного D столкнутся), вес (очищается: массы в таблице нет, а число
  * шпилек под видом массы кормило калькулятор доставки).
  *
+ * Двойники: если строку таблицы уже занял товар с прямым совпадением,
+ * второй товар — копия с опечаткой. Он снимается с публикации (черновик,
+ * обратимо), а его адрес ведёт на хозяина строки.
+ *
  * Запуск:  wp eval-file scripts/flancy-28759-fix/fix.php dry
  *          wp eval-file scripts/flancy-28759-fix/fix.php apply
  */
@@ -31,12 +35,13 @@ if ( ! is_array( $table ) || ! $table ) {
 // «1350 PN3»: 1350 в таблице — D1 только при 1,0 и 1,6 МПа (56 шпилек),
 // а у товара 0,3 МПа и 44 шпильки — это D=1200 на 0,3 МПа (D1 там 1330).
 // Давление и число шпилек согласны друг с другом против опечатки в D1.
+// Строку D=1200 / 0,3 МПа уже занимает «1330 PN3» — поэтому это двойник.
 $overrides = [ 'гост-287592-2022-1350-pn3-фп' => [ 'D' => 1200, 'PN' => 0.3 ] ];
 
 $ids = get_posts(
 	[
 		'post_type'      => 'product',
-		'post_status'    => 'any',
+		'post_status'    => 'publish',
 		'posts_per_page' => -1,
 		'fields'         => 'ids',
 		'orderby'        => 'ID',
@@ -45,15 +50,29 @@ $ids = get_posts(
 		'meta_value'     => 'ГОСТ 28759.2-2022',
 	]
 );
+
+// Товары-поправки идут последними: прямые совпадения успевают занять
+// свои строки таблицы, и поправка, попавшая в занятую строку, — двойник.
+usort(
+	$ids,
+	static function ( $a, $b ) use ( $overrides ): int {
+		$ao = isset( $overrides[ (string) get_post_meta( $a, '_sku', true ) ] ) ? 1 : 0;
+		$bo = isset( $overrides[ (string) get_post_meta( $b, '_sku', true ) ] ) ? 1 : 0;
+		return ( $ao <=> $bo ) ?: ( $a <=> $b );
+	}
+);
+
 printf( "Режим: %s. Позиций ГОСТ 28759.2: %d\n\n", $mode, count( $ids ) );
 
 $fmt = static function ( float $v ): string {
 	return rtrim( rtrim( number_format( $v, 2, '.', '' ), '0' ), '.' );
 };
 
-$moves = [];
-$done  = 0;
-$fail  = [];
+$moves  = [];
+$taken  = []; // "D|PN" => [ 'url' => …, 'sku' => … ]
+$done   = 0;
+$drafts = 0;
+$fail   = [];
 foreach ( $ids as $id ) {
 	$sku = (string) get_post_meta( $id, '_sku', true );
 	if ( ! preg_match( '/-(\d{3,4})-pn(\d+)/u', $sku, $m ) ) {
@@ -87,14 +106,26 @@ foreach ( $ids as $id ) {
 		continue;
 	}
 
-	$post      = get_post( $id );
+	$post    = get_post( $id );
+	$d       = (int) $row['D'];
+	$row_key = $d . '|' . $row['PN'];
+	$url_old = (string) get_permalink( $id );
+
+	if ( isset( $taken[ $row_key ] ) ) {
+		printf( "  двойник: %s — та же строка ГОСТа, что у %s; снимается, адрес ведёт туда\n", $sku, $taken[ $row_key ]['sku'] );
+		if ( 'apply' === $mode ) {
+			wp_update_post( [ 'ID' => $id, 'post_status' => 'draft' ] );
+			promen_catalog_upsert( $id, false ); // не опубликован — уходит из канона
+		}
+		$moves[] = [ $url_old, $taken[ $row_key ]['url'] ];
+		$drafts++;
+		continue;
+	}
+
 	$dims      = json_decode( (string) get_post_meta( $id, '_promen_dims', true ), true ) ?: [];
-	$d         = (int) $row['D'];
-	$url_old   = (string) get_permalink( $id );
 	$title_new = sprintf( 'Фланец ФП DN%d PN%d ГОСТ 28759.2-2022', $d, $pn_kgs );
 	$slug_new  = sprintf( 'flanec-fp-dn%d-pn%d-gost-28759-2-2022', $d, $pn_kgs );
-
-	$dims_new = array_merge(
+	$dims_new  = array_merge(
 		$dims,
 		[
 			'dn'               => (string) $d,
@@ -133,6 +164,7 @@ foreach ( $ids as $id ) {
 	if ( $url_new !== $url_old ) {
 		$moves[] = [ $url_old, $url_new ];
 	}
+	$taken[ $row_key ] = [ 'url' => $url_new, 'sku' => $sku ];
 	$done++;
 }
 
@@ -142,7 +174,10 @@ foreach ( $moves as [ $from, $to ] ) {
 }
 file_put_contents( __DIR__ . '/moves.tsv', $out );
 
-printf( "\nИсправлено: %d, не сопоставлено: %d%s\nПереездов: %d\n", $done, count( $fail ), $fail ? ' (' . implode( ', ', $fail ) . ')' : '', count( $moves ) );
+printf(
+	"\nИсправлено: %d, двойников снято: %d, не сопоставлено: %d%s\nПереездов: %d\n",
+	$done, $drafts, count( $fail ), $fail ? ' (' . implode( ', ', $fail ) . ')' : '', count( $moves )
+);
 if ( 'apply' === $mode && function_exists( 'promen_filters_cache_bump' ) ) {
 	promen_filters_cache_bump();
 }

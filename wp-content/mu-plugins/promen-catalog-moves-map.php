@@ -28,7 +28,7 @@ return [
 	'/catalog/flancy/flancy-plosk/flanec-fp-dn1330-pn6-gost-28759-2-2022/' => '/catalog/flancy/flancy-plosk/flanec-fp-dn1200-pn6-gost-28759-2-2022/',
 	'/catalog/flancy/flancy-plosk/flanec-fp-dn1350-pn10-gost-28759-2-2022/' => '/catalog/flancy/flancy-plosk/flanec-fp-dn1200-pn10-gost-28759-2-2022/',
 	'/catalog/flancy/flancy-plosk/flanec-fp-dn1350-pn16-gost-28759-2-2022/' => '/catalog/flancy/flancy-plosk/flanec-fp-dn1200-pn16-gost-28759-2-2022/',
-	'/catalog/flancy/flancy-plosk/flanec-fp-dn1350-pn3-gost-28759-2-2022/' => '/catalog/flancy/flancy-plosk/flanec-fp-dn1200-pn3-gost-28759-2-2022-2/',
+	'/catalog/flancy/flancy-plosk/flanec-fp-dn1350-pn3-gost-28759-2-2022/' => '/catalog/flancy/flancy-plosk/flanec-fp-dn1200-pn3-gost-28759-2-2022/',
 	'/catalog/flancy/flancy-plosk/flanec-fp-dn1430-gost-28759-2-2022/' => '/catalog/flancy/flancy-plosk/flanec-fp-dn1300-pn6-gost-28759-2-2022/',
 	'/catalog/flancy/flancy-plosk/flanec-fp-dn1450-pn10-gost-28759-2-2022/' => '/catalog/flancy/flancy-plosk/flanec-fp-dn1300-pn10-gost-28759-2-2022/',
 	'/catalog/flancy/flancy-plosk/flanec-fp-dn1450-pn16-gost-28759-2-2022/' => '/catalog/flancy/flancy-plosk/flanec-fp-dn1300-pn16-gost-28759-2-2022/',
