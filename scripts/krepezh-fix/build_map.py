@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """Собрать карту 301 для mu-plugins/promen-catalog-moves-map.php.
 
-Источники: scripts/otk-fix/moves.tsv (правки ОТК 10.09.2026) и
-scripts/krepezh-fix/moves.tsv (шпильки ГОСТ 22032/22043, 23.09.2026).
+Источники: scripts/otk-fix/moves.tsv (правки ОТК 10.09.2026),
+scripts/krepezh-fix/moves.tsv (шпильки ГОСТ 22032/22043, 23.09.2026) и
+scripts/flancy-28759-fix/moves.tsv (фланцы ГОСТ 28759.2 с D1 вместо D, 23.09.2026),
+scripts/dnishcha-6533-fix/moves.tsv (днища ГОСТ 6533 с hв вместо D, 23.09.2026).
 Блок gone из прежней карты сохраняется как есть.
 """
 import io
@@ -19,7 +21,8 @@ HEADER = """<?php
  *
  *   moved — товар сменил адрес: род изделия в слаге не совпадал с нормативом
  *           (бобышка и пробка лежали под zaglushka-, донышко под dnische-;
- *           шпильки ГОСТ 22032/22043 — под bolty/bolt-).
+ *           шпильки ГОСТ 22032/22043 — под bolty/bolt-; фланцы ГОСТ 28759.2 —
+ *           с наружным диаметром D1 вместо D в адресе).
  *   gone  — типоразмера нет в нормативе, товар удалён; отдаём 410, чтобы
  *           поисковик выбросил адрес сразу, а не ждал повторных обходов.
  */
@@ -59,7 +62,7 @@ for line in old_moved.split('\n'):
         pairs[m.group(1)] = m.group(2)
 
 added = 0
-for src_file in ['otk-fix/moves.tsv', 'krepezh-fix/moves.tsv']:
+for src_file in ['otk-fix/moves.tsv', 'krepezh-fix/moves.tsv', 'flancy-28759-fix/moves.tsv', 'dnishcha-6533-fix/moves.tsv']:
     for a, b in read_pairs(os.path.join(ROOT, 'scripts', src_file)):
         if a not in pairs:
             added += 1
