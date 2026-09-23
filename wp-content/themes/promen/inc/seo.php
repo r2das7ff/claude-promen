@@ -19,7 +19,10 @@ defined( 'ABSPATH' ) || exit;
  */
 function promen_product_title_seo( int $product_id ): string {
 	$title = (string) get_the_title( $product_id );
-	if ( preg_match( '/\bPN\b/iu', $title ) ) {
+	// «PN16» — после букв сразу цифры, границы слова между ними нет: прежняя
+	// проверка \bPN\b такое имя не узнавала и дописывала давление второй раз
+	// («Фланец ФП DN400 PN16 PN16 ГОСТ 28759.2-2022»).
+	if ( preg_match( '/\bPN\s*\d/iu', $title ) ) {
 		return $title; // давление уже в имени
 	}
 	$dims = function_exists( 'promen_get_dims' ) ? promen_get_dims( $product_id ) : [];
