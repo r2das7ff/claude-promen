@@ -3,16 +3,10 @@
    Источник — html/stati.html (2026-07-23); хром — base.css.
    ============================================================ */
 
-/* ── NAV (shared) ── */
-.nav{position:fixed;top:0;left:0;right:0;height:64px;z-index:200;display:flex;align-items:center;padding:0 28px 0 44px;border-bottom:1px solid var(--ln2);background:var(--bg);backdrop-filter:none;}
-
-.nav-links a{display:block;height:64px;line-height:64px;padding:0 20px;font-size:13.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);border-left:1px solid var(--ln);position:relative;transition:color var(--dur-fast),background var(--dur-fast);}
-
-/* ── LEFT STRIP ── */
-.strip{position:fixed;left:0;top:64px;bottom:0;width:44px;border-right:1px solid var(--ln2);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:20px 0 24px;background:var(--bg);}
-
-/* ── PAGE SHELL ── */
-.pg{position:relative;z-index:1;padding-top:64px;padding-left:44px;min-height:100vh;display:flex;flex-direction:column;}
+/* Хром страницы (.nav, .nav-links, .strip, .pg) живёт в base.css и там же
+   схлопывается по медиазапросам: рельса 44 → 20px на 1024 и прячется на 480.
+   Дубль этих правил здесь перебивал адаптив базы — на 1000px статьи держали
+   рельсу 44px там, где каталог показывал 20px. Не возвращать. */
 
 /* ── BREADCRUMB ── */
 .pd-crumb{display:flex;align-items:center;gap:8px;padding:28px var(--head-x) 0;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1-text);}
@@ -117,12 +111,9 @@
   .bl-featured-body{padding:32px 32px;max-width:none;}
 }
 @media(max-width:900px){
-  .strip{display:none;}
-  .pg{padding-left:0;}
   .bl-filters{position:static;}
 }
 @media(max-width:640px){
-  .nav-links,.nav-meta{display:none;}
   .bl-grid{grid-template-columns:1fr;}
   .bl-metarow{gap:20px;flex-wrap:wrap;}
   .bl-media{height:220px;}
@@ -171,7 +162,6 @@
 /* ═══ ФУТЕР — порт с production.html (внутри .pg: ось даёт сам .pg) ═══ */
 
 /* ── Футер = один экран на телефоне (компоновка statement как на главной) ── */
-
 
 /* Reduce: ховер-моушен карточек убираем (цвет/рамка остаются) — до этого
    файл был одним из двух вовсе без reduce-блока. */

@@ -1326,6 +1326,11 @@ button.c-chip--more:hover{color:var(--dark);border-color:var(--g1);}
   white-space:nowrap;
 }
 .prod-row:hover .pr-mat-more{border-bottom-color:var(--dark);}
+/* Тап-зона на телефоне: сам хвост «… +N» — 20px текста, пальцем не попасть.
+   Растягиваем отступами, не трогая вид строки. */
+@media(max-width:900px){
+  .pr-mat-more{padding:6px 4px;margin:-6px -4px;cursor:pointer;}
+}
 
 .mat-pop{
   position:fixed;

@@ -159,15 +159,13 @@ function promen_catalog_header_cells( array $cols, string $sort_field, string $s
 }
 
 /**
- * TEST (2026-07-30): ячейка «Материал» с подсказкой по «… +N».
+ * Ячейка «Материал» с подсказкой по «… +N».
  *
  * `steel_display` усечён до 2 марок при >3 (см. promen_product_steel_display) —
  * 77% строк реестра показывают «20, 09Г2С … +12» и не отвечают, что за остальные.
  * Полный список уже лежит в канон-документе (`steel_labels`), добирать нечего.
- * Хвост «… +N» оборачиваем в триггер, JS вешает на него hover-подсказку.
- *
- * Откат: вернуть `<span class="pr-mat">$steel</span>`, снять .pr-mat-more/.mat-pop
- * в catalog.css и блок «TEST: подсказка марок стали» в catalog.js.
+ * Хвост «… +N» оборачиваем в триггер: на компьютере подсказка по наведению,
+ * на телефоне по нажатию (см. catalog.js).
  */
 function promen_steel_cell_html( array $hit ): string {
 	$txt = trim( (string) ( $hit['steel_display'] ?? '' ) );
