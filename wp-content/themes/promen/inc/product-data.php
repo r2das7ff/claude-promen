@@ -237,11 +237,17 @@ function promen_sanitize_dims( array $dims, array $opts = [] ): array {
 		}
 	}
 
+	// DN из таблицы стандарта (флаг ставит scripts/dn-table-fix): у деталей
+	// высокого давления и паропроводов Dу задан по исполнениям и идёт по
+	// внутреннему проходу — ГОСТ 22793-83: Dу 100 это 127×14 … 180×40. Трубный
+	// ряд по наружному диаметру дал бы 159×28 → DN 150, поэтому его не трогаем.
+	$by_table = $dn !== '' && ! empty( $dims['dn_by_table'] );
+
 	// Трубный DN из OD — только для сварных/штампованных. У точёных D≠труба,
 	// а DN = внутренний проход (d); подмена ломает стенки (D−DN)/2.
 	// У фланцев outer_diameter = D фланца, не трубы — не выводить DN из него.
 	$is_flange = promen_dims_look_like_flange( $dims );
-	if ( $od !== '' && ! $turned && ! $is_flange ) {
+	if ( $od !== '' && ! $turned && ! $is_flange && ! $by_table ) {
 		$inferred = promen_pipe_dn_from_od( $od );
 		if ( $inferred !== '' ) {
 			$dims['dn'] = $inferred;
@@ -249,7 +255,7 @@ function promen_sanitize_dims( array $dims, array $opts = [] ): array {
 		}
 	}
 
-	if ( $dn !== '' && $ex !== '' && $dn === $ex && preg_match( '/^0?[1-9]$/', $dn ) && $od !== '' ) {
+	if ( ! $by_table && $dn !== '' && $ex !== '' && $dn === $ex && preg_match( '/^0?[1-9]$/', $dn ) && $od !== '' ) {
 		unset( $dims['dn'] );
 		$dn = '';
 	}
@@ -259,7 +265,7 @@ function promen_sanitize_dims( array $dims, array $opts = [] ): array {
 		unset( $dims['stud_count'] );
 	}
 
-	if ( $od !== '' && ! $turned && ! $is_flange ) {
+	if ( $od !== '' && ! $turned && ! $is_flange && ! $by_table ) {
 		$inferred = promen_pipe_dn_from_od( $od );
 		$dn_junk  = promen_dn_looks_junk( $dn );
 		if ( ! $dn_junk && $inferred !== '' && $dn !== '' && is_numeric( str_replace( ',', '.', $dn ) ) ) {
@@ -393,6 +399,7 @@ function promen_sanitize_dims( array $dims, array $opts = [] ): array {
  * карточек (scripts/otk-fix/fix.php).
  *
  * Ряд по ГОСТ 28338 (условные проходы) в пределах сортамента каталога.
+ * 225 в ряду есть и живёт в паропроводах: СТО ЦКТИ 321.xx, 273×26 → Dу 225.
  */
 function promen_dn_is_standard( string $dn ): bool {
 	$v = str_replace( ',', '.', trim( $dn ) );
@@ -400,8 +407,8 @@ function promen_dn_is_standard( string $dn ): bool {
 		return false;
 	}
 	static $row = [
-		6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 175, 200, 250,
-		300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1400,
+		6, 8, 10, 15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 175, 200, 225,
+		250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1400,
 		1600, 1800, 2000,
 	];
 	return in_array( (int) round( (float) $v ), $row, true );
