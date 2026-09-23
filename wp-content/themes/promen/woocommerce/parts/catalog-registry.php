@@ -184,7 +184,7 @@ $embedded      = ! empty( $promen_registry_embedded );
                 <span class="cbf-lbl"><?php echo esc_html( $lbl ); ?></span>
                 <div class="cbf-chips">
                 <?php foreach ( $opts as $i => $o ) : $on = in_array( $o['slug'], $sel, true ); ?>
-                  <a class="c-chip<?php echo $on ? ' on' : ''; ?><?php echo (int) $o['count'] === 0 ? ' c-chip--zero' : ''; ?><?php echo $i >= $vis ? ' c-chip--extra' : ''; ?>" href="<?php echo esc_url( promen_multi_toggle_url( $param, $o['slug'] ) ); ?>" data-count="<?php echo esc_attr( $o['count'] ); ?>"><?php echo esc_html( $o['name'] ); ?><span class="c-chip-n"><?php echo esc_html( $o['count'] ); ?></span></a>
+                  <a class="c-chip<?php echo $on ? ' on' : ''; ?><?php echo (int) $o['count'] === 0 ? ' c-chip--zero' : ''; ?><?php echo $i >= $vis ? ' c-chip--extra' : ''; ?>" href="<?php echo esc_url( promen_multi_toggle_url( $param, $o['slug'] ) ); ?>" data-slug="<?php echo esc_attr( $o['slug'] ); ?>" data-count="<?php echo esc_attr( $o['count'] ); ?>"><?php echo esc_html( $o['name'] ); ?><span class="c-chip-n"><?php echo esc_html( $o['count'] ); ?></span></a>
                 <?php endforeach; ?>
                 <?php if ( count( $opts ) > $vis ) : ?>
                   <button type="button" class="c-chip c-chip--more">+ ещё <?php echo count( $opts ) - $vis; ?></button>

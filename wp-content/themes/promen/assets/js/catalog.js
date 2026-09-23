@@ -5,11 +5,15 @@
   function expandMoreChips(more) {
     var box = more.closest('.cbf-multi');
     if (!box) return;
+    var hadFocus = document.activeElement === more;
+    var first = box.querySelector('.c-chip--extra');
     box.classList.add('is-expanded');
     box.querySelectorAll('.c-chip--extra').forEach(function (c) {
       c.classList.remove('c-chip--extra');
     });
     more.remove();
+    // Кнопка исчезает — с клавиатуры фокус переходим на первую раскрытую фишку.
+    if (hadFocus && first) first.focus();
   }
 
   // capture: перехватываем до AJAX-обработчика ссылок (.c-chip)
@@ -423,7 +427,7 @@
       opts.forEach(function (o, i) {
         var on = sel.indexOf(o.slug) >= 0;
         var empty = o.count === 0;
-        html += '<a class="c-chip' + (on ? ' on' : '') + (empty ? ' c-chip--zero' : '') + (i >= vis ? ' c-chip--extra' : '') + '" href="' + esc(chipHref(param, o.slug, pageUrl)) + '">' +
+        html += '<a class="c-chip' + (on ? ' on' : '') + (empty ? ' c-chip--zero' : '') + (i >= vis ? ' c-chip--extra' : '') + '" href="' + esc(chipHref(param, o.slug, pageUrl)) + '" data-slug="' + esc(o.slug) + '">' +
           esc(o.name) + '<span class="c-chip-n">' + o.count + '</span></a>';
       });
       if (opts.length > vis) {
@@ -661,6 +665,93 @@
     });
   }
 
+  // Фильтры, табы отраслей, шапка таблицы и пагинация пересобираются через
+  // innerHTML. Элемент под фокусом при этом исчезает, фокус падает на body,
+  // и следующий Tab начинает обход страницы с начала — пройти фильтры
+  // клавиатурой было нельзя. Перед перерисовкой запоминаем, что это было
+  // (параметр + значение), после — находим такой же элемент и возвращаем
+  // фокус. Заодно переживают перерисовку раскрытые «+ ещё»: раньше выбранная
+  // в хвосте списка марка пряталась обратно.
+  function captureFocus() {
+    var el = document.activeElement;
+    var key = null;
+    if (el && el !== document.body && el.closest) {
+      var slider = el.closest('.cbf-slider');
+      var chip = el.closest('.cbf-multi .c-chip');
+      var tab = el.closest('a.cb-tab');
+      var th = el.closest('.th-sort[data-sort-field]');
+      if (slider && (el.classList.contains('cbf-r') || el.classList.contains('cbf-in'))) {
+        key = { t: 'slider', param: slider.dataset.param, cls: el.classList.contains('cbf-r') ? 'cbf-r' : 'cbf-in', bound: el.dataset.bound };
+      } else if (chip) {
+        key = { t: 'chip', param: chip.closest('.cbf-multi').dataset.param, slug: chip.dataset.slug || '', more: chip.classList.contains('c-chip--more') };
+      } else if (tab) {
+        key = { t: 'tab', slug: tab.dataset.industry || '' };
+      } else if (th) {
+        key = { t: 'sort', field: th.getAttribute('data-sort-field') };
+      } else if (el.closest('.cat-pagination')) {
+        key = { t: 'page' };
+      }
+    }
+    var expanded = [];
+    document.querySelectorAll('#cbFilters .cbf-multi.is-expanded').forEach(function (m) {
+      expanded.push(m.dataset.param);
+    });
+    return { key: key, expanded: expanded };
+  }
+
+  function findMulti(param) {
+    var found = null;
+    document.querySelectorAll('#cbFilters .cbf-multi').forEach(function (m) {
+      if (m.dataset.param === param) found = m;
+    });
+    return found;
+  }
+
+  function restoreFocus(state) {
+    state.expanded.forEach(function (param) {
+      var m = findMulti(param);
+      var more = m && m.querySelector('.c-chip--more');
+      if (more) expandMoreChips(more);
+    });
+    var k = state.key;
+    if (!k) return;
+    var target = null;
+    if (k.t === 'slider') {
+      document.querySelectorAll('#cbFilters .cbf-slider').forEach(function (s) {
+        if (s.dataset.param === k.param) target = s.querySelector('.' + k.cls + '[data-bound=' + k.bound + ']');
+      });
+    } else if (k.t === 'chip') {
+      var m = findMulti(k.param);
+      if (m) {
+        m.querySelectorAll('.c-chip').forEach(function (c) {
+          if (!target && !k.more && c.dataset.slug === k.slug) target = c;
+        });
+        // Фишка в свёрнутом хвосте — раскрываем, иначе фокус не встанет.
+        if (target && target.classList.contains('c-chip--extra')) {
+          var more = m.querySelector('.c-chip--more');
+          if (more) expandMoreChips(more);
+        }
+        if (!target) target = m.querySelector('.c-chip');
+      }
+    } else if (k.t === 'tab') {
+      document.querySelectorAll('#cbTabs a.cb-tab').forEach(function (t) {
+        if ((t.dataset.industry || '') === k.slug) target = t;
+      });
+    } else if (k.t === 'sort') {
+      target = document.querySelector('.th-sort[data-sort-field="' + k.field + '"]');
+    } else if (k.t === 'page') {
+      // Новая страница — фокус в начало выдачи, куда её и прокрутили.
+      list.setAttribute('tabindex', '-1');
+      target = list;
+    }
+    if (!target) return;
+    target.focus({ preventScroll: true });
+    if (target.classList.contains('cbf-in') && target.setSelectionRange) {
+      var n = target.value.length;
+      target.setSelectionRange(n, n);
+    }
+  }
+
   // Пока запрос летит, человек успевает набрать дальше или нажать крестик.
   // Ответ на устаревший запрос применять нельзя: он возвращает выдачу,
   // от которой уже отказались (ловилось на проде, где поиск идёт по секунде).
@@ -675,10 +766,12 @@
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (seq !== swapSeq) return;
+        var focusState = captureFocus();
         renderList(data, parsed.url.toString());
         renderNote(data);
         renderFilters(data, parsed.url.toString());
         renderPagination(data, parsed.url.toString());
+        restoreFocus(focusState);
         updateCount(data.total || 0);
         updateSidebar(parsed.params.group);
         markSeriesActive(parsed.params.gost || '');
