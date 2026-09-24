@@ -39,6 +39,295 @@ if ( ! defined( 'PROMEN_CACHE_STALE' ) ) {
 	define( 'PROMEN_CACHE_STALE', 10 * MINUTE_IN_SECONDS );
 }
 
+/**
+ * Сторож перебора фасетов: сколько значений выбрано в мультивыборе.
+ *
+ * Инцидент 23–24.09.2026. С 19:30 ботнет (33 тыс. IP, браузерные UA, без
+ * Referer и cookie) перебирал сочетания фасетов вида
+ * `/catalog/?gost=a%2Cb%2Cc%2Cd` — 90 703 запроса из 99 671, до пяти в
+ * секунду. Такие адреса бесконечны, мимо кеша и каждый — полная генерация
+ * с фасетными запросами к канону. MySQL шаред-хостинга захлебнулся, с 20:00
+ * сайт отвечал «Error establishing a database connection», в 23:20 хостинг
+ * отрезал пользователю БД доступ целиком. robots.txt (`Disallow: /*?`) такие
+ * боты не читают.
+ *
+ * Живому посетителю сочетание из двух и более значений достаётся только от
+ * catalog.js (фишки переключаются через API без перезагрузки), то есть
+ * браузер у него исполняет JS. Боты перебора JS не исполняют: к API за те же
+ * сутки было 37 обращений против 90 тысяч к страницам.
+ *
+ * Считаем только мультивыбор. Диапазоны и поиск (`dn_min`, `s_max`, `q`)
+ * ведут из объявлений Директа — их не трогаем.
+ */
+function promen_guard_facet_values(): int {
+	$n = 0;
+	foreach ( [ 'gost', 'steel', 'angle', 'industry' ] as $param ) {
+		if ( ! isset( $_GET[ $param ] ) ) {
+			continue;
+		}
+		$vals = is_array( $_GET[ $param ] ) ? $_GET[ $param ] : explode( ',', (string) $_GET[ $param ] );
+		foreach ( $vals as $val ) {
+			// Вложенный массив наш интерфейс не строит — считаем за сочетание.
+			$n += is_array( $val ) ? 2 : ( '' !== trim( (string) $val ) ? 1 : 0 );
+		}
+	}
+	return $n;
+}
+
+/** Нужна ли проверка браузера: сочетание фасетов от клиента без нашей cookie. */
+function promen_guard_needs_challenge(): bool {
+	if ( ! in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', [ 'GET', 'HEAD' ], true ) ) {
+		return false;
+	}
+	$uri = $_SERVER['REQUEST_URI'] ?? '/';
+	// API каталога не трогаем: его зовёт catalog.js, а cookie у посетителя,
+	// пришедшего на чистую страницу, ещё нет.
+	foreach ( [ '/wp-admin', '/wp-json', '/wp-login.php', '/wp-cron.php' ] as $prefix ) {
+		if ( 0 === strpos( $uri, $prefix ) ) {
+			return false;
+		}
+	}
+	if ( isset( $_GET['rest_route'] ) || promen_guard_facet_values() < 2 ) {
+		return false;
+	}
+	if ( isset( $_COOKIE['pe_js'] ) ) {
+		return false;
+	}
+	foreach ( array_keys( $_COOKIE ) as $name ) {
+		if ( 0 === strpos( (string) $name, 'wordpress_logged_in_' ) ) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/**
+ * Проверка браузера без базы и без WordPress: страница ставит cookie
+ * скриптом и перезагружается. Человек видит мелькание на долю секунды,
+ * бот без JS — 403 на полкилобайта вместо генерации каталога.
+ * Защита от петли: без cookie страница не перезагружается, а объясняет.
+ */
+function promen_guard_challenge(): void {
+	$path = (string) strtok( (string) ( $_SERVER['REQUEST_URI'] ?? '/' ), '?' );
+	$path = htmlspecialchars( '' !== $path ? $path : '/', ENT_QUOTES, 'UTF-8' );
+
+	http_response_code( 403 );
+	header( 'Content-Type: text/html; charset=UTF-8' );
+	header( 'Cache-Control: no-store, private' );
+	header( 'X-Robots-Tag: noindex, nofollow' );
+	header( 'X-Promen-Guard: challenge' );
+	if ( 'HEAD' === ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) ) {
+		exit;
+	}
+
+	$help = '<h1>Фильтры каталога работают с включённым JavaScript</h1>'
+		. '<p>Включите JavaScript и cookie или откройте <a href="' . $path . '">раздел без фильтров</a>.</p>'
+		. '<p>Отдел продаж: <a href="tel:+73512170099">+7 (351) 217-00-99</a>, '
+		. '<a href="mailto:zakaz@prom-en.com">zakaz@prom-en.com</a></p>';
+
+	echo '<!doctype html><html lang="ru"><head><meta charset="utf-8">'
+		. '<meta name="viewport" content="width=device-width,initial-scale=1">'
+		. '<meta name="robots" content="noindex,nofollow"><title>Каталог — PROM-EN</title>'
+		. '<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;'
+		. 'background:#f4f5f7;color:#1c2330;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}'
+		. 'main{max-width:520px;margin:16px;padding:28px;background:#fff;border:1px solid #dde1e6}'
+		. 'h1{font-size:20px;margin:0 0 12px}a{color:#0b5cad}</style></head><body><main>'
+		. '<p id="pe-wait">Открываем подборку каталога…</p>'
+		. '<div id="pe-help" hidden>' . $help . '</div>'
+		. '<noscript><style>#pe-wait{display:none}</style>' . $help . '</noscript>'
+		. '<script>(function(){var ok=false,n=0;try{'
+		. 'document.cookie="pe_js=1; path=/; max-age=2592000; SameSite=Lax"+(location.protocol==="https:"?"; Secure":"");'
+		. 'ok=document.cookie.indexOf("pe_js=1")>-1;'
+		. 'n=+(sessionStorage.getItem("pe_js_n")||0);sessionStorage.setItem("pe_js_n",n+1);'
+		. '}catch(e){}'
+		. 'if(ok&&n<2){location.replace(location.href);return;}'
+		. 'document.getElementById("pe-wait").hidden=true;document.getElementById("pe-help").hidden=false;'
+		. '})();</script></main></body></html>';
+	exit;
+}
+
+/**
+ * Предохранитель базы: не больше PROMEN_RENDER_SLOTS генераций WordPress
+ * одновременно.
+ *
+ * Проверка браузера закрывает приём ночи 23.09, но кеш можно обойти и иначе —
+ * любым лишним параметром в адресе. Каждый обход кеша — полная загрузка
+ * WordPress и запросы к MySQL, а база на виртуальном хостинге общая: при
+ * перегрузке Timeweb сбрасывает права пользователя БД (тикет №12709309 от
+ * 23.09.2026). Поэтому число одновременных генераций ограничено сверху при
+ * любом трафике: лишние запросы получают сохранённую копию или 503.
+ *
+ * Слоты — файлы под flock(): замок снимается сам, когда процесс завершается,
+ * даже аварийно, — зависших слотов не бывает. Лежат вне каталога страниц,
+ * иначе их удалял бы сброс кеша. Не открылся каталог или файл — пропускаем
+ * без ограничения: предохранитель не должен сам ронять сайт.
+ *
+ * Мимо предохранителя: POST (заявки, админка и WP-Cron — их терять нельзя),
+ * залогиненные, расчёт доставки (ждёт внешний API, базу почти не трогает).
+ * Браузер, уже исполнявший JS сайта (cookie pe_js или _ym_uid Метрики), ждёт
+ * слот до 8 секунд, остальные — полторы.
+ */
+function promen_guard_render_gate(): void {
+	if ( 'cli' === PHP_SAPI || 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) ) {
+		return;
+	}
+	$uri = (string) ( $_SERVER['REQUEST_URI'] ?? '/' );
+	foreach ( [ '/wp-admin', '/wp-login.php', '/wp-json/promen/v1/delivery' ] as $prefix ) {
+		if ( 0 === strpos( $uri, $prefix ) ) {
+			return;
+		}
+	}
+	foreach ( array_keys( $_COOKIE ) as $name ) {
+		if ( 0 === strpos( (string) $name, 'wordpress_logged_in_' ) ) {
+			return;
+		}
+	}
+	$human = isset( $_COOKIE['pe_js'] ) || isset( $_COOKIE['_ym_uid'] );
+
+	$slots = defined( 'PROMEN_RENDER_SLOTS' ) ? max( 1, (int) PROMEN_RENDER_SLOTS ) : 4;
+	$dir   = WP_CONTENT_DIR . '/cache/promen-slots';
+	if ( ! is_dir( $dir ) && ! @mkdir( $dir, 0755, true ) && ! is_dir( $dir ) ) {
+		return;
+	}
+
+	$deadline = microtime( true ) + ( $human ? 8.0 : 1.5 );
+	$first    = mt_rand( 0, $slots - 1 );
+	do {
+		for ( $k = 0; $k < $slots; $k++ ) {
+			$fh = @fopen( $dir . '/slot-' . ( ( $first + $k ) % $slots ), 'c' );
+			if ( false === $fh ) {
+				return;
+			}
+			if ( flock( $fh, LOCK_EX | LOCK_NB ) ) {
+				$GLOBALS['promen_render_slot'] = $fh; // держим до конца запроса
+				return;
+			}
+			fclose( $fh );
+		}
+		usleep( 200000 );
+	} while ( microtime( true ) < $deadline );
+
+	promen_guard_busy();
+}
+
+/** Все слоты заняты: сохранённая копия страницы (любой версии темы) или 503. */
+function promen_guard_busy(): void {
+	$uri  = (string) ( $_SERVER['REQUEST_URI'] ?? '/' );
+	$head = 'HEAD' === ( $_SERVER['REQUEST_METHOD'] ?? 'GET' );
+	header( 'Cache-Control: no-store, private' );
+	header( 'X-Promen-Guard: busy' );
+
+	if ( 0 === strpos( $uri, '/wp-json' ) || isset( $_GET['rest_route'] ) ) {
+		http_response_code( 503 );
+		header( 'Retry-After: 10' );
+		header( 'Content-Type: application/json; charset=UTF-8' );
+		echo '{"code":"busy","message":"Сервер занят, повторите через несколько секунд.","data":{"status":503}}';
+		exit;
+	}
+
+	$target = promen_cache_target();
+	$path   = (string) strtok( $uri, '?' );
+	$key    = md5( ( $_SERVER['HTTP_HOST'] ?? '' ) . '|' . ( $target ? $target[0] : ( '' !== $path ? $path : '/' ) ) );
+	$files  = glob( PROMEN_CACHE_DIR . '/v*/' . substr( $key, 0, 2 ) . '/' . $key . '.html' );
+	if ( $files ) {
+		usort( $files, static function ( $a, $b ) {
+			return (int) @filemtime( $b ) <=> (int) @filemtime( $a );
+		} );
+		header( 'Content-Type: text/html; charset=UTF-8' );
+		header( 'X-Promen-Cache: STALE-BUSY' );
+		if ( ! $head ) {
+			readfile( $files[0] );
+		}
+		exit;
+	}
+
+	http_response_code( 503 );
+	header( 'Retry-After: 30' );
+	header( 'Content-Type: text/html; charset=UTF-8' );
+	if ( $head ) {
+		exit;
+	}
+	echo '<!doctype html><html lang="ru"><head><meta charset="utf-8">'
+		. '<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">'
+		. '<meta http-equiv="refresh" content="20"><title>Сайт перегружен — PROM-EN</title>'
+		. '<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f4f5f7;'
+		. 'color:#1c2330;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}main{max-width:520px;margin:16px;'
+		. 'padding:28px;background:#fff;border:1px solid #dde1e6}h1{font-size:20px;margin:0 0 12px}a{color:#0b5cad}</style></head>'
+		. '<body><main><h1>Сайт сейчас перегружен</h1><p>Страница откроется сама через несколько секунд.</p>'
+		. '<p>Отдел продаж: <a href="tel:+73512170099">+7 (351) 217-00-99</a>, <a href="mailto:zakaz@prom-en.com">zakaz@prom-en.com</a></p>'
+		. '</main></body></html>';
+	exit;
+}
+
+/**
+ * Метки рекламы и аналитики. На разметку они не влияют: yclid и ClientID
+ * request-modal.js берёт из адреса и cookie сам, на сервере их не читает
+ * никто. Поэтому переход по объявлению отдаётся из кеша чистой страницы —
+ * раньше каждый клик из Директа был полной генерацией.
+ */
+function promen_cache_is_tracking_param( string $key ): bool {
+	$key = strtolower( $key );
+	return 0 === strpos( $key, 'utm_' )
+		|| in_array( $key, [ 'yclid', 'ysclid', 'ymclid', 'gclid', 'fbclid', 'etext', 'from', 'openstat', '_openstat', 'roistat' ], true );
+}
+
+/**
+ * Адрес, под которым страница лежит в кеше, и можно ли её туда класть.
+ *
+ * — без параметров или только с метками: чистый путь;
+ * — ровно один фасет с одним значением (`?gost=gost-17375-2001`,
+ *   `?group=otvody`): путь с этим параметром. Таких адресов конечное число
+ *   (сотни), а ведут на них ссылки «в реестре» и посадочные Директа;
+ * — всё остальное (сочетания, диапазоны, поиск, пагинация с фильтром) —
+ *   null, мимо кеша: пространство таких адресов не ограничено.
+ *
+ * Класть в кеш ответ на адрес с метками нельзя: разметка могла подхватить
+ * адрес запроса (og:url, canonical параметрических видов) и под ключом
+ * чистой страницы оказались бы чужие метки. Отдавать готовую — можно.
+ *
+ * @return array{0: string, 1: bool}|null [ адрес ключа, можно ли сохранять ]
+ */
+function promen_cache_target(): ?array {
+	// Считаем один раз, до WordPress: ядро потом прогоняет $_GET через
+	// wp_magic_quotes, и при записи в кеш ключ должен совпасть с чтением.
+	static $memo = false;
+	if ( false !== $memo ) {
+		return $memo;
+	}
+	$memo = promen_cache_target_compute();
+	return $memo;
+}
+
+/** @return array{0: string, 1: bool}|null */
+function promen_cache_target_compute(): ?array {
+	$path = (string) strtok( (string) ( $_SERVER['REQUEST_URI'] ?? '/' ), '?' );
+	if ( '' === $path ) {
+		$path = '/';
+	}
+
+	$params  = $_GET;
+	$tracked = false;
+	foreach ( array_keys( $params ) as $key ) {
+		if ( promen_cache_is_tracking_param( (string) $key ) ) {
+			unset( $params[ $key ] );
+			$tracked = true;
+		}
+	}
+	if ( ! $params ) {
+		return [ $path, ! $tracked ];
+	}
+
+	if ( 1 === count( $params ) ) {
+		$key = (string) key( $params );
+		$val = reset( $params );
+		if ( in_array( $key, [ 'gost', 'steel', 'angle', 'industry', 'group' ], true )
+			&& is_string( $val ) && preg_match( '/^[a-z0-9][a-z0-9-]{0,79}$/', $val ) ) {
+			return [ $path . '?' . $key . '=' . $val, ! $tracked ];
+		}
+	}
+	return null;
+}
+
 /** Кешируем ли этот запрос вообще. */
 function promen_cache_eligible(): bool {
 	// HEAD пускаем только на чтение готового файла (см. низ файла): начиная
@@ -47,9 +336,9 @@ function promen_cache_eligible(): bool {
 	if ( ! in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', [ 'GET', 'HEAD' ], true ) ) {
 		return false;
 	}
-	// Любые параметры мимо кеша: фильтры каталога, поиск, utm, add-to-cart.
-	// Они и так закрыты от индексации, а кешировать их — плодить мусор на диске.
-	if ( ! empty( $_GET ) || ! empty( $_SERVER['QUERY_STRING'] ) ) {
+	// Параметры — см. promen_cache_target(): метки и одиночный фасет в кеш,
+	// сочетания, поиск и add-to-cart мимо.
+	if ( null === promen_cache_target() ) {
 		return false;
 	}
 	$uri = $_SERVER['REQUEST_URI'] ?? '/';
@@ -121,9 +410,13 @@ function promen_cache_theme_stamp(): int {
 	return $stamp;
 }
 
-/** Путь к файлу кеша. Хост в ключе — при переезде на боевой домен чужой кеш не подхватится. */
+/**
+ * Путь к файлу кеша. Хост в ключе — при переезде на боевой домен чужой кеш не подхватится.
+ * Для чистого адреса ключ тот же, что был до promen_cache_target(): md5(хост|путь).
+ */
 function promen_cache_file(): string {
-	$key = md5( ( $_SERVER['HTTP_HOST'] ?? '' ) . '|' . ( $_SERVER['REQUEST_URI'] ?? '/' ) );
+	$target = promen_cache_target();
+	$key    = md5( ( $_SERVER['HTTP_HOST'] ?? '' ) . '|' . ( $target ? $target[0] : ( $_SERVER['REQUEST_URI'] ?? '/' ) ) );
 	return PROMEN_CACHE_DIR . '/v' . promen_cache_theme_stamp() . '/' . substr( $key, 0, 2 ) . '/' . $key . '.html';
 }
 
@@ -201,9 +494,16 @@ function promen_cache_store( string $buffer ): string {
 			return $buffer;
 		}
 	}
-	// Закрытые от индексации страницы кешировать незачем: это поиск,
-	// личный кабинет и параметрические виды.
-	if ( false !== stripos( $buffer, 'noindex' ) ) {
+	$target = promen_cache_target();
+	if ( ! $target || ! $target[1] ) {
+		return $buffer; // адрес с метками: отдать готовую можно, класть свою — нет
+	}
+	// Закрытые от индексации страницы кешировать незачем: это поиск и личный
+	// кабинет. Исключение — вид с одним фасетом: он под noindex намеренно
+	// (canonical на чистый раздел), но адресов таких конечное число, а без
+	// кеша каждый заход на них — генерация с фасетными запросами к базе.
+	$param_view = false !== strpos( $target[0], '?' );
+	if ( ! $param_view && false !== stripos( $buffer, 'noindex' ) ) {
 		return $buffer;
 	}
 	if ( defined( 'PROMEN_CACHE_SKIP' ) && PROMEN_CACHE_SKIP ) {
@@ -235,7 +535,12 @@ function promen_cache_store( string $buffer ): string {
 	return $buffer;
 }
 
+if ( promen_guard_needs_challenge() ) {
+	promen_guard_challenge();
+}
+
 if ( ! promen_cache_eligible() ) {
+	promen_guard_render_gate();
 	return;
 }
 
@@ -286,6 +591,9 @@ if ( is_readable( $promen_file ) ) {
 		exit;
 	}
 }
+
+// Дальше — генерация WordPress, то есть запросы к базе: сначала слот.
+promen_guard_render_gate();
 
 // Промах на HEAD не кешируем: тело такого ответа ядро может не построить.
 if ( $promen_head ) {
