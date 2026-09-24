@@ -76,3 +76,25 @@ ssh promen-prod 'cd ~/prom-en.com/public_html && tar xf ../backup-2026-09-24-gua
 
 Число слотов меняется без правки кода: `define( 'PROMEN_RENDER_SLOTS', 6 );`
 в `wp-config.php`.
+
+## Третий заход (24.09, после восстановления базы)
+
+- `.htaccess`: блок `promen-guard` заменён целиком (между маркерами) — добавлены
+  `/wp-json/wp/v2/users`, `?author=N`, `/batch/v1` без cookie входа → 403.
+- `wp-content/mu-plugins/promen-redirects.php`: пагинация старых рубрик → 301.
+- Бэкап обоих до правки — `~/prom-en.com/backup-2026-09-24-guard3.tar`:
+
+```bash
+ssh promen-prod 'cd ~/prom-en.com/public_html && tar xf ../backup-2026-09-24-guard3.tar'
+```
+
+- Картинки старых рассылок: 198 файлов скопированы из `public_html_old` в
+  `wp-content/themes/promen/images/` и `wp-content/uploads/rassilki/` (только
+  отсутствующие, без перезаписи). В git их нет — **при выкладке темы не
+  удалять эти папки** (`rsync --delete` и т. п.), на них ссылаются письма.
+
+Проверка базы после восстановления прав — одна SSH-сессия, только чтение:
+
+```bash
+ssh promen-prod 'cd ~/prom-en.com/public_html && /opt/php8.3/bin/php /usr/local/bin/wp eval-file ~/incident-0924/post-restore-check.php'
+```
