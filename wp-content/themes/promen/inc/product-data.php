@@ -2326,7 +2326,24 @@ function promen_series_meta( WC_Product $product ): array {
 	}
 
 	$code = $prefix . '-' . $norm_short . ( $angle !== '' ? '-' . $angle : '' );
-	$slug = promen_translit( $norm_key ) . ( $angle !== '' ? '-' . $angle : '' );
+
+	// Слаг серии — слаг термина `norm`, а транслит ключа только в запасе.
+	//
+	// Транслит расходится с термином там, где в ключе есть год, а в слаге его
+	// нет: «СТО 321.05-2009» → `sto-321-05-2009` против термина `sto-321-05`.
+	// Маршрут и карта сайта ищут по термину, поэтому адрес не резолвился:
+	// promen_series_url() возвращал пустоту, страница серии оставалась без
+	// canonical, а крошка карточки — без ссылки. Обход 25.09.2026 нашёл восемь
+	// таких страниц (СТО 321.05 и СТО 95.119).
+	$norm_slug = '';
+	$norm_terms = get_the_terms( $product->get_id(), 'norm' );
+	if ( $norm_terms && ! is_wp_error( $norm_terms ) ) {
+		$norm_slug = (string) $norm_terms[0]->slug;
+	}
+	if ( '' === $norm_slug ) {
+		$norm_slug = promen_translit( $norm_key );
+	}
+	$slug = $norm_slug . ( $angle !== '' ? '-' . $angle : '' );
 
 	// Карта «норматив → тип» промахнулась или дала generic (изоляция ГОСТ 30732-2020,
 	// арматура, трубы ВГП со slug-нормой) — тип изделия из названия товара.
