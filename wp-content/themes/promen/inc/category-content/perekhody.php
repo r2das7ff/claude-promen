@@ -42,7 +42,7 @@ return [
         <div class="hud-row"><span class="hud-rk">ГОСТ 17378-2001</span><span class="hud-rv live">Бесшовные</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 22826-83</span><span class="hud-rv live">Ру до 100 МПа</span></div>
         <div class="hud-row"><span class="hud-rk">ОСТ 36-22-77 / 34-10</span><span class="hud-rv live">Сварные</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
   </div>

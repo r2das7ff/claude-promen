@@ -3220,7 +3220,6 @@ img { display:block; }
 }
 .s9-card[data-cat="cert"]::before  { background:var(--dark); }
 .s9-card[data-cat="smk"]::before   { background:var(--blue); }
-.s9-card[data-cat="decl"]::before  { background:var(--g1); }
 .s9-card[data-cat="tu"]::before    { background:var(--g2); }
 /* Направленная проливка ховера — порт с нормативов (.nb-card): белый слой
    втекает со стороны входа курсора и вытекает в сторону выхода (--flow-x/y
@@ -3347,7 +3346,7 @@ img { display:block; }
   /* "СКАЧАТЬ" was a real download link at ~22px tall (5px padding around
      8.5px text) — a genuine action, not decoration, needs a real tap target. */
   .s9-link { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:0 18px; }
-  /* 5 filter buttons (ВСЕ/СЕРТИФИКАТЫ/СМК/ДЕКЛАРАЦИИ/ТУ) don't fit a phone
+  /* 5 filter buttons (ВСЕ/СТАНДАРТЫ/СЕРТИФИКАТЫ/СМК/ТУ) don't fit a phone
      width on one line — instead of wrapping into a ragged grid, make the
      bar horizontally swipeable, a standard mobile filter-chip pattern. */
   .s9-filter {

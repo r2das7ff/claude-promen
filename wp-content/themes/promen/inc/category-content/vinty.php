@@ -41,7 +41,7 @@ return [
       <div class="hud-block">
         <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 11738-84</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( $ctx['count'] ) ); ?> поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
         <div class="hud-row"><span class="hud-rk">Документы</span><span class="hud-rv live">Паспорт 3.1</span></div>
         <div class="hud-row"><span class="hud-rk">Заказ</span><span class="hud-rv live">по заявке</span></div>
       </div>

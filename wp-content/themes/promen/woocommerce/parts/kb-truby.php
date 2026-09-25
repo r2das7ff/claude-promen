@@ -201,8 +201,8 @@ defined( 'ABSPATH' ) || exit;
                 <div class="kb-doc-desc">Для электросварных и поднадзорных объектов — контроль шва и объём НК по заказу / ТР ТС 032.</div>
               </div>
               <div class="kb-doc-item">
-                <div class="kb-doc-name">Декларация ТР ТС 032/2013 <span class="kb-doc-badge">Обязательно</span></div>
-                <div class="kb-doc-desc">RU С-RU.АБ53.В.08323/23. Обязательна при PN&nbsp;&gt;&nbsp;0.05&nbsp;МПа для продукции в ЕАЭС.</div>
+                <div class="kb-doc-name">Сертификат ТР ТС 032/2013 <span class="kb-doc-badge">Обязательно</span></div>
+                <div class="kb-doc-desc">RU С-RU.АБ53.В.08323/23. Подтверждение соответствия обязательно при PN&nbsp;&gt;&nbsp;0.05&nbsp;МПа для продукции в ЕАЭС.</div>
               </div>
             </div>
           </div>

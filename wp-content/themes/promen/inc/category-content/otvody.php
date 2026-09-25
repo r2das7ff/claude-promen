@@ -42,7 +42,7 @@ return [
         <div class="hud-row"><span class="hud-rk">ГОСТ 17375-2001 / 30753-2001</span><span class="hud-rv live">Крутоизогнутые</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 22793-83 / 22818-83</span><span class="hud-rv live">Ру до 100 МПа</span></div>
         <div class="hud-row"><span class="hud-rk">СТО ЦКТИ 321.01–.05</span><span class="hud-rv live">Гнутые для ТЭС</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
   </div>
@@ -576,8 +576,8 @@ return [
                 <div class="kb-doc-desc">При наличии требования в заказе или нормативе. Давление испытания 1.25–1.5 × Pраб, выдержка не менее 5 минут.</div>
               </div>
               <div class="kb-doc-item">
-                <div class="kb-doc-name">Декларация ТР ТС 032/2013 <span class="kb-doc-badge">Обязательно</span></div>
-                <div class="kb-doc-desc">RU С-RU.АБ53.В.08323/23, серия RU 0418908. Обязательна при PN&nbsp;&gt;&nbsp;0.05&nbsp;МПа для всей продукции в ЕАЭС.</div>
+                <div class="kb-doc-name">Сертификат ТР ТС 032/2013 <span class="kb-doc-badge">Обязательно</span></div>
+                <div class="kb-doc-desc">RU С-RU.АБ53.В.08323/23, серия RU 0418908. Подтверждение соответствия обязательно при PN&nbsp;&gt;&nbsp;0.05&nbsp;МПа для всей продукции в ЕАЭС.</div>
               </div>
             </div>
           </div>
@@ -770,7 +770,7 @@ return [
   promen_faq_schema( get_theme_file_path( 'inc/category-content/otvody.php' ) ); ?>
         <div class="faq-wrap reveal">
           <div class="fq"><div class="fq-q"><span class="fq-num">01</span><span class="fq-t">Чем отличаются изделия по ОСТ и ГОСТ — можно ли их заменить друг другом?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">ГОСТ и ОСТ — разные нормативные документы с отличающимися допусками, маркировкой и требованиями к контролю. <strong>Взаимозаменяемость — только по письменному согласованию с проектировщиком и представителем надзора.</strong> Для объектов ТЭС/АЭС самовольная замена нормативного документа недопустима.</div></div></div>
-          <div class="fq"><div class="fq-q"><span class="fq-num">02</span><span class="fq-t">Поставляете ли изделия с сертификацией по ТР ТС 032/2013?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">Да. Вся продукция завода охвачена декларацией о соответствии <strong>RU С-RU.АБ53.В.08323/23</strong> по ТР ТС 032/2013 «О безопасности оборудования, работающего под давлением». Декларация включается в комплект документов на поставку.</div></div></div>
+          <div class="fq"><div class="fq-q"><span class="fq-num">02</span><span class="fq-t">Поставляете ли изделия с сертификацией по ТР ТС 032/2013?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">Да. Вся продукция завода охвачена сертификатом соответствия <strong>RU С-RU.АБ53.В.08323/23</strong> по ТР ТС 032/2013 «О безопасности оборудования, работающего под давлением». Сертификат включается в комплект документов на поставку.</div></div></div>
           <div class="fq"><div class="fq-q"><span class="fq-num">03</span><span class="fq-t">Какой объём неразрушающего контроля применяется по умолчанию?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">Базовый объём — <strong>100% ВИК</strong> (визуально-измерительный контроль) для всех изделий. По требованию заказчика или в соответствии с нормативным документом добавляются:<ul><li>УЗК — по ГОСТ Р 55724-2013</li><li>РК (рентгенографический контроль)</li><li>МПД (магнитопорошковая дефектоскопия)</li><li>ПВК (капиллярный контроль)</li></ul>Для объектов АЭС — полный объём по <strong>НП-045-18</strong> и программе контроля объекта.</div></div></div>
           <div class="fq"><div class="fq-q"><span class="fq-num">04</span><span class="fq-t">Можно ли заказать нестандартные типоразмеры или исполнение по чертежам заказчика?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">Да. Завод изготавливает изделия по конструкторской документации заказчика — в том числе нестандартные диаметры, углы, толщины стенок и специальные исполнения. Для согласования — отправьте КД через форму запроса или на <strong>zakaz@prom-en.com</strong>.</div></div></div>
           <div class="fq"><div class="fq-q"><span class="fq-num">05</span><span class="fq-t">Как долго хранится прослеживаемость документации после поставки?</span><span class="fq-arr">↓</span></div><div class="fq-a"><div class="fq-a-in">Архив производственной документации (паспорта, протоколы НК, сертификаты плавок) хранится на производстве <strong>не менее 10 лет</strong>. Для объектов АЭС — в соответствии с требованиями НП-017-14 и НП-089-15. По запросу возможно предоставление дубликатов документов.</div></div></div>

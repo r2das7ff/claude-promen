@@ -126,7 +126,7 @@ defined( 'ABSPATH' ) || exit;
       </div>
       <div class="seo-spec-item">
         <span class="seo-spec-k">Сертификация</span>
-        <span class="seo-spec-v"><?php echo promen_spec_value( 'ТР ТС 032/2013 · Декл. RU С-RU.АБ53.В.08323/23 · Серия RU 0418908' ); ?></span>
+        <span class="seo-spec-v"><?php echo promen_spec_value( 'ТР ТС 032/2013 · Серт. RU С-RU.АБ53.В.08323/23 · Серия RU 0418908' ); ?></span>
       </div>
       <div class="seo-spec-item">
         <span class="seo-spec-k">Документация</span>

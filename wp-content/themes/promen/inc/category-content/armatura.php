@@ -43,7 +43,7 @@ return [
         <div class="hud-row"><span class="hud-rk">Задвижки</span><span class="hud-rv live"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-zadvizhki' ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Клапаны</span><span class="hud-rv live"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-klapany' ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Краны</span><span class="hud-rv live"><?php echo esc_html( (string) promen_catalog_group_count( 'armatura-krany' ) ); ?> поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
   </div>

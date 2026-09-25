@@ -215,7 +215,7 @@ defined( 'ABSPATH' ) || exit;
                 <div class="kb-doc-desc">По требованию заказчика или нормативного документа объекта. Объём контроля фиксируется в договоре.</div>
               </div>
               <div class="kb-doc-item">
-                <div class="kb-doc-name">Декларация ТР ТС 032/2013 <span class="kb-doc-badge">При применимости</span></div>
+                <div class="kb-doc-name">Сертификат ТР ТС 032/2013 <span class="kb-doc-badge">При применимости</span></div>
                 <div class="kb-doc-desc">RU С-RU.АБ53.В.08323/23 — при поставке в составе оборудования под избыточным давлением в ЕАЭС.</div>
               </div>
             </div>

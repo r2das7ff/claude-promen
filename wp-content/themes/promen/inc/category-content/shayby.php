@@ -42,7 +42,7 @@ return [
         <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 6402-70</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shayby', 'gost-6402-1970' ) ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 11371-78</span><span class="hud-rv live"><?php echo esc_html( number_format_i18n( promen_category_norm_count( 'shayby', 'gost-11371-1978' ) ) ); ?> поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
         <div class="hud-row"><span class="hud-rk">Комплект</span><span class="hud-rv live">с болтом / шпилькой</span></div>
       </div>
     </div>

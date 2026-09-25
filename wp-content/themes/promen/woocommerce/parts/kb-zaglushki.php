@@ -226,8 +226,8 @@ defined( 'ABSPATH' ) || exit;
                 <div class="kb-doc-desc">При наличии требования в заказе или нормативе. Давление испытания 1.25–1.5 × Pраб, выдержка не менее 5 минут.</div>
               </div>
               <div class="kb-doc-item">
-                <div class="kb-doc-name">Декларация ТР ТС 032/2013 <span class="kb-doc-badge">Обязательно</span></div>
-                <div class="kb-doc-desc">RU С-RU.АБ53.В.08323/23, серия RU 0418908. Обязательна при PN&nbsp;&gt;&nbsp;0.05&nbsp;МПа для всей продукции в ЕАЭС.</div>
+                <div class="kb-doc-name">Сертификат ТР ТС 032/2013 <span class="kb-doc-badge">Обязательно</span></div>
+                <div class="kb-doc-desc">RU С-RU.АБ53.В.08323/23, серия RU 0418908. Подтверждение соответствия обязательно при PN&nbsp;&gt;&nbsp;0.05&nbsp;МПа для всей продукции в ЕАЭС.</div>
               </div>
             </div>
           </div>

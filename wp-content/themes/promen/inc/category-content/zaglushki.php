@@ -42,7 +42,7 @@ return [
         <div class="hud-row"><span class="hud-rk">ГОСТ 17379-2001</span><span class="hud-rv live">Эллиптические</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 22815-83</span><span class="hud-rv live">Фланцевые Ру 100</span></div>
         <div class="hud-row"><span class="hud-rk">Область</span><span class="hud-rv live">Трубопроводы / НГК</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
   </div>

@@ -42,7 +42,7 @@ return [
         <div class="hud-row"><span class="hud-rk">ГОСТ 33259-2015</span><span class="hud-rv live">Тип 01 / 11</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 12820-80 / 12821-80</span><span class="hud-rv live">ФП / ФВ</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 28759.2-2022</span><span class="hud-rv live">Сосудовые</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
   </div>

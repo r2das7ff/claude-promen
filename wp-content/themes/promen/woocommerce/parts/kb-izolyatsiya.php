@@ -166,7 +166,7 @@ defined( 'ABSPATH' ) || exit;
                 <div class="kb-doc-desc">Геометрия тройника, целостность оболочки, качество изоляции в зоне торцов.</div>
               </div>
               <div class="kb-doc-item">
-                <div class="kb-doc-name">Декларация ТР ТС 032/2013</div>
+                <div class="kb-doc-name">Сертификат ТР ТС 032/2013</div>
                 <div class="kb-doc-desc">Для стальной части при PN&nbsp;&gt;&nbsp;0.05&nbsp;МПа — RU С-RU.АБ53.В.08323/23.</div>
               </div>
             </div>

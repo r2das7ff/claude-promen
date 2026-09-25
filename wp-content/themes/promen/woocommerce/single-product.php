@@ -745,7 +745,7 @@ while ( have_posts() ) :
         <div class="nc">
           <div class="nc-code">ТР ТС 032/2013</div>
           <div class="nc-title">О безопасности оборудования под давлением</div>
-          <div class="nc-desc">Требования к сосудам и трубопроводам. Декларация соответствия для изделий завода.</div>
+          <div class="nc-desc">Требования к сосудам и трубопроводам. Сертификат соответствия для изделий завода.</div>
           <div class="nc-tags"><span class="nc-tag">Сертификация</span></div>
           <div class="nc-status"><span class="nc-dot"></span>Действует</div>
         </div>

@@ -43,7 +43,7 @@ return [
         <div class="hud-row"><span class="hud-rk">Неподвижные</span><span class="hud-rv live"><?php echo esc_html( (string) promen_catalog_group_count( 'opory-nepodv' ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Скользящие</span><span class="hud-rv live"><?php echo esc_html( (string) promen_catalog_group_count( 'opory-skolz' ) ); ?> поз.</span></div>
         <div class="hud-row"><span class="hud-rk">Пружинные</span><span class="hud-rv live"><?php echo esc_html( (string) promen_catalog_group_count( 'opory-pruzh' ) ); ?> поз.</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
   </div>

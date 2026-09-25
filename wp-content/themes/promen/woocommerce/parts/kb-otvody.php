@@ -174,7 +174,7 @@ defined( 'ABSPATH' ) || exit;
               <div class="kb-doc-item"><div class="kb-doc-name">Сертификат на металл с плавочными данными</div><div class="kb-doc-desc">Прослеживаемость от плавки завода-изготовителя металла. Номер плавки, химсостав, механические характеристики.</div></div>
               <div class="kb-doc-item"><div class="kb-doc-name">Протокол ВИК — 100% объём</div><div class="kb-doc-desc">Визуально-измерительный контроль по всем позициям. Геометрическое соответствие и качество поверхности.</div></div>
               <div class="kb-doc-item"><div class="kb-doc-name">Протоколы УЗК / РК / МПД / ПВК</div><div class="kb-doc-desc">По требованию заказчика или нормативного документа. УЗК по ГОСТ Р 55724-2013.</div></div>
-              <div class="kb-doc-item"><div class="kb-doc-name">Декларация ТР ТС 032/2013 <span class="kb-doc-badge">Обязательно</span></div><div class="kb-doc-desc">RU С-RU.АБ53.В.08323/23. Обязательна при PN &gt; 0.05 МПа.</div></div>
+              <div class="kb-doc-item"><div class="kb-doc-name">Сертификат ТР ТС 032/2013 <span class="kb-doc-badge">Обязательно</span></div><div class="kb-doc-desc">RU С-RU.АБ53.В.08323/23. Подтверждение соответствия обязательно при PN &gt; 0.05 МПа.</div></div>
             </div>
           </div>
           <div>

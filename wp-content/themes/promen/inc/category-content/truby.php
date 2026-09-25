@@ -42,7 +42,7 @@ return [
         <h2 class="hud-label">Нормативный статус</h2>
         <div class="hud-row"><span class="hud-rk">ГОСТ 8732-78</span><span class="hud-rv live">БШ · 595</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 10704-91</span><span class="hud-rv live">ЭС · 522</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
   </div>

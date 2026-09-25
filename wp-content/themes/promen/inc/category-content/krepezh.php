@@ -42,7 +42,7 @@ return [
         <div class="hud-row"><span class="hud-rk">ГОСТ 7798-70 / 7805-70</span><span class="hud-rv live">Болты</span></div>
         <div class="hud-row"><span class="hud-rk">ГОСТ 15590-70 / 9066-75</span><span class="hud-rv live">Шпильки</span></div>
         <div class="hud-row"><span class="hud-rk">ОСТ 26-2040-96</span><span class="hud-rv live">Шпильки ОСТ</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
   </div>

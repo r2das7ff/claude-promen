@@ -299,7 +299,7 @@ get_header();
   </div>
 
   <div class="s2-foot">
-    <span class="s2-decl">ТР ТС 032/2013 · ДЕКЛАРАЦИЯ RU С-RU.АБ53.В.08323/23 · ДЕЙСТВИТЕЛЬНА</span>
+    <span class="s2-decl">ТР ТС 032/2013 · СЕРТИФИКАТ RU С-RU.АБ53.В.08323/23 · ДЕЙСТВИТЕЛЕН</span>
     <span class="s2-continue">↓ БИБЛИОТЕКА МАТЕРИАЛОВ</span>
   </div>
 </section>
@@ -580,7 +580,7 @@ $shm_stages = [
   </div>
   <div class="jrn-layout" data-od-id="path-3-5-2">
     <div class="jrn-doc">
-      <div class="jd-hd">ООО «Завод Промышленная Энергетика» · Форма ВК-001 · Ред.3 от 01.09.2024</div>
+      <div class="jd-hd">ООО Завод «Промышленная Энергетика» · Форма ВК-001 · Ред.3 от 01.09.2024</div>
       <div class="jd-title">ЖУРНАЛ ВХОДНОГО КОНТРОЛЯ МЕТАЛЛОПРОКАТА И ЗАГОТОВОК</div>
       <hr class="jd-div">
       <div class="jd-meta">

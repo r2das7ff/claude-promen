@@ -42,7 +42,7 @@ return [
         <div class="hud-row"><span class="hud-rk">ГОСТ 6533-78</span><span class="hud-rv live">Действующий</span></div>
         <div class="hud-row"><span class="hud-rk">Область</span><span class="hud-rv live">Сосуды / котлы</span></div>
         <div class="hud-row"><span class="hud-rk">Исполнение</span><span class="hud-rv live">Отбортованные</span></div>
-        <div class="hud-row"><span class="hud-rk">Декларация</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
+        <div class="hud-row"><span class="hud-rk">Сертификат</span><span class="hud-rv live">RU С-RU.АБ53</span></div>
       </div>
     </div>
   </div>

@@ -1567,7 +1567,6 @@ $promen_tkr_hub = promen_page( 'proekty' );
       <button class="s9-filter-btn" data-cat="std">СТАНДАРТЫ</button>
       <button class="s9-filter-btn" data-cat="cert">СЕРТИФИКАТЫ</button>
       <button class="s9-filter-btn" data-cat="smk">СМК</button>
-      <button class="s9-filter-btn" data-cat="decl">ДЕКЛАРАЦИИ</button>
       <button class="s9-filter-btn" data-cat="tu">ТУ</button>
     </div>
   </div>
@@ -1669,15 +1668,15 @@ $promen_tkr_hub = promen_page( 'proekty' );
       </div>
     </div>
 
-    <div class="s9-card" data-cat="decl">
+    <div class="s9-card" data-cat="cert">
       <div class="s9-card-top">
-        <span class="s9-type">ДЕКЛ.</span>
+        <span class="s9-type">СЕРТ.</span>
       </div>
-      <p class="s9-card-name">Декларация о соответствии ТР ТС 032/2013</p>
+      <p class="s9-card-name">Сертификат соответствия ТР ТС 032/2013</p>
       <div class="s9-card-foot">
         <span class="s9-scope">Оборудование под давлением</span>
         <span class="s9-status"><span class="s9-status-dot"></span>Действует</span>
-        <a class="s9-link" href="#" onclick="openRequestModal('docs',{name:'Декларация о соответствии ТР ТС 032/2013'});return false;">СКАЧАТЬ</a>
+        <a class="s9-link" href="#" onclick="openRequestModal('docs',{name:'Сертификат соответствия ТР ТС 032/2013'});return false;">СКАЧАТЬ</a>
       </div>
     </div>
 
