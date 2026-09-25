@@ -592,6 +592,7 @@ add_filter( 'wp_robots', function ( array $robots ): array {
 function promen_norm_slug_redirects(): array {
 	return [
 		'ost-34-10-432-1990' => 'ost-34-10-432-90',
+		'ost-34-10-511-1990' => 'ost-34-10-511-90',
 	];
 }
 
@@ -796,7 +797,7 @@ add_action( 'wp_head', function () {
 		'@context'      => 'https://schema.org',
 		'@type'         => 'Organization',
 		'@id'           => home_url( '/#organization' ),
-		'name'          => 'ООО Завод «Промышленная Энергетика»',
+		'name'          => 'ООО «Завод Промышленная Энергетика»',
 		'alternateName' => 'PROM-EN',
 		// Реквизиты из карты предприятия. Это данные ЕГРЮЛ — они и так
 		// открыты, а в разметке помогают поисковику связать сайт с юрлицом.
@@ -905,7 +906,7 @@ add_action( 'template_redirect', function () {
 		return;
 	}
 	$out   = [];
-	$out[] = '# PROM-EN — ООО Завод «Промышленная Энергетика»';
+	$out[] = '# PROM-EN — ООО «Завод Промышленная Энергетика»';
 	$out[] = '';
 	$out[] = '> Завод в Челябинске: детали и сборочные единицы трубопроводов для объектов';
 	$out[] = '> атомной и тепловой энергетики. Изготовление по ГОСТ, ОСТ, СТО ЦКТИ, ТУ и';
