@@ -34,15 +34,16 @@ get_header();
         <span class="pd-badge intl">Экспорт</span>
       </div>
       <h1 class="pd-h1">АЭС «Аккую»</h1>
-      <div class="pd-loc">Гюльнар, Мерсин · Турция · побережье Средиземного моря</div>
-      <p class="pd-desc">Первая турецкая АЭС из четырёх энергоблоков ВВЭР‑1200 (4800 МВт суммарно),
-        реализуемая по схеме build‑own‑operate. Генеральный подрядчик — «Атомстройэкспорт». Завод
+      <div class="pd-loc">Бююкэджели, Гюльнар, Мерсин · Турция · побережье Средиземного моря</div>
+      <p class="pd-desc">Первая АЭС Турции и первая в мире, которую строят по модели «строй — владей —
+        эксплуатируй»: четыре энергоблока ВВЭР‑1200 (проект В‑509) с охлаждением морской водой.
+        Владелец и оператор — АО «Аккую Нуклеар», генподрядчик — СП TITAN2 IC İÇTAŞ. Завод
         «Промышленная Энергетика» поставил соединительные детали трубопровода двумя партиями.</p>
       <div class="pd-stats">
         <div class="hs"><span class="hs-v">Ст20 / 08Х18Н10Т</span><span class="hs-k">Материалы</span></div>
         <div class="hs"><span class="hs-v">≈148 т</span><span class="hs-k">Объём поставки</span></div>
         <div class="hs"><span class="hs-v">4×1200 МВт</span><span class="hs-k">Мощность энергоблоков</span></div>
-        <div class="hs"><span class="hs-v">Кат. I–IV</span><span class="hs-k">Категории давления</span></div>
+        <div class="hs"><span class="hs-v">Ø273–426</span><span class="hs-k">Углеродистые детали, мм</span></div>
       </div>
     </div>
     <div class="pd-hero-r">
@@ -74,7 +75,7 @@ get_header();
         <div class="pd-phase-rows">
           <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Тройники, переходы, отводы</span></div>
           <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Аустенитная нержавеющая сталь 08Х18Н10Т</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Класс</span><span class="pd-phase-rv">АЭС-класс, кат. давления ≥2.2 МПа</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Контроль</span><span class="pd-phase-rv">Капиллярный, стойкость к МКК по ГОСТ 6032</span></div>
         </div>
       </div>
     </div>
@@ -90,36 +91,36 @@ get_header();
       <div class="pd-step">
         <div class="pd-step-n">01</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Техническое задание и чертежи</div>
-          <div class="pd-step-d">Приём КД генподрядчика, согласование марок стали (Ст20 и 08Х18Н10Т) и диаметров под категории давления I–IV.</div>
+          <div class="pd-step-t">Документация подрядчика</div>
+          <div class="pd-step-d">Приём КД, согласование марок стали (сталь 20 и 08Х18Н10Т), диаметров и объёма контроля отдельно для каждой партии.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">02</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Производство</div>
-          <div class="pd-step-d">Изготовление партии 1 (углеродистая сталь, ≈92 т, Ø273–426 мм) и партии 2 (аустенитная сталь 08Х18Н10Т, ≈56 т).</div>
+          <div class="pd-step-t">Производство двух партий</div>
+          <div class="pd-step-d">Партия 1 — углеродистые отводы и переходы Ø273–426 мм (≈92 т); партия 2 — нержавеющие тройники, переходы и отводы из 08Х18Н10Т (≈56 т).</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">03</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Контроль качества</div>
-          <div class="pd-step-d">Визуально-измерительный и неразрушающий контроль, идентификация плавки, сертификация по требованиям АЭС-класса.</div>
+          <div class="pd-step-t">Контроль по марке стали</div>
+          <div class="pd-step-d">Углеродистые детали — визуально-измерительный, ультразвуковой и магнитопорошковый контроль; нержавеющие — капиллярный контроль и испытание на стойкость к межкристаллитной коррозии по ГОСТ 6032.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">04</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Упаковка и международная логистика</div>
-          <div class="pd-step-d">Маркировка, экспортная упаковка и доставка на строительную площадку АЭС «Аккую» в Турции.</div>
+          <div class="pd-step-t">Экспортная логистика</div>
+          <div class="pd-step-d">Экспортная упаковка и маркировка, морская доставка на площадку в провинции Мерсин: у станции собственный грузовой терминал на побережье.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">05</div>
         <div class="pd-step-b">
           <div class="pd-step-t">Документация и передача заказчику</div>
-          <div class="pd-step-d">Комплект паспортов изделий, сертификаты соответствия, декларация ТР ТС 032 RU С‑RU.АБ53.В.08323/23.</div>
+          <div class="pd-step-d">Паспорта изделий, сертификаты на металл с номерами плавок, протоколы контроля, сертификат соответствия ТР ТС 032 RU С‑RU.АБ53.В.08323/23.</div>
         </div>
       </div>
     </div>
@@ -133,28 +134,28 @@ get_header();
     </div>
     <div class="pd-prod-grid">
       <div class="pd-prod">
-        <span class="pd-prod-code">СДТ</span>
-        <div class="pd-prod-name">Отводы и переходы</div>
-        <p class="pd-prod-desc">Соединительные детали трубопровода АЭС-класса, углеродистые и аустенитные стали.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( $promen_sdt_url ); ?>">Страница СДТ →</a>
+        <span class="pd-prod-code">СТ20</span>
+        <div class="pd-prod-name">Отводы и переходы из стали 20</div>
+        <p class="pd-prod-desc">Для трубопроводов атомных станций до 2,2 МПа в каталоге — отводы по СТО 95 115‑2013 и переходы по ОСТ 34‑42‑665‑84.</p>
+        <?php if ( $u = promen_project_term_url( 'norm', 'sto-95-115-2013' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Отводы СТО 95 115 →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
-        <span class="pd-prod-code">СДТ‑003</span>
-        <div class="pd-prod-name">Отвод 90°</div>
-        <p class="pd-prod-desc">Пример изделия из партии — карточка отвода 90° с полным техническим паспортом.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( promen_demo_product_url() ); ?>">Открыть изделие →</a>
+        <span class="pd-prod-code">08Х18</span>
+        <div class="pd-prod-name">Нержавеющие тройники</div>
+        <p class="pd-prod-desc">Тройники сварные переходные по СТО 95 127‑2013 из 08Х18Н10Т — тот же класс деталей, что во второй партии.</p>
+        <?php if ( $u = promen_project_term_url( 'norm', 'sto-95-127' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Тройники СТО 95 127 →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
         <span class="pd-prod-code">ФЛ</span>
         <div class="pd-prod-name">Фланцы трубопроводные</div>
-        <p class="pd-prod-desc">Приварные и свободные фланцы для узлов АЭС, DN 10–1600.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( add_query_arg( 'group', 'flancy', $promen_catalog_url ) ); ?>">В каталоге →</a>
+        <p class="pd-prod-desc">Фланцы для узлов АЭС из 08Х18Н10Т по ОСТ 24.125.24‑89 и из углеродистой стали по ГОСТ 33259‑2015.</p>
+        <?php if ( $u = promen_project_term_url( 'product_cat', 'flancy' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Фланцы в каталоге →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
         <span class="pd-prod-code">НБ</span>
         <div class="pd-prod-name">Нормативная база</div>
-        <p class="pd-prod-desc">ГОСТ, ОСТ и декларация ТР ТС 032, применённые при изготовлении партии.</p>
-        <?php if ( $promen_nb_url ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $promen_nb_url ); ?>"></a><?php endif; ?>
+        <p class="pd-prod-desc">НП‑089‑15, НП‑045‑18, ОСТ, ГОСТ и сертификат ТР ТС 032 — документы, по которым изготовлены партии.</p>
+        <?php if ( $promen_nb_url ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $promen_nb_url ); ?>">Нормативная база →</a><?php endif; ?>
       </div>
     </div>
   </div>

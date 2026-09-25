@@ -34,15 +34,16 @@ get_header();
         <span class="pd-badge intl">Экспорт</span>
       </div>
       <h1 class="pd-h1">АЭС «Руппур»</h1>
-      <div class="pd-loc">Пабна, восточный берег р. Падма · Бангладеш · 160 км от Дакки</div>
-      <p class="pd-desc">Строящаяся атомная электростанция с двумя энергоблоками ВВЭР‑1200 российского
-        дизайна. Завод «Промышленная Энергетика» поставил трубы, соединительные детали трубопровода
-        и запорную арматуру для замены высоконапорного паропровода объекта.</p>
+      <div class="pd-loc">Ишварди, округ Пабна, восточный берег р. Падма · Бангладеш · 160 км от Дакки</div>
+      <p class="pd-desc">Первая АЭС Бангладеш: два энергоблока ВВЭР‑1200 (проект В‑523), генподрядчик —
+        АО «Атомстройэкспорт»; в 2026 году в реактор первого блока загружено топливо. Завод
+        «Промышленная Энергетика» поставил трубы, соединительные детали трубопровода и арматуру
+        для вспомогательных систем энергоблоков.</p>
       <div class="pd-stats">
-        <div class="hs"><span class="hs-v">15Х1М1Ф</span><span class="hs-k">Марка стали</span></div>
-        <div class="hs"><span class="hs-v">≈96 т</span><span class="hs-k">Объём поставки</span></div>
-        <div class="hs"><span class="hs-v">25 МПа</span><span class="hs-k">Рабочее давление, до</span></div>
-        <div class="hs"><span class="hs-v">Ø1020</span><span class="hs-k">Диаметр трубы, до мм</span></div>
+        <div class="hs"><span class="hs-v">20 / 08Х18Н10Т</span><span class="hs-k">Марки стали</span></div>
+        <div class="hs"><span class="hs-v">3 группы</span><span class="hs-k">Трубы · СДТ · арматура</span></div>
+        <div class="hs"><span class="hs-v">2×1200 МВт</span><span class="hs-k">Мощность энергоблоков</span></div>
+        <div class="hs"><span class="hs-v">7,0 МПа</span><span class="hs-k">Пар второго контура ВВЭР‑1200</span></div>
       </div>
     </div>
     <div class="pd-hero-r">
@@ -52,38 +53,38 @@ get_header();
     </div>
   </div>
 
-  <!-- ОБЪЁМ ПОСТАВКИ -->
+  <!-- СОСТАВ ПОСТАВКИ -->
   <div class="pd-sec">
     <div class="pd-sec-head">
       <span class="pd-sec-num">01</span>
-      <h2 class="pd-sec-title">Объём поставки</h2>
+      <h2 class="pd-sec-title">Состав поставки</h2>
     </div>
     <div class="pd-phases">
       <div class="pd-phase">
-        <div class="pd-phase-lbl">Партия 1</div>
-        <div class="pd-phase-v">≈20 т</div>
+        <div class="pd-phase-lbl">Группа 1</div>
+        <div class="pd-phase-v">Трубы</div>
         <div class="pd-phase-rows">
-          <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Трубы стальные</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Жаропрочная низколегированная сталь 15Х1М1Ф</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Назначение</span><span class="pd-phase-rv">Замена высоконапорного паропровода, Ø до 1020 мм</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Сортамент</span><span class="pd-phase-rv">Бесшовные стальные трубы</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Сталь 20, аустенитная сталь 08Х18Н10Т</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Назначение</span><span class="pd-phase-rv">Вспомогательные системы энергоблоков</span></div>
         </div>
       </div>
       <div class="pd-phase">
-        <div class="pd-phase-lbl">Партия 2</div>
-        <div class="pd-phase-v">≈65 т</div>
+        <div class="pd-phase-lbl">Группа 2</div>
+        <div class="pd-phase-v">СДТ</div>
         <div class="pd-phase-rows">
-          <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Соединительные детали трубопровода</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Давление</span><span class="pd-phase-rv">До 25 МПа</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Изготовление</span><span class="pd-phase-rv">По чертежам заказчика</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Отводы, тройники, переходы, заглушки</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Нормативы</span><span class="pd-phase-rv">НП‑089‑15, ОСТ 34‑42‑6хх‑84</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Изготовление</span><span class="pd-phase-rv">Серийные и по чертежам заказчика</span></div>
         </div>
       </div>
       <div class="pd-phase">
-        <div class="pd-phase-lbl">Партия 3</div>
-        <div class="pd-phase-v">≈11 т</div>
+        <div class="pd-phase-lbl">Группа 3</div>
+        <div class="pd-phase-v">Арматура</div>
         <div class="pd-phase-rows">
-          <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Запорная арматура и крепёж</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Состав</span><span class="pd-phase-rv">Задвижки, обратные и запорные клапаны</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Класс</span><span class="pd-phase-rv">Высокое давление</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Состав</span><span class="pd-phase-rv">Штуцеры, клапаны и вентили</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Крепёж</span><span class="pd-phase-rv">Шпильки и гайки ГОСТ 9066 / 9064</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Испытания</span><span class="pd-phase-rv">Гидравлические, ГОСТ 33257‑2015</span></div>
         </div>
       </div>
     </div>
@@ -99,36 +100,36 @@ get_header();
       <div class="pd-step">
         <div class="pd-step-n">01</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Техническое задание и чертежи</div>
-          <div class="pd-step-d">Приём КД, согласование марки стали 15Х1М1Ф, параметров давления и диаметров для замены паропровода.</div>
+          <div class="pd-step-t">Документация генподрядчика</div>
+          <div class="pd-step-d">Приём КД АО «Атомстройэкспорт», согласование марок стали, сортамента труб и объёма контроля для вспомогательных систем энергоблоков ВВЭР‑1200.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">02</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Производство</div>
-          <div class="pd-step-d">Изготовление партии труб (≈20 т), соединительных деталей на давление до 25 МПа (≈65 т) и запорной арматуры с крепежом (≈11 т).</div>
+          <div class="pd-step-t">Изготовление и комплектация</div>
+          <div class="pd-step-d">Соединительные детали — в том числе по чертежам заказчика — изготовлены в Челябинске и собраны в одну экспортную поставку вместе с трубами, арматурой и крепежом.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">03</div>
         <div class="pd-step-b">
           <div class="pd-step-t">Контроль качества</div>
-          <div class="pd-step-d">Визуально-измерительный и неразрушающий контроль, испытания арматуры на давление, проверка сертификатов на металл.</div>
+          <div class="pd-step-d">Визуально-измерительный, ультразвуковой и капиллярный контроль по марке стали, гидравлические испытания арматуры по ГОСТ 33257‑2015, сверка сертификатов на металл.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">04</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Упаковка и международная логистика</div>
-          <div class="pd-step-d">Маркировка, экспортная упаковка и доставка на строительную площадку АЭС «Руппур» в Бангладеш.</div>
+          <div class="pd-step-t">Экспортная логистика</div>
+          <div class="pd-step-d">Морем до порта Монгла, дальше баржами по Падме к причалу площадки. Упаковка рассчитана на перевалки и влажный тропический климат.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">05</div>
         <div class="pd-step-b">
           <div class="pd-step-t">Документация и передача заказчику</div>
-          <div class="pd-step-d">Комплект паспортов изделий, сертификаты соответствия, декларация ТР ТС 032 RU С‑RU.АБ53.В.08323/23.</div>
+          <div class="pd-step-d">Паспорта изделий, сертификаты на металл с номерами плавок, протоколы контроля и испытаний, сертификат соответствия ТР ТС 032 RU С‑RU.АБ53.В.08323/23.</div>
         </div>
       </div>
     </div>
@@ -143,27 +144,27 @@ get_header();
     <div class="pd-prod-grid">
       <div class="pd-prod">
         <span class="pd-prod-code">ТР</span>
-        <div class="pd-prod-name">Стальные трубы</div>
-        <p class="pd-prod-desc">Бесшовные горячедеформированные, сталь 15Х1М1Ф, для высоконапорных паропроводов, Ø до 1020 мм.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( add_query_arg( 'group', 'troyniki', $promen_catalog_url ) ); ?>">В каталоге →</a>
+        <div class="pd-prod-name">Трубы бесшовные</div>
+        <p class="pd-prod-desc">Горяче- и холоднодеформированные трубы из стали 20 и 08Х18Н10Т по ГОСТ 8732/8734 — сортамент для вспомогательных систем.</p>
+        <?php if ( $u = promen_project_term_url( 'product_cat', 'truby-bsh' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Бесшовные трубы →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
-        <span class="pd-prod-code">СДТ‑003</span>
-        <div class="pd-prod-name">Отвод 90°</div>
-        <p class="pd-prod-desc">Пример изделия из партии соединительных деталей — карточка с полным техническим паспортом.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( promen_demo_product_url() ); ?>">Открыть изделие →</a>
+        <span class="pd-prod-code">АС</span>
+        <div class="pd-prod-name">Детали для атомных станций</div>
+        <p class="pd-prod-desc">Тройники, переходы и заглушки по серии ОСТ 34‑42‑6хх‑84 для трубопроводов АС до 2,2 МПа, в том числе исполнения по чертежам.</p>
+        <?php if ( $u = promen_project_term_url( 'norm', 'ost-34-42-676-84' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Тройники ОСТ 34‑42‑676 →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
         <span class="pd-prod-code">ЗРА</span>
-        <div class="pd-prod-name">Запорно-регулирующая арматура</div>
-        <p class="pd-prod-desc">Задвижки, обратные и запорные клапаны высокого давления для трубопроводов АЭС.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( add_query_arg( 'group', 'armatura', $promen_catalog_url ) ); ?>">В каталоге →</a>
+        <div class="pd-prod-name">Арматура и крепёж</div>
+        <p class="pd-prod-desc">Клапаны, вентили и штуцеры с испытаниями по ГОСТ 33257‑2015, шпильки и гайки для фланцевых соединений по ГОСТ 9066/9064.</p>
+        <?php if ( $u = promen_project_term_url( 'product_cat', 'armatura' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Арматура в каталоге →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
         <span class="pd-prod-code">НБ</span>
         <div class="pd-prod-name">Нормативная база</div>
-        <p class="pd-prod-desc">ГОСТ, ОСТ и декларация ТР ТС 032, применённые при изготовлении партии.</p>
-        <?php if ( $promen_nb_url ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $promen_nb_url ); ?>"></a><?php endif; ?>
+        <p class="pd-prod-desc">НП‑089‑15, ОСТ, ГОСТ и сертификат ТР ТС 032 — документы, по которым изготовлена и проверена поставка.</p>
+        <?php if ( $promen_nb_url ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $promen_nb_url ); ?>">Нормативная база →</a><?php endif; ?>
       </div>
     </div>
   </div>

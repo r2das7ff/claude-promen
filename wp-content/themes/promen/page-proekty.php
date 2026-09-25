@@ -65,7 +65,8 @@ get_header();
 <?php
       // Карточки объектов — из общего реестра (inc/projects-registry.php),
       // он же питает карту на главной и бегущую строку.
-      // У объектов без детальной страницы карточка пока не кликабельна.
+      // У объектов без детальной страницы карточка не кликабельна целиком:
+      // вместо «Истории поставки» внизу ссылка на профильный раздел каталога.
       $promen_prj_svg = [
         'nuclear'  => '<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#1E3D5C"/><rect x="30" y="120" width="140" height="150" fill="#0F2A44"/><circle cx="100" cy="110" r="46" fill="none" stroke="#6D8CA6" stroke-width="2" opacity=".5"/></svg>',
         'thermal'  => '<svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice"><rect width="200" height="300" fill="#1E3D5C"/><rect x="20" y="150" width="30" height="120" fill="#0F2A44"/><rect x="60" y="100" width="30" height="170" fill="#0F2A44"/><rect x="100" y="170" width="30" height="100" fill="#0F2A44"/></svg>',
@@ -81,6 +82,7 @@ get_header();
         $promen_prj_soon = ! $promen_prj_url;
         $promen_prj_el   = $promen_prj_soon ? 'div' : 'a';
         $promen_prj_done = false === stripos( $promen_prj['status'], 'строительств' );
+        $promen_prj_more = $promen_prj_soon && ! empty( $promen_prj['link'] ) ? promen_project_link_url( $promen_prj['link'] ) : '';
         ?>
       <<?php echo $promen_prj_el; ?> class="p-card<?php echo $promen_prj_soon ? ' p-card-soon' : ''; ?>"
         id="<?php echo esc_attr( $promen_prj['slug'] ); ?>"
@@ -100,14 +102,23 @@ get_header();
             <div class="p-title"><?php echo esc_html( $promen_prj['name'] ); ?></div>
             <div class="p-loc"><?php echo esc_html( $promen_prj_loc ); ?></div>
           </div>
+          <?php if ( ! empty( $promen_prj['desc'] ) ) : ?>
+          <p class="p-desc"><?php echo esc_html( $promen_prj['desc'] ); ?></p>
+          <?php endif; ?>
           <div class="p-facts">
             <?php foreach ( $promen_prj['facts'] as [ $promen_prj_fk, $promen_prj_fv ] ) : ?>
             <div class="p-fact"><span class="p-fact-k"><?php echo esc_html( $promen_prj_fk ); ?></span><span class="p-fact-v"><?php echo esc_html( $promen_prj_fv ); ?></span></div>
             <?php endforeach; ?>
           </div>
+          <?php if ( ! $promen_prj_soon ) : ?>
           <div class="p-foot">
-            <span class="p-link"><?php echo $promen_prj_soon ? 'История поставки готовится' : 'История поставки →'; ?></span>
+            <span class="p-link">История поставки →</span>
           </div>
+          <?php elseif ( $promen_prj_more ) : ?>
+          <div class="p-foot">
+            <a class="p-link" href="<?php echo esc_url( $promen_prj_more ); ?>"><?php echo esc_html( $promen_prj['link'][0] ); ?> →</a>
+          </div>
+          <?php endif; ?>
         </div>
       </<?php echo $promen_prj_el; ?>>
       <?php endforeach; ?>

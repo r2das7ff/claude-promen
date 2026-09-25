@@ -34,20 +34,21 @@ get_header();
       </div>
       <h1 class="pd-h1">Курская АЭС‑2</h1>
       <div class="pd-loc">Курчатов, Курская обл. · Россия · 40 км от г. Курска</div>
-      <p class="pd-desc">Строящаяся атомная электростанция с реакторами ВВЭР — замена выводимой из
-        эксплуатации Курской АЭС. Завод «Промышленная Энергетика» поставил соединительные детали
-        трубопровода двумя партиями по чертежам и техническим условиям заказчика.</p>
+      <p class="pd-desc">Станция замещения Курской АЭС: первый в мире энергоблок ВВЭР‑ТОИ введён
+        в промышленную эксплуатацию в 2026 году, второй готовится к пуску, а блоки РБМК‑1000 старой
+        станции по мере ввода новых мощностей останавливают. Завод «Промышленная Энергетика» поставил
+        две партии нержавеющих деталей по чертежам и техническим условиям заказчика.</p>
       <div class="pd-stats">
         <div class="hs"><span class="hs-v">08Х18Н10Т</span><span class="hs-k">Марка стали</span></div>
         <div class="hs"><span class="hs-v">≈36 т</span><span class="hs-k">Объём поставки</span></div>
         <div class="hs"><span class="hs-v">≤45 дней</span><span class="hs-k">Срок изготовления партии</span></div>
-        <div class="hs"><span class="hs-v">ISO 9001</span><span class="hs-k">Система менеджмента качества</span></div>
+        <div class="hs"><span class="hs-v">45°·60°·90°</span><span class="hs-k">Углы гиба колен</span></div>
       </div>
     </div>
     <div class="pd-hero-r">
       <picture><source srcset="/wp-content/themes/promen/assets/img/projects/kursk2.webp" type="image/webp"><img src="/wp-content/themes/promen/assets/img/projects/kursk2.png" alt="Курская АЭС-2" loading="eager" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" width="1024" height="1024"></picture>
       <svg viewBox="0 0 400 320" preserveAspectRatio="xMidYMid slice"><rect width="400" height="320" fill="#1E3D5C"/><rect x="60" y="140" width="280" height="160" fill="#0F2A44"/><circle cx="200" cy="130" r="80" fill="none" stroke="#6D8CA6" stroke-width="2.5" opacity=".5"/><circle cx="200" cy="130" r="55" fill="none" stroke="#6D8CA6" stroke-width="1.5" opacity=".35"/></svg>
-      <span class="pd-hero-r-tag">Курская АЭС‑2 · ВВЭР</span>
+      <span class="pd-hero-r-tag">Курская АЭС‑2 · ВВЭР‑ТОИ</span>
     </div>
   </div>
 
@@ -63,8 +64,8 @@ get_header();
         <div class="pd-phase-v">≈10 т</div>
         <div class="pd-phase-rows">
           <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Фланцы трубопроводные</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Жаропрочная нержавеющая сталь 08Х18Н10Т</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Класс</span><span class="pd-phase-rv">Аустенитная сталь</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Аустенитная нержавеющая сталь 08Х18Н10Т</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Изготовление</span><span class="pd-phase-rv">Механическая обработка по чертежам заказчика</span></div>
         </div>
       </div>
       <div class="pd-phase">
@@ -72,8 +73,8 @@ get_header();
         <div class="pd-phase-v">≈26 т</div>
         <div class="pd-phase-rows">
           <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Колена (отводы) 45° / 60° / 90°</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Жаропрочная нержавеющая сталь 08Х18Н10Т</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Класс</span><span class="pd-phase-rv">Аустенитная сталь</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Аустенитная нержавеющая сталь 08Х18Н10Т</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Изготовление</span><span class="pd-phase-rv">Гибка трубы на заданный угол и радиус</span></div>
         </div>
       </div>
     </div>
@@ -89,8 +90,8 @@ get_header();
       <div class="pd-step">
         <div class="pd-step-n">01</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Техническое задание и чертежи</div>
-          <div class="pd-step-d">Приём КД заказчика, согласование марки стали, параметров DN/PN и нормативной базы изготовления.</div>
+          <div class="pd-step-t">Чертежи и технические условия</div>
+          <div class="pd-step-d">Приём КД заказчика на фланцы и колена из 08Х18Н10Т, согласование радиусов гиба, толщин стенки и объёма контроля для атомного объекта.</div>
         </div>
       </div>
       <div class="pd-step">
@@ -103,22 +104,22 @@ get_header();
       <div class="pd-step">
         <div class="pd-step-n">03</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Контроль качества</div>
-          <div class="pd-step-d">Визуально-измерительный контроль, неразрушающий контроль (УЗК/РК), идентификация плавки, проверка сертификатов на металл.</div>
+          <div class="pd-step-t">Контроль аустенитной стали</div>
+          <div class="pd-step-d">Визуально-измерительный и капиллярный контроль (сталь немагнитна, магнитопорошковый метод к ней неприменим), стилоскопирование марки, испытание на стойкость к межкристаллитной коррозии по ГОСТ 6032.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">04</div>
         <div class="pd-step-b">
           <div class="pd-step-t">Упаковка и логистика</div>
-          <div class="pd-step-d">Маркировка изделий, упаковка для транспортировки, доставка до строительной площадки Курской АЭС‑2.</div>
+          <div class="pd-step-d">Маркировка по чертежу, защита кромок под сварку, упаковка партиями и доставка автотранспортом до площадки в Курчатове.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">05</div>
         <div class="pd-step-b">
           <div class="pd-step-t">Документация и передача заказчику</div>
-          <div class="pd-step-d">Комплект паспортов изделий, сертификаты соответствия, декларация ТР ТС 032 RU С‑RU.АБ53.В.08323/23.</div>
+          <div class="pd-step-d">Паспорта на каждую партию, сертификаты на металл с номерами плавок, протоколы контроля и испытаний на МКК, сертификат соответствия ТР ТС 032 RU С‑RU.АБ53.В.08323/23.</div>
         </div>
       </div>
     </div>
@@ -133,27 +134,27 @@ get_header();
     <div class="pd-prod-grid">
       <div class="pd-prod">
         <span class="pd-prod-code">ФЛ</span>
-        <div class="pd-prod-name">Фланцы трубопроводные</div>
-        <p class="pd-prod-desc">Приварные и свободные, DN 10–1600, сталь 08Х18Н10Т и аналоги по ГОСТ 12820-80‑80.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( add_query_arg( 'group', 'flancy', $promen_catalog_url ) ); ?>">В каталоге →</a>
+        <div class="pd-prod-name">Фланцы из 08Х18Н10Т</div>
+        <p class="pd-prod-desc">Фланцы для трубопроводов АЭС по ОСТ 24.125.24‑89 и общепромышленные по ГОСТ 33259‑2015.</p>
+        <?php if ( $u = promen_project_term_url( 'norm', 'ost-24-125-24-1989' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Фланцы ОСТ 24.125.24 →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
         <span class="pd-prod-code">СДТ</span>
-        <div class="pd-prod-name">Колена (отводы) 45–90°</div>
-        <p class="pd-prod-desc">Соединительные детали трубопровода по чертежам заказчика для АЭС‑класса, бесшовное и сварное исполнение.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( $promen_sdt_url ); ?>">Страница СДТ →</a>
+        <div class="pd-prod-name">Колена и отводы гнутые</div>
+        <p class="pd-prod-desc">Гнутые отводы из 08Х18Н10Т для трубопроводов атомных станций по ОСТ 24.125.04‑89, радиусы гиба 400–1000 мм.</p>
+        <?php if ( $u = promen_project_term_url( 'norm', 'ost-24-125-04-1989' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Отводы ОСТ 24.125.04 →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
-        <span class="pd-prod-code">СДТ‑003</span>
-        <div class="pd-prod-name">Отвод 90°</div>
-        <p class="pd-prod-desc">Пример изделия из партии — карточка отвода 90° с полным техническим паспортом.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( promen_demo_product_url() ); ?>">Открыть изделие →</a>
+        <span class="pd-prod-code">АС</span>
+        <div class="pd-prod-name">Детали АС до 2,2 МПа</div>
+        <p class="pd-prod-desc">Тройники, переходы и отводы из коррозионностойкой стали для атомных станций по серии ОСТ 34‑10‑4хх‑90.</p>
+        <?php if ( $u = promen_project_term_url( 'norm', 'ost-34-10-511-90' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Тройники ОСТ 34‑10‑511 →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
         <span class="pd-prod-code">НБ</span>
         <div class="pd-prod-name">Нормативная база</div>
-        <p class="pd-prod-desc">ГОСТ, ОСТ, декларация ТР ТС 032 и сертификаты, применённые при изготовлении партии.</p>
-        <?php if ( $promen_nb_url ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $promen_nb_url ); ?>"></a><?php endif; ?>
+        <p class="pd-prod-desc">НП‑089‑15, ОСТ 24.125, ГОСТ 6032 и сертификат ТР ТС 032 — документы, по которым изготовлены и проверены партии.</p>
+        <?php if ( $promen_nb_url ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $promen_nb_url ); ?>">Нормативная база →</a><?php endif; ?>
       </div>
     </div>
   </div>

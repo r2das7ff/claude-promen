@@ -34,14 +34,15 @@ get_header();
       </div>
       <h1 class="pd-h1">Черепетская ГРЭС</h1>
       <div class="pd-loc">Суворов, Тульская обл. · Россия · на реке Черепеть</div>
-      <p class="pd-desc">Тепловая электростанция в составе группы «Интер РАО» на реке Черепеть. Завод
-        «Промышленная Энергетика» поставил стальные трубы и котельные фитинги для трубопроводной
-        инфраструктуры станции четырьмя партиями.</p>
+      <p class="pd-desc">Черепетская ГРЭС имени Д. Г. Жимерина — первая в СССР мощная электростанция
+        сверхвысокого давления (1953). Сегодня в работе два пылеугольных энергоблока по 225 МВт,
+        введённые в 2014–2015 годах: котлы ТПЕ‑223 на 13,8 МПа и 565 °C, турбины К‑225. Завод
+        «Промышленная Энергетика» поставил трубы и соединительные детали трубопровода четырьмя партиями.</p>
       <div class="pd-stats">
         <div class="hs"><span class="hs-v">Сталь 20</span><span class="hs-k">Марка стали</span></div>
         <div class="hs"><span class="hs-v">≈157 т</span><span class="hs-k">Объём поставки</span></div>
         <div class="hs"><span class="hs-v">Ø25–530</span><span class="hs-k">Диапазон диаметров, мм</span></div>
-        <div class="hs"><span class="hs-v">СТО ЦКТИ</span><span class="hs-k">Норматив (80% партии труб)</span></div>
+        <div class="hs"><span class="hs-v">80%</span><span class="hs-k">Деталей — по СТО ЦКТИ</span></div>
       </div>
     </div>
     <div class="pd-hero-r">
@@ -62,8 +63,8 @@ get_header();
         <div class="pd-phase-lbl">Партия 1</div>
         <div class="pd-phase-v">≈31 т</div>
         <div class="pd-phase-rows">
-          <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Трубы стальные строительные</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Сталь 20 (углеродистая)</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Трубы стальные</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Конструкционная углеродистая сталь 20</span></div>
           <div class="pd-phase-row"><span class="pd-phase-rk">Диаметр</span><span class="pd-phase-rv">Ø25–219 мм</span></div>
         </div>
       </div>
@@ -71,9 +72,9 @@ get_header();
         <div class="pd-phase-lbl">Партия 2</div>
         <div class="pd-phase-v">≈14 т</div>
         <div class="pd-phase-rows">
-          <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Трубы стальные сварные</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Трубы стальные электросварные</span></div>
           <div class="pd-phase-row"><span class="pd-phase-rk">Диаметр</span><span class="pd-phase-rv">Ø219–530 мм</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Назначение</span><span class="pd-phase-rv">Защитно-декоративные конструкции</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Назначение</span><span class="pd-phase-rv">Ограждающие и декоративные конструкции</span></div>
         </div>
       </div>
       <div class="pd-phase">
@@ -81,17 +82,17 @@ get_header();
         <div class="pd-phase-v">≈73 т</div>
         <div class="pd-phase-rows">
           <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Трубы котельные</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Сталь 20</span></div>
           <div class="pd-phase-row"><span class="pd-phase-rk">Диаметр</span><span class="pd-phase-rv">Ø28–219 мм</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Норматив</span><span class="pd-phase-rv">80% партии — по СТО ЦКТИ</span></div>
         </div>
       </div>
       <div class="pd-phase">
         <div class="pd-phase-lbl">Партия 4</div>
         <div class="pd-phase-v">≈39 т</div>
         <div class="pd-phase-rows">
-          <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Фитинги котельные</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Материал</span><span class="pd-phase-rv">Углеродистые и ХМФ-стали</span></div>
-          <div class="pd-phase-row"><span class="pd-phase-rk">Категория</span><span class="pd-phase-rv">Элементы трубопроводов ТЭС, кат. I–IV</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Номенклатура</span><span class="pd-phase-rv">Соединительные детали трубопровода</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Норматив</span><span class="pd-phase-rv">80% деталей — по СТО ЦКТИ</span></div>
+          <div class="pd-phase-row"><span class="pd-phase-rk">Применение</span><span class="pd-phase-rv">Трубопроводы пара и горячей воды</span></div>
         </div>
       </div>
     </div>
@@ -107,36 +108,36 @@ get_header();
       <div class="pd-step">
         <div class="pd-step-n">01</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Техническое задание и чертежи</div>
-          <div class="pd-step-d">Приём КД заказчика, согласование марки стали, диаметров и нормативной базы (СТО ЦКТИ) для труб и котельных фитингов.</div>
+          <div class="pd-step-t">Спецификация на четыре партии</div>
+          <div class="pd-step-d">Трубы из стали 20 Ø25–219 мм, электросварные трубы Ø219–530 мм, котельные трубы Ø28–219 мм и соединительные детали — 80% из них по СТО ЦКТИ.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">02</div>
         <div class="pd-step-b">
-          <div class="pd-step-t">Производство</div>
-          <div class="pd-step-d">Изготовление четырёх партий: строительные трубы (≈31 т), сварные трубы (≈14 т), котельные трубы (≈73 т) и фитинги (≈39 т).</div>
+          <div class="pd-step-t">Изготовление и комплектация</div>
+          <div class="pd-step-d">Детали по СТО ЦКТИ и чертежам заказчика изготовлены в Челябинске (≈39 т), трубы скомплектованы по сортаменту и марке стали (≈118 т).</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">03</div>
         <div class="pd-step-b">
           <div class="pd-step-t">Контроль качества</div>
-          <div class="pd-step-d">Визуально-измерительный контроль, неразрушающий контроль, проверка соответствия СТО ЦКТИ и сертификатов на металл.</div>
+          <div class="pd-step-d">Для деталей трубопроводов пара и горячей воды — контроль в объёме СТО ЦКТИ 10.003‑2007: визуально-измерительный, ультразвуковой, проверка геометрии; для труб — сверка сертификатов на металл.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">04</div>
         <div class="pd-step-b">
           <div class="pd-step-t">Упаковка и логистика</div>
-          <div class="pd-step-d">Маркировка изделий, упаковка для транспортировки, доставка до площадки Черепетской ГРЭС в Суворове.</div>
+          <div class="pd-step-d">Маркировка, увязка труб в пакеты по диаметрам, доставка автотранспортом до площадки станции в Суворове Тульской области.</div>
         </div>
       </div>
       <div class="pd-step">
         <div class="pd-step-n">05</div>
         <div class="pd-step-b">
           <div class="pd-step-t">Документация и передача заказчику</div>
-          <div class="pd-step-d">Комплект паспортов изделий, сертификаты соответствия, декларация ТР ТС 032 RU С‑RU.АБ53.В.08323/23.</div>
+          <div class="pd-step-d">Паспорта на детали, сертификаты заводов-изготовителей труб, сертификат соответствия ТР ТС 032 RU С‑RU.АБ53.В.08323/23.</div>
         </div>
       </div>
     </div>
@@ -152,26 +153,26 @@ get_header();
       <div class="pd-prod">
         <span class="pd-prod-code">ТР</span>
         <div class="pd-prod-name">Стальные трубы</div>
-        <p class="pd-prod-desc">Бесшовные и сварные, Ø25–530 мм, сталь 20 и аналоги, для строительных и котельных линий.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( add_query_arg( 'group', 'troyniki', $promen_catalog_url ) ); ?>">В каталоге →</a>
+        <p class="pd-prod-desc">Бесшовные из стали 20 для котельных линий и электросварные Ø219–530 мм для ограждающих конструкций.</p>
+        <?php if ( $u = promen_project_term_url( 'product_cat', 'truby' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Трубы в каталоге →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
-        <span class="pd-prod-code">СДТ</span>
-        <div class="pd-prod-name">Фитинги котельные</div>
-        <p class="pd-prod-desc">Соединительные детали трубопровода для котельных линий ТЭС, изготовление по СТО ЦКТИ.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( $promen_sdt_url ); ?>">Страница СДТ →</a>
+        <span class="pd-prod-code">ЦКТИ</span>
+        <div class="pd-prod-name">Детали по СТО ЦКТИ</div>
+        <p class="pd-prod-desc">Отводы гнутые и крутоизогнутые по СТО ЦКТИ 321, переходы по СТО ЦКТИ 318 для трубопроводов пара и горячей воды.</p>
+        <?php if ( $u = promen_project_term_url( 'norm', 'sto-321-01' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Отводы СТО ЦКТИ 321.01 →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
         <span class="pd-prod-code">ОП</span>
         <div class="pd-prod-name">Опоры трубопроводов</div>
         <p class="pd-prod-desc">Неподвижные хомутовые и скользящие опоры для протяжённых трубопроводных линий ТЭС.</p>
-        <a class="pd-prod-link" href="<?php echo esc_url( add_query_arg( 'group', 'opory', $promen_catalog_url ) ); ?>">В каталоге →</a>
+        <?php if ( $u = promen_project_term_url( 'product_cat', 'opory' ) ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $u ); ?>">Опоры в каталоге →</a><?php endif; ?>
       </div>
       <div class="pd-prod">
         <span class="pd-prod-code">НБ</span>
         <div class="pd-prod-name">Нормативная база</div>
-        <p class="pd-prod-desc">СТО ЦКТИ, ГОСТ и декларация ТР ТС 032, применённые при изготовлении партии.</p>
-        <?php if ( $promen_nb_url ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $promen_nb_url ); ?>"></a><?php endif; ?>
+        <p class="pd-prod-desc">СТО ЦКТИ 10.003‑2007, ГОСТ на трубы и сертификат ТР ТС 032 — документы, по которым изготовлены и проверены партии.</p>
+        <?php if ( $promen_nb_url ) : ?><a class="pd-prod-link" href="<?php echo esc_url( $promen_nb_url ); ?>">Нормативная база →</a><?php endif; ?>
       </div>
     </div>
   </div>
