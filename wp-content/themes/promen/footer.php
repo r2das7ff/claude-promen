@@ -53,9 +53,9 @@ if ( ! apply_filters( 'promen_footer_zone', true ) ) : ?>
     </div>
     <div class="s10-right">
       <div class="s10-form-label">ФОРМА ЗАПРОСА — ПЭ-ФОРМА/КТЛ</div>
-      <div class="s10-promise">
-        <span class="s10-promise-item"><span class="s10-promise-dot"></span>Ответ в течение 1 рабочего дня</span>
-      </div>
+      <ul class="s10-promise">
+        <li class="s10-promise-item"><svg class="s10-promise-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg>Ответ в течение 1 рабочего дня</li>
+      </ul>
       <?php $promen_sent = isset( $_GET['sent'] ); ?>
       <form id="s10-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"<?php echo $promen_sent ? ' style="display:none;"' : ''; ?>>
         <?php if ( function_exists( 'is_product' ) && is_product() ) : ?>
