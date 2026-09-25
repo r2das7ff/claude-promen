@@ -560,11 +560,20 @@ function promen_is_service_page(): bool {
 	return is_page( [ 'sample-page', 'cart', 'checkout', 'my-account' ] ) || is_search();
 }
 
-add_action( 'wp_head', function () {
+/*
+ * Через фильтр ядра, а не своим echo в wp_head: ядро само печатает
+ * <meta name="robots"> с `max-image-preview:large`, и отдельный тег давал
+ * на служебных страницах два тега подряд. Директивы роботы объединяют, так
+ * что вреда не было, но валидатор и глаз спотыкаются. Теперь всё в одном
+ * теге: «noindex, follow, max-image-preview:large».
+ */
+add_filter( 'wp_robots', function ( array $robots ): array {
 	if ( promen_is_service_page() ) {
-		echo '<meta name="robots" content="noindex,follow">' . "\n";
+		$robots['noindex'] = true;
+		$robots['follow']  = true;
 	}
-}, 1 );
+	return $robots;
+} );
 
 /** Те же страницы не должны попадать в карту сайта. */
 add_filter( 'wp_sitemaps_posts_query_args', function ( array $args, string $post_type ): array {
