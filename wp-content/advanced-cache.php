@@ -74,7 +74,34 @@ function promen_guard_facet_values(): int {
 	return $n;
 }
 
-/** Нужна ли проверка браузера: сочетание фасетов от клиента без нашей cookie. */
+/**
+ * Переход по объявлению Директа.
+ *
+ * Три объявления ведут на мультивыбор (`/catalog/sdt/otvody/?gost=a,b`), и
+ * проверка браузера отдавала 403 оплаченному клику: 11 раз за 25.09 и 13 за
+ * 28.09. Ссылки в Директе могут поменять, поэтому правило общее, по меткам
+ * самого перехода:
+ * — `yclid` из одних цифр — его Директ дописывает к клику, пока в кампании
+ *   включена разметка для Метрики;
+ * — `utm_source=yandex` и `utm_medium=cpc` вместе — их мы зашиваем в ссылку
+ *   каждого объявления (scripts/ads/*), они есть и без yclid.
+ *
+ * Метки подделываются одной строкой, поэтому они снимают только проверку
+ * браузера. Предохранитель базы (promen_guard_render_gate) действует и на
+ * рекламный переход: генераций одновременно всё равно не больше слотов.
+ */
+function promen_guard_is_ad_click(): bool {
+	$yclid = $_GET['yclid'] ?? null;
+	if ( is_string( $yclid ) && preg_match( '/^\d{10,25}$/', $yclid ) ) {
+		return true;
+	}
+	$source = $_GET['utm_source'] ?? null;
+	$medium = $_GET['utm_medium'] ?? null;
+	return is_string( $source ) && is_string( $medium )
+		&& 'yandex' === strtolower( $source ) && 'cpc' === strtolower( $medium );
+}
+
+/** Нужна ли проверка браузера: сочетание фасетов от клиента без нашей cookie и не с объявления. */
 function promen_guard_needs_challenge(): bool {
 	if ( ! in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', [ 'GET', 'HEAD' ], true ) ) {
 		return false;
@@ -97,6 +124,11 @@ function promen_guard_needs_challenge(): bool {
 		if ( 0 === strpos( (string) $name, 'wordpress_logged_in_' ) ) {
 			return false;
 		}
+	}
+	// Заголовок — чтобы пропуск по объявлению был виден снаружи (curl -I).
+	if ( promen_guard_is_ad_click() ) {
+		header( 'X-Promen-Guard: ad-pass' );
+		return false;
 	}
 	return true;
 }
@@ -166,6 +198,11 @@ function promen_guard_challenge(): void {
  * залогиненные, расчёт доставки (ждёт внешний API, базу почти не трогает).
  * Браузер, уже исполнявший JS сайта (cookie pe_js или _ym_uid Метрики), ждёт
  * слот до 8 секунд, остальные — полторы.
+ *
+ * Переход по объявлению тоже ждёт 8 секунд: 93% рекламных заходов — новые
+ * посетители без cookie, и полутора секунд не хватало — оплаченный клик
+ * получал «Сайт перегружен». Фальшивый yclid добавляет боту только время
+ * ожидания: одновременных генераций всё равно не больше слотов.
  */
 function promen_guard_render_gate(): void {
 	if ( 'cli' === PHP_SAPI || 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) ) {
@@ -182,7 +219,7 @@ function promen_guard_render_gate(): void {
 			return;
 		}
 	}
-	$human = isset( $_COOKIE['pe_js'] ) || isset( $_COOKIE['_ym_uid'] );
+	$human = isset( $_COOKIE['pe_js'] ) || isset( $_COOKIE['_ym_uid'] ) || promen_guard_is_ad_click();
 
 	$slots = defined( 'PROMEN_RENDER_SLOTS' ) ? max( 1, (int) PROMEN_RENDER_SLOTS ) : 4;
 	$dir   = WP_CONTENT_DIR . '/cache/promen-slots';
