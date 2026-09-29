@@ -101,6 +101,38 @@ function promen_guard_is_ad_click(): bool {
 		&& 'yandex' === strtolower( $source ) && 'cpc' === strtolower( $medium );
 }
 
+/**
+ * Робот Директа, который проверяет посадочные страницы объявлений.
+ *
+ * Меток у него нет: ссылку `…/otvody/?dn_min=150&dn_max=150&utm_source=…`
+ * он запрашивает как `…/otvody/?dn_min=150&dn_max=150` — в логе 21–29.09.2026
+ * 576 запросов YaDirectFetcher, и ни в одном нет ни utm, ни yclid. Поэтому
+ * promen_guard_is_ad_click() его не узнаёт, а 403 или 503 для Директа —
+ * «сайт недоступен» и повод остановить объявление.
+ *
+ * Узнаём по User-Agent, но подделать его — одна строка, поэтому верим ему
+ * только из сетей Яндекса: все запросы роботов Директа за эти дни пришли из
+ * четырёх блоков ниже (обратная зона *.spider.yandex.com). Из другой сети,
+ * в том числе по IPv6, робот проходит проверки на общих основаниях.
+ */
+function promen_guard_is_ad_robot(): bool {
+	if ( ! preg_match( '/YaDirectFetcher|YandexDirect/', (string) ( $_SERVER['HTTP_USER_AGENT'] ?? '' ) ) ) {
+		return false;
+	}
+	$ip = ip2long( (string) ( $_SERVER['REMOTE_ADDR'] ?? '' ) );
+	if ( false === $ip ) {
+		return false;
+	}
+	foreach ( [ '5.255.192.0/18', '87.250.224.0/19', '95.108.128.0/17', '213.180.192.0/19' ] as $net ) {
+		[ $base, $bits ] = explode( '/', $net );
+		$mask = -1 << ( 32 - (int) $bits );
+		if ( ( $ip & $mask ) === ( ip2long( $base ) & $mask ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
 /** Нужна ли проверка браузера: сочетание фасетов от клиента без нашей cookie и не с объявления. */
 function promen_guard_needs_challenge(): bool {
 	if ( ! in_array( $_SERVER['REQUEST_METHOD'] ?? 'GET', [ 'GET', 'HEAD' ], true ) ) {
@@ -126,7 +158,7 @@ function promen_guard_needs_challenge(): bool {
 		}
 	}
 	// Заголовок — чтобы пропуск по объявлению был виден снаружи (curl -I).
-	if ( promen_guard_is_ad_click() ) {
+	if ( promen_guard_is_ad_click() || promen_guard_is_ad_robot() ) {
 		header( 'X-Promen-Guard: ad-pass' );
 		return false;
 	}
@@ -202,7 +234,8 @@ function promen_guard_challenge(): void {
  * Переход по объявлению тоже ждёт 8 секунд: 93% рекламных заходов — новые
  * посетители без cookie, и полутора секунд не хватало — оплаченный клик
  * получал «Сайт перегружен». Фальшивый yclid добавляет боту только время
- * ожидания: одновременных генераций всё равно не больше слотов.
+ * ожидания: одновременных генераций всё равно не больше слотов. Так же ждёт
+ * и робот Директа из сети Яндекса — 25.09 он получил 503 на шесть карточек.
  */
 function promen_guard_render_gate(): void {
 	if ( 'cli' === PHP_SAPI || 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? 'GET' ) ) {
@@ -219,7 +252,8 @@ function promen_guard_render_gate(): void {
 			return;
 		}
 	}
-	$human = isset( $_COOKIE['pe_js'] ) || isset( $_COOKIE['_ym_uid'] ) || promen_guard_is_ad_click();
+	$human = isset( $_COOKIE['pe_js'] ) || isset( $_COOKIE['_ym_uid'] )
+		|| promen_guard_is_ad_click() || promen_guard_is_ad_robot();
 
 	$slots = defined( 'PROMEN_RENDER_SLOTS' ) ? max( 1, (int) PROMEN_RENDER_SLOTS ) : 4;
 	$dir   = WP_CONTENT_DIR . '/cache/promen-slots';
