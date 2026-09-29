@@ -92,7 +92,7 @@ function promen_guard_facet_values(): int {
  */
 function promen_guard_is_ad_click(): bool {
 	$yclid = $_GET['yclid'] ?? null;
-	if ( is_string( $yclid ) && preg_match( '/^\d{10,25}$/', $yclid ) ) {
+	if ( is_string( $yclid ) && preg_match( '/^\d{10,25}$/D', $yclid ) ) {
 		return true;
 	}
 	$source = $_GET['utm_source'] ?? null;
