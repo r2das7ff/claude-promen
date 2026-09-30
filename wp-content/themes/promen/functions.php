@@ -58,6 +58,7 @@ add_filter( 'number_format_i18n', function ( $formatted, $number, $decimals ) {
 
 require_once __DIR__ . '/inc/projects-registry.php';
 require_once __DIR__ . '/inc/product-data.php';
+require_once __DIR__ . '/inc/fastener-facts.php';
 require_once __DIR__ . '/inc/blueprint-geometry.php';
 require_once __DIR__ . '/inc/catalog-terms.php';
 require_once __DIR__ . '/inc/catalog-schema.php';
@@ -582,6 +583,13 @@ function promen_meta_description_text(): string {
 			$desc = wp_strip_all_tags( promen_sanitize_desc( $p->get_id(), $p->get_short_description() ?: $p->get_description() ) );
 			if ( '' === trim( $desc ) ) {
 				$desc = promen_product_desc_fallback( $p );
+			}
+			// Крепёж: описание из фактов позиции — выдержка импорта одна на
+			// тысячу карточек («Крепёж по ГОСТ …. Резьба M16. Длина 60 мм.»).
+			// Ручные выдержки (винты: «… аналог DIN 912») не трогаем.
+			if ( function_exists( 'promen_fastener_meta_desc' ) && promen_product_is_fastener( $p->get_id() )
+				&& ( promen_is_series_view() || 0 === strpos( trim( $desc ), 'Крепёж по ' ) ) ) {
+				$desc = promen_fastener_meta_desc( $p->get_id(), promen_is_series_view() ) ?: $desc;
 			}
 		}
 	} elseif ( is_tax( 'product_cat' ) || is_tax( 'norm' ) ) {

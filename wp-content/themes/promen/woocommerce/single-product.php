@@ -137,6 +137,19 @@ while ( have_posts() ) :
 	$series_meta = promen_series_meta( $product );
 	$is_series   = promen_is_series_view();
 	$size_label  = promen_size_label( $dims, $product->get_id() );
+
+	/*
+	 * Карточка крепежа — не страница серии. Раньше каждая из 968 карточек
+	 * ГОСТ 7805 несла всю серию дважды (конфигуратор и реестр, до 500 строк)
+	 * и всю базу знаний раздела: соседние болты совпадали на 97,9%, и Яндекс
+	 * снимал их как малоценные. Здесь — только своя резьба, сводка серии со
+	 * ссылками и собственное описание; полная серия — на странице серии.
+	 */
+	$fx         = $is_fastener && ! $is_series ? promen_fastener_card( $product->get_id() ) : [];
+	$fx_card    = (bool) $fx;
+	$fx_cur_t   = promen_fmt_dim( str_replace( ',', '.', (string) $thread_raw ) );
+	$cfg_series = $fx_card ? $fx['rows'] : $series;
+	$fx_desc = $is_fastener && ! $is_series ? promen_fastener_description( $product->get_id(), (string) $norm_key, $size_label ) : [];
 	$qc_title    = trim( $series_meta['name'] . $angle_sp . ( $is_fastener
 		? ( $thread_m !== '' ? ' ' . $thread_m : '' ) . ( $length !== '' ? '×' . $length : '' )
 		: ( $dn !== '' ? ' DN ' . $dn : '' ) ) );
@@ -504,6 +517,30 @@ while ( have_posts() ) :
     </div>
   </section>
 
+  <?php if ( $fx_desc && $fx_desc['p'] ) : ?>
+  <section class="s fx-desc" id="s00d">
+    <div class="s-hd">
+      <h2 class="s-badge"><span class="s-badge-num">00</span>Описание</h2>
+    </div>
+    <div class="s-body">
+      <div class="fx-desc-body reveal">
+        <h3 class="fx-desc-h"><?php echo esc_html( $fx_desc['h'] ); ?></h3>
+        <?php foreach ( $fx_desc['p'] as $para ) : ?>
+          <p class="fx-desc-p"><?php echo wp_kses( $para, [ 'strong' => [] ] ); ?></p>
+        <?php endforeach; ?>
+        <?php if ( $fx_desc['mates'] ) : ?>
+          <p class="fx-desc-p fx-mates">В комплект к этой позиции: <?php
+            echo implode( '; ', array_map( static fn( $x ) => esc_html( $x['note'] ) . ' — <a href="' . esc_url( $x['url'] ) . '">' . esc_html( $x['title'] ) . '</a>', $fx_desc['mates'] ) );
+          ?>.</p>
+        <?php endif; ?>
+        <?php if ( $fx_desc['calc'] ) : ?>
+          <p class="fx-desc-p">Сколько шпилек или болтов, гаек и шайб нужно на конкретный фланец и какой длины — считает <a href="<?php echo esc_url( $fx_desc['calc'] ); ?>">калькулятор КОФ</a>.</p>
+        <?php endif; ?>
+      </div>
+    </div>
+  </section>
+  <?php endif; ?>
+
   <?php include __DIR__ . '/parts/blueprint.php'; ?>
 
   <?php if ( $dn_options || $steels ) : ?>
@@ -515,14 +552,25 @@ while ( have_posts() ) :
       <div class="params-wrap reveal">
         <div class="par-left">
           <div class="par-lbl">Параметры исполнения</div>
-          <?php if ( count( $dn_options ) > 1 ) : ?>
+          <?php if ( count( $fx_card ? $fx['threads'] : $dn_options ) > 1 ) : ?>
           <div class="par-grp">
-            <div class="par-grp-name"><?php echo $is_fastener ? 'Резьба M — фильтр типоразмеров серии' : 'DN, мм — фильтр типоразмеров серии'; ?></div>
+            <div class="par-grp-name"><?php echo $fx_card ? 'Резьба M — другие резьбы серии' : ( $is_fastener ? 'Резьба M — фильтр типоразмеров серии' : 'DN, мм — фильтр типоразмеров серии' ); ?></div>
             <div class="dn-grid" id="dnGrid">
+              <?php if ( $fx_card ) : // своя резьба — в таблице, чужие — ссылками на их карточки ?>
+                <a class="dn-b dn-b--all" href="<?php echo esc_url( $series_meta['url'] ); ?>" title="Вся серия <?php echo esc_attr( $norm_key ); ?>">ВСЕ</a>
+                <?php foreach ( $fx['threads'] as $dn_val => $dn_url ) : ?>
+                  <?php if ( (string) $dn_val === $fx_cur_t ) : ?>
+                    <span class="dn-b on cur"><?php echo esc_html( promen_thread_label( (string) $dn_val ) ); ?></span>
+                  <?php else : ?>
+                    <a class="dn-b" href="<?php echo esc_url( $dn_url ); ?>"><?php echo esc_html( promen_thread_label( (string) $dn_val ) ); ?></a>
+                  <?php endif; ?>
+                <?php endforeach; ?>
+              <?php else : ?>
               <button type="button" class="dn-b dn-b--all on" data-dn="">ВСЕ</button>
               <?php foreach ( $dn_options as $dn_val => $dn_url ) : ?>
                 <button type="button" class="dn-b<?php echo (string) $dn_val === (string) ( $is_fastener ? $thread_raw : $dn ) ? ' cur' : ''; ?>" data-dn="<?php echo esc_attr( $dn_val ); ?>"><?php echo esc_html( $is_fastener ? promen_thread_label( (string) $dn_val ) : $dn_val ); ?></button>
               <?php endforeach; ?>
+              <?php endif; ?>
             </div>
           </div>
           <?php endif; ?>
@@ -552,7 +600,7 @@ while ( have_posts() ) :
             <div class="cfg-sum-sub" id="cfgSub">
               <?php echo esc_html( implode( ' · ', array_filter( $is_fastener ? [
                 $size_label !== '' ? $size_label : '',
-                $mass ? "масса {$mass} кг" : '',
+                $mass_ok ? "масса {$mass} кг" : '',
               ] : [
                 $d_out !== '' ? ( $has_branch ? "D1 {$d_out} мм" : "D {$d_out} мм" ) : '',
                 $wall !== '' ? ( $has_branch ? "s1 {$wall} мм" : "s {$wall} мм" ) : '',
@@ -568,15 +616,15 @@ while ( have_posts() ) :
           <button type="button" class="s10-submit" style="margin-top:22px;" id="cfgRequest">Запросить КП →</button>
         </div>
         <div class="par-right">
-          <?php if ( $series ) :
+          <?php if ( $cfg_series ) :
             $series_has_branch = ! empty( array_filter( array_column( $series, 'D2' ) ) );
-            $series_has_strength = $is_fastener && ! empty( array_filter( array_column( $series, 'strength' ) ) );
+            $series_has_strength = $is_fastener && ! empty( array_filter( array_column( $cfg_series, 'strength' ) ) );
             $series_has_pn = $is_flange && ! empty( array_filter( array_column( $series, 'pn' ) ) );
             $series_has_b  = $is_flange && ! empty( array_filter( array_column( $series, 'b' ) ) );
             $series_has_d1 = $is_flange && ! empty( array_filter( array_column( $series, 'D1' ) ) );
             $series_has_n  = $is_flange && ! empty( array_filter( array_column( $series, 'n' ) ) );
           ?>
-          <table class="ptbl" id="specTable">
+          <table class="ptbl" id="specTable"<?php echo $fx_card ? ' data-scope="' . esc_attr( $thread_m ) . '"' : ''; ?>>
             <thead>
               <tr>
                 <?php if ( $is_fastener ) : ?>
@@ -600,7 +648,7 @@ while ( have_posts() ) :
               </tr>
             </thead>
             <tbody>
-              <?php foreach ( $series as $s ) :
+              <?php foreach ( $cfg_series as $s ) :
                 $s_thread = $s['thread'] !== '' ? $s['thread'] : $s['dn'];
                 $s_len    = $s['L'] !== '' ? $s['L'] : $s['s'];
               ?>
@@ -608,7 +656,7 @@ while ( have_posts() ) :
                   data-title="<?php echo esc_attr( $s['size'] ?: $s['title'] ); ?>" data-sku="<?php echo esc_attr( $s['sku'] ?? '' ); ?>"
                   data-d="<?php echo esc_attr( $s['D'] ); ?>" data-wall="<?php echo esc_attr( $is_fastener ? $s_len : ( $is_flange ? ( $s['b'] ?? '' ) : $s['s'] ) ); ?>"
                   data-d2="<?php echo esc_attr( $s['D2'] ?? '' ); ?>" data-s2="<?php echo esc_attr( $s['s2'] ?? '' ); ?>"
-                  data-r="<?php echo esc_attr( $s['R'] ); ?>" data-mass="<?php echo esc_attr( $s['mass'] ); ?>">
+                  data-r="<?php echo esc_attr( $s['R'] ); ?>" data-mass="<?php echo esc_attr( $mass_col ? $s['mass'] : '' ); ?>">
                 <?php if ( $is_fastener ) : ?>
                   <td><?php echo esc_html( ! empty( $s['washer'] ) ? promen_fmt_dim( (string) $s_thread ) : promen_thread_label( (string) $s_thread ) ); ?></td>
                   <td><?php echo esc_html( $s_len !== '' ? $s_len : ( ! empty( $s['washer'] ) ? 'тип ' . $s['washer'] : '—' ) ); ?></td>
@@ -645,7 +693,32 @@ while ( have_posts() ) :
   </section>
   <?php endif; ?>
 
-  <?php if ( count( $series ) > 1 ) : ?>
+  <?php if ( $fx_card ) : ?>
+  <section class="s s-alt" id="s03">
+    <div class="s-hd">
+      <h2 class="s-badge"><span class="s-badge-num">03</span>Серия <?php echo esc_html( $norm_key ); ?></h2>
+      <div class="s-meta"><?php echo esc_html( $fx['n'] ); ?> поз.</div>
+    </div>
+    <div class="s-body">
+      <p class="fx-sum reveal">В серии <?php echo esc_html( $norm_key ); ?> — <strong><?php echo esc_html( $fx['n'] ); ?></strong> <?php echo esc_html( promen_ru_plural( (int) $fx['n'], 'типоразмер', 'типоразмера', 'типоразмеров' ) ); ?><?php
+        echo ': резьба ' . esc_html( promen_thread_label( (string) $fx['t_range'][0] ) . ( $fx['t_range'][0] !== $fx['t_range'][1] ? '–' . promen_thread_label( (string) $fx['t_range'][1] ) : '' ) );
+        if ( $fx['l_range'] ) { echo ', длина ' . esc_html( promen_fx_num( $fx['l_range'][0] ) . '–' . promen_fx_num( $fx['l_range'][1] ) ) . ' мм'; }
+      ?>. <?php if ( $thread_m !== '' && $fx['n_own'] > 1 ) : ?>С резьбой <?php echo esc_html( $thread_m ); ?> — <?php echo esc_html( $fx['n_own'] ); ?><?php echo $fx['l_own'] ? ', длина ' . esc_html( promen_fx_num( $fx['l_own'][0] ) . '–' . promen_fx_num( $fx['l_own'][1] ) ) . ' мм' : ''; ?>.<?php endif; ?></p>
+      <?php if ( $fx['nb'] ) : ?>
+      <div class="rel-grid fx-nb reveal">
+        <?php foreach ( $fx['nb'] as $s ) : ?>
+          <a class="rel-c" href="<?php echo esc_url( $s['url'] ); ?>">
+            <span class="rel-code"><?php echo esc_html( $norm_key ); ?></span>
+            <span class="rel-h"><?php echo esc_html( $s['title'] ); ?></span>
+            <span class="rel-norm"><?php echo $s['same'] ? 'Та же резьба, другая длина' : 'Та же длина, соседняя резьба'; ?></span>
+          </a>
+        <?php endforeach; ?>
+      </div>
+      <?php endif; ?>
+      <a class="series-more fx-all" href="<?php echo esc_url( $series_meta['url'] ); ?>">Весь реестр серии →</a>
+    </div>
+  </section>
+  <?php elseif ( count( $series ) > 1 ) : ?>
   <section class="s s-alt" id="s03">
     <div class="s-hd">
       <h2 class="s-badge"><span class="s-badge-num">03</span>Реестр размеров серии</h2>
@@ -782,7 +855,7 @@ while ( have_posts() ) :
           <a class="rel-c" href="<?php echo esc_url( $r['url'] ); ?>">
             <span class="rel-code"><?php echo esc_html( $r['norm'] ); ?></span>
             <span class="rel-h"><?php echo esc_html( $r['title'] ); ?></span>
-            <span class="rel-norm">Тот же DN — другое исполнение / норматив</span>
+            <span class="rel-norm"><?php echo $is_fastener ? 'Та же резьба — другой стандарт' : 'Тот же DN — другое исполнение / норматив'; ?></span>
           </a>
         <?php endforeach; ?>
         <?php
@@ -804,9 +877,26 @@ while ( have_posts() ) :
   // «База знаний» под свой раздел, а не отводы на каждой карточке —
   // см. promen_kb_part().
   $promen_kb = promen_kb_part( $product->get_id() );
-  if ( $promen_kb ) {
+  $kb_cat    = $fx_card ? promen_deepest_cat( $product->get_id() ) : null;
+  if ( $promen_kb && $kb_cat ) :
+    // Та же база знаний целиком стоит на странице раздела — на каждой из
+    // тысячи карточек она была копией. Здесь — оглавление и ссылка.
+    $kb_link = get_term_link( $kb_cat );
+?>
+  <section class="s kb-wrap fx-kb" id="s10">
+    <div class="s-hd">
+      <h2 class="s-badge"><span class="s-badge-num">10</span>База знаний</h2>
+      <div class="s-meta"><?php echo esc_html( mb_strtoupper( $kb_cat->name ) ); ?></div>
+    </div>
+    <div class="s-body">
+      <p class="fx-desc-p">Виды, параметры подбора, нормативная база, материалы, документация, заказ и доставка — в базе знаний раздела «<?php echo esc_html( $kb_cat->name ); ?>».</p>
+      <?php if ( ! is_wp_error( $kb_link ) ) : ?><a class="series-more fx-all" href="<?php echo esc_url( $kb_link . '#s10' ); ?>">Открыть базу знаний →</a><?php endif; ?>
+    </div>
+  </section>
+<?php
+  elseif ( $promen_kb ) :
     include $promen_kb;
-  }
+  endif;
 ?>
 
 </div><!-- /.pg -->
@@ -819,6 +909,7 @@ while ( have_posts() ) :
 		'norm'       => $norm_key,
 		'dn'         => $dn,
 		'pn'         => $pn_label, // готовая подпись: «PN40» или «0,25 МПа»
+		'fastener'   => $is_fastener,
 		'variations' => $var_map,
 		'steels'     => $steels,
 		'sups'       => $sups,

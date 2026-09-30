@@ -1291,3 +1291,18 @@ a.nc{display:block;}
   .doc-dl{align-items:baseline;padding:14px 22px;}
   .doc-dl-n{line-height:1;}
 }
+
+/* Карточка крепежа: описание позиции, сводка серии, ссылки на соседей (30.09.2026). */
+.fx-desc-body{max-width:760px;}
+.fx-desc-h{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:21px;letter-spacing:-.01em;text-transform:uppercase;color:var(--dark);margin:0 0 14px;line-height:1.1;text-wrap:balance;}
+.fx-desc-p{font-size:15px;font-weight:300;line-height:1.75;color:var(--blue);margin:0 0 12px;max-width:760px;}
+.fx-desc-p strong{font-weight:700;color:var(--dark);}
+.fx-desc-p a{color:var(--dark);text-decoration:underline;text-underline-offset:3px;}
+.fx-sum{font-size:15px;font-weight:300;line-height:1.75;color:var(--blue);margin:0 0 22px;max-width:760px;}
+.fx-sum strong{font-weight:700;color:var(--dark);}
+.fx-nb{margin-bottom:22px;}
+.series-more.fx-all{display:inline-block;margin-left:0;text-decoration:none;}
+a.dn-b{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
+@media (max-width:1024px){
+  .fx-desc-p,.fx-sum{font-size:14px;}
+}

@@ -45,9 +45,15 @@ defined( 'ABSPATH' ) || exit;
             <div class="pq-row" data-field="material"><span class="pq-k">Материал</span><span class="pq-v" id="qcMat"><?php echo esc_html( $first_steel ); ?> · сертификат качества</span><span class="pq-chk">✓</span></div>
             <div class="pq-row" data-field="standard"><span class="pq-k">Стандарт</span><span class="pq-v"><?php echo esc_html( $norm_key ?: 'по нормативу' ); ?></span><span class="pq-chk">✓</span></div>
             <div class="pq-row" data-field="heat"><span class="pq-k">Плавка</span><span class="pq-v">по плавке поставки</span><span class="pq-chk">✓</span></div>
+            <?php if ( ! empty( $is_fastener ) ) : // у крепежа нет DN и давления — резьба и класс ?>
+            <div class="pq-row" data-field="dn"><span class="pq-k">Резьба / класс</span><span class="pq-v" id="qcDnPn"><?php echo esc_html( trim( ( $thread_m !== '' ? $thread_m : '—' ) . ( $length !== '' ? '×' . $length : '' ) . ( $strength !== '' ? ' · ' . $strength : '' ) ) ); ?></span><span class="pq-chk">✓</span></div>
+            <div class="pq-row" data-field="nk"><span class="pq-k">Контроль</span><span class="pq-v">Визуальный / твёрдость / ОТК</span><span class="pq-chk">✓</span></div>
+            <div class="pq-row" data-field="geo"><span class="pq-k">Резьба</span><span class="pq-v">Калибры ПР/НЕ · ПРИНЯТО</span><span class="pq-chk">✓</span></div>
+            <?php else : ?>
             <div class="pq-row" data-field="dn"><span class="pq-k">DN / давление</span><span class="pq-v" id="qcDnPn">DN <?php echo esc_html( $dn !== '' ? $dn : '—' ); ?><?php echo ( $pn_label ?? '' ) !== '' ? ' / ' . esc_html( $pn_label ) : ''; ?></span><span class="pq-chk">✓</span></div>
             <div class="pq-row" data-field="nk"><span class="pq-k">Контроль НК</span><span class="pq-v">ВИК / УЗК / ОТК</span><span class="pq-chk">✓</span></div>
             <div class="pq-row" data-field="geo"><span class="pq-k">Геометрия</span><span class="pq-v">±0,5 мм · ПРИНЯТО</span><span class="pq-chk">✓</span></div>
+            <?php endif; ?>
             <div class="pq-row" data-field="mark"><span class="pq-k">Маркировка</span><span class="pq-v" id="qcMark">ПЭ · <?php echo esc_html( $first_steel ); ?> · плавка по поставке</span><span class="pq-chk">✓</span></div>
             <div class="pq-row" data-field="docs"><span class="pq-k">Документы</span><span class="pq-v">Сертификат / Паспорт / НК</span><span class="pq-chk">✓</span></div>
           </div>

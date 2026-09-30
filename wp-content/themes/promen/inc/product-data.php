@@ -1423,6 +1423,42 @@ function promen_kind_from_title( string $title ): string {
 	return $kind;
 }
 
+/** Строка размерного ряда по товару (таблицы серии и конфигуратора). */
+function promen_series_row( int $id ): array {
+	$d = promen_get_dims( $id );
+	return [
+		'id'       => $id,
+		'title'    => get_the_title( $id ),
+		'url'      => get_permalink( $id ),
+		'dn'       => $d['dn'] ?? '',
+		'dn2'      => $d['dn_branch'] ?? ( $d['dy1'] ?? '' ),
+		'pn'       => $d['pn'] ?? '',
+		'D'        => $d['outer_diameter'] ?? '',
+		's'        => $d['wall_thickness'] ?? '',
+		'D2'       => $d['outer_d_branch'] ?? '',
+		's2'       => $d['wall_branch'] ?? '',
+		'b'        => $d['flange_thickness'] ?? '',
+		'D1'       => $d['bolt_circle_d'] ?? '',
+		'n'        => $d['stud_count'] ?? '',
+		'bolt_d'   => $d['bolt_d'] ?? '',
+		'd_inner'  => $d['d_inner'] ?? '',
+		'flange_type' => $d['flange_type'] ?? ( $d['product_type'] ?? '' ),
+		'seal'     => $d['seal_face'] ?? '',
+		'series'   => $d['series'] ?? '',
+		'h4'       => $d['h4'] ?? '',
+		'R'        => $d['radius_mm'] ?? ( $d['radius'] ?? '' ),
+		'L'        => $d['length'] ?? ( $d['length_mm'] ?? '' ),
+		'thread'   => $d['thread_size'] ?? '',
+		'strength' => $d['strength_class'] ?? '',
+		'accuracy' => $d['accuracy_class'] ?? '',
+		'washer'   => $d['washer_type'] ?? '',
+		'exec'     => $d['execution'] ?? '',
+		'size'     => promen_size_label( $d, (int) $id ),
+		'mass'     => get_post_meta( $id, '_weight', true ),
+		'sku'      => get_post_meta( $id, '_sku', true ),
+	];
+}
+
 /**
  * Размерный ряд: товары того же семейства и норматива (+ угла, если есть).
  * Это и таблица типоразмеров, и DN-кнопки конфигуратора.
@@ -1476,41 +1512,7 @@ function promen_get_series( WC_Product $product ): array {
 		'fields'         => 'ids',
 	] );
 
-	$series = [];
-	foreach ( $q->posts as $id ) {
-		$d = promen_get_dims( $id );
-		$series[] = [
-			'id'       => $id,
-			'title'    => get_the_title( $id ),
-			'url'      => get_permalink( $id ),
-			'dn'       => $d['dn'] ?? '',
-			'dn2'      => $d['dn_branch'] ?? ( $d['dy1'] ?? '' ),
-			'pn'       => $d['pn'] ?? '',
-			'D'        => $d['outer_diameter'] ?? '',
-			's'        => $d['wall_thickness'] ?? '',
-			'D2'       => $d['outer_d_branch'] ?? '',
-			's2'       => $d['wall_branch'] ?? '',
-			'b'        => $d['flange_thickness'] ?? '',
-			'D1'       => $d['bolt_circle_d'] ?? '',
-			'n'        => $d['stud_count'] ?? '',
-			'bolt_d'   => $d['bolt_d'] ?? '',
-			'd_inner'  => $d['d_inner'] ?? '',
-			'flange_type' => $d['flange_type'] ?? ( $d['product_type'] ?? '' ),
-			'seal'     => $d['seal_face'] ?? '',
-			'series'   => $d['series'] ?? '',
-			'h4'       => $d['h4'] ?? '',
-			'R'        => $d['radius_mm'] ?? ( $d['radius'] ?? '' ),
-			'L'        => $d['length'] ?? ( $d['length_mm'] ?? '' ),
-			'thread'   => $d['thread_size'] ?? '',
-			'strength' => $d['strength_class'] ?? '',
-			'accuracy' => $d['accuracy_class'] ?? '',
-			'washer'   => $d['washer_type'] ?? '',
-			'exec'     => $d['execution'] ?? '',
-			'size'     => promen_size_label( $d, (int) $id ),
-			'mass'     => get_post_meta( $id, '_weight', true ),
-			'sku'      => get_post_meta( $id, '_sku', true ),
-		];
-	}
+	$series = array_map( 'promen_series_row', $q->posts );
 	usort( $series, static function ( $a, $b ) {
 		$ta = (float) ( $a['thread'] !== '' ? $a['thread'] : $a['dn'] );
 		$tb = (float) ( $b['thread'] !== '' ? $b['thread'] : $b['dn'] );
@@ -2020,10 +2022,13 @@ function promen_related_by_dn( WC_Product $product, int $limit = 5 ): array {
 		$tax_query[] = [ 'taxonomy' => 'norm', 'field' => 'term_id', 'terms' => $own_norm_ids, 'operator' => 'NOT IN' ];
 	}
 
+	// Крепёж: первые пять по ID были пятью винтами одного ГОСТа — берём
+	// с запасом и оставляем по одной позиции на стандарт.
+	$fx = promen_product_is_fastener( $product->get_id() );
 	$q = new WP_Query( [
 		'post_type'      => 'product',
 		'post_status'    => 'publish',
-		'posts_per_page' => $limit,
+		'posts_per_page' => $fx ? $limit * 40 : $limit,
 		'no_found_rows'  => true,
 		'orderby'        => 'ID',
 		'post__not_in'   => [ $product->get_id() ],
@@ -2031,8 +2036,21 @@ function promen_related_by_dn( WC_Product $product, int $limit = 5 ): array {
 		'fields'         => 'ids',
 	] );
 
+	$ids = $q->posts;
+	if ( $fx ) {
+		$seen = [];
+		$ids  = array_values( array_filter( $ids, static function ( $id ) use ( &$seen ) {
+			$n = (string) get_post_meta( $id, '_promen_norm_key', true );
+			if ( isset( $seen[ $n ] ) ) {
+				return false;
+			}
+			return $seen[ $n ] = true;
+		} ) );
+		$ids = array_slice( $ids, 0, $limit );
+	}
+
 	$out = [];
-	foreach ( $q->posts as $id ) {
+	foreach ( $ids as $id ) {
 		$out[] = [
 			'id'    => $id,
 			'title' => get_the_title( $id ),

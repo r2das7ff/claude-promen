@@ -189,7 +189,10 @@
       cfgSku.textContent = 'Артикул: ' + sku;
     }
     var cfgSub = document.getElementById('cfgSub');
-    if (cfgSub && !sel.own && sel.d) {
+    if (cfgSub && !sel.own && data.fastener) {
+      // Крепёж: D и «s» тут — не размеры изделия, а масса — на 1000 шт.
+      cfgSub.textContent = sel.title || '';
+    } else if (cfgSub && !sel.own && sel.d) {
       var hasBranch = !!(sel.d2 || sel.s2);
       cfgSub.textContent = [
         sel.d ? (hasBranch ? 'D1 ' + sel.d + ' мм' : 'D ' + sel.d + ' мм') : '',
@@ -457,6 +460,9 @@ promenHideEmptyCols(document.querySelector('.series-full'));
   var rows = Array.prototype.slice.call(document.querySelectorAll('#specTable tbody tr'));
   if (!grid || !rows.length) return;
   var note = document.getElementById('cfgTblNote');
+  // Карточка крепежа: в таблице только своя резьба, другие резьбы — ссылки.
+  var specT = document.getElementById('specTable');
+  var scope = (specT && specT.dataset.scope) || '';
   var LIMIT = 12;
   var expanded = false;
 
@@ -480,21 +486,22 @@ promenHideEmptyCols(document.querySelector('.series-full'));
     }
     if (note) note.textContent = dn
       ? 'DN ' + dn + ' — ' + matched.length + ' ' + promenPlural(matched.length, PROMEN_TR) + ' · клик по строке выбирает позицию'
-      : 'Вся серия: ' + matched.length + ' ' + promenPlural(matched.length, PROMEN_TR) + ' · клик по строке выбирает позицию';
+      : (scope ? scope + ' в серии' : 'Вся серия') + ': ' + matched.length + ' ' + promenPlural(matched.length, PROMEN_TR) + ' · клик по строке выбирает позицию';
   }
 
-  var allBtn = grid.querySelector('.dn-b--all');
+  var allBtn = grid.querySelector('button.dn-b--all');
   var curDn = null;
 
   function selectBtn(btn) {
-    grid.querySelectorAll('.dn-b').forEach(function (x) { x.classList.remove('on'); });
+    grid.querySelectorAll('button.dn-b').forEach(function (x) { x.classList.remove('on'); });
     btn.classList.add('on');
   }
 
-  grid.querySelectorAll('.dn-b').forEach(function (b) {
+  grid.querySelectorAll('button.dn-b').forEach(function (b) {
     b.addEventListener('click', function () {
       expanded = false; // новый фильтр — снова сворачиваем
       if (b.classList.contains('on') && b !== allBtn) {
+        if (!allBtn) return;
         selectBtn(allBtn); curDn = null; applyFilter(null); return;
       }
       selectBtn(b); curDn = b.dataset.dn || null; applyFilter(curDn);
