@@ -95,6 +95,8 @@ while ( have_posts() ) :
 	$cat_group = promen_category_group( $product->get_id() );
 	$is_flange = $cat_group === 'flange';
 	$pn_ok     = promen_pn_is_nominal( $cat_group ) && $pn !== '';
+	// «PN40» у номинальных фланцев, «0,25 МПа» у фланцев ОСТ с давлением в МПа.
+	$pn_label  = $pn !== '' ? promen_pressure_label( (string) $pn, promen_pressure_is_pn( $product->get_id() ) ) : '';
 	$mass_ok   = $mass && promen_mass_is_reliable( $cat_group );
 	$mass_col  = promen_mass_is_reliable( $cat_group ); // показывать колонку «Масса» в таблицах серии
 
@@ -134,7 +136,7 @@ while ( have_posts() ) :
 	// Серия: дизайн-карточка = страница серии; типоразмер — её производная.
 	$series_meta = promen_series_meta( $product );
 	$is_series   = promen_is_series_view();
-	$size_label  = promen_size_label( $dims );
+	$size_label  = promen_size_label( $dims, $product->get_id() );
 	$qc_title    = trim( $series_meta['name'] . $angle_sp . ( $is_fastener
 		? ( $thread_m !== '' ? ' ' . $thread_m : '' ) . ( $length !== '' ? '×' . $length : '' )
 		: ( $dn !== '' ? ' DN ' . $dn : '' ) ) );
@@ -184,13 +186,19 @@ while ( have_posts() ) :
           <?php endif; ?>
         <?php endforeach; ?>
       </nav>
-      <div class="hero-eyebrow"><?php echo esc_html( $series_meta['code'] . ( $norm_key ? ' / ' . $norm_key : '' ) ); ?></div>
+      <?php // В режиме серии норматив стоит в самом H1 — в надзаголовке он был бы повтором. ?>
+      <div class="hero-eyebrow"><?php echo esc_html( $series_meta['code'] . ( $norm_key && ! $is_series ? ' / ' . $norm_key : '' ) ); ?></div>
       <?php if ( $is_series ) :
         // H1 как в дизайне: «Отвод / <em>крутоизогнутый</em> / 90°».
         $h1_words = explode( ' ', $series_meta['name'] );
         $h1_first = array_shift( $h1_words );
       ?>
-        <h1 class="hero-h1"><?php echo esc_html( $h1_first ); ?><?php echo $h1_words ? '<br><em>' . esc_html( implode( ' ', $h1_words ) ) . '</em>' : ''; ?><?php echo $angle_sp !== '' ? '<br>' . esc_html( trim( $angle_sp ) ) : ''; ?></h1>
+        <?php
+          /* Норматив — в H1: без него у 121 серии заголовок был общим («Гайка»,
+             «Тройник», «Отвод 90°» — 40 групп дублей на обходе 30.09.2026), хотя
+             это разные изделия разных стандартов. Title серий норматив уже нёс. */
+        ?>
+        <h1 class="hero-h1"><?php echo esc_html( $h1_first ); ?><?php echo $h1_words ? '<br><em>' . esc_html( implode( ' ', $h1_words ) ) . '</em>' : ''; ?><?php echo $angle_sp !== '' ? '<br>' . esc_html( trim( $angle_sp ) ) : ''; ?><?php echo $norm_key ? '<span class="hero-h1-norm">' . esc_html( $norm_key ) . '</span>' : ''; ?></h1>
       <?php else : ?>
         <h1 class="hero-h1 hero-h1--split">
           <span class="hero-h1-series"><?php echo esc_html( $h1_series ); ?></span>
@@ -230,7 +238,7 @@ while ( have_posts() ) :
             <div class="hp"><span class="hp-v" id="heroDn">DN <?php echo esc_html( $dn ); ?></span><span class="hp-k">Типоразмер</span></div>
           <?php endif; ?>
           <?php if ( $pn_ok ) : ?>
-            <div class="hp"><span class="hp-v" id="heroPn">PN <?php echo esc_html( $pn ); ?></span><span class="hp-k">Давление</span></div>
+            <div class="hp"><span class="hp-v" id="heroPn"><?php echo esc_html( $pn_label ); ?></span><span class="hp-k">Давление</span></div>
           <?php elseif ( $radius !== '' ) : ?>
             <div class="hp"><span class="hp-v" id="heroPn">R <?php echo esc_html( $radius ); ?></span><span class="hp-k">Радиус гиба</span></div>
           <?php endif; ?>
@@ -300,7 +308,7 @@ while ( have_posts() ) :
               <div class="pp-row" data-field="dn"><span class="pp-k">DN</span><span class="pp-v">DN <?php echo esc_html( $dn ); ?></span></div>
             <?php endif; ?>
             <?php if ( $pn_ok ) : ?>
-              <div class="pp-row" data-field="pn"><span class="pp-k">PN</span><span class="pp-v">PN <?php echo esc_html( $pn ); ?></span></div>
+              <div class="pp-row" data-field="pn"><span class="pp-k"><?php echo 0 === strpos( $pn_label, 'PN' ) ? 'PN' : 'Давление'; ?></span><span class="pp-v"><?php echo esc_html( $pn_label ); ?></span></div>
             <?php endif; ?>
             <?php if ( $flange_type !== '' ) : ?>
               <div class="pp-row" data-field="ftype"><span class="pp-k">Тип</span><span class="pp-v"><?php echo esc_html( promen_flange_type_label( $flange_type ) ); ?></span></div>
@@ -340,7 +348,7 @@ while ( have_posts() ) :
               <div class="pp-row" data-field="dn"><span class="pp-k">DN<?php echo $dn2 !== '' ? ' / DN2' : ''; ?></span><span class="pp-v" id="ppDnPn">DN <?php echo esc_html( $dn ); ?><?php echo $dn2 !== '' ? ' / DN ' . esc_html( $dn2 ) : ''; ?></span></div>
             <?php endif; ?>
             <?php if ( $pn_ok ) : ?>
-              <div class="pp-row" data-field="pn"><span class="pp-k">PN</span><span class="pp-v">PN <?php echo esc_html( $pn ); ?></span></div>
+              <div class="pp-row" data-field="pn"><span class="pp-k"><?php echo 0 === strpos( $pn_label, 'PN' ) ? 'PN' : 'Давление'; ?></span><span class="pp-v"><?php echo esc_html( $pn_label ); ?></span></div>
             <?php elseif ( $pn !== '' && is_numeric( $pn ) ) : ?>
               <?php
                 /* У СДТ pn — не номинальный класс PN, а давление в МПа из обозначения
@@ -349,7 +357,7 @@ while ( have_posts() ) :
                    странице противоречат друг другу. Подпись без «PN»: номиналом
                    ряда эти значения не являются (бывают 11,77 / 37,27 МПа). */
               ?>
-              <div class="pp-row" data-field="pressure" title="Давление по обозначению изделия в нормативе"><span class="pp-k">Давление</span><span class="pp-v"><?php echo esc_html( promen_fmt_dim( $pn ) ); ?> МПа</span></div>
+              <div class="pp-row" data-field="pressure" title="Давление по обозначению изделия в нормативе"><span class="pp-k">Давление</span><span class="pp-v"><?php echo esc_html( promen_pressure_label( (string) $pn, false ) ); ?></span></div>
             <?php endif; ?>
             <?php if ( $d_out !== '' ) : ?>
               <div class="pp-row" data-field="d1"><span class="pp-k"><?php echo $has_branch ? 'D1' : 'D нар.'; ?></span><span class="pp-v"><?php echo esc_html( $d_out ); ?> мм</span></div>
@@ -471,7 +479,7 @@ while ( have_posts() ) :
           <div class="ec-code">03 / Параметры</div>
           <div class="ec-h"><?php echo $is_fastener
             ? esc_html( $size_label !== '' ? $size_label : ( $thread_m ?: 'Типоразмер' ) )
-            : ( $dn !== '' ? 'DN ' . esc_html( $dn ) : 'Типоразмер' ) . ( $pn_ok ? ' / PN ' . esc_html( $pn ) : '' ); ?></div>
+            : ( $dn !== '' ? 'DN ' . esc_html( $dn ) : 'Типоразмер' ) . ( $pn_ok ? ' / ' . esc_html( $pn_label ) : '' ); ?></div>
           <p class="ec-p"><?php echo $is_fastener
             ? 'Рабочие параметры зависят от класса прочности, покрытия и условий узла. Точный режим — в запросе КП.'
             : 'Рабочие параметры зависят от толщины стенки, марки стали и температуры среды. Точный режим — в запросе КП.'; ?></p>
@@ -481,7 +489,7 @@ while ( have_posts() ) :
               <?php if ( $length !== '' ) : ?><span class="ec-tag">L <?php echo esc_html( $length ); ?></span><?php endif; ?>
             <?php else : ?>
               <?php if ( $dn !== '' ) : ?><span class="ec-tag">DN <?php echo esc_html( $dn ); ?></span><?php endif; ?>
-              <?php if ( $pn_ok ) : ?><span class="ec-tag">PN <?php echo esc_html( $pn ); ?></span><?php endif; ?>
+              <?php if ( $pn_ok ) : ?><span class="ec-tag"><?php echo esc_html( $pn_label ); ?></span><?php endif; ?>
               <?php if ( ! $pn_ok && $radius !== '' ) : ?><span class="ec-tag">R <?php echo esc_html( $radius ); ?></span><?php endif; ?>
             <?php endif; ?>
           </div>
@@ -810,7 +818,7 @@ while ( have_posts() ) :
 		'title'      => get_the_title(),
 		'norm'       => $norm_key,
 		'dn'         => $dn,
-		'pn'         => $pn,
+		'pn'         => $pn_label, // готовая подпись: «PN40» или «0,25 МПа»
 		'variations' => $var_map,
 		'steels'     => $steels,
 		'sups'       => $sups,

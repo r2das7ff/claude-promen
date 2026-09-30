@@ -593,6 +593,22 @@ function promen_meta_description_text(): string {
 		$post_obj = get_queried_object();
 		if ( $post_obj instanceof WP_Post ) {
 			$desc = has_excerpt( $post_obj ) ? get_the_excerpt( $post_obj ) : wp_strip_all_tags( $post_obj->post_content );
+			// Калькуляторы и подбор: описание под запрос задано в коде и важнее
+			// выдержки из админки (см. promen_calc_pages()).
+			$seo_desc = [
+				'kalkulyatory' => 'Онлайн-калькуляторы завода: вес отводов, тройников и труб, крепёж фланцевых соединений (КОФ), метизы из кг в штуки, аналоги сталей, DN и дюймы.',
+				'podbor' => 'Подбор отвода, тройника, перехода, фланца или крепежа по DN, давлению, марке стали и нормативу: подходящие позиции каталога завода и запрос КП.',
+			];
+			if ( function_exists( 'promen_calc_pages' ) ) {
+				foreach ( promen_calc_pages() as $calc_slug => $calc ) {
+					if ( ! empty( $calc['seo_desc'] ) ) {
+						$seo_desc[ $calc_slug ] = $calc['seo_desc'];
+					}
+				}
+			}
+			if ( is_page() && isset( $seo_desc[ $post_obj->post_name ] ) ) {
+				$desc = $seo_desc[ $post_obj->post_name ];
+			}
 		}
 	} elseif ( is_tax() || is_category() ) {
 		$desc = term_description();

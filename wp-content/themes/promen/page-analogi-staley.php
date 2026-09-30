@@ -21,7 +21,7 @@ $promen_hub = promen_calc_url( 'kalkulyatory' );
 
   <div class="clc-hero">
     <div class="clc-eyebrow">Справочник · ПЭ-КЛК/06</div>
-    <h1 class="clc-h1">Аналоги<br><em>марок стали</em></h1>
+    <h1 class="clc-h1">Аналоги марок стали<br><em>ГОСТ, EN, ASTM, DIN</em></h1>
     <p class="clc-desc">Ближайшие соответствия марок по ГОСТ и зарубежных стандартов EN, ASTM/AISI
       и DIN — для чтения импортной документации и подбора замен. Поиск работает в обе стороны:
       введите «09Г2С» или «321».</p>

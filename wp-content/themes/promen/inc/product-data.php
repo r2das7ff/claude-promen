@@ -879,7 +879,7 @@ function promen_dxs_label( array $dims ): string {
  * Фланец: DN{dn} PN{pn} [тип] [уплотнение]; СДТ: D×s; переход: D×s-D2×s2; + «исп. N».
  * Крепёж: M{d}×{L} [класс] [сталь]; шайба: {d} тип {T}.
  */
-function promen_size_label( array $dims ): string {
+function promen_size_label( array $dims, int $product_id = 0 ): string {
 	$thread = trim( (string) ( $dims['thread_size'] ?? '' ) );
 	$length = trim( (string) ( $dims['length_mm'] ?? ( $dims['length'] ?? '' ) ) );
 	$washer = trim( (string) ( $dims['washer_type'] ?? '' ) );
@@ -920,7 +920,8 @@ function promen_size_label( array $dims ): string {
 			$parts[] = 'DN' . promen_fmt_dim( $dn );
 		}
 		if ( $pn !== '' ) {
-			$parts[] = 'PN' . promen_fmt_dim( $pn );
+			// Без товара единицы не узнать — по-старому считаем номинальным PN.
+			$parts[] = promen_pressure_label( $pn, $product_id > 0 ? promen_pressure_is_pn( $product_id ) : true );
 		}
 		$type = trim( (string) ( $dims['flange_type'] ?? ( $dims['product_type'] ?? '' ) ) );
 		$seal = trim( (string) ( $dims['seal_face'] ?? '' ) );
@@ -1392,7 +1393,7 @@ function promen_product_display_title( int $product_id ): string {
 	}
 
 	$dims = promen_get_dims( $product_id );
-	$size = promen_size_label( $dims );
+	$size = promen_size_label( $dims, $product_id );
 	if ( $size === '' ) {
 		return (string) get_the_title( $product_id );
 	}
@@ -1505,7 +1506,7 @@ function promen_get_series( WC_Product $product ): array {
 			'accuracy' => $d['accuracy_class'] ?? '',
 			'washer'   => $d['washer_type'] ?? '',
 			'exec'     => $d['execution'] ?? '',
-			'size'     => promen_size_label( $d ),
+			'size'     => promen_size_label( $d, (int) $id ),
 			'mass'     => get_post_meta( $id, '_weight', true ),
 			'sku'      => get_post_meta( $id, '_sku', true ),
 		];
@@ -1727,7 +1728,7 @@ function promen_term_desc_fallback( WP_Term $term ): string {
 function promen_product_desc_fallback( WC_Product $product ): string {
 	$id     = $product->get_id();
 	$dims   = promen_get_dims( $id );
-	$size   = promen_size_label( $dims );
+	$size   = promen_size_label( $dims, $id );
 	$norm   = promen_norm_canonical( (string) get_post_meta( $id, '_promen_norm_key', true ) );
 	$kind   = promen_kind_from_title( (string) $product->get_name() );
 	$steels = (array) wc_get_product_terms( $id, 'pa_steel', [ 'fields' => 'names' ] );
@@ -2281,6 +2282,35 @@ function promen_pn_is_nominal( string $group ): bool {
 	// Фланцы и арматура имеют реальный номинальный класс PN; у СДТ pn — вычисленное
 	// давление, поэтому недостоверно.
 	return $group === 'flange' || $group === 'valve';
+}
+
+/**
+ * В каких единицах лежит pn товара: номинальный PN или МПа.
+ *
+ * Номинальный класс PN (кгс/см², безразмерный) хранят только фланцы четырёх
+ * нормативов — тот же список, по которому канон каталога делит pn на 10
+ * (promen_pn_nominal_norms). У всех остальных pn — давление в МПа: условное
+ * у ОСТ 34 («Ру 0,25 МПа»), рабочее у ОСТ 24.125 и СТО ЦКТИ (11,77; 13,73),
+ * до 100 МПа у ГОСТ 22790-серии. Подписывать их «PN» было ошибкой: заголовок
+ * фланца ОСТ 34-10-425 выходил «PN0.25», отвода СТО 321.05 — «PN13.73».
+ */
+function promen_pressure_is_pn( int $product_id ): bool {
+	static $memo = [];
+	if ( ! isset( $memo[ $product_id ] ) ) {
+		$slugs = $product_id > 0 ? wp_get_post_terms( $product_id, 'norm', [ 'fields' => 'slugs' ] ) : [];
+		$memo[ $product_id ] = ! is_wp_error( $slugs ) && function_exists( 'promen_pn_nominal_norms' )
+			&& (bool) array_intersect( (array) $slugs, promen_pn_nominal_norms() );
+	}
+	return $memo[ $product_id ];
+}
+
+/** Подпись давления для заголовков: «PN40» у номинальных, «0,25 МПа» у остальных. */
+function promen_pressure_label( string $pn, bool $is_pn ): string {
+	$v = promen_fmt_dim( $pn );
+	if ( '' === $v ) {
+		return '';
+	}
+	return $is_pn ? 'PN' . $v : str_replace( '.', ',', $v ) . ' МПа';
 }
 
 /**

@@ -15,13 +15,13 @@ $promen_hub = promen_calc_url( 'kalkulyatory' );
   <?php if ( $promen_hub ) : ?>
     <nav class="clc-crumbs" aria-label="Раздел">
       <a href="<?php echo esc_url( $promen_hub ); ?>">Калькуляторы</a>
-      <span class="sep">/</span><span>Фланцы и крепёж (КОФ)</span>
+      <span class="sep">/</span><span>Калькулятор КОФ</span>
     </nav>
   <?php endif; ?>
 
   <div class="clc-hero">
     <div class="clc-eyebrow">Калькулятор · ПЭ-КЛК/02</div>
-    <h1 class="clc-h1">Фланцы и крепёж<br><em>комплект КОФ</em></h1>
+    <h1 class="clc-h1">Калькулятор КОФ<br><em>крепёж фланцевого соединения</em></h1>
     <p class="clc-desc">Выберите тип фланца, давление и проход — калькулятор покажет вес фланца
       и соберёт комплект ответных фланцев: сколько шпилек или болтов нужно, какой длины,
       сколько гаек и шайб, и сколько весь комплект весит.</p>

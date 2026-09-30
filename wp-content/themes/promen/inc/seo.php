@@ -22,7 +22,7 @@ function promen_product_title_seo( int $product_id ): string {
 	// «PN16» — после букв сразу цифры, границы слова между ними нет: прежняя
 	// проверка \bPN\b такое имя не узнавала и дописывала давление второй раз
 	// («Фланец ФП DN400 PN16 PN16 ГОСТ 28759.2-2022»).
-	if ( preg_match( '/\bPN\s*\d/iu', $title ) ) {
+	if ( preg_match( '/\bPN\s*\d|\d\s*МПа/iu', $title ) ) {
 		return $title; // давление уже в имени
 	}
 	$dims = function_exists( 'promen_get_dims' ) ? promen_get_dims( $product_id ) : [];
@@ -30,7 +30,8 @@ function promen_product_title_seo( int $product_id ): string {
 	if ( '' === $pn ) {
 		return $title;
 	}
-	$label = 'PN' . promen_fmt_dim( $pn );
+	// «PN40» только у номинальных фланцев; у остальных pn в МПа — «2,5 МПа».
+	$label = promen_pressure_label( $pn, promen_pressure_is_pn( $product_id ) );
 
 	// Ставим перед нормативом: «Фланец 80-11-1-B-IV PN40 ГОСТ 33259-2015»
 	// читается лучше, чем давление в самом хвосте.
@@ -261,6 +262,11 @@ add_filter( 'document_title_parts', function ( array $parts ): array {
 		$slug = (string) get_post_field( 'post_name', get_queried_object_id() );
 		if ( isset( $by_slug[ $slug ] ) ) {
 			$parts['title'] = $by_slug[ $slug ];
+		}
+		// Калькуляторы: заголовок под запрос живёт в их реестре (inc/calculators.php).
+		$calc = function_exists( 'promen_calc_pages' ) ? ( promen_calc_pages()[ $slug ]['seo_title'] ?? '' ) : '';
+		if ( '' !== $calc && is_page() ) {
+			$parts['title'] = $calc;
 		}
 	}
 

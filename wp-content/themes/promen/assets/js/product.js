@@ -156,7 +156,7 @@
     if (nameEl && !nameEl.dataset.touched) nameEl.value = data.title || '';
     if (stdEl && !stdEl.dataset.touched) stdEl.value = data.norm || '';
     if (dnEl && !dnEl.dataset.touched && data.dn) dnEl.value = 'DN ' + data.dn;
-    if (pnEl && !pnEl.dataset.touched && data.pn) pnEl.value = 'PN ' + data.pn;
+    if (pnEl && !pnEl.dataset.touched && data.pn) pnEl.value = data.pn; // подпись с единицами собирает шаблон
     if (matEl && !matEl.dataset.touched) matEl.value = steelName;
     if (skuInput) skuInput.value = variation ? variation.sku : (data.sku || '');
   }
