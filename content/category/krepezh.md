@@ -29,15 +29,15 @@ slug: krepezh
 <p>Изделия поставляются по действующим ГОСТ, ОСТ и СТО. Страница каждого норматива связана со всеми типоразмерами в каталоге:</p>
 <table>
 <tr><th>Норматив</th><th>Позиций</th></tr>
-<tr><td><a href="/normativy/gost-22032-1976/">ГОСТ 22032-1976</a></td><td>2 301</td></tr>
-<tr><td><a href="/normativy/gost-7805-1970/">ГОСТ 7805-1970</a></td><td>1 936</td></tr>
-<tr><td><a href="/normativy/gost-22043-1976/">ГОСТ 22043-1976</a></td><td>1 588</td></tr>
-<tr><td><a href="/normativy/gost-7798-1970/">ГОСТ 7798-1970</a></td><td>1 512</td></tr>
-<tr><td><a href="/normativy/gost-15590-1970/">ГОСТ 15590-1970</a></td><td>1 505</td></tr>
-<tr><td><a href="/normativy/gost-7795-1970/">ГОСТ 7795-1970</a></td><td>1 080</td></tr>
-<tr><td><a href="/normativy/gost-7796-1970/">ГОСТ 7796-1970</a></td><td>904</td></tr>
-<tr><td><a href="/normativy/gost-7808-1970/">ГОСТ 7808-1970</a></td><td>904</td></tr>
-<tr><td><a href="/normativy/gost-9066-1970/">ГОСТ 9066-1970</a></td><td>662</td></tr>
+<tr><td><a href="/normativy/gost-22032-1976/">ГОСТ 22032-76</a></td><td>2 301</td></tr>
+<tr><td><a href="/normativy/gost-7805-1970/">ГОСТ 7805-70</a></td><td>1 936</td></tr>
+<tr><td><a href="/normativy/gost-22043-1976/">ГОСТ 22043-76</a></td><td>1 588</td></tr>
+<tr><td><a href="/normativy/gost-7798-1970/">ГОСТ 7798-70</a></td><td>1 512</td></tr>
+<tr><td><a href="/normativy/gost-15590-1970/">ГОСТ 15590-70</a></td><td>1 505</td></tr>
+<tr><td><a href="/normativy/gost-7795-1970/">ГОСТ 7795-70</a></td><td>1 080</td></tr>
+<tr><td><a href="/normativy/gost-7796-1970/">ГОСТ 7796-70</a></td><td>904</td></tr>
+<tr><td><a href="/normativy/gost-7808-1970/">ГОСТ 7808-70</a></td><td>904</td></tr>
+<tr><td><a href="/normativy/gost-9066-1970/">ГОСТ 9066-70</a></td><td>662</td></tr>
 <tr><td><a href="/normativy/ost-26-2040-96/">ОСТ 26-2040-96</a></td><td>398</td></tr>
 </table>
 

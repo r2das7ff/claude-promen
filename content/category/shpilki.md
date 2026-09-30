@@ -17,11 +17,11 @@ slug: shpilki
 <h2>Нормативы</h2>
 <table>
 <tr><th>Норматив</th><th>Позиций</th></tr>
-<tr><td><a href="/normativy/gost-15590-1970/">ГОСТ 15590-1970</a></td><td>1 505</td></tr>
-<tr><td><a href="/normativy/gost-9066-1970/">ГОСТ 9066-1970</a></td><td>662</td></tr>
+<tr><td><a href="/normativy/gost-15590-1970/">ГОСТ 15590-70</a></td><td>1 505</td></tr>
+<tr><td><a href="/normativy/gost-9066-1970/">ГОСТ 9066-70</a></td><td>662</td></tr>
 <tr><td><a href="/normativy/ost-26-2040-96/">ОСТ 26-2040-96</a></td><td>398</td></tr>
-<tr><td><a href="/normativy/gost-15591-1970/">ГОСТ 15591-1970</a></td><td>240</td></tr>
-<tr><td><a href="/normativy/gost-10494-1980/">ГОСТ 10494-1980</a></td><td>207</td></tr>
+<tr><td><a href="/normativy/gost-15591-1970/">ГОСТ 15591-70</a></td><td>240</td></tr>
+<tr><td><a href="/normativy/gost-10494-1980/">ГОСТ 10494-80</a></td><td>207</td></tr>
 </table>
 
 <h2>Как заказать</h2>

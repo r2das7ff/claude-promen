@@ -17,13 +17,13 @@ slug: gayki
 <h2>Нормативы</h2>
 <table>
 <tr><th>Норматив</th><th>Позиций</th></tr>
-<tr><td><a href="/normativy/gost-9064-1970/">ГОСТ 9064-1970</a></td><td>26</td></tr>
-<tr><td><a href="/normativy/gost-10605-1994/">ГОСТ 10605-1994</a></td><td>24</td></tr>
-<tr><td><a href="/normativy/gost-10607-1994/">ГОСТ 10607-1994</a></td><td>24</td></tr>
-<tr><td><a href="/normativy/gost-5916-1970/">ГОСТ 5916-1970</a></td><td>24</td></tr>
-<tr><td><a href="/normativy/gost-5927-1970/">ГОСТ 5927-1970</a></td><td>24</td></tr>
-<tr><td><a href="/normativy/gost-5929-1970/">ГОСТ 5929-1970</a></td><td>24</td></tr>
-<tr><td><a href="/normativy/gost-5915-1970/">ГОСТ 5915-1970</a></td><td>22</td></tr>
+<tr><td><a href="/normativy/gost-9064-1970/">ГОСТ 9064-70</a></td><td>26</td></tr>
+<tr><td><a href="/normativy/gost-10605-1994/">ГОСТ 10605-94</a></td><td>24</td></tr>
+<tr><td><a href="/normativy/gost-10607-1994/">ГОСТ 10607-94</a></td><td>24</td></tr>
+<tr><td><a href="/normativy/gost-5916-1970/">ГОСТ 5916-70</a></td><td>24</td></tr>
+<tr><td><a href="/normativy/gost-5927-1970/">ГОСТ 5927-70</a></td><td>24</td></tr>
+<tr><td><a href="/normativy/gost-5929-1970/">ГОСТ 5929-70</a></td><td>24</td></tr>
+<tr><td><a href="/normativy/gost-5915-1970/">ГОСТ 5915-70</a></td><td>22</td></tr>
 </table>
 
 <h2>Как заказать</h2>

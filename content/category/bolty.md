@@ -17,14 +17,14 @@ slug: bolty
 <h2>Нормативы</h2>
 <table>
 <tr><th>Норматив</th><th>Позиций</th></tr>
-<tr><td><a href="/normativy/gost-22032-1976/">ГОСТ 22032-1976</a></td><td>2 301</td></tr>
-<tr><td><a href="/normativy/gost-7805-1970/">ГОСТ 7805-1970</a></td><td>1 936</td></tr>
-<tr><td><a href="/normativy/gost-22043-1976/">ГОСТ 22043-1976</a></td><td>1 588</td></tr>
-<tr><td><a href="/normativy/gost-7798-1970/">ГОСТ 7798-1970</a></td><td>1 512</td></tr>
-<tr><td><a href="/normativy/gost-7795-1970/">ГОСТ 7795-1970</a></td><td>1 080</td></tr>
-<tr><td><a href="/normativy/gost-7796-1970/">ГОСТ 7796-1970</a></td><td>904</td></tr>
-<tr><td><a href="/normativy/gost-7808-1970/">ГОСТ 7808-1970</a></td><td>904</td></tr>
-<tr><td><a href="/normativy/gost-10602-1994/">ГОСТ 10602-1994</a></td><td>242</td></tr>
+<tr><td><a href="/normativy/gost-22032-1976/">ГОСТ 22032-76</a></td><td>2 301</td></tr>
+<tr><td><a href="/normativy/gost-7805-1970/">ГОСТ 7805-70</a></td><td>1 936</td></tr>
+<tr><td><a href="/normativy/gost-22043-1976/">ГОСТ 22043-76</a></td><td>1 588</td></tr>
+<tr><td><a href="/normativy/gost-7798-1970/">ГОСТ 7798-70</a></td><td>1 512</td></tr>
+<tr><td><a href="/normativy/gost-7795-1970/">ГОСТ 7795-70</a></td><td>1 080</td></tr>
+<tr><td><a href="/normativy/gost-7796-1970/">ГОСТ 7796-70</a></td><td>904</td></tr>
+<tr><td><a href="/normativy/gost-7808-1970/">ГОСТ 7808-70</a></td><td>904</td></tr>
+<tr><td><a href="/normativy/gost-10602-1994/">ГОСТ 10602-94</a></td><td>242</td></tr>
 </table>
 
 <h2>Как заказать</h2>

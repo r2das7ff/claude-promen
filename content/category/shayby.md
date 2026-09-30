@@ -17,8 +17,8 @@ slug: shayby
 <h2>Нормативы</h2>
 <table>
 <tr><th>Норматив</th><th>Позиций</th></tr>
-<tr><td><a href="/normativy/gost-6402-1970/">ГОСТ 6402-1970</a></td><td>80</td></tr>
-<tr><td><a href="/normativy/gost-11371-1978/">ГОСТ 11371-1978</a></td><td>18</td></tr>
+<tr><td><a href="/normativy/gost-6402-1970/">ГОСТ 6402-70</a></td><td>80</td></tr>
+<tr><td><a href="/normativy/gost-11371-1978/">ГОСТ 11371-78</a></td><td>18</td></tr>
 </table>
 
 <h2>Как заказать</h2>
