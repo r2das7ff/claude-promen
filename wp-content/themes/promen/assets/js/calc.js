@@ -999,73 +999,7 @@
     }
   }
 
-  /* ════════════════ 06 · АНАЛОГИ МАРОК СТАЛИ ════════════════ */
-
-  /* Ближайшие аналоги (справочно): [марка, EN / W.-Nr., ASTM/AISI, DIN, применение]. */
-  var STEELS = [
-    ['Ст3сп', 'S235JR / 1.0038', 'A36; A283 Gr.C', 'St37-2', 'Конструкции, крепёж общего назначения'],
-    ['10', 'P235GH / 1.0345', 'A106 Gr.A', 'St35.8', 'Трубы и детали до +425 °C'],
-    ['20', 'P265GH / 1.0425', 'A106 Gr.B', 'St45.8 / C22', 'Основная марка СДТ и труб ТЭС/ЖКХ'],
-    ['09Г2С', 'P355NH / 1.0565', 'A516 Gr.70', '13Mn6 / 19Mn6', 'Низкие температуры до −70 °C, сосуды'],
-    ['16ГС', 'P295GH / 1.0481', 'A516 Gr.60', '17Mn4', 'Сосуды и аппараты под давлением'],
-    ['17Г1С', 'P355N / L360', 'A572 Gr.50; API 5L X52', 'StE355', 'Магистральные трубопроводы'],
-    ['10Г2', 'P275NL1', 'A333 Gr.6', 'TTSt35N', 'Хладостойкие трубы и детали'],
-    ['15ХМ', '13CrMo4-5 / 1.7335', 'A335 P12', '13CrMo44', 'Паропроводы до +560 °C'],
-    ['12ХМ', '13CrMo4-5 / 1.7335', 'A387 Gr.12', '13CrMo44', 'Котельные и сосудовые элементы'],
-    ['12Х1МФ', '14MoV6-3 / 1.7715', '— (ближайший P24)', '14MoV63', 'Паропроводы до +585 °C'],
-    ['15Х1М1Ф', '≈14MoV6-3', 'прямого нет', '—', 'Паропроводы высокого давления'],
-    ['15Х5М', 'X11CrMo5 / 1.7362', 'A335 P5', '12CrMo19-5', 'Нефтехимия, водородные среды'],
-    ['25Х1МФ', '40CrMoV4-6', 'A193 B16', '21CrMoV5-7', 'Теплоустойчивый фланцевый крепёж'],
-    ['25Х2М1Ф', '≈40CrMoV4-6', '≈A193 B16', '—', 'Крепёж высоких параметров'],
-    ['30ХМА', '25CrMo4 / 1.7218', 'AISI 4130', '25CrMo4', 'Высокопрочный крепёж'],
-    ['35', 'C35 / 1.0501', 'AISI 1035', 'C35', 'Крепёж, точёные детали'],
-    ['45', 'C45 / 1.0503', 'AISI 1045', 'C45', 'Валы, точёные детали'],
-    ['40Х', '41Cr4 / 1.7035', 'AISI 5140', '41Cr4', 'Крепёж классов 8.8–10.9'],
-    ['65Г', '≈66Mn4 / C67S', 'AISI 1066', 'Ck67', 'Пружинные шайбы'],
-    ['08кп', 'DC01 / 1.0330', 'AISI 1008', 'St12', 'Плоские шайбы, штамповка'],
-    ['08Х18Н10Т', 'X6CrNiTi18-10 / 1.4541', 'AISI 321', 'X6CrNiTi18-10', 'Нержавеющие СДТ, АЭС, химия'],
-    ['12Х18Н10Т', 'X6CrNiTi18-10 / 1.4541', 'AISI 321 / 321H', 'X10CrNiTi18-9', 'Нержавеющие СДТ, АЭС, химия'],
-    ['08Х18Н12Т', '≈1.4541', '≈AISI 321', '—', 'Нержавеющие детали'],
-    ['10Х17Н13М2Т', 'X6CrNiMoTi17-12-2 / 1.4571', 'AISI 316Ti', 'X6CrNiMoTi17-12-2', 'Кислотостойкие среды'],
-    ['30Х13', 'X30Cr13 / 1.4028', 'AISI 420', 'X30Cr13', 'Мартенситные детали, метизы'],
-    ['13ХФА', 'прямого нет', 'прямого нет', '—', 'Нефтепромысловые среды H₂S/CO₂ — подбор по ТУ']
-  ];
-
-  function initSteels(root) {
-    var box = root.querySelector('[data-table]');
-    var search = root.querySelector('[data-search]');
-
-    var tbl = el('table', 'clc-tbl');
-    tbl.innerHTML = '<thead><tr><th>ГОСТ (РФ)</th><th>EN / W.-Nr.</th><th>ASTM / AISI</th><th>DIN</th><th>Применение</th></tr></thead>';
-    var tb = el('tbody');
-    STEELS.forEach(function (r) {
-      var tr = el('tr');
-      tr.innerHTML = '<td><b>' + esc(r[0]) + '</b></td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td class="mut">' + esc(r[3]) + '</td><td class="mut">' + esc(r[4]) + '</td>';
-      tr.dataset.k = r.join(' ').toLowerCase();
-      tb.appendChild(tr);
-    });
-    tbl.appendChild(tb);
-    var wrap = el('div', 'clc-tbl-wrap');
-    wrap.appendChild(tbl);
-    box.appendChild(wrap);
-
-    if (search) {
-      search.addEventListener('input', function () {
-        var q = search.value.trim().toLowerCase();
-        Array.prototype.forEach.call(tb.children, function (tr) {
-          var hit = q !== '' && tr.dataset.k.indexOf(q) !== -1;
-          tr.classList.toggle('hl', hit);
-          tr.style.display = q === '' || hit ? '' : 'none';
-        });
-      });
-    }
-    var consult = root.querySelector('[data-consult]');
-    if (consult) {
-      consult.addEventListener('click', function () {
-        if (window.openRequestModal) window.openRequestModal('solution');
-      });
-    }
-  }
+  /* 06 · АНАЛОГИ МАРОК СТАЛИ — свой скрипт assets/js/steel-analogs.js. */
 
   /* ── 07 · СТОИМОСТЬ ДОСТАВКИ (груз задаёт человек) ──
      Единственный калькулятор раздела, который считает не по каталогу: сюда
@@ -1438,7 +1372,7 @@
 
   /* ── INIT ── */
 
-  var MODULES = { sdt: initSdt, flange: initFlange, metizy: initMetizy, pipes: initPipes, dn: initDn, steels: initSteels, dostavka: initDostavka };
+  var MODULES = { sdt: initSdt, flange: initFlange, metizy: initMetizy, pipes: initPipes, dn: initDn, dostavka: initDostavka };
   document.querySelectorAll('[data-calc]').forEach(function (root) {
     var mod = MODULES[root.dataset.calc];
     if (mod) mod(root);

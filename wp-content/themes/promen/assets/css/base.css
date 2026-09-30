@@ -194,8 +194,9 @@ body::before{
 .nav-burger.is-open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
 .nav-drawer-overlay{position:fixed;inset:0;top:var(--nav-h,64px);background:rgba(15,42,68,.45);backdrop-filter:blur(2px);z-index:190;opacity:0;pointer-events:none;transition:opacity var(--dur-panel) var(--ease-out);}
 .nav-drawer-overlay.is-open{opacity:1;pointer-events:auto;}
-.nav-drawer{position:fixed;top:var(--nav-h,64px);right:0;bottom:0;width:min(340px,86vw);background:var(--bg);border-left:1px solid var(--ln2);z-index:195;display:flex;flex-direction:column;transform:translateX(100%);transition:transform var(--dur-panel) var(--ease-out);overflow-y:auto;box-shadow:-24px 0 48px rgba(15,42,68,.14);}
-.nav-drawer.is-open{transform:translateX(0);}
+.nav-drawer{position:fixed;top:var(--nav-h,64px);right:0;bottom:0;width:min(340px,86vw);background:var(--bg);border-left:1px solid var(--ln2);z-index:195;display:flex;flex-direction:column;transform:translateX(100%);transition:transform var(--dur-panel) var(--ease-out),box-shadow var(--dur-panel) var(--ease-out);overflow-y:auto;box-shadow:none;}
+/* Тень — только у открытого меню: у закрытого она выглядывала из-за правого края полосой на всех страницах телефона. */
+.nav-drawer.is-open{transform:translateX(0);box-shadow:-24px 0 48px rgba(15,42,68,.14);}
 .nav-drawer-head{display:flex;align-items:center;padding:20px 20px 16px;border-bottom:1px solid var(--ln2);flex-shrink:0;}
 .nav-drawer-lbl{font-family:'DINPro',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--g1-text);}
 .nav-drawer-links{list-style:none;padding:8px 0;margin:0;}

@@ -1,0 +1,434 @@
+/* ════════════════════════════════════════════════════════════
+   PROM-EN: подборщик аналогов марок стали (/kalkulyatory/analogi-staley/).
+   Грузится поверх calc.css. Идиомы те же: белый лист в рамке --ln2 на
+   чертёжной сетке, моноширинные подписи-реквизиты, DINProCond для крупных
+   обозначений. Единственный акцент — --dark.
+   ════════════════════════════════════════════════════════════ */
+
+.sa-page{--sa-pad:28px;}
+.sa-hero{margin-bottom:28px;}
+.sa-lbl{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1-text);font-weight:400;}
+
+/* ── ИНСТРУМЕНТ: поиск + паспорт одним листом ── */
+.sa-tool{position:relative;background:var(--white);border:1px solid var(--ln2);}
+
+.sa-find{position:relative;padding:22px var(--sa-pad) 18px;border-bottom:1px solid var(--ln2);background:var(--white);}
+.sa-find-lbl{display:block;margin-bottom:10px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1-text);}
+.sa-find-row{position:relative;display:flex;align-items:center;gap:14px;border:1px solid var(--ln2);background:var(--bg);
+  padding:0 8px 0 18px;min-height:64px;transition:border-color var(--dur-fast),background var(--dur-fast),box-shadow var(--dur-fast);}
+.sa-find-row:focus-within{background:var(--white);border-color:var(--dark);box-shadow:0 1px 0 var(--dark),0 10px 24px -18px rgba(15,42,68,.45);}
+.sa-find-ic{flex-shrink:0;color:var(--g1-text);}
+.sa-find-in{flex:1;min-width:0;border:none;background:transparent;outline:none;padding:14px 0;
+  font-family:'DINPro',sans-serif;font-size:22px;font-weight:500;letter-spacing:.01em;color:var(--dark);caret-color:var(--dark);}
+.sa-find-in::placeholder{color:var(--g1-text);opacity:1;font-weight:300;}
+.sa-find-in::selection,.sa-page ::selection{background:rgba(15,42,68,.16);}
+.sa-clear{flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:none;background:none;
+  color:var(--g1-text);cursor:pointer;transition:color var(--dur-fast),background var(--dur-fast);}
+.sa-clear:hover{color:var(--dark);background:var(--bg2);}
+.sa-clear[hidden]{display:none;}
+.sa-find-hint{margin-top:10px;font-size:13px;font-weight:300;color:var(--g1-text);line-height:1.5;}
+
+/* Подсказки: список под полем, поверх паспорта. */
+.sa-sug{position:absolute;left:-1px;right:-1px;top:100%;z-index:40;list-style:none;
+  background:var(--white);border:1px solid var(--dark);border-top:none;max-height:min(440px,60vh);overflow-y:auto;overscroll-behavior:contain;
+  box-shadow:0 18px 36px -20px rgba(15,42,68,.5);}
+.sa-sug[hidden]{display:none;}
+.sa-sug-o{display:grid;grid-template-columns:minmax(120px,auto) minmax(0,1fr) auto;align-items:center;gap:6px 18px;
+  padding:11px 18px;min-height:52px;border-bottom:1px solid var(--ln);cursor:pointer;}
+.sa-sug-o:last-child{border-bottom:none;}
+.sa-sug-o[aria-selected="true"],.sa-sug-o:hover{background:var(--bg);}
+.sa-sug-o[aria-selected="true"]{box-shadow:inset 0 0 0 1px var(--dark);}
+.sa-sug-g{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:21px;line-height:1;color:var(--dark);letter-spacing:.005em;}
+.sa-sug-m{font-size:13.5px;color:var(--blue);line-height:1.35;min-width:0;}
+.sa-sug-m mark{background:none;color:var(--dark);font-weight:700;box-shadow:inset 0 -2px 0 var(--g2);}
+.sa-sug-m small{display:block;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--g1-text);margin-top:2px;}
+.sa-sug-empty{padding:18px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;}
+.sa-sug-empty p{font-size:14px;color:var(--blue);line-height:1.55;}
+.sa-sug-empty b{color:var(--dark);}
+
+.sa-pop{display:flex;flex-wrap:wrap;align-items:center;gap:6px 6px;margin-top:14px;}
+.sa-pop .sa-lbl{margin-right:6px;}
+.sa-pop-b{min-height:36px;padding:6px 12px;border:1px solid var(--ln2);background:var(--white);cursor:pointer;
+  font-family:'DINPro',sans-serif;font-size:13.5px;font-weight:500;color:var(--blue);letter-spacing:.02em;
+  transition:border-color var(--dur-fast),color var(--dur-fast),background var(--dur-fast),transform var(--dur-press) var(--ease-out);}
+.sa-pop-b:hover{border-color:var(--dark);color:var(--dark);}
+.sa-pop-b:active{transform:scale(.97);}
+.sa-pop-b[aria-current="true"]{background:var(--dark);border-color:var(--dark);color:var(--white);}
+
+/* ── ПАСПОРТ ── */
+/* Паспорт — одна сетка: на широком экране марка слева, аналоги справа,
+   химсостав во всю ширину; на узком порядок меняется (см. адаптив). */
+.sa-pass{position:relative;display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.3fr);
+  grid-template-areas:"ctx ctx" "side an" "chem chem";scroll-margin-top:calc(var(--nav-h) + 8px);}
+.sa-pass>.sa-ctx{grid-area:ctx;}
+.sa-pass.is-swap>:is(.sa-side,.sa-an,.sa-chem){animation:saIn var(--dur-panel) var(--ease-out) both;}
+@keyframes saIn{from{opacity:.25;transform:translateY(6px);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion:reduce){
+  .sa-pass.is-swap>:is(.sa-side,.sa-an,.sa-chem){animation:saFade var(--dur-ui) linear both;}
+  @keyframes saFade{from{opacity:.5;}to{opacity:1;}}
+}
+
+/* Откуда пришли: «Вы искали A105 → сталь 20». */
+.sa-ctx{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:12px var(--sa-pad);background:var(--bg2);border-bottom:1px solid var(--ln2);
+  font-size:14px;color:var(--blue);line-height:1.45;}
+.sa-ctx[hidden]{display:none;}
+.sa-ctx b{color:var(--dark);font-weight:700;}
+.sa-ctx .sa-lbl{color:var(--blue);}
+.sa-ctx-also{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.sa-ctx-also button{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:5px 12px;border:1px solid var(--ln2);background:var(--white);cursor:pointer;
+  font-family:'DINPro',sans-serif;font-size:13.5px;font-weight:700;color:var(--dark);transition:border-color var(--dur-fast);}
+.sa-ctx-also button:hover{border-color:var(--dark);}
+.sa-ctx-also button[aria-current="true"]{background:var(--dark);color:var(--white);border-color:var(--dark);}
+.sa-ctx-also button[aria-current="true"] .sa-q i{background:var(--white);border-color:var(--white);}
+.sa-ctx-also button[aria-current="true"] .sa-q i:nth-child(n){opacity:1;}
+
+.sa-side{grid-area:side;align-self:start;padding:26px var(--sa-pad) 28px;display:flex;flex-direction:column;gap:18px;min-width:0;}
+/* Колонка марки едет вместе с аналогами, только если помещается в экран
+   целиком: на ноутбуке высотой 768 кнопки запроса иначе уходят под низ. */
+@media (min-width:1101px) and (min-height:900px){.sa-side{position:sticky;top:calc(var(--nav-h) + 12px);}}
+.sa-id,.sa-buy{display:flex;flex-direction:column;gap:18px;min-width:0;}
+.sa-id-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;}
+.sa-grp{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);
+  border:1px solid var(--g1);padding:3px 8px;}
+.sa-name{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(52px,6.4vw,92px);line-height:.88;letter-spacing:-.01em;
+  color:var(--dark);text-transform:none;overflow-wrap:anywhere;margin-top:-4px;}
+.sa-desc{font-size:15px;font-weight:300;line-height:1.6;color:var(--blue);max-width:48ch;}
+.sa-facts{border-top:1px solid var(--ln);}
+.sa-facts>div{display:grid;grid-template-columns:minmax(120px,.8fr) minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--ln);align-items:baseline;}
+.sa-facts dt{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1-text);}
+.sa-facts dt.sa-nc{text-transform:none;letter-spacing:.04em;font-size:12.5px;}
+.sa-facts dd{font-size:14.5px;font-weight:700;color:var(--dark);font-variant-numeric:tabular-nums;}
+
+.sa-cat{display:flex;flex-direction:column;gap:10px;}
+.sa-cat-hd{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;}
+.sa-cat-all{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;font-weight:700;color:var(--dark);
+  border-bottom:1px solid var(--g2);padding-bottom:1px;font-variant-numeric:tabular-nums;transition:border-color var(--dur-fast),gap var(--dur-ui) var(--ease-out);}
+.sa-cat-all:hover{border-color:var(--dark);gap:9px;}
+.sa-cat-list{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));border-top:1px solid var(--ln);border-left:1px solid var(--ln);}
+.sa-cat-list li{border-right:1px solid var(--ln);border-bottom:1px solid var(--ln);}
+.sa-cat-list a{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:10px 12px;min-height:44px;background:var(--white);
+  font-size:13.5px;color:var(--blue);transition:background var(--dur-fast),color var(--dur-fast);}
+.sa-cat-list a:hover{background:var(--bg);color:var(--dark);}
+.sa-cat-list b{font-weight:700;color:var(--dark);font-variant-numeric:tabular-nums;}
+.sa-cat-also{font-size:13px;color:var(--g1-text);border-bottom:1px solid var(--ln2);align-self:flex-start;}
+.sa-cat-also:hover{color:var(--dark);border-color:var(--dark);}
+.sa-cat.is-off{padding:14px 16px;background:var(--bg);border:1px solid var(--ln);}
+.sa-cat.is-off p{font-size:14px;font-weight:300;color:var(--blue);line-height:1.6;}
+
+.sa-acts{display:flex;flex-wrap:wrap;gap:10px;padding-top:4px;}
+.sa-acts .clc-btn{min-height:46px;}
+.sa-ic{flex-shrink:0;}
+
+/* Аналоги по системам. */
+.sa-an{grid-area:an;border-left:1px solid var(--ln2);min-width:0;display:flex;flex-direction:column;}
+.sa-an-hd{display:flex;justify-content:space-between;align-items:center;gap:10px 16px;flex-wrap:wrap;padding:18px var(--sa-pad) 14px;border-bottom:1px solid var(--ln2);}
+.sa-legend{display:inline-flex;align-items:center;gap:6px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--g1-text);
+  border-bottom:1px dotted var(--g2);padding-bottom:1px;}
+.sa-legend .sa-q{margin-left:8px;}
+.sa-legend .sa-q:first-child{margin-left:0;}
+.sa-legend:hover{color:var(--dark);border-bottom-color:var(--dark);}
+.sa-an-list{list-style:none;}
+.sa-an-row{display:grid;grid-template-columns:96px minmax(0,1fr) auto 44px;align-items:start;gap:4px 16px;
+  padding:14px 12px 14px var(--sa-pad);border-bottom:1px solid var(--ln);transition:background var(--dur-fast);}
+.sa-an-row:last-child{border-bottom:none;}
+.sa-an-row.is-hit{background:var(--g1a);box-shadow:inset 0 0 0 1px var(--dark);}
+.sa-hit-l{display:block;margin-top:6px;font-style:normal;font-family:'DINPro',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--dark);}
+.sa-sys{font-family:'DINPro',monospace;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--dark);padding-top:5px;line-height:1.35;}
+.sa-sys small{display:block;font-weight:400;font-size:11px;letter-spacing:.04em;text-transform:none;color:var(--g1-text);margin-top:2px;}
+.sa-an-main{display:flex;flex-direction:column;gap:5px;min-width:0;}
+.sa-an-g{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;}
+.sa-an-g b{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:24px;line-height:1.05;color:var(--dark);letter-spacing:.005em;overflow-wrap:anywhere;}
+.sa-num{font-family:'DINPro',monospace;font-size:12.5px;letter-spacing:.06em;color:var(--blue);}
+.sa-an-doc{font-family:'DINPro',monospace;font-size:11.5px;letter-spacing:.06em;color:var(--g1-text);}
+.sa-forms{list-style:none;display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 14px;margin-top:2px;}
+.sa-forms li{display:contents;}
+.sa-forms span{font-size:13px;color:var(--g1-text);font-weight:300;}
+.sa-forms b{font-size:13.5px;font-weight:700;color:var(--dark);}
+.sa-note{font-size:13.5px;font-weight:300;line-height:1.55;color:var(--blue);max-width:62ch;}
+.sa-alt{font-size:13px;color:var(--blue);line-height:1.5;}
+.sa-alt span{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1-text);margin-right:4px;}
+.sa-an-row .sa-q{padding-top:7px;}
+.sa-an-row.is-nil{grid-template-columns:96px minmax(0,1fr);}
+.sa-nil{font-size:13.5px;color:var(--g1-text);font-weight:300;padding-top:4px;}
+.sa-none{padding:20px var(--sa-pad);font-size:14.5px;font-weight:300;color:var(--blue);line-height:1.7;max-width:70ch;}
+
+.sa-copy{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:1px solid transparent;background:none;cursor:pointer;
+  color:var(--g1-text);transition:color var(--dur-fast),border-color var(--dur-fast),background var(--dur-fast),transform var(--dur-press) var(--ease-out);}
+.sa-copy:hover{color:var(--dark);border-color:var(--ln2);background:var(--white);}
+.sa-copy:active{transform:scale(.94);}
+.sa-copy.is-done{color:var(--dark);border-color:var(--dark);}
+
+/* Степень соответствия: три риски + слово. */
+.sa-q{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;}
+.sa-q-t{display:inline-flex;gap:2px;align-items:flex-end;}
+.sa-q i{display:block;width:4px;height:12px;border:1px solid var(--g1);background:transparent;}
+.sa-q[data-q="1"] i:nth-child(1),
+.sa-q[data-q="2"] i:nth-child(-n+2),
+.sa-q[data-q="3"] i{background:var(--dark);border-color:var(--dark);}
+.sa-q-w{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dark);}
+.sa-q[data-q="1"] .sa-q-w{color:var(--g1-text);}
+
+/* Химсостав. */
+.sa-chem{grid-area:chem;border-top:1px solid var(--ln2);padding:22px var(--sa-pad) 24px;background:var(--white);}
+.sa-chem-hd{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;margin-bottom:16px;}
+.sa-chem-hd::before{content:'Химсостав, %';font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--g1-text);width:100%;}
+.sa-chem-key{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--g1-text);}
+.sa-chem-key b{font-weight:700;color:var(--dark);}
+.sa-sw{display:inline-block;width:22px;height:8px;}
+.sa-sw--ru{background:var(--dark);}
+.sa-sw--an{border:1px solid var(--g1);background:repeating-linear-gradient(135deg,var(--g1) 0 1.5px,transparent 1.5px 4px);}
+.sa-chem-hd .sa-chips{margin-left:auto;}
+
+.sa-els{display:flex;flex-direction:column;}
+.sa-el{display:grid;grid-template-columns:52px minmax(0,1fr) minmax(170px,.32fr);align-items:center;gap:0 18px;min-height:40px;border-bottom:1px solid var(--ln);}
+.sa-el--hd{min-height:30px;font-family:'DINPro',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g1-text);border-bottom-color:var(--ln2);}
+.sa-el--hd .sa-el-v b,.sa-el--hd .sa-el-v span{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.06em;text-transform:none;}
+.sa-el-k{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:18px;color:var(--dark);position:relative;}
+.sa-el.is-diff .sa-el-k::after{content:'≠';position:absolute;left:26px;top:-2px;font-family:'DINPro',sans-serif;font-size:14px;font-weight:700;color:var(--dark);}
+.sa-el-bars{position:relative;height:26px;
+  background:linear-gradient(to right,var(--ln) 1px,transparent 1px) 0 0/25% 100%,linear-gradient(var(--ln),var(--ln)) 0 50%/100% 1px no-repeat;}
+.sa-el-bars::after{content:'';position:absolute;right:0;top:0;bottom:0;width:1px;background:var(--ln);}
+.sa-bar{position:absolute;height:8px;min-width:3px;transform-origin:left center;}
+/* Смена марки или аналога: полосы вырастают от начала шкалы — видно, что
+   сравнение пересчитано. Аналог чуть позже своей марки, строки — лесенкой. */
+.sa-chem.is-anim .sa-bar{animation:saBar var(--dur-entrance) var(--ease-out) both;animation-delay:calc(var(--i,0) * 40ms);}
+.sa-chem.is-anim .sa-bar--an{animation-delay:calc(var(--i,0) * 40ms + 70ms);}
+@keyframes saBar{from{transform:scaleX(0);opacity:.2;}to{transform:none;opacity:1;}}
+@media (prefers-reduced-motion:reduce){.sa-chem.is-anim .sa-bar{animation:none;}}
+.sa-bar--ru{top:3px;background:var(--dark);color:var(--dark);}
+/* Засечки на концах — диапазон читается как размерная линия чертежа;
+   у открытой границы («не более», «не менее») засечки нет. */
+.sa-bar::before,.sa-bar::after{content:'';position:absolute;top:-3px;bottom:-3px;width:1.5px;background:currentColor;}
+.sa-bar::before{left:0;}
+.sa-bar::after{right:0;}
+.sa-bar.is-ol::before,.sa-bar.is-or::after{display:none;}
+.sa-bar--an{top:15px;color:var(--g1);border:1px solid var(--g1);background:var(--white) repeating-linear-gradient(135deg,var(--g1) 0 1.5px,transparent 1.5px 4px);}
+.sa-bar--nil{display:none;}
+.sa-bar.is-ol{-webkit-mask-image:linear-gradient(to right,transparent,#000 22px);mask-image:linear-gradient(to right,transparent,#000 22px);}
+.sa-bar.is-or{-webkit-mask-image:linear-gradient(to left,transparent,#000 22px);mask-image:linear-gradient(to left,transparent,#000 22px);}
+.sa-el-v{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-variant-numeric:tabular-nums;}
+.sa-el-v b{font-size:14px;font-weight:700;color:var(--dark);}
+.sa-el-v span{font-size:14px;color:var(--g1-text);}
+.sa-rest{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin-top:12px;font-size:13px;color:var(--blue);font-variant-numeric:tabular-nums;}
+.sa-rest .sa-lbl{width:100%;}
+.sa-rest b{font-weight:700;color:var(--dark);}
+.sa-rest i{font-style:normal;color:var(--g2);margin:0 2px;}
+.sa-chem-diff{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--blue);}
+.sa-diff-mark::before{content:'≠';font-weight:700;color:var(--dark);font-size:15px;}
+.sa-chem-empty{font-size:14px;font-weight:300;color:var(--blue);line-height:1.6;max-width:70ch;}
+
+/* Чипы (сравнение, фильтр таблицы). */
+.sa-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.sa-chip{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:6px 12px;border:1px solid var(--ln2);background:var(--white);cursor:pointer;
+  font-family:'DINPro',sans-serif;font-size:13.5px;font-weight:500;color:var(--blue);
+  transition:border-color var(--dur-fast),background var(--dur-fast),color var(--dur-fast),transform var(--dur-press) var(--ease-out);}
+.sa-chip:hover{border-color:var(--dark);color:var(--dark);}
+.sa-chip:active{transform:scale(.97);}
+.sa-chip[aria-pressed="true"]{background:var(--dark);border-color:var(--dark);color:var(--white);}
+.sa-chip-sys{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.08em;opacity:.75;}
+.sa-chip span:last-child:not(.sa-chip-sys){font-family:'DINPro',monospace;font-size:11px;opacity:.7;}
+
+.sa-toast{position:fixed;left:50%;bottom:24px;z-index:120;transform:translate(-50%,12px);opacity:0;pointer-events:none;
+  padding:11px 16px;background:var(--dark);color:var(--white);font-family:'DINPro',monospace;font-size:12px;letter-spacing:.08em;
+  box-shadow:0 12px 28px -14px rgba(15,42,68,.6);transition:opacity var(--dur-ui) var(--ease-out),transform var(--dur-ui) var(--ease-out);}
+.sa-toast.is-on{opacity:1;transform:translate(-50%,0);}
+
+/* Фокус с клавиатуры — единым кольцом. */
+.sa-page :is(a,button,[tabindex]):focus-visible{outline:2px solid var(--dark);outline-offset:2px;}
+.sa-find-in:focus-visible{outline:none;}
+
+/* ── ТАБЛИЦА СООТВЕТСТВИЯ ── */
+.sa-sec{margin-top:64px;}
+.sa-sec-hd{max-width:780px;margin-bottom:18px;}
+.sa-h2{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(24px,2.6vw,32px);line-height:1.05;letter-spacing:-.005em;
+  text-transform:uppercase;color:var(--dark);text-wrap:balance;}
+.sa-sec-lead{margin-top:10px;font-size:15px;font-weight:300;line-height:1.65;color:var(--blue);}
+.sa-filter{margin-bottom:14px;}
+.sa-tbl-wrap{background:var(--white);border:1px solid var(--ln2);overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--g2) transparent;}
+.sa-tbl-wrap:focus-visible{outline:2px solid var(--dark);outline-offset:2px;}
+/* С 1200 таблица помещается целиком: без своего скролла у обёртки шапка
+   липнет к странице (прокручивается body) и не теряется на 42 строках. */
+@media (min-width:1200px){
+  .sa-tbl-wrap{overflow:visible;}
+  .sa-tbl thead th{top:var(--nav-h);}
+}
+.sa-tbl{width:100%;border-collapse:collapse;min-width:980px;}
+.sa-tbl th,.sa-tbl td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--ln);}
+.sa-tbl thead th{position:sticky;top:0;z-index:2;background:var(--white);font-family:'DINPro',monospace;font-size:11px;font-weight:400;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--g1-text);border-bottom:1px solid var(--ln2);white-space:nowrap;}
+.sa-tbl thead th small,.sa-tbl tbody th small{display:block;font-family:'DINPro',sans-serif;font-size:12px;letter-spacing:0;text-transform:none;color:var(--g1-text);font-weight:300;margin-top:3px;white-space:normal;}
+.sa-tbl-grp th{background:var(--bg2);font-family:'DINPro',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dark);font-weight:700;padding:8px 14px;}
+.sa-tbl-grp th span{font-weight:400;color:var(--g1-text);margin-left:6px;}
+.sa-tbl tbody tr[data-id]{cursor:pointer;transition:background var(--dur-fast);}
+.sa-tbl tbody tr[data-id]:hover{background:var(--g1b);}
+.sa-tbl tbody tr[aria-current="true"]{background:var(--g1a);}
+.sa-tbl tbody th[scope="row"]{white-space:nowrap;}
+.sa-tbl tbody th[scope="row"] a{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:19px;color:var(--dark);letter-spacing:.005em;}
+.sa-tbl tbody th[scope="row"] a:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;}
+.sa-tbl td{font-size:14px;color:var(--dark);font-variant-numeric:tabular-nums;}
+.sa-tbl td .sa-q{margin-right:8px;vertical-align:-1px;}
+.sa-tbl td .sa-q-t i{width:3px;}
+.sa-td-n{display:block;font-family:'DINPro',monospace;font-size:11.5px;color:var(--g1-text);margin:2px 0 0 19px;}
+.sa-tbl td.is-nil{color:var(--g2);}
+.sa-tbl tbody[hidden]{display:none;}
+.sa-tbl-note{margin-top:12px;font-size:13px;font-weight:300;color:var(--g1-text);line-height:1.6;max-width:90ch;}
+
+/* ── СТАТЬЯ ── */
+.sa-art{display:grid;grid-template-columns:minmax(0,1fr) 290px;column-gap:56px;align-items:start;margin-top:72px;padding-top:40px;border-top:1px solid var(--ln2);}
+/* Сетка фона не должна просвечивать сквозь плотный текст (BRIEF, доступность). */
+.sa-body{background:var(--bg);box-shadow:0 0 0 24px var(--bg);}
+.sa-body{display:flex;flex-direction:column;gap:56px;min-width:0;max-width:860px;}
+.sa-part{display:flex;flex-direction:column;gap:16px;}
+.sa-part>p{font-size:15px;font-weight:300;line-height:1.75;color:var(--blue);max-width:72ch;}
+.sa-part>p b,.sa-part>p strong{font-weight:700;color:var(--dark);}
+.sa-part a:not(.clc-btn){color:var(--dark);border-bottom:1px solid var(--g2);transition:border-color var(--dur-fast);}
+.sa-part a:not(.clc-btn):hover{border-color:var(--dark);}
+.sa-h3{font-family:'DINPro',sans-serif;font-weight:700;font-size:14.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--dark);margin-top:8px;}
+
+.sa-toc{position:sticky;top:calc(var(--nav-h) + 20px);display:flex;flex-direction:column;gap:16px;order:2;}
+.sa-toc-box{background:var(--white);border:1px solid var(--ln2);padding:18px;}
+.sa-toc-list{list-style:none;margin-top:10px;border-top:1px solid var(--ln);counter-reset:toc;}
+.sa-toc-list a{display:block;padding:9px 0 9px 10px;font-size:13.5px;color:var(--blue);border-bottom:1px solid var(--ln);
+  transition:color var(--dur-fast),box-shadow var(--dur-fast);}
+.sa-toc-list a:hover{color:var(--dark);box-shadow:inset 1px 0 0 var(--g2);}
+.sa-toc-list a.is-on{color:var(--dark);font-weight:700;background:var(--g1b);}
+.sa-toc-cta{background:var(--dark);padding:18px;display:flex;flex-direction:column;gap:10px;}
+.sa-toc-cta-t{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:18px;line-height:1.1;text-transform:uppercase;color:var(--white);}
+.sa-toc-cta-p{font-size:13.5px;color:var(--g2);line-height:1.55;font-weight:300;}
+.sa-toc-cta-btn{min-height:44px;padding:10px 14px;border:none;background:var(--white);cursor:pointer;
+  font-family:'DINPro',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dark);
+  transition:background var(--dur-fast),transform var(--dur-press) var(--ease-out);}
+.sa-toc-cta-btn:hover{background:var(--bg2);}
+.sa-toc-cta-btn:active{transform:scale(.97);}
+
+/* Расшифровка обозначений. */
+.sa-dec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--ln2);border:1px solid var(--ln2);margin-top:6px;}
+.sa-dec{background:var(--white);padding:18px 18px 20px;display:flex;flex-direction:column;gap:14px;}
+.sa-dec figcaption{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:700;color:var(--dark);}
+.sa-dec-code{display:flex;flex-wrap:wrap;gap:4px;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:34px;line-height:1;color:var(--dark);}
+.sa-dec-code span{position:relative;padding-bottom:9px;counter-increment:seg;}
+.sa-dec-code span::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--g2);transition:background var(--dur-fast);}
+.sa-dec-code span:nth-child(odd)::after{background:var(--dark);}
+.sa-dec-leg{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.sa-dec-leg li{display:grid;grid-template-columns:minmax(52px,auto) minmax(0,1fr);gap:10px;font-size:13.5px;font-weight:300;line-height:1.45;color:var(--blue);
+  padding:2px 0;transition:background var(--dur-fast);}
+.sa-dec-leg b{font-family:'DINPro',monospace;font-size:13px;font-weight:700;color:var(--dark);}
+@media (hover:hover){
+  .sa-dec-leg li:hover{background:var(--g1b);}
+  .sa-dec:has(.sa-dec-leg li:nth-child(1):hover) .sa-dec-code span:nth-child(1),
+  .sa-dec:has(.sa-dec-leg li:nth-child(2):hover) .sa-dec-code span:nth-child(2),
+  .sa-dec:has(.sa-dec-leg li:nth-child(3):hover) .sa-dec-code span:nth-child(3),
+  .sa-dec:has(.sa-dec-leg li:nth-child(4):hover) .sa-dec-code span:nth-child(4){color:var(--g1-text);}
+}
+
+.sa-letters{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));background:var(--white);border-top:1px solid var(--ln);border-left:1px solid var(--ln);}
+.sa-letters li{border-right:1px solid var(--ln);border-bottom:1px solid var(--ln);display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:2px 10px;background:var(--white);padding:10px 12px;font-family:'DINPro',monospace;font-size:12.5px;color:var(--g1-text);}
+.sa-letters b{grid-row:span 2;font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:26px;line-height:1;color:var(--dark);}
+.sa-letters span{font-family:'DINPro',sans-serif;font-size:12.5px;color:var(--blue);font-weight:300;line-height:1.3;}
+
+.sa-tbl-wrap--art .sa-tbl{min-width:760px;}
+.sa-tbl--forms td{font-weight:700;}
+.sa-tbl--forms td small{display:block;font-weight:300;font-size:12px;color:var(--g1-text);margin-top:3px;}
+.sa-tbl--forms tbody th,.sa-tbl--spec tbody th{font-size:14px;font-weight:700;color:var(--dark);min-width:170px;}
+.sa-tbl--spec td{font-size:14px;line-height:1.5;}
+.sa-tbl--spec td:last-child{color:var(--blue);font-weight:300;}
+.sa-tbl--forms tbody tr:last-child th,.sa-tbl--forms tbody tr:last-child td,
+.sa-tbl--spec tbody tr:last-child th,.sa-tbl--spec tbody tr:last-child td,
+.sa-tbl tbody:last-child tr:last-child th,.sa-tbl tbody:last-child tr:last-child td{border-bottom:none;}
+
+.sa-levels{list-style:none;display:flex;flex-direction:column;border:1px solid var(--ln2);background:var(--white);}
+.sa-levels li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;padding:16px 18px;border-bottom:1px solid var(--ln);}
+.sa-levels li:last-child{border-bottom:none;}
+.sa-levels .sa-q{align-self:start;padding-top:3px;}
+.sa-levels p{font-size:14.5px;font-weight:300;line-height:1.65;color:var(--blue);}
+.sa-levels p b{font-weight:700;color:var(--dark);}
+.sa-caution{padding:14px 18px;background:var(--white);border:1px solid var(--ln2);font-size:14.5px !important;color:var(--dark) !important;font-weight:400 !important;}
+
+.sa-checks{list-style:none;counter-reset:chk;display:flex;flex-direction:column;border:1px solid var(--ln2);background:var(--white);}
+.sa-checks li{counter-increment:chk;position:relative;padding:14px 18px 14px 62px;border-bottom:1px solid var(--ln);
+  font-size:14.5px;font-weight:300;line-height:1.65;color:var(--blue);}
+.sa-checks li:last-child{border-bottom:none;}
+.sa-checks li::before{content:counter(chk,decimal-leading-zero);position:absolute;left:0;top:0;bottom:0;width:44px;display:flex;justify-content:center;padding-top:16px;
+  font-family:'DINPro',monospace;font-size:12px;color:var(--g1-text);border-right:1px solid var(--ln);background:var(--bg);}
+.sa-checks b{font-weight:700;color:var(--dark);}
+
+.sa-inline-cta{display:flex;align-items:center;justify-content:space-between;gap:16px 28px;flex-wrap:wrap;padding:18px 20px;background:var(--white);border:1px solid var(--dark);}
+.sa-inline-cta p{flex:1 1 360px;font-size:14.5px;font-weight:300;line-height:1.6;color:var(--blue);}
+.sa-inline-cta b{font-weight:700;color:var(--dark);}
+
+/* FAQ: общий компонент каталога, вопрос — кнопка. */
+.sa-faq{background:var(--white);}
+.sa-faq .fq-q{width:100%;border:none;background:none;text-align:left;font:inherit;color:inherit;}
+.sa-faq .fq-q:hover{background:var(--g1b);}
+.sa-faq .fq-t{font-size:15px;}
+.sa-faq .fq-arr svg{display:block;}
+.sa-faq .fq-a-in{font-size:14.5px;}
+
+/* ── АДАПТИВ ── */
+@media (max-width:1280px){
+  .sa-art{grid-template-columns:minmax(0,1fr) 250px;column-gap:40px;}
+  .sa-dec-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:1100px){
+  .sa-pass{grid-template-columns:minmax(0,1fr);grid-template-areas:"ctx" "id" "an" "chem" "buy";}
+  .sa-side{display:contents;}
+  .sa-id{grid-area:id;padding:24px var(--sa-pad) 22px;}
+  .sa-buy{grid-area:buy;padding:22px var(--sa-pad) 26px;border-top:1px solid var(--ln2);}
+  .sa-an{border-left:none;border-top:1px solid var(--ln2);}
+  .sa-art{grid-template-columns:minmax(0,1fr);}
+  .sa-toc{position:static;order:0;margin-bottom:8px;}
+  .sa-toc-box{display:none;}
+  .sa-toc-cta{display:none;}
+  .sa-body{max-width:none;}
+}
+@media (max-width:820px){
+  .sa-page{--sa-pad:20px;}
+  .sa-el{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"k bars" ". v";row-gap:4px;padding:8px 0;}
+  .sa-el-k{grid-area:k;}
+  .sa-el-bars{grid-area:bars;}
+  .sa-el-v{grid-area:v;}
+  .sa-el--hd{display:none;}
+  /* Шапки колонок нет — значения подписаны теми же образцами, что и легенда. */
+  .sa-el-v b::before,.sa-el-v span::before{content:'';display:inline-block;width:12px;height:6px;margin-right:6px;vertical-align:1px;}
+  .sa-el-v b::before{background:var(--dark);}
+  .sa-el-v span::before{border:1px solid var(--g1);background:repeating-linear-gradient(135deg,var(--g1) 0 1.5px,transparent 1.5px 4px);}
+  .sa-chem-hd .sa-chips{margin-left:0;}
+  .sa-levels li{grid-template-columns:minmax(0,1fr);gap:8px;}
+}
+@media (max-width:640px){
+  .sa-page{--sa-pad:16px;}
+  .sa-find{padding-top:18px;}
+  .sa-find-row{min-height:56px;padding-left:14px;gap:10px;}
+  .sa-find-in{font-size:18px;}
+  /* Частые марки — одной строкой с прокруткой: четыре ряда кнопок уводили паспорт с первого экрана. */
+  .sa-pop{flex-wrap:nowrap;overflow-x:auto;margin:12px calc(-1 * var(--sa-pad)) 0;padding:0 var(--sa-pad) 4px;
+    scrollbar-width:none;overscroll-behavior-x:contain;
+    -webkit-mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent);}
+  .sa-pop::-webkit-scrollbar{display:none;}
+  .sa-pop .sa-lbl{flex-shrink:0;}
+  .sa-pop-b{flex-shrink:0;}
+  .sa-sug-o{grid-template-columns:minmax(0,1fr) auto;}
+  .sa-sug-m{grid-column:1/-1;grid-row:2;}
+  .sa-name{font-size:clamp(46px,15vw,64px);}
+  .sa-facts>div{grid-template-columns:minmax(0,1fr);gap:2px;}
+  .sa-an-row{grid-template-columns:minmax(0,1fr) 44px;grid-template-areas:"sys copy" "main main" "q q";padding-right:8px;}
+  .sa-an-row .sa-sys{grid-area:sys;}
+  .sa-an-row .sa-an-main{grid-area:main;}
+  .sa-an-row .sa-q{grid-area:q;padding-top:4px;}
+  .sa-an-row .sa-copy{grid-area:copy;}
+  .sa-an-row.is-nil{grid-template-columns:minmax(0,1fr);grid-template-areas:"sys" "main";}
+  .sa-sys small{display:inline;margin-left:6px;}
+  .sa-acts .clc-btn{flex:1 1 100%;}
+  .sa-dec-grid{grid-template-columns:minmax(0,1fr);}
+  .sa-dec-code{font-size:30px;}
+  .sa-tbl tbody th[scope="row"],.sa-tbl thead th:first-child{position:sticky;left:0;z-index:1;background:var(--white);box-shadow:1px 0 0 var(--ln2);}
+  .sa-tbl thead th:first-child{z-index:3;}
+  .sa-tbl tbody tr[aria-current="true"] th[scope="row"]{background:#E4EAF0;}
+  .sa-tbl-grp th{position:sticky;left:0;}
+  .sa-checks li{padding-left:50px;}
+  .sa-checks li::before{width:36px;}
+  .sa-faq .fq-q{padding:16px;gap:12px;}
+  .sa-faq .fq-a-in{padding:0 16px 16px;}
+  .sa-faq .fq-num{width:26px;font-size:15px;}
+}

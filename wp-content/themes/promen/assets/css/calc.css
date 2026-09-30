@@ -4,7 +4,10 @@
    сетки с 1px-швами на var(--g1), белые панели на фоне чертёжной сетки.
    ════════════════════════════════════════════════════════════ */
 
-.pg{position:relative;z-index:1;padding:calc(var(--nav-h) + 40px) 40px 72px var(--head-x);max-width:1480px;}
+/* Ось контента — как у каталога и статей: рельса + --head-x (100px на
+   десктопе). Раньше калькуляторы стояли в 56px от края, ближе к рельсе, чем
+   остальной сайт. max-width вырос на ширину рельсы — рабочая ширина прежняя. */
+.pg{position:relative;z-index:1;padding:calc(var(--nav-h) + 40px) 40px 72px calc(var(--rail-w) + var(--head-x));max-width:calc(1480px + var(--rail-w));}
 
 /* ── HERO ── */
 .clc-hero{margin-bottom:36px;max-width:920px;}
@@ -34,7 +37,9 @@
 
 /* ── РАБОЧАЯ ЗОНА: форма + результат ── */
 .clc-wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(380px,.95fr);gap:32px;align-items:start;}
-.clc-panel{background:var(--white);border:1px solid var(--ln2);}
+/* min-width:0 — элемент сетки иначе растягивается до ширины широкой таблицы
+   (DN · дюймы) и на телефоне обрезается справа вместо прокрутки таблицы. */
+.clc-panel{background:var(--white);border:1px solid var(--ln2);min-width:0;}
 .clc-panel-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:14px 18px;border-bottom:1px solid var(--ln);}
 .clc-panel-t{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--g1-text);}
@@ -195,8 +200,18 @@
   .clc-out{position:static;}
   .clc-hub{grid-template-columns:repeat(2,1fr);}
 }
+/* Поля — как у каталога. Правило .pg выше задаёт отступ без медиазапроса и
+   перебивает ступени base.css, поэтому ось повторена здесь: ≤1024 рельса
+   сужается до 20px, ≤900 — рельса + 24px поля, ≤480 рельсы нет — 24px с
+   обеих сторон. Раньше слева стояло 56px при 16px справа на любом телефоне. */
+@media(max-width:1024px){
+  .pg{padding-left:calc(20px + var(--head-x));}
+}
+@media(max-width:900px){
+  .pg{padding-left:calc(20px + 24px);padding-right:24px;}
+}
 @media(max-width:640px){
-  .pg{padding:calc(var(--nav-h) + 24px) 16px 48px calc(var(--rail-w) + 12px);}
+  .pg{padding-top:calc(var(--nav-h) + 24px);padding-bottom:48px;}
   .clc-hub{grid-template-columns:1fr;}
   .clc-fields{grid-template-columns:1fr;}
   .clc-tab{font-size:13px;}
@@ -208,6 +223,9 @@
   .clc-kit-r{grid-template-columns:1fr auto;}
   .clc-kit-m{grid-column:2;}
   .clc-search input{font-size:16px;}
+}
+@media(max-width:480px){
+  .pg{padding-left:24px;padding-right:24px;}
 }
 
 /* ── 07 · Стоимость доставки: грузоместа ── */
@@ -253,7 +271,6 @@
 .clc-wrap[data-calc="metizy"] [data-result]:has(.clc-empty) { min-height: 275px; }
 .clc-wrap[data-calc="pipes"]  [data-result]:has(.clc-empty) { min-height: 350px; }
 
-.clc-wrap[data-calc="steels"] [data-table]:empty { min-height: 970px; }
 .clc-wrap[data-calc="dn"]     [data-table]:empty { min-height: 898px; }
 
 /* Доставка: два набора полей — параметры груза и маршрут. Замер снят с
@@ -262,9 +279,6 @@
 .clc-wrap[data-calc="dostavka"] [data-extra]:empty { min-height: 62px; }
 .clc-wrap[data-calc="dostavka"] [data-route]:empty { min-height: 312px; }
 
-@media (max-width: 820px) {
-  .clc-wrap[data-calc="steels"] [data-table]:empty { min-height: 1344px; }
-}
 @media (max-width: 640px) {
   .clc-wrap[data-calc="sdt"]    .clc-tabs:empty { min-height: 94px; }
   .clc-wrap[data-calc="metizy"] .clc-tabs:empty { min-height: 94px; }
@@ -279,7 +293,6 @@
   .clc-wrap[data-calc="metizy"] [data-result]:has(.clc-empty) { min-height: 328px; }
   .clc-wrap[data-calc="pipes"]  [data-result]:has(.clc-empty) { min-height: 420px; }
 
-  .clc-wrap[data-calc="steels"] [data-table]:empty { min-height: 1497px; }
   .clc-wrap[data-calc="dn"]     [data-table]:empty { min-height: 932px; }
 
   .clc-wrap[data-calc="dostavka"] [data-extra]:empty { min-height: 133px; }

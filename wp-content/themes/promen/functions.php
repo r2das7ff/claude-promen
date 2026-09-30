@@ -67,6 +67,8 @@ require_once __DIR__ . '/inc/catalog-search.php';
 require_once __DIR__ . '/inc/catalog-render.php';
 require_once __DIR__ . '/inc/catalog-taxonomy.php';
 require_once __DIR__ . '/inc/steel-reference.php';
+require_once __DIR__ . '/inc/steel-analogs.php';
+require_once __DIR__ . '/inc/steel-analogs-render.php';
 require_once __DIR__ . '/inc/catalog-filters.php';
 require_once __DIR__ . '/inc/category-page.php';
 require_once __DIR__ . '/inc/catalog-api.php';
@@ -294,6 +296,14 @@ add_action( 'wp_enqueue_scripts', function () {
 			'catalogUrl'  => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/catalog/' ),
 			'pages'       => $calc_pages,
 		] );
+		// Подборщик аналогов марок: свой лист и скрипт поверх общих calc.*;
+		// данные марок шаблон отдаёт JSON-блоком (см. page-analogi-staley.php).
+		// Общий calc.js здесь не нужен: модулей [data-calc] на странице нет.
+		if ( $calc_slug === 'analogi-staley' ) {
+			wp_dequeue_script( 'promen-calc' );
+			wp_enqueue_style( 'promen-steel-analogs', get_theme_file_uri( 'assets/css/steel-analogs.css' ), [ 'promen-calc' ], PROMEN_ASSET_VER );
+			wp_enqueue_script( 'promen-steel-analogs', get_theme_file_uri( 'assets/js/steel-analogs.js' ), [], PROMEN_ASSET_VER, [ 'in_footer' => true ] );
+		}
 	}
 
 	// Контакты / 404 / политика ПДн: страничные стили и скрипты.
