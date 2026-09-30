@@ -576,6 +576,13 @@ img { display:block; }
   align-self: end;
   padding-bottom: 4px;
 }
+/* Колонки шапки стоят без зазора (лид — на оси разделителя панелей), и около
+   1700px первая строка заголовка заполняла левую колонку целиком — текст
+   упирался в лид. Поле справа заставляет перенести строку раньше; balance
+   делит перенос поровну, без одинокого «ЧЕРТЕЖА» на отдельной строке. */
+@media (min-width: 1101px) {
+  .s2-h2 { padding-right: 48px; text-wrap: balance; }
+}
 
 /* ── Accordion rows ───────────────────────────────────────────── */
 .s2-row {
@@ -2761,7 +2768,7 @@ img { display:block; }
   letter-spacing:.25em;
   text-transform:uppercase;
   color:var(--g1-text);
-  opacity:.55;
+  opacity:.85;
   display:flex;
   align-items:center;
   gap:10px;
@@ -2787,7 +2794,7 @@ img { display:block; }
   font-family:'DINPro',sans-serif;
   font-size:13.5px;
   line-height:1.75;
-  color:rgba(109,140,166,.8);
+  color:rgba(255,255,255,.85);
   letter-spacing:.01em;
   max-width:380px;
   border-left:2px solid rgba(109,140,166,.22);
@@ -2809,7 +2816,7 @@ img { display:block; }
   letter-spacing:.28em;
   text-transform:uppercase;
   color:var(--g1-text);
-  opacity:.45;
+  opacity:.85;
   margin-bottom:14px;
   display:flex;
   align-items:center;
@@ -2852,27 +2859,27 @@ img { display:block; }
   font-family:'DINPro',monospace;
   font-size:10.5px;
   letter-spacing:.2em;
-  color:rgba(169,183,198,.8);
+  color:var(--g2);
   transition:color var(--dur-ui);
 }
-.s8-route-item.active .s8-ri-num { color:var(--g1-text); }
+.s8-route-item.active .s8-ri-num { color:var(--white); }
 .s8-ri-name {
   font-family:'DINPro',monospace;
   font-size:13px;
   font-weight:500;
-  color:rgba(109,140,166,.6);
+  color:rgba(255,255,255,.88);
   letter-spacing:.015em;
   transition:color var(--dur-ui);
 }
-.s8-route-item:hover .s8-ri-name, .s8-route-item.active .s8-ri-name { color:var(--g2); }
+.s8-route-item:hover .s8-ri-name, .s8-route-item.active .s8-ri-name { color:var(--white); }
 .s8-ri-ok {
   font-family:'DINPro',monospace;
   font-size:10px;
   letter-spacing:.15em;
-  color:rgba(169,183,198,.75);
+  color:var(--g2);
   transition:color var(--dur-ui);
 }
-.s8-route-item.active .s8-ri-ok { color:var(--g1-text); }
+.s8-route-item.active .s8-ri-ok { color:var(--white); }
 /* RIGHT col */
 .s8-right {
   padding:72px 56px 80px;
@@ -4277,6 +4284,14 @@ img { display:block; }
   .s2-row.active, .s6-row.active { background: var(--bg); }
   /* S7 — таблица параметров всегда раскрыта → сплошной фон */
   .s7-left, .s7-right { background: var(--bg); }
+}
+/* Десктоп: строки аккордеонов S2/S6 и инженерная заметка — сплошной фон, как
+   карточки S3/S9. Сетка body::before шла сквозь заголовки этапов и строки
+   параметров; теперь она видна только в шапках секций. Ховер — подкраска
+   поверх фона, иначе полупрозрачная заливка снова пропустит сетку. */
+@media (min-width:1025px) {
+  .s2-row, .s6-row, .s2-trust { background: var(--bg); }
+  .s2-row:hover, .s6-row:hover { background: linear-gradient(rgba(109,140,166,.025), rgba(109,140,166,.025)) var(--bg); }
 }
 
 /* S10 — акцент-плашка «Ответ в течение 1 рабочего дня»: вынесена из абзаца и
