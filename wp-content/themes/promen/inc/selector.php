@@ -366,10 +366,15 @@ function promen_selector_parse( string $text ): array {
 	// 1. Норматив: ГОСТ 17375-2001, ОСТ 34.10.418-90, ТУ 1462-…
 	if ( preg_match_all( '/\b(гост\s*р|гост|ост|сто|ту)\s*\.?\s*([0-9]+(?:[\.\-][0-9]+)*)/u', $rest, $mm, PREG_SET_ORDER ) ) {
 		foreach ( $mm as $m ) {
+			$kind          = trim( (string) $m[1] );
 			$out['gost'][] = [
-				'kind'   => trim( (string) $m[1] ),
+				'kind'   => $kind,
 				'number' => (string) $m[2],
 				'raw'    => trim( (string) $m[0] ),
+				// Подпись для интерфейса: разбор идёт по строке в нижнем регистре,
+				// а обозначение пишется прописными — «гостр 52079» → «ГОСТ Р 52079».
+				'label'  => ( preg_match( '/^гост\s*р$/u', $kind ) ? 'ГОСТ Р' : mb_strtoupper( $kind, 'UTF-8' ) )
+					. ' ' . $m[2],
 			];
 			$cut( $rest, $m[0] );
 		}
@@ -896,15 +901,16 @@ function promen_selector_resolve( array $input ): array {
 			// Форма ответа одна и та же в любой ветке — клиенту не приходится
 			// различать «пустой массив» и «объект с полями».
 			'query'   => [
-				'group'    => '',
-				'dn'       => null,
-				'd'        => null,
-				's'        => null,
-				'angle'    => null,
-				'pressure' => null,
-				'temp'     => null,
-				'industry' => '',
-				'steel'    => [],
+				'group'       => '',
+				'group_label' => '',
+				'dn'          => null,
+				'd'           => null,
+				's'           => null,
+				'angle'       => null,
+				'pressure'    => null,
+				'temp'        => null,
+				'industry'    => '',
+				'steel'       => [],
 			],
 			'parsed'  => [
 				'group'   => '',
@@ -1042,15 +1048,16 @@ function promen_selector_resolve( array $input ): array {
 
 		return [
 			'query'   => [
-				'group'    => '',
-				'dn'       => $dn,
-				'd'        => $d,
-				's'        => $s,
-				'angle'    => $angle,
-				'pressure' => $pres,
-				'temp'     => $temp,
-				'industry' => $ind,
-				'steel'    => $parsed['steel'],
+				'group'       => '',
+				'group_label' => '',
+				'dn'          => $dn,
+				'd'           => $d,
+				's'           => $s,
+				'angle'       => $angle,
+				'pressure'    => $pres,
+				'temp'        => $temp,
+				'industry'    => $ind,
+				'steel'       => $parsed['steel'],
 			],
 			'parsed'  => [
 				'group'   => $parsed['group'],
@@ -1250,17 +1257,30 @@ function promen_selector_resolve( array $input ): array {
 		if ( $steel_txt === '' ) {
 			$steel_txt = implode( ', ', (array) ( $h['steel_labels'] ?? [] ) );
 		}
-		$hits[] = [
+		// Что показывать в строке — по колонкам реестра раздела позиции, а не
+		// одним набором на всех: у труб масса погонного метра, у крепежа масса
+		// в каноне «за 1000 шт» и в реестре не выводится (шпилька M20×70 читалась
+		// как «213 кг»), а D и s у метиза — не его размеры.
+		$cat       = (string) ( $h['category'] ?? '' ) ?: $group;
+		$cols      = promen_catalog_group_schema( $cat )['columns'];
+		$fast      = function_exists( 'promen_is_fastener_group' ) && promen_is_fastener_group( $cat );
+		$mass_unit = in_array( 'massm', $cols, true ) ? 'кг/м' : ( in_array( 'mass', $cols, true ) ? 'кг' : '' );
+		$cells     = (array) ( $h['cells'] ?? [] );
+		$hits[]    = [
 			'sku'        => (string) ( $h['sku'] ?? '' ),
 			'title'      => (string) ( $h['title'] ?? '' ),
 			'url'        => (string) ( $h['url'] ?? '' ),
 			'norm'       => (string) ( $h['norm'] ?? '' ),
-			'dn'         => $h['dn'] ?? null,
-			'd'          => $h['d'] ?? null,
-			's'          => $h['s'] ?? null,
+			'dn'         => $fast ? null : ( $h['dn'] ?? null ),
+			'd'          => $fast ? null : ( $h['d'] ?? null ),
+			's'          => $fast ? null : ( $h['s'] ?? null ),
 			'pn'         => $h['pn'] ?? null,
 			'angle'      => $h['angle'] ?? null,
-			'mass'       => $h['mass'] ?? null,
+			'mass'       => $mass_unit !== '' ? ( $h['mass'] ?? null ) : null,
+			'mass_unit'  => $mass_unit,
+			'thread'     => $fast ? (string) ( $cells['thread'] ?? '' ) : '',
+			'length'     => $fast ? (string) ( $cells['length'] ?? '' ) : '',
+			'strength'   => $fast ? (string) ( $cells['strength'] ?? '' ) : '',
 			'steels'     => $steel_txt,
 			'industries' => (array) ( $h['industries'] ?? [] ),
 		];
@@ -1270,15 +1290,16 @@ function promen_selector_resolve( array $input ): array {
 
 	return [
 		'query'    => [
-			'group'    => $group,
-			'dn'       => $dn,
-			'd'        => $d,
-			's'        => $s,
-			'angle'    => $angle,
-			'pressure' => $pres,
-			'temp'     => $temp,
-			'industry' => $ind,
-			'steel'    => $user_steels,
+			'group'       => $group,
+			'group_label' => promen_selector_group_label( $group ),
+			'dn'          => $dn,
+			'd'           => $d,
+			's'           => $s,
+			'angle'       => $angle,
+			'pressure'    => $pres,
+			'temp'        => $temp,
+			'industry'    => $ind,
+			'steel'       => $user_steels,
 		],
 		'parsed'   => [
 			'group'   => $parsed['group'],
@@ -1315,6 +1336,13 @@ function promen_selector_fmt( float $v ): string {
 /**
  * Ссылка «открыть в реестре» — те же фильтры в адресной строке каталога.
  * Реестр читает их из query-строки (см. parsePageUrl в assets/js/catalog.js).
+ *
+ * «15%25d1%2585…» в адресе — не двойное кодирование по ошибке: слаг марки
+ * в базе хранится уже закодированным («15%d1%851%d0%bc1%d1%84»), и фишки
+ * реестра (chipHref в catalog.js) пишут его в адрес точно так же — фильтр
+ * по такой ссылке применяется верно (проверено 01.10.2026). Раскодировать до
+ * кириллицы не стоит: сервер слаг восстановит (sanitize_title), но chipHref
+ * сравнивает слаги как строки, и у фишки марки разошлось бы «выбрано / снять».
  */
 function promen_selector_catalog_url( string $group, array $params ): string {
 	$base = $group !== '' ? promen_product_cat_link( $group ) : '';
@@ -1431,6 +1459,22 @@ function promen_selector_bootstrap(): array {
 			'label' => $label,
 			'count' => $count,
 		];
+		// Разбор строки узнаёт и семейства крепежа («шпилька» → shpilki), а не
+		// только «крепёж». Без них в списке распознанный тип нечем было бы
+		// показать в поле, а снять — только крестиком на метке.
+		if ( 'krepezh' === $slug && function_exists( 'promen_fastener_slugs' ) ) {
+			foreach ( array_diff( promen_fastener_slugs(), [ 'krepezh' ] ) as $sub ) {
+				$n = function_exists( 'promen_catalog_group_count' ) ? promen_catalog_group_count( $sub ) : 0;
+				if ( $n > 0 ) {
+					$types[] = [
+						'slug'  => $sub,
+						'label' => promen_selector_group_label( $sub ),
+						'count' => $n,
+						'sub'   => true,
+					];
+				}
+			}
+		}
 	}
 	return [
 		'types'      => $types,
@@ -1459,4 +1503,16 @@ function promen_selector_type_menu(): array {
 		'armatura'    => 'Арматура',
 		'tochenye'    => 'Точёные детали',
 	];
+}
+
+/**
+ * Подпись раздела для метки условия: из меню мастера, иначе имя рубрики
+ * каталога. Парсер знает и разделы вне меню — семейства крепежа («shpilki»),
+ * и без этого на метке оставался слаг.
+ */
+function promen_selector_group_label( string $group ): string {
+	if ( $group === '' ) {
+		return '';
+	}
+	return promen_selector_type_menu()[ $group ] ?? promen_term_label( 'product_cat', $group );
 }

@@ -39,6 +39,7 @@
     picked: {},    /* sku → позиция */
     last: null,    /* последний ответ сервера */
     drop: [],      /* снятые условия — уходят на сервер списком */
+    auto: {},      /* поля, заполненные разбором строки: ключ → значение */
     groupsBack: 0, /* сколько разделов было в списке, чтобы вернуться к нему */
     seq: 0         /* номер запроса: ответы приходят не по порядку */
   };
@@ -69,8 +70,11 @@
   /* ── разметка ── */
 
   function panelHtml() {
+    /* Семейства крепежа идут вложенными пунктами под «Крепёж» (data-sub —
+       отступ в списке select.js). */
     var types = (CFG.types || []).map(function (t) {
-      return '<option value="' + esc(t.slug) + '">' + esc(t.label) + ' · ' + t.count + '</option>';
+      return '<option value="' + esc(t.slug) + '"' + (t.sub ? ' data-sub' : '') + '>' +
+        esc(t.label) + ' · ' + t.count + '</option>';
     }).join('');
 
     var inds = Object.keys(CFG.industries || {}).map(function (k) {
@@ -207,13 +211,17 @@
     $('pselMore').addEventListener('click', toggleGrid);
     $('pselReq').addEventListener('click', request);
 
+    /* Событие поля = значение задал человек: с этого момента оно его,
+       и подстановка из разбора строки поле больше не трогает. */
     Object.keys(FIELDS).forEach(function (key) {
       var input = $(FIELDS[key]);
       input.addEventListener('change', function () {
+        delete state.auto[key];
         if (input.value.trim() !== '') undrop(key);
         run();
       });
       input.addEventListener('input', function () {
+        delete state.auto[key];
         if (input.value.trim() !== '') undrop(key);
         syncRun();
       });
@@ -304,9 +312,12 @@
   function run() {
     build();
     var p = { q: $('pselQ').value.trim(), per_page: 20 };
+    /* Подставленное разбором не отправляем: источник у него — строка запроса.
+       Явным параметром оно перебило бы правку строки, отправленную кнопкой
+       «Подобрать», а явный DN гасил бы пояснение «Ø108 мм — это DN 100». */
     Object.keys(FIELDS).forEach(function (key) {
       var v = fieldValue(key);
-      if (v !== '') p[key] = v;
+      if (v !== '' && state.auto[key] !== v) p[key] = v;
     });
     if (state.drop.length) p.drop = state.drop.join(',');
 
@@ -348,7 +359,7 @@
 
     if (o.label) out.push({ key: 'object', name: 'Объект', val: o.label });
     if (q.group) {
-      var label = q.group;
+      var label = q.group_label || q.group;
       (CFG.types || []).forEach(function (t) { if (t.slug === q.group) label = t.label; });
       out.push({ key: 'group', name: 'Тип', val: label });
     }
@@ -363,17 +374,41 @@
     if (q.s) out.push({ key: 's', name: 'Стенка', val: num(q.s) + ' мм' });
     if (q.angle) out.push({ key: 'angle', name: 'Угол', val: num(q.angle) + '°' });
     if ((p.gost || []).length) {
-      out.push({ key: 'gost', name: 'Норматив', val: p.gost.map(function (g) { return g.raw; }).join(', ') });
+      out.push({ key: 'gost', name: 'Норматив', val: p.gost.map(function (g) { return g.label || g.raw; }).join(', ') });
     }
     if ((q.steel || []).length) out.push({ key: 'steel', name: 'Марка', val: q.steel.join(', ') });
 
     return out;
   }
 
+  /* Распознанные условия — в поля сетки, иначе метка говорит «Отрасль ТЭС»,
+     а поле под ней «— любая —». Поле, заданное человеком, не трогаем; своё
+     прежнее значение заменяем новым разбором или чистим, если условие ушло.
+     Присваивание value событий не поднимает (select.js перерисует подпись
+     сам), поэтому подстановка не запускает новый подбор. */
+  function syncFields(d) {
+    var q = d.query || {};
+    Object.keys(FIELDS).forEach(function (key) {
+      var input = $(FIELDS[key]);
+      if (!input) return;
+      var cur = input.value.trim();
+      if (cur !== '' && cur !== state.auto[key]) return;
+      var v = q[key];
+      v = (v === null || v === undefined || v === '') ? '' : (typeof v === 'number' ? num(v) : String(v));
+      /* Значения нет в списке — показать его нечем, оставляем поле пустым. */
+      if (v !== '' && input.tagName === 'SELECT' &&
+          !Array.prototype.some.call(input.options, function (opt) { return opt.value === v; })) v = '';
+      if (v !== cur) input.value = v;
+      if (v === '') delete state.auto[key]; else state.auto[key] = v;
+    });
+  }
+
   function renderConditions(d) {
     var o = d.object || {};
     var missing = o.missing || [];
     var conds = conditionList(d);
+
+    syncFields(d);
 
     /* Плашка держится на экране, пока условие не выполнено: инструкция
        должна быть видна в тот момент, когда по ней действуют. */
@@ -489,10 +524,14 @@
   function rowHtml(h) {
     var meta = [];
     if (h.norm) meta.push(esc(h.norm));
+    /* Крепёж — резьба × длина и класс, как в реестре: DN и D у метиза
+       не его размеры. Масса — только с единицей, которую дал сервер. */
+    if (h.thread) meta.push(esc(h.thread + (h.length ? '×' + h.length : '')));
+    if (h.strength) meta.push('кл. ' + esc(h.strength));
     if (h.dn !== null && h.dn !== undefined) meta.push('DN ' + num(h.dn));
     if (h.d) meta.push('Ø' + num(h.d) + (h.s ? '×' + num(h.s) : '') + ' мм');
     if (h.angle) meta.push(num(h.angle) + '°');
-    if (h.mass) meta.push(num(h.mass) + ' кг');
+    if (h.mass && h.mass_unit) meta.push(num(h.mass) + ' ' + esc(h.mass_unit));
     if (h.steels) meta.push(esc(h.steels));
 
     var checked = state.picked[h.sku] ? ' checked' : '';

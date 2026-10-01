@@ -54,7 +54,8 @@
 
     var opts = Array.prototype.map.call(native.options, function (o, i) {
       var el = document.createElement('div');
-      el.className = 'pm-select-opt';
+      // data-sub — вложенный пункт (семейство под разделом), отступ в CSS.
+      el.className = 'pm-select-opt' + (o.hasAttribute('data-sub') ? ' pm-select-opt--sub' : '');
       el.id = id + '-opt-' + i;
       el.setAttribute('role', 'option');
       el.textContent = o.text;

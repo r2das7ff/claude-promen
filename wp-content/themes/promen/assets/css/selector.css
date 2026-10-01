@@ -391,6 +391,9 @@
 
 .psel-cell input::placeholder { color: var(--g2); font-weight: 300; }
 
+/* Семейства крепежа в списке типов — вложенными пунктами под «Крепёж». */
+.psel-cell .pm-select-opt--sub { padding-left: 34px; }
+
 /* Обязательное незаполненное условие — подсвечено в той же сетке, что и
    остальные, без второй формы для тех же данных. */
 .psel-cell--need { box-shadow: inset 0 -2px 0 var(--psel-req, #B23A2E); }
