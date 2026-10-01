@@ -1487,7 +1487,7 @@ img { display:block; }
   font-family: 'DINPro', monospace;
   font-size: 11px;
   letter-spacing: 1px;
-  color: var(--g1-text);
+  color: var(--g2);
   transform: translateY(100%);
   transition: transform var(--dur-panel) var(--ease-out);
 }
@@ -1505,7 +1505,7 @@ img { display:block; }
   font-family: 'DINPro', monospace;
   font-size: 11px;
   letter-spacing: 1px;
-  color: var(--g1-text);
+  color: var(--g2);
   transform: translateY(100%);
   transition: transform var(--dur-panel) var(--ease-out);
 }
@@ -2728,7 +2728,6 @@ img { display:block; }
   letter-spacing:.22em;
   text-transform:uppercase;
   color:var(--g1-text);
-  opacity:.75;
 }
 .s8-inner {
   position:relative;
@@ -2768,7 +2767,6 @@ img { display:block; }
   letter-spacing:.25em;
   text-transform:uppercase;
   color:var(--g1-text);
-  opacity:.85;
   display:flex;
   align-items:center;
   gap:10px;
@@ -2816,7 +2814,6 @@ img { display:block; }
   letter-spacing:.28em;
   text-transform:uppercase;
   color:var(--g1-text);
-  opacity:.85;
   margin-bottom:14px;
   display:flex;
   align-items:center;
@@ -2900,14 +2897,12 @@ img { display:block; }
   letter-spacing:.28em;
   text-transform:uppercase;
   color:var(--g1-text);
-  opacity:.45;
 }
 .s8-passport-sys {
   font-family:'DINPro',monospace;
   font-size:10px;
   letter-spacing:.18em;
   color:var(--g1-text);
-  opacity:.7;
 }
 /* Passport card */
 .s8-passport {
@@ -2974,7 +2969,6 @@ img { display:block; }
   font-size:10.5px;
   letter-spacing:.2em;
   color:var(--g1-text);
-  opacity:.65;
   border:1px solid rgba(109,140,166,.25);
   padding:4px 10px;
   white-space:nowrap;
@@ -2994,16 +2988,16 @@ img { display:block; }
   background:rgba(109,140,166,.09);
   border-left-color:var(--g1);
 }
-.s8-pp-row.highlighted .s8-pp-key { color:var(--g2); opacity:1; }
+.s8-pp-row.highlighted .s8-pp-key { color:var(--white); }
 .s8-pp-row.highlighted .s8-pp-val { color:var(--bg); }
-.s8-pp-row.highlighted .s8-pp-chk { opacity:1; color:var(--g1-text); }
+.s8-pp-row.highlighted .s8-pp-chk { color:var(--white); }
 .s8-pp-key {
   font-family:'DINPro',monospace;
   font-size:10.5px;
   letter-spacing:.2em;
   text-transform:uppercase;
-  color:rgba(169,183,198,.85);
-  transition:color var(--dur-ui), opacity var(--dur-ui);
+  color:var(--g2);
+  transition:color var(--dur-ui);
 }
 .s8-pp-val {
   font-family:'DINProCond','DINPro',sans-serif;
@@ -3016,9 +3010,9 @@ img { display:block; }
 .s8-pp-chk {
   font-family:'DINPro',monospace;
   font-size:12px;
-  color:rgba(169,183,198,.8);
+  color:var(--g2);
   text-align:right;
-  transition:color var(--dur-ui), opacity var(--dur-ui);
+  transition:color var(--dur-ui);
 }
 .s8-pp-footer {
   position:relative;
@@ -3056,7 +3050,7 @@ img { display:block; }
   font-family:'DINPro',monospace;
   font-size:10px;
   letter-spacing:.14em;
-  color:rgba(109,140,166,.45);
+  color:var(--g2);
   text-align:right;
   line-height:1.6;
 }
@@ -3072,7 +3066,7 @@ img { display:block; }
   font-size:10px;
   letter-spacing:.22em;
   text-transform:uppercase;
-  color:rgba(169,183,198,.8);
+  color:var(--g2);
 }
 .s8-ann-val {
   font-family:'DINProCond','DINPro',sans-serif;
@@ -4186,7 +4180,7 @@ img { display:block; }
   .sfk-hint {
     display:block; margin-top:24px; position:relative; z-index:1;
     font-family:'DINPro',monospace; font-size:12px; letter-spacing:.16em;
-    text-transform:uppercase; color:var(--g2); opacity:.85;
+    text-transform:uppercase; color:var(--g2);
   }
   .sfk-card-bd { display:none; }
   .sfk-card.open .sfk-card-bd { display:block; }

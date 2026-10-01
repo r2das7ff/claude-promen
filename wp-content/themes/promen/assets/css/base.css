@@ -127,9 +127,13 @@ body::before{
 @media(hover:hover) and (pointer:fine){.nav-cta:hover .nav-cta-arr{transform:translateX(3px);}}
 
 /* Тёмные подложки: там приглушённый текст, наоборот, светлее фона.
-   --g2 на #0F2A44 даёт 7.2:1. */
+   --g2 на #0F2A44 даёт 7.2:1. Каждая тёмная поверхность обязана быть в этом
+   списке — иначе var(--g1-text) внутри неё даёт светлотемный #4E6B84 (2.6:1).
+   Правило текста на тёмном — brand-spec.md, «Текст на тёмных поверхностях». */
 .s8, .s8-passport, .s3-visual, .s3-cta, .sfk-card-hd, .site-footer,
-.trust-strip, .nav-drawer, .p-media, .pd-hero, .s4-tt-body {
+.trust-strip, .nav-drawer, .p-media, .pd-hero, .s4-tt-body,
+.s-dark, .map-outer, .seo-header, .kb-tabrow,
+#thermal, #fleet, #gallery, .prf-intro, .prf-clip, .stg {
   --g1-text: var(--g2);
 }
 
@@ -368,7 +372,7 @@ a.s10-contact-v:hover{color:var(--blue);}
 }
 .ft-statement,.ft-grid,.ft-bar{position:relative;z-index:1;}
 .ft-statement{flex:1;padding:88px 56px 72px;display:flex;flex-direction:column;justify-content:flex-end;border-bottom:1px solid rgba(200,208,216,.1);}
-.ft-kicker{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1-text);opacity:.7;margin-bottom:40px;display:flex;align-items:center;gap:16px;}
+.ft-kicker{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1-text);margin-bottom:40px;display:flex;align-items:center;gap:16px;}
 .ft-kicker::before{content:'';width:36px;height:1px;background:var(--g1);opacity:.5;flex-shrink:0;}
 .ft-headline{font-family:'DINProCond','DINPro',sans-serif;font-weight:900;font-size:clamp(72px,10vw,180px);line-height:.83;letter-spacing:-.02em;text-transform:uppercase;color:var(--white);margin-bottom:40px;}
 .ft-tagline{font-size:14px;font-weight:300;line-height:1.75;color:var(--g2);max-width:460px;margin-bottom:48px;}
@@ -377,7 +381,7 @@ a.s10-contact-v:hover{color:var(--blue);}
 .ft-grid{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(200,208,216,.1);}
 .ft-cell{padding:44px 56px;border-right:1px solid rgba(200,208,216,.08);}
 .ft-cell:last-child{border-right:none;}
-.ft-cell-label{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1-text);opacity:.55;margin-bottom:18px;}
+.ft-cell-label{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--g1-text);margin-bottom:18px;}
 .ft-cell-val{font-family:'DINProCond','DINPro',sans-serif;font-weight:700;font-size:clamp(20px,2vw,30px);color:var(--white);line-height:1.15;letter-spacing:-.01em;}
 .ft-cell-val.mono{font-family:'DINPro',monospace;font-size:13.5px;font-weight:400;line-height:1.85;color:var(--g2);letter-spacing:.02em;}
 .ft-cell-val a{color:var(--g2);text-decoration:none;transition:color var(--dur-fast);}
@@ -386,9 +390,9 @@ a.s10-contact-v:hover{color:var(--blue);}
 .ft-nav-list a{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--g1-text);text-decoration:none;transition:color var(--dur-fast);}
 .ft-nav-list a:hover{color:var(--white);}
 .ft-bar{display:flex;align-items:center;justify-content:space-between;padding:22px 56px;flex-wrap:wrap;gap:12px;}
-.ft-copy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1-text);opacity:.5;}
+.ft-copy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1-text);}
 .ft-idx{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1-text);opacity:.22;}
-.ft-policy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1-text);opacity:.5;text-decoration:none;transition:opacity var(--dur-fast),color var(--dur-fast);}
+.ft-policy{font-family:'DINPro',monospace;font-size:11px;letter-spacing:.15em;color:var(--g1-text);text-decoration:none;transition:opacity var(--dur-fast),color var(--dur-fast);}
 .ft-policy:hover{opacity:1;color:var(--white);}
 /* Футер, перенесённый внутрь .pg (наезд без s10-формы, footer-pin.js):
    ось даёт сам .pg — собственный отступ футера гасим на всех тирах. */

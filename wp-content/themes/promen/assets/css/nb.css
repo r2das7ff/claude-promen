@@ -40,7 +40,7 @@
 .nb-chip-n{opacity:.55;font-size:11px;}
 .nb-chip:hover{border-color:var(--g1);}
 .nb-chip.active{background:var(--dark);border-color:var(--dark);color:var(--white);}
-.nb-chip.active .nb-chip-n{opacity:.6;}
+.nb-chip.active .nb-chip-n{opacity:1;color:var(--g2);}
 .nb-chip--sm{padding:6px 12px;font-size:11px;}
 .nb-filter-row--sec{opacity:.72;}
 .nb-filter-row--sec .nb-filter-lbl{opacity:.55;}

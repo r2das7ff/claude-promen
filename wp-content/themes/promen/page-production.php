@@ -532,12 +532,12 @@ $shm_stages = [
       <div class="therm-cursor" aria-hidden="true"></div>
     </div>
     <div class="therm-ticks">
-      <div class="therm-tick"><span class="therm-tk-v" style="color:rgba(109,140,166,.55)">20°</span><span class="therm-tk-u">°C</span></div>
-      <div class="therm-tick"><span class="therm-tk-v" style="color:rgba(109,140,166,.65)">150°</span><span class="therm-tk-u">°C</span></div>
-      <div class="therm-tick"><span class="therm-tk-v" style="color:rgba(120,155,175,.75)">300°</span><span class="therm-tk-u">°C</span></div>
-      <div class="therm-tick"><span class="therm-tk-v" style="color:rgba(140,165,180,.85)">500°</span><span class="therm-tk-u">°C</span></div>
-      <div class="therm-tick"><span class="therm-tk-v" style="color:#a06030">720°</span><span class="therm-tk-u">°C</span></div>
-      <div class="therm-tick"><span class="therm-tk-v" style="color:#c04818">900°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:var(--g2)">20°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:#B3C0CE">150°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:#BEC9D4">300°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:#C9D2DB">500°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:#C27A40">720°</span><span class="therm-tk-u">°C</span></div>
+      <div class="therm-tick"><span class="therm-tk-v" style="color:#E2602A">900°</span><span class="therm-tk-u">°C</span></div>
       <div class="therm-tick"><span class="therm-tk-v" style="color:#d87020">1050°</span><span class="therm-tk-u">°C</span></div>
       <div class="therm-tick"><span class="therm-tk-v" style="color:#f0aa38">1200°</span><span class="therm-tk-u">°C</span></div>
     </div>
