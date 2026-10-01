@@ -1265,8 +1265,17 @@ function promen_selector_resolve( array $input ): array {
 		$cols      = promen_catalog_group_schema( $cat )['columns'];
 		$fast      = function_exists( 'promen_is_fastener_group' ) && promen_is_fastener_group( $cat );
 		$mass_unit = in_array( 'massm', $cols, true ) ? 'кг/м' : ( in_array( 'mass', $cols, true ) ? 'кг' : '' );
-		$cells     = (array) ( $h['cells'] ?? [] );
-		$hits[]    = [
+		// Ячейки крепежа: «—» в источнике = значения нет (длина у гаек, класс
+		// у шпилек ГОСТ 9066); резьба у шайб записана без буквы — «24» = M24.
+		$cell = static function ( string $k ) use ( $h ): string {
+			$v = trim( (string) ( $h['cells'][ $k ] ?? '' ) );
+			return in_array( $v, [ '—', '–', '-' ], true ) ? '' : $v;
+		};
+		$thread = $fast ? $cell( 'thread' ) : '';
+		if ( preg_match( '/^\d/', $thread ) ) {
+			$thread = 'M' . $thread;
+		}
+		$hits[] = [
 			'sku'        => (string) ( $h['sku'] ?? '' ),
 			'title'      => (string) ( $h['title'] ?? '' ),
 			'url'        => (string) ( $h['url'] ?? '' ),
@@ -1278,9 +1287,9 @@ function promen_selector_resolve( array $input ): array {
 			'angle'      => $h['angle'] ?? null,
 			'mass'       => $mass_unit !== '' ? ( $h['mass'] ?? null ) : null,
 			'mass_unit'  => $mass_unit,
-			'thread'     => $fast ? (string) ( $cells['thread'] ?? '' ) : '',
-			'length'     => $fast ? (string) ( $cells['length'] ?? '' ) : '',
-			'strength'   => $fast ? (string) ( $cells['strength'] ?? '' ) : '',
+			'thread'     => $thread,
+			'length'     => $fast ? $cell( 'length' ) : '',
+			'strength'   => $fast ? $cell( 'strength' ) : '',
 			'steels'     => $steel_txt,
 			'industries' => (array) ( $h['industries'] ?? [] ),
 		];

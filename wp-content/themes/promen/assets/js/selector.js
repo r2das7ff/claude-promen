@@ -527,7 +527,8 @@
     /* Крепёж — резьба × длина и класс, как в реестре: DN и D у метиза
        не его размеры. Масса — только с единицей, которую дал сервер. */
     if (h.thread) meta.push(esc(h.thread + (h.length ? '×' + h.length : '')));
-    if (h.strength) meta.push('кл. ' + esc(h.strength));
+    /* Класс прочности — числом («кл. 10.9»), у шайб тут тип («тип Л»). */
+    if (h.strength) meta.push((/^\d/.test(h.strength) ? 'кл. ' : '') + esc(h.strength));
     if (h.dn !== null && h.dn !== undefined) meta.push('DN ' + num(h.dn));
     if (h.d) meta.push('Ø' + num(h.d) + (h.s ? '×' + num(h.s) : '') + ' мм');
     if (h.angle) meta.push(num(h.angle) + '°');
