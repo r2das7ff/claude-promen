@@ -419,24 +419,38 @@ allSections.forEach(s=>sio.observe(s));
 
   var panels=Array.prototype.slice.call(stage.querySelectorAll('.stg-p'));
   var segs=Array.prototype.slice.call(section.querySelectorAll('.stg-seg'));
-  var video=stage.querySelector('.stg-bg');
+  var vids=Array.prototype.slice.call(stage.querySelectorAll('.stg-bg'));
   if(!panels.length)return;
 
   var DWELL=parseInt(getComputedStyle(section).getPropertyValue('--stg-dwell'),10)||5200;
   var RELEASE=9000;   // после тапа тур сам возвращается к автопрокрутке
+  var FADE=800;       // = transition opacity у .stg-bg
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)');
 
   var idx=0,timer=0,relTimer=0,held=false,visible=false;
+  var shown=0,fadeT=0;          // ролик на экране (-1 — ни одного), таймер наплыва
 
   /* На ≤1024 ламель мельче, а трафик дороже — берём облегчённый файл.
-     Выбор делаем до первого play(), пока идёт только preload метаданных. */
-  if(video){
-    var narrowSrc=video.getAttribute('data-src-narrow');
-    if(narrowSrc&&window.matchMedia('(max-width:1024px)').matches&&
-       video.getAttribute('src')!==narrowSrc){
-      video.setAttribute('src',narrowSrc);
-    }
+     Первый ролик переключаем до первого play(), пока идёт только preload метаданных. */
+  var narrow=window.matchMedia('(max-width:1024px)').matches;
+  function srcOf(v){
+    return (narrow&&v.getAttribute('data-src-narrow'))||v.getAttribute('data-src');
   }
+  if(narrow&&vids[0]&&vids[0].getAttribute('src')!==srcOf(vids[0])){
+    vids[0].setAttribute('src',srcOf(vids[0]));
+  }
+
+  /* Начать загрузку ролика целиком. У всех, кроме первого, src нет до этого
+     момента: 8 роликов по ~1 МБ не должны тянуться вместе со страницей. */
+  function prime(v){
+    if(!v)return;
+    var s=srcOf(v);
+    if(v.getAttribute('src')===s&&v.preload==='auto')return;
+    v.preload='auto';
+    if(v.getAttribute('src')!==s)v.setAttribute('src',s);   // смена src сама перезапускает загрузку
+    else v.load();
+  }
+  function primeNext(){prime(vids[(idx+1)%vids.length]);}
 
   function restartSeg(n){
     var seg=segs[n];
@@ -448,6 +462,7 @@ allSections.forEach(s=>sio.observe(s));
 
   function paint(n){
     idx=n;
+    if(visible)showVideo(n);
     panels.forEach(function(p,k){
       var on=k===n;
       p.classList.toggle('is-open',on);
@@ -517,33 +532,88 @@ allSections.forEach(s=>sio.observe(s));
     panels[n].focus();
   });
 
-  /* Стартуем только когда клипа хватает на непрерывное проигрывание.
-     С play() по первому же готовому кадру браузер начинал и тут же
-     упирался в добуферизацию — это и был рывок на входе в секцию. */
-  function playVideo(){
-    if(!video)return;
-    if(video.readyState>=4){                 // HAVE_ENOUGH_DATA
-      var p=video.play();
-      if(p&&p.catch)p.catch(function(){});
-      return;
-    }
-    if(video.preload!=='auto')video.preload='auto';
-    video.addEventListener('canplaythrough',function once(){
-      video.removeEventListener('canplaythrough',once);
-      if(!visible||document.hidden)return;    // пока грузилось, секция могла уехать
-      var p=video.play();
-      if(p&&p.catch)p.catch(function(){});
+  /* Готов ли ролик играть без добуферизации. С play() по первому же кадру
+     браузер начинал и тут же упирался в загрузку — это и был рывок на входе
+     в секцию. Поэтому и старт, и смена кадра ждут HAVE_ENOUGH_DATA. */
+  function whenReady(v,fn){
+    if(v.readyState>=4){fn();return;}
+    prime(v);
+    if(v._wait)return;                       // уже ждём: повторные вызовы не плодят слушателей
+    v._wait=true;
+    v.addEventListener('canplaythrough',function once(){
+      v.removeEventListener('canplaythrough',once);
+      v._wait=false;
+      fn();
     });
-    video.load();
   }
+
+  function playShown(){
+    var v=vids[shown];
+    if(!v)return;                            // shown=-1: новый ещё грузится
+    whenReady(v,function(){
+      if(vids[shown]!==v||!visible||document.hidden)return;   // пока грузилось, всё могло смениться
+      var p=v.play();
+      if(p&&p.catch)p.catch(function(){});
+      primeNext();                           // следующий по туру — пока этот играет
+    });
+  }
+
+  /* Новый ролик наплывает поверх подложки — старого, раскрытого полностью.
+     Без подложки оба на полпути прозрачны наполовину и кадр проседает в тёмный
+     фон сцены. Недоплывший подложкой не становится — просто гаснет. */
+  function reveal(n){
+    var under=fadeT?-1:shown;
+    shown=n;
+    vids.forEach(function(v,k){
+      v.classList.toggle('is-on',k===n);
+      v.classList.toggle('is-prev',k===under&&k!==n);
+    });
+    playShown();
+    clearTimeout(fadeT);
+    fadeT=setTimeout(function(){
+      fadeT=0;
+      vids.forEach(function(v,k){
+        if(k===shown)return;
+        v.classList.remove('is-prev');
+        v.pause();                           // скрытые ролики не должны жечь декодер
+      });
+    },FADE);
+  }
+
+  /* Ролик стоит под своей ламелью, поэтому прежний, пока грузится новый,
+     оказался бы в окне чужого участка — он сразу гаснет, а новый проявится
+     по готовности. Следующий по туру подгружен заранее, так что пауза бывает
+     только при прыжке через участки на медленной сети. */
+  function hideShown(){
+    if(shown<0)return;
+    shown=-1;
+    clearTimeout(fadeT);fadeT=0;
+    vids.forEach(function(v){v.classList.remove('is-on','is-prev');});   // и подложку недоплывшего наплыва
+    setTimeout(function(){
+      vids.forEach(function(v,k){if(k!==shown)v.pause();});
+    },FADE);
+  }
+
+  function showVideo(n){
+    var v=vids[n];
+    if(!v)return;
+    if(n===shown){playShown();return;}
+    if(v.readyState>=4){reveal(n);return;}
+    hideShown();
+    whenReady(v,function(){
+      if(idx===n&&visible&&shown!==n)reveal(n);
+    });
+  }
+
+  function pauseAll(){vids.forEach(function(v){v.pause();});}
 
   /* Видео крутится постоянно — вне экрана его надо глушить, иначе секция
      жжёт декодер на всей остальной странице. */
   var io=new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       visible=e.isIntersecting;
-      if(visible){playVideo();if(!held)restartSeg(idx);arm();}
-      else{if(video)video.pause();stopTimer();}
+      if(visible){showVideo(idx);if(!held)restartSeg(idx);arm();}
+      else{pauseAll();stopTimer();}
     });
   },{threshold:.08});
   io.observe(section);
@@ -551,9 +621,9 @@ allSections.forEach(s=>sio.observe(s));
   /* Возврат на вкладку: браузер глушит фоновое видео и не поднимает его сам,
      а IntersectionObserver не сработает — секция не двигалась. */
   document.addEventListener('visibilitychange',function(){
-    if(document.hidden){if(video)video.pause();stopTimer();return;}
+    if(document.hidden){pauseAll();stopTimer();return;}
     if(!visible)return;
-    playVideo();
+    showVideo(idx);
     if(!held){restartSeg(idx);arm();}
   });
 

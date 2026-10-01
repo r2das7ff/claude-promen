@@ -936,10 +936,9 @@ img{display:block;max-width:100%;}
 /* ══════════════════════════════════════════════
    §SHOPMAP — ПРОИЗВОДСТВЕННЫЕ УЧАСТКИ
    Шапка и лид на белом, сцена — тёмная полоса во всю ширину.
-   Внутри сцены один сквозной кадр цеха и 8 ламелей поверх него:
-   свёрнутые кадр приглушают, раскрытая его не перекрывает.
-   Видео одно на сцену, а не на участок, — поэтому оно нигде
-   не выдаёт себя за съёмку конкретного поста.
+   Внутри сцены 8 ламелей, под раскрытой — ролик её участка:
+   свёрнутые остаются тёмными корешками, раскрытая — окно в кадр.
+   Ролики стоковые (Pexels) — иллюстрация участка, а не съёмка цеха.
 ══════════════════════════════════════════════ */
 #shopmap{
   --stg-spine:clamp(54px,5.6vw,92px);   /* корешок свёрнутой ламели */
@@ -980,12 +979,24 @@ img{display:block;max-width:100%;}
   background:#050C15;overflow:hidden;
   border-top:1px solid rgba(15,42,68,.6);border-bottom:1px solid rgba(15,42,68,.6);
 }
-/* Медленный дрейф: клип один и короткий, без него виден стык петли.
-   Стартовый масштаб 1.04 — чтобы сдвиг не открыл край кадра. */
+/* Ролик стоит ровно под раскрытой ламелью своего участка (--k — его номер
+   с нуля): перед ней k корешков, ширина — всё, что осталось от семи.
+   На всю сцену кадр резался в полосу ~3:1, и окно ламели смотрело в его
+   край — у 07 штангенциркуль оставался за свёрнутыми корешками.
+   Медленный дрейф: клипы короткие, без него виден стык петли.
+   Стартовый масштаб 1.04 — чтобы сдвиг не открыл край кадра.
+   Ролики лежат стопкой: виден .is-on, под ним на время наплыва остаётся
+   .is-prev. z-index 1 у видимого не перекрывает вуаль — та идёт позже в DOM. */
 .stg-bg{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:0;
+  position:absolute;top:0;bottom:0;
+  left:calc(var(--k,0) * var(--stg-spine));width:calc(100% - 7 * var(--stg-spine));height:100%;
+  object-fit:cover;display:block;z-index:0;
+  opacity:0;transition:opacity .8s var(--ease-out);
   transform-origin:center;animation:stgDrift 38s ease-in-out infinite alternate;
 }
+.stg-bg.is-prev{opacity:1;transition:none;}
+.stg-bg.is-on{opacity:1;z-index:1;}
+.stg-bg:not(.is-on):not(.is-prev){animation-play-state:paused;}
 @keyframes stgDrift{
   from{transform:scale(1.04) translate3d(-1%,.4%,0);}
   to  {transform:scale(1.13) translate3d(1.6%,-1%,0);}
@@ -1733,6 +1744,7 @@ img{display:block;max-width:100%;}
   .shm-num{ padding:0 16px; }
   .stg{ height:calc(7 * var(--stg-spine) + clamp(330px,74vw,470px)); }
   .stg-rail{ flex-direction:column; }
+  .stg-bg{ left:0; width:100%; top:calc(var(--k,0) * var(--stg-spine)); bottom:auto; height:calc(100% - 7 * var(--stg-spine)); }
   .stg-p{ border-left:0; border-top:1px solid rgba(169,183,198,.16); }
   .stg-p:first-child{ border-top:0; }
   .stg-spine{ flex-direction:row; align-items:center; justify-content:flex-start; gap:14px; padding:0 28px 0 24px; }

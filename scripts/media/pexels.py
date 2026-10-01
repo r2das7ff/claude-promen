@@ -23,6 +23,7 @@ import shutil
 import ssl
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -81,7 +82,21 @@ def get_key(cli_key=None):
     return key
 
 
-def api(key, path, params=None):
+def api(key, path, params=None, retries=3):
+    """429 без X-Ratelimit-Reset — это не месячный лимит, а частотный: Pexels режет
+    серию запросов к /videos/videos/:id подряд и отпускает через полминуты."""
+    for attempt in range(retries + 1):
+        try:
+            return _api_once(key, path, params)
+        except PexelsError as e:
+            if not str(e).startswith("429") or "сброс неизвестно" not in str(e) or attempt == retries:
+                raise
+            wait = 20 * (attempt + 1)
+            print(f"[429] частые запросы, жду {wait} с…", file=sys.stderr)
+            time.sleep(wait)
+
+
+def _api_once(key, path, params=None):
     url = API + path
     if params:
         clean = {k: v for k, v in params.items() if v not in (None, "")}
@@ -337,11 +352,19 @@ def download_photo(key, args):
         print(f"{f}  ({f.stat().st_size / 1024:.0f} КБ)")
 
 
-def pick_video_file(v, tier=None, max_width=1920):
+def pick_video_file(v, tier=None, max_width=1920, downscale=False):
     files = [f for f in v.get("video_files") or []
              if f.get("width") and (f.get("file_type") or "").endswith("mp4")]
     if tier:
         files = [f for f in files if tier_of(f) == tier] or files
+    if not files:
+        raise PexelsError(f"У видео {v['id']} нет mp4-файлов.")
+    # Под пережатие (--web) берём ближайший файл не уже цели: у 4K-роликов ряд
+    # 4096/2048/1366, и «не шире 1920» дало бы 1366 вместо ужатого 2048.
+    if downscale:
+        wide = [f for f in files if f["width"] >= max_width]
+        if wide:
+            return min(wide, key=lambda f: (f["width"], -(f.get("fps") or 0)))
     fit = [f for f in files if f["width"] <= max_width]
     pool = fit or files
     if not pool:
@@ -367,7 +390,7 @@ def download_video(key, args):
     out_dir = Path(args.out) if args.out else OUT_DIR
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = f"pexels-{v['id']}-{args.name or slug_from_url(v['url'])}"
-    f = pick_video_file(v, args.tier, args.max_width)
+    f = pick_video_file(v, args.tier, args.max_width, downscale=args.web)
     src = out_dir / (stem + f"-src-{f['width']}.mp4") if args.web else out_dir / (stem + ".mp4")
     print(f"  файл: {tier_of(f)} {f['width']}×{f['height']} {f.get('fps') or '?'}fps",
           file=sys.stderr)
