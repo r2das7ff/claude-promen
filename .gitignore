@@ -67,3 +67,9 @@ perf-reports/ads/*/*.tsv
 
 # Пакет выкладки правок ОТК — собирается из git archive, в истории не нужен
 scripts/otk-fix/deploy.tar
+
+# Сырьё с Pexels (scripts/media/pexels.py): оригиналы и исходники видео весят
+# мегабайты и перекачиваются по id. В git едет только журнал credits.jsonl —
+# по нему видно, чья картинка и откуда, когда она уже стоит на сайте.
+media-src/pexels/*
+!media-src/pexels/credits.jsonl
