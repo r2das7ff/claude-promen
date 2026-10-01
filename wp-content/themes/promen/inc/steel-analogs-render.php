@@ -122,15 +122,22 @@ function promen_sa_nice( float $v ): float {
 	return 100.0;
 }
 
-/** Метка степени соответствия: три риски + слово. */
-function promen_sa_q( int $q, bool $word = true ): string {
+/**
+ * Метка степени соответствия: три риски + слово.
+ * $word: 'show' — слово видно; 'sr' — только для скринридера; 'none' — одни
+ * риски (легенда, где слово стоит рядом текстом — иначе читается дважды).
+ * Атрибут — data-level, не data-q: data-q у кнопок «Часто ищут».
+ */
+function promen_sa_q( int $q, string $word = 'show' ): string {
 	$labels = promen_steel_analog_q();
 	$label  = $labels[ $q ]['label'] ?? '';
-	$html   = '<span class="sa-q" data-q="' . $q . '" title="' . esc_attr( $labels[ $q ]['hint'] ?? '' ) . '">'
+	$html   = '<span class="sa-q" data-level="' . $q . '" title="' . esc_attr( $labels[ $q ]['hint'] ?? '' ) . '">'
 		. '<span class="sa-q-t" aria-hidden="true"><i></i><i></i><i></i></span>';
-	$html  .= $word
-		? '<span class="sa-q-w">' . esc_html( $label ) . '</span>'
-		: '<span class="sr-only">' . esc_html( $label ) . '</span>';
+	if ( 'show' === $word ) {
+		$html .= '<span class="sa-q-w">' . esc_html( $label ) . '</span>';
+	} elseif ( 'sr' === $word ) {
+		$html .= '<span class="sr-only">' . esc_html( $label ) . '</span>';
+	}
 	return $html . '</span>';
 }
 
@@ -224,6 +231,7 @@ function promen_sa_chem_html( array $g, string $cmp ): string {
 	if ( array_filter( $data['rows'], static fn( $r ) => $r['diff'] ) ) {
 		$h .= '<p class="sa-chem-diff"><span class="sa-diff-mark" aria-hidden="true"></span>Диапазоны не пересекаются — по этому элементу марки различаются по составу.</p>';
 	}
+	$h .= '<p class="sa-chem-note">Шкала у каждого элемента своя — полосы сравнивают внутри строки.</p>';
 	return $h;
 }
 
@@ -268,10 +276,11 @@ function promen_sa_passport( array $g, bool $example = false ): void {
 	<?php else : ?>
 		<div class="sa-ctx" data-ctx hidden></div>
 	<?php endif; ?>
+	<div class="sa-pass-main">
 	<div class="sa-side">
 		<div class="sa-id">
 			<div class="sa-id-top"><span class="sa-lbl">Марка по ГОСТ</span><span class="sa-grp"><?php echo esc_html( $groups[ $g['g'] ] ?? '' ); ?></span></div>
-			<h2 class="sa-name"><?php echo esc_html( $g['name'] ); ?></h2>
+			<h2 class="sa-name" tabindex="-1"><?php echo esc_html( $g['name'] ); ?></h2>
 			<?php if ( $g['desc'] ) : ?><p class="sa-desc"><?php echo esc_html( $g['desc'] ); ?></p><?php endif; ?>
 			<dl class="sa-facts">
 				<?php if ( $g['std'] ) : ?><div><dt>Норматив</dt><dd><?php echo esc_html( $g['std'] ); ?></dd></div><?php endif; ?>
@@ -291,7 +300,7 @@ function promen_sa_passport( array $g, bool $example = false ): void {
 	<div class="sa-an">
 			<div class="sa-an-hd">
 				<span class="sa-lbl">Аналоги по системам</span>
-				<a class="sa-legend" href="#stepen"><?php echo promen_sa_q( 3, false ); // phpcs:ignore ?>прямой<?php echo promen_sa_q( 2, false ); // phpcs:ignore ?>близкий<?php echo promen_sa_q( 1, false ); // phpcs:ignore ?>условный</a>
+				<a class="sa-legend" href="#stepen"><?php echo promen_sa_q( 3, 'none' ); // phpcs:ignore ?>прямой<?php echo promen_sa_q( 2, 'none' ); // phpcs:ignore ?>близкий<?php echo promen_sa_q( 1, 'none' ); // phpcs:ignore ?>условный</a>
 			</div>
 			<?php if ( $g['none'] ) : ?>
 				<p class="sa-none"><?php echo esc_html( $g['none'] ); ?></p>
@@ -304,6 +313,8 @@ function promen_sa_passport( array $g, bool $example = false ): void {
 					?>
 				</ol>
 			<?php endif; ?>
+			<p class="sa-an-foot">Аналог — справка, а не разрешение на замену. На поднадзорном объекте замену согласует автор проекта — <a href="#nadzor">подробнее</a>.</p>
+	</div>
 	</div>
 	<section class="sa-chem" data-chem aria-label="Химический состав">
 		<?php echo promen_sa_chem_html( $g, $cmp ); // phpcs:ignore ?>
@@ -363,10 +374,13 @@ function promen_sa_table( array $grades ): void {
 				<?php foreach ( $rows as $g ) : ?>
 					<tr data-id="<?php echo esc_attr( $g['id'] ); ?>">
 						<th scope="row"><a href="<?php echo esc_url( add_query_arg( 'marka', $g['id'], $page ) . '#podbor' ); ?>"><?php echo esc_html( $g['name'] ); ?></a></th>
-						<?php foreach ( $systems as $sys => $meta ) : ?>
+						<?php if ( $g['none'] ) : ?>
+							<td class="sa-td-none" colspan="<?php echo count( $systems ); ?>">Прямых зарубежных аналогов нет — замену подбирают по ТУ и расчёту</td>
+						<?php endif; ?>
+						<?php foreach ( $g['none'] ? [] : $systems as $sys => $meta ) : ?>
 							<?php $a = $g['an'][ $sys ] ?? null; ?>
 							<?php if ( $a ) : ?>
-								<td><?php echo promen_sa_q( (int) $a['q'], false ); // phpcs:ignore ?><span class="sa-td-g"><?php echo esc_html( $a['g'] ); ?></span><?php echo ( 'EN' === $sys && ! empty( $a['n'] ) ) ? '<span class="sa-td-n">' . esc_html( $a['n'] ) . '</span>' : ''; ?></td>
+								<td><?php echo promen_sa_q( (int) $a['q'], 'sr' ); // phpcs:ignore ?><span class="sa-td-g"><?php echo esc_html( $a['g'] ); ?></span><?php echo ( 'EN' === $sys && ! empty( $a['n'] ) ) ? '<span class="sa-td-n">' . esc_html( $a['n'] ) . '</span>' : ''; ?></td>
 							<?php else : ?>
 								<td class="is-nil">—</td>
 							<?php endif; ?>

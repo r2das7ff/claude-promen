@@ -19,7 +19,7 @@ $promen_grades = promen_steel_analog_grades();
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $promen_req  = isset( $_GET['marka'] ) ? sanitize_title( wp_unslash( (string) $_GET['marka'] ) ) : '';
 $promen_found = $promen_req !== '' ? promen_steel_analog_find( $promen_req ) : null;
-$promen_cur   = $promen_found ?? promen_steel_analog_find( '12h18n10t' ) ?? $promen_grades[0];
+$promen_cur   = $promen_found ?? promen_steel_analog_find( '20' ) ?? $promen_grades[0];
 $promen_n    = count( $promen_grades );
 $promen_pop  = [ '12Х18Н10Т', '09Г2С', '20', '12Х1МФ', '15Х5М', 'AISI 321', 'AISI 304', '316L', 'P265GH', 'A105', 'SUS321', 'Q355' ];
 ?>
@@ -42,16 +42,25 @@ $promen_pop  = [ '12Х18Н10Т', '09Г2С', '20', '12Х1МФ', '15Х5М', 'AISI 
 
   <section class="sa-tool" id="podbor" data-sa aria-label="Подбор аналога марки стали">
     <div class="sa-find" data-find>
+      <?php // Переключатель режимов показывает скрипт: без него работает только поиск по одной марке. ?>
+      <div class="sa-modes" role="tablist" aria-label="Режим подбора" data-modes hidden>
+        <button type="button" role="tab" id="saTabOne" aria-selected="true" aria-controls="saModeOne" data-mode="one">Одна марка</button>
+        <button type="button" role="tab" id="saTabList" aria-selected="false" aria-controls="saModeList" data-mode="list" tabindex="-1">Список<span class="sa-m-hide"> из спецификации</span></button>
+      </div>
+      <div id="saModeOne" role="tabpanel" aria-labelledby="saTabOne" data-panel="one">
       <label class="sa-find-lbl" for="saQ">Марка из документации</label>
+      <div class="sa-find-box">
       <div class="sa-find-row">
         <svg class="sa-find-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
         <input id="saQ" class="sa-find-in" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false"
-          aria-controls="saList" aria-describedby="saHint" autocomplete="off" autocapitalize="characters" spellcheck="false"
+          aria-controls="saList" aria-describedby="saHint saNote" autocomplete="off" autocapitalize="characters" spellcheck="false"
           enterkeyhint="search" placeholder="12Х18Н10Т, AISI 321, P265GH, A105…">
         <button type="button" class="sa-clear" data-clear aria-label="Очистить поле" hidden>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
         </button>
-        <ul id="saList" class="sa-sug" role="listbox" aria-label="Найденные марки" hidden></ul>
+      </div>
+      <div class="sa-find-note" id="saNote" data-note hidden></div>
+      <ul id="saList" class="sa-sug" role="listbox" aria-label="Найденные марки" hidden></ul>
       </div>
       <p id="saHint" class="sa-find-hint">Латиница, кириллица, с приставкой AISI или SA — неважно. <?php echo esc_html( $promen_n . ' ' . promen_sa_plural( $promen_n, 'марка', 'марки', 'марок' ) ); ?> · 6 систем обозначений.</p>
       <div class="sa-pop">
@@ -60,7 +69,20 @@ $promen_pop  = [ '12Х18Н10Т', '09Г2С', '20', '12Х1МФ', '15Х5М', 'AISI 
           <button type="button" class="sa-pop-b" data-q="<?php echo esc_attr( $p ); ?>"><?php echo esc_html( $p ); ?></button>
         <?php endforeach; ?>
       </div>
+      </div>
+      <div id="saModeList" role="tabpanel" aria-labelledby="saTabList" data-panel="list" hidden>
+        <label class="sa-find-lbl" for="saListIn">Строки спецификации — по одной позиции на строку</label>
+        <textarea id="saListIn" class="sa-list-in" rows="7" spellcheck="false" aria-describedby="saListHint"
+          placeholder="Elbow 90° LR, A234 WPB, 4&quot; SCH40&#10;Flange WN, A105, Class 300&#10;Pipe A312 TP321&#10;Отвод 90-108×6 ст.20 ГОСТ 17375-2001"></textarea>
+        <p id="saListHint" class="sa-find-hint">Вставьте столбец из Excel или строки целиком — подборщик найдёт в каждой марку и покажет её по ГОСТ. До 200 строк.</p>
+        <div class="sa-list-acts">
+          <button type="button" class="clc-btn" data-act="batch-run">Разобрать список</button>
+          <button type="button" class="clc-btn clc-btn--ghost" data-act="spec">Отправить файл инженеру</button>
+        </div>
+      </div>
     </div>
+
+    <div class="sa-batch" data-batch hidden></div>
 
     <article class="sa-pass" data-pass data-id="<?php echo esc_attr( $promen_cur['id'] ); ?>" aria-label="Паспорт марки">
       <?php promen_sa_passport( $promen_cur, null === $promen_found ); ?>
@@ -69,27 +91,32 @@ $promen_pop  = [ '12Х18Н10Т', '09Г2С', '20', '12Х1МФ', '15Х5М', 'AISI 
     <div class="sa-toast" data-toast role="status" aria-live="polite"></div>
   </section>
 
-  <section class="sa-sec" id="tablica" aria-labelledby="saTblH">
-    <div class="sa-sec-hd">
-      <h2 id="saTblH" class="sa-h2">Таблица соответствия марок стали</h2>
-      <p class="sa-sec-lead">Все марки подборщика в одной таблице. Риски у обозначения — степень соответствия:
-        три — прямой аналог, две — близкий, одна — условный. Нажмите на марку, чтобы открыть её паспорт.</p>
-    </div>
-    <div class="sa-chips sa-filter" role="group" aria-label="Группа марок" data-filter>
-      <button type="button" class="sa-chip" data-g="" aria-pressed="true">Все<span><?php echo esc_html( $promen_n ); ?></span></button>
-      <?php foreach ( promen_steel_analog_groups() as $gk => $glabel ) : ?>
-        <?php $gn = count( array_filter( $promen_grades, static fn( $g ) => $g['g'] === $gk ) ); ?>
-        <button type="button" class="sa-chip" data-g="<?php echo esc_attr( $gk ); ?>" aria-pressed="false"><?php echo esc_html( $glabel ); ?><span><?php echo esc_html( $gn ); ?></span></button>
-      <?php endforeach; ?>
-    </div>
-    <div class="sa-tbl-wrap" role="region" aria-labelledby="saTblH" tabindex="0">
-      <?php promen_sa_table( $promen_grades ); ?>
-    </div>
-    <p class="sa-tbl-note">Соответствия справочные и составлены по стандартам на марки. Аналог помогает
-      прочитать импортную документацию и выбрать замену, но не заменяет проверку по требованиям проекта.</p>
-  </section>
+  <div class="sa-art">
+    <?php get_template_part( 'parts/steel-analogs-toc' ); ?>
+    <div class="sa-flow">
+      <section class="sa-sec" id="tablica" aria-labelledby="saTblH">
+        <div class="sa-sec-hd">
+          <h2 id="saTblH" class="sa-h2">Таблица соответствия марок стали</h2>
+          <p class="sa-sec-lead">Все марки подборщика в одной таблице. Риски у обозначения — степень соответствия:
+            три — прямой аналог, две — близкий, одна — условный. Нажмите на марку, чтобы открыть её паспорт.</p>
+        </div>
+        <div class="sa-chips sa-filter" role="group" aria-label="Группа марок" data-filter>
+          <button type="button" class="sa-chip" data-g="" aria-pressed="true">Все<span><?php echo esc_html( $promen_n ); ?></span></button>
+          <?php foreach ( promen_steel_analog_groups() as $gk => $glabel ) : ?>
+            <?php $gn = count( array_filter( $promen_grades, static fn( $g ) => $g['g'] === $gk ) ); ?>
+            <button type="button" class="sa-chip" data-g="<?php echo esc_attr( $gk ); ?>" aria-pressed="false"><?php echo esc_html( $glabel ); ?><span><?php echo esc_html( $gn ); ?></span></button>
+          <?php endforeach; ?>
+        </div>
+        <div class="sa-tbl-wrap" role="region" aria-label="Таблица соответствия, прокручивается вбок" tabindex="0">
+          <?php promen_sa_table( $promen_grades ); ?>
+        </div>
+        <p class="sa-tbl-note">Соответствия справочные и составлены по стандартам на марки. Аналог помогает
+          прочитать импортную документацию и выбрать замену, но не заменяет проверку по требованиям проекта.</p>
+      </section>
 
-  <?php get_template_part( 'parts/steel-analogs-article' ); ?>
+      <?php get_template_part( 'parts/steel-analogs-article' ); ?>
+    </div>
+  </div>
 
 </div>
 <script type="application/json" id="saData"><?php echo wp_json_encode( promen_steel_analog_bootstrap(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?></script>

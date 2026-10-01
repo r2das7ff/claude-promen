@@ -10,36 +10,8 @@ defined( 'ABSPATH' ) || exit;
 
 $sa_link = static fn( string $slug ): string => function_exists( 'promen_product_cat_link' ) ? (string) promen_product_cat_link( $slug ) : '';
 $sa_dn   = function_exists( 'promen_calc_url' ) ? promen_calc_url( 'dn-dyuym' ) : '';
-$sa_toc  = [
-	'chtenie'   => 'Как читать обозначение марки',
-	'izdelie'   => 'Марка и спецификация на изделие',
-	'stepen'    => 'Прямой, близкий, условный',
-	'sravnenie' => 'Что сравнить перед заменой',
-	'nadzor'    => 'Замена на поднадзорном объекте',
-	'primer'    => 'Пример: импортная спецификация',
-	'voprosy'   => 'Вопросы и ответы',
-];
 ?>
-<div class="sa-art" id="spravka">
-  <aside class="sa-toc" aria-label="Содержание">
-    <nav class="sa-toc-box">
-      <span class="sa-lbl">Содержание</span>
-      <ol class="sa-toc-list">
-        <li><a href="#podbor">Подбор аналога</a></li>
-        <li><a href="#tablica">Таблица соответствия</a></li>
-        <?php foreach ( $sa_toc as $id => $t ) : ?>
-          <li><a href="#<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $t ); ?></a></li>
-        <?php endforeach; ?>
-      </ol>
-    </nav>
-    <div class="sa-toc-cta">
-      <p class="sa-toc-cta-t">Импортная спецификация?</p>
-      <p class="sa-toc-cta-p">Пришлите её целиком — инженер подберёт марки и нормативы по ГОСТ и ответит в течение рабочего дня.</p>
-      <button type="button" class="sa-toc-cta-btn" data-act="spec">Отправить спецификацию</button>
-    </div>
-  </aside>
-
-  <div class="sa-body">
+<div class="sa-body" id="spravka">
 
     <section class="sa-part" id="chtenie">
       <h2 class="sa-h2">Как читать обозначение марки</h2>
@@ -348,5 +320,4 @@ $sa_toc  = [
       ?>
     </section>
 
-  </div>
 </div>
